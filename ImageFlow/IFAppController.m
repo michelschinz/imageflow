@@ -24,6 +24,7 @@
 #import "IFSetAlphaCIFilter.h"
 #import "IFSingleColorCIFilter.h"
 #import "IFThresholdCIFilter.h"
+#import "IFCircleGeneratorCIFilter.h"
 
 @implementation IFAppController
 
@@ -56,6 +57,7 @@
   [IFSetAlphaCIFilter class];
   [IFSingleColorCIFilter class];
   [IFThresholdCIFilter class];
+  [IFCircleGeneratorCIFilter class];
   
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFDirectoryManager* dirMgr = [IFDirectoryManager sharedDirectoryManager];

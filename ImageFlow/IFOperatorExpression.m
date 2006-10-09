@@ -41,17 +41,6 @@
   return [self expressionWithOperator:[IFOperator operatorForName:@"histogram-rgb"] operands:[NSArray arrayWithObject:imageExpr]];
 }
 
-+ (id)brush:(NSString*)style color:(NSColor*)color size:(float)size;
-{
-  static IFOperator* op = nil;
-  if (op == nil) op = [IFOperator operatorForName:@"brush"];
-  return [self expressionWithOperator:op operands:[NSArray arrayWithObjects:
-    [IFConstantExpression expressionWithString:style],
-    [IFConstantExpression expressionWithColorNS:color],
-    [IFConstantExpression expressionWithFloat:size],
-    nil]];
-}
-
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
 {
   static IFOperator* op = nil;

@@ -1,3 +1,5 @@
+type action_kind = Save | Print
+
 type t =
     Op of string * t array
   | Var of string
@@ -12,7 +14,7 @@ type t =
   | String of string
   | Num of float
   | Bool of bool
-  | Action of string * (t -> unit)
+  | Action of action_kind * (t -> unit)
   | Error of string option
 
 let is_value = function

@@ -250,6 +250,10 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
   return result;
 }
 
+static value elemAsCaml(const char* elem) {
+  return [(IFExpression*)elem asCaml];
+}
+
 - (value)camlRepresentation;
 {
   CAMLparam0();
@@ -306,6 +310,14 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     args[2] = caml_copy_double([color blueComponent]);
     args[3] = caml_copy_double([color alphaComponent]);
     contents = caml_callbackN(*colorMakeClosure, 4, args);
+  } else if ([object isKindOfClass:[NSArray class]]) {
+    tag = IFExpressionTag_Array;
+    NSArray* array = (NSArray*)object;
+    IFExpression** cArray = malloc(([array count] + 1) * sizeof(IFExpression*));
+    [array getObjects:cArray];
+    cArray[[array count]] = NULL;
+    contents = caml_alloc_array(elemAsCaml, (char const**)cArray);
+    free(cArray);
   } else
     NSAssert2(NO, @"invalid object: %@ (class %@)",object,[object class]);  
 

@@ -3,6 +3,9 @@ open Corefoundation
 
 type t = [ `IFImage ] objc
 
+let empty =
+  Ifimage.emptyImage()
+
 let of_ifimage ifimage =
   ifimage
 

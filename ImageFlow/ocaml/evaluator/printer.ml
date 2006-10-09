@@ -1,6 +1,10 @@
 open Expr
 open Format
 
+let action_kind_to_string = function
+    Save -> "save"
+  | Print -> "print"
+
 let rec print0 fmt = function
     Op(op, args) ->
       begin
@@ -50,8 +54,8 @@ let rec print0 fmt = function
       pp_print_float fmt n
   | Bool b ->
       pp_print_bool fmt b
-  | Action (category, _) ->
-      pp_print_string fmt ("<action " ^ category ^ ">")
+  | Action (k, _) ->
+      pp_print_string fmt ("<action " ^ (action_kind_to_string k) ^ ">")
   | Error Some msg ->
       pp_print_string fmt ("<ERROR " ^ msg ^ ">")
   | Error None ->

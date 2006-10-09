@@ -76,6 +76,11 @@ let checkerboard =
                                       @@@ number !@"inputWidth"
                                       @@@ number !@"inputSharpness")
 
+let circle =
+  filter !@"IFCircleGenerator" (point !@"inputCenter"
+                                @@@ number !@"inputRadius"
+                                @@@ color !@"inputColor")
+
 let color_controls =
   filter !@"CIColorControls" (image !@"inputImage"
                               @@@ number !@"inputContrast"

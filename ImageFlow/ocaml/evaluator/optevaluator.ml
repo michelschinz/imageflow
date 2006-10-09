@@ -35,6 +35,13 @@ let rec recursingEval eval = function
   | value ->
       value
 
+(* Add logging to an evaluation function *)
+let loggingEval eval expr =
+  print_endline (" eval: " ^ (Printer.to_string expr));
+  let res = eval expr in
+  print_endline ("    => " ^ (Printer.to_string res));
+  res
+
 let (++) f g x = f (g x)
 
 let eval cache expr =

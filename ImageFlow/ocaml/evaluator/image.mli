@@ -1,5 +1,7 @@
 type t
 
+val empty : t
+
 val of_ifimage : [ `IFImage ] Objc.objc -> t
 val of_cgimage : [ `CGImage ] Corefoundation.cftyperef -> t
 val of_ciimage : [ `CIImage ] Objc.objc -> t

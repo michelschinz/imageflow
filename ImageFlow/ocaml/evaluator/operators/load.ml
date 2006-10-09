@@ -8,4 +8,4 @@ let eval_load file_name =
   if is_null cg_image then
     failwith "File not found"
   else
-    cg_image
+    Image.of_cgimage cg_image

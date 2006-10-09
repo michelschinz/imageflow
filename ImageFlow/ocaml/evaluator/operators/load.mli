@@ -1,1 +1,1 @@
-val eval_load: string -> [`CGImage] Corefoundation.cftyperef
+val eval_load: string -> Image.t

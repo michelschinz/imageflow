@@ -21,8 +21,33 @@ CAML_STD_LIB := \
 DEPENDENCY_FILES := \
 	$(C_SRC:.c=_c.d) $(CAML_SRC:.ml=_ml.d) $(CAML_INT:.mli=_mli.d)
 
+# All OCaml objects, sorted according to dependencies
+CAML_SORTED_OBJS :=
+CAML_SORTED_OBJS += evaluator/log.cmo
+CAML_SORTED_OBJS += evaluator/marray.cmo
+CAML_SORTED_OBJS += evaluator/mlist.cmo
+CAML_SORTED_OBJS += evaluator/point.cmo
+CAML_SORTED_OBJS += evaluator/color.cmo
+CAML_SORTED_OBJS += evaluator/interval.cmo
+CAML_SORTED_OBJS += evaluator/size.cmo
+CAML_SORTED_OBJS += evaluator/rect.cmo
+CAML_SORTED_OBJS += evaluator/image.cmo
+CAML_SORTED_OBJS += evaluator/affinetransform.cmo
+CAML_SORTED_OBJS += evaluator/coreimage.cmo
+CAML_SORTED_OBJS += evaluator/operators/load.cmo
+CAML_SORTED_OBJS += evaluator/operators/save.cmo
+CAML_SORTED_OBJS += evaluator/operators/paint.cmo
+CAML_SORTED_OBJS += evaluator/expr.cmo
+CAML_SORTED_OBJS += evaluator/printer.cmo
+CAML_SORTED_OBJS += evaluator/optimiser.cmo
+CAML_SORTED_OBJS += evaluator/typechecker.cmo
+CAML_SORTED_OBJS += evaluator/evaluator.cmo
+CAML_SORTED_OBJS += evaluator/cache.cmo
+CAML_SORTED_OBJS += evaluator/optevaluator.cmo
+CAML_SORTED_OBJS += evaluator/registerer.cmo
+
 INCLUDE_FLAGS := $(foreach module,$(MODULES),-I $(module)) -I ..
-CFLAGS += -Wall -g $(INCLUDE_FLAGS) -I $(CAML_STD_LIB)
+CFLAGS += -std=c99 -Wall -g $(INCLUDE_FLAGS) -I $(CAML_STD_LIB)
 CAML_INCLUDE_FLAGS := $(INCLUDE_FLAGS)
 CAMLFLAGS := -g -dtypes -w A $(CAML_INCLUDE_FLAGS)
 
@@ -31,6 +56,7 @@ OCAMLC := ocamlc
 OCAMLDEP := ocamldep
 OCAMLMKLIB = ocamlmklib
 OCAMLMKTOP := ocamlmktop
+
 LIBTOOL := libtool
 GREP := grep
 WC := wc
@@ -40,10 +66,11 @@ TOPLEVEL := caml-imageflow
 
 .PHONY: all clean grep todo wc
 
+
 all: $(LIBEVAL)
 
-$(CAML_CODE_OBJ): $(CAML_OBJS)
-	$(OCAMLC) -output-obj -g -o $@ $^
+$(CAML_CODE_OBJ): $(CAML_SORTED_OBJS)
+	$(OCAMLC) -output-obj -g -o $@ bigarray.cma $(CAML_SORTED_OBJS)
 
 $(LIBEVAL): $(C_OBJS)
 	$(LIBTOOL) -static -o $@ $^

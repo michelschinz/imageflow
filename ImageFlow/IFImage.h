@@ -12,7 +12,10 @@
 @interface IFImage : NSObject {
 }
 
++ (id)emptyImage;
+
 + (id)imageWithCGImage:(CGImageRef)theImage;
++ (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
 + (id)imageWithCIImage:(CIImage*)theImage;
 
 - (BOOL)isLocked;

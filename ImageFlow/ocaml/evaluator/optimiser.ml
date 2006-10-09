@@ -11,6 +11,9 @@ let rec rewriteOp = function
        [|Op("checkerboard", [|Point c; c1; c2; Num w; Num s|]); Num f|]) ->
          Op("checkerboard",
             [|Point (Point.scale c f); c1; c2; Num (w *. f); Num (s *. f)|])
+  | Op("resample", [|Op("circle", [|Point c; Num r; o|]); Num f|])
+    when f < 1. ->
+      Op("circle", [|Point (Point.scale c f); Num (r *. f); o|])
   | Op("resample", [|Op("color-controls", [|i; c; b; s|]); Num f|])
     when f < 1. ->
       Op("color-controls", [|Op("resample", [|i; Num f|]); c; b; s|])
@@ -54,7 +57,8 @@ let rec rewriteOp = function
 
         (* Zeroes *)
   | Op("gaussian-blur", [|i; Num 0.|]) -> i
-(*   | Op("opacity", [|_; Num 0.|]) -> Image (Image.empty) TODO *)
+  | Op("opacity", [|_; Num 0.|]) -> Image (Image.empty)
+  | Op("paint", [|_; Array [| |] |]) -> Image (Image.empty)
   | Op("resample", [| i; Num 1. |]) -> i
   | Op("translate", [|i; Point p|]) when p = Point.zero -> i
 
@@ -63,6 +67,8 @@ let rec rewriteOp = function
       Op("rect-union", [|Op("extent", [|i1|]); Op("extent", [|i2|])|])
   | Op("extent", [|Op("checkerboard", _)|]) ->
       Rect (Rect.infinite)
+  | Op("extent", [|Op("circle", [|Point c; Num r; _|])|]) ->
+      Rect (Rect.make ((Point.x c) -. r) ((Point.y c) -. r) (2. *. r) (2. *. r))
   | Op("extent", [|Op("constant-color", _)|]) ->
       Rect (Rect.infinite)
   | Op("extent", [|Op("color-controls", [|i;_;_;_|])|]) ->

@@ -1,6 +1,9 @@
 open Objc
 open Corefoundation
 
+external emptyImage: unit -> [ `IFImage ] objc
+    = "IFImage__emptyImage"
+
 external imageWithCGImage: [ `CGImage ] cftyperef -> [ `IFImage ] objc
     = "IFImage__imageWithCGImage"
 

@@ -21,11 +21,11 @@
 - (void)mouseDown:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env;
 {
   IFExpression* curExpr = [env valueForKey:@"drawing"];
-  IFExpression* brushExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"brush"]
+  IFExpression* brushExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"circle"]
                                                                 operands:[NSArray arrayWithObjects:
-                                                                  [IFConstantExpression expressionWithString:@"<none>"],
-                                                                  [IFConstantExpression expressionWithColorNS:[env valueForKey:@"brushColor"]],
+                                                                  [IFConstantExpression expressionWithPointNS:NSZeroPoint],
                                                                   [IFConstantExpression expressionWithFloat:[[env valueForKey:@"brushSize"] floatValue]],
+                                                                  [IFConstantExpression expressionWithColorNS:[env valueForKey:@"brushColor"]],
                                                                   nil]];
   IFExpression* pointExpr = [IFConstantExpression expressionWithArray:[NSArray arrayWithObject:[IFConstantExpression expressionWithPointNS:point]]];  
   IFExpression* paintExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"paint"]

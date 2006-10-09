@@ -32,6 +32,7 @@
 		FA105C940928CDBA002485AC /* IFVariableExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA105C920928CDBA002485AC /* IFVariableExtractor.m */; };
 		FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA11DD2608F245E500A3AF61 /* IFPreferences.nib */; };
 		FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */; };
+		FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */; };
 		FA164C9E0AD1132A0007C9EA /* IFExpressionEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */; };
 		FA1650A70AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1650A50AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m */; };
 		FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */; };
@@ -62,6 +63,9 @@
 		FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA402732091A35E6001626A2 /* IFFileSink.nib */; };
 		FA402870091A4280001626A2 /* IFFileSinkDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40286E091A4280001626A2 /* IFFileSinkDelegate.m */; };
 		FA40F2660912438100C8B8DD /* IFHistogramConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */; };
+		FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
+		FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */; };
+		FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA4328BC0ADAC14F00109D58 /* circle.cikernel */; };
 		FA4501120AD2564B0097C977 /* opacity.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */; };
 		FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA45019F0AD2B4AE0097C977 /* IFImage.m */; };
 		FA4501A60AD2B5200097C977 /* IFImageCGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A40AD2B5200097C977 /* IFImageCGImage.m */; };
@@ -257,6 +261,8 @@
 		FA11DD2608F245E500A3AF61 /* IFPreferences.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFPreferences.nib; sourceTree = "<group>"; };
 		FA11DDA408F24EF800A3AF61 /* IFPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPreferencesWindowController.h; sourceTree = "<group>"; };
 		FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPreferencesWindowController.m; sourceTree = "<group>"; };
+		FA150A2F0ADA2FC0007DA372 /* IFImageCGLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageCGLayer.h; sourceTree = "<group>"; };
+		FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCGLayer.m; sourceTree = "<group>"; };
 		FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionEvaluator.h; sourceTree = "<group>"; };
 		FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionEvaluator.m; sourceTree = "<group>"; };
 		FA1650A40AD12C030007C9EA /* IFExpressionEvaluatorOCaml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionEvaluatorOCaml.h; sourceTree = "<group>"; };
@@ -311,6 +317,10 @@
 		FA40286E091A4280001626A2 /* IFFileSinkDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileSinkDelegate.m; sourceTree = "<group>"; };
 		FA40F2630912438100C8B8DD /* IFHistogramConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpression.h; sourceTree = "<group>"; };
 		FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpression.m; sourceTree = "<group>"; };
+		FA4327AB0ADA7B1900109D58 /* libbigarray.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbigarray.a; path = lib/ocaml/libbigarray.a; sourceTree = ocaml; };
+		FA43286A0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCircleGeneratorCIFilter.h; sourceTree = "<group>"; };
+		FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCircleGeneratorCIFilter.m; sourceTree = "<group>"; };
+		FA4328BC0ADAC14F00109D58 /* circle.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = circle.cikernel; path = ../../../../Users/michelschinz/projects/imageflow/branch/ImageFlow/CoreImageFilterTemplates/circle.cikernel; sourceTree = ocaml; };
 		FA447E7E0ACD196D001C9718 /* IFExpressionTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionTags.h; sourceTree = "<group>"; };
 		FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = opacity.cikernel.m4; sourceTree = "<group>"; };
 		FA45019E0AD2B4AE0097C977 /* IFImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImage.h; sourceTree = "<group>"; };
@@ -525,6 +535,7 @@
 				FA54B2E00ACD5C0C0004E71C /* libcamlrun.a in Frameworks */,
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
 				FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */,
+				FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,6 +641,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA4327AB0ADA7B1900109D58 /* libbigarray.a */,
 				FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */,
 				FA033C780ACD647500D2775B /* libcurses.dylib */,
 				FA54B2DF0ACD5C0C0004E71C /* libcamlrun.a */,
@@ -933,6 +945,15 @@
 			name = File;
 			sourceTree = "<group>";
 		};
+		FA43286E0ADA8D4300109D58 /* Circle */ = {
+			isa = PBXGroup;
+			children = (
+				FA43286A0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.h */,
+				FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */,
+			);
+			name = Circle;
+			sourceTree = "<group>";
+		};
 		FA4501A20AD2B4B60097C977 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -940,6 +961,8 @@
 				FA45019F0AD2B4AE0097C977 /* IFImage.m */,
 				FA4501A30AD2B5200097C977 /* IFImageCGImage.h */,
 				FA4501A40AD2B5200097C977 /* IFImageCGImage.m */,
+				FA150A2F0ADA2FC0007DA372 /* IFImageCGLayer.h */,
+				FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */,
 				FA4501A70AD2B5560097C977 /* IFImageCIImage.h */,
 				FA4501A80AD2B5560097C977 /* IFImageCIImage.m */,
 			);
@@ -1175,12 +1198,12 @@
 		FAF97C2D08EBF27200FC2B61 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
-				5250C38709A87DE50089B4FC /* Unsharp mask */,
 				FAE54F75090D1406000DC147 /* Ghost */,
 				FAF2532A090F4A15000AA819 /* Crop */,
 				FA2D39E1094D777B0068F20A /* Gaussian blur */,
 				FA1BF2380918E67F00E288BB /* Blend */,
 				FA1BF71309194AAA00E288BB /* Threshold */,
+				5250C38709A87DE50089B4FC /* Unsharp mask */,
 				FAFC1B3D092C76E60032A19F /* Mask */,
 				FAF9F68E093248C700FB2B0B /* Single Color */,
 				46457A3D09A88038009825E9 /* Color Controls */,
@@ -1192,6 +1215,7 @@
 			isa = PBXGroup;
 			children = (
 				FA4E2D84093CB4F500204C3C /* Empty */,
+				FA43286E0ADA8D4300109D58 /* Circle */,
 				FA33FB0D08B60B290013AA0E /* File */,
 				FA0AA6CD091F8208005F5DD9 /* Bitmap */,
 			);
@@ -1210,9 +1234,10 @@
 		FAFC168D092C67BB0032A19F /* Core Image Templates */ = {
 			isa = PBXGroup;
 			children = (
+				FA4328BC0ADAC14F00109D58 /* circle.cikernel */,
+				FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */,
 				FAFC1B2D092C70ED0032A19F /* luminosity.ci */,
 				FAFC1B2E092C70ED0032A19F /* mask.ci */,
-				FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */,
 				FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */,
 				FAFC1B32092C76270032A19F /* mask.cikernel.m4 */,
 				FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */,
@@ -1400,6 +1425,7 @@
 				FAE6A2FF0ACBA18B0059BA3B /* button_delete_active.tiff in Resources */,
 				FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */,
 				FA4501120AD2564B0097C977 /* opacity.cikernel.m4 in Resources */,
+				FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1524,6 +1550,8 @@
 				FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */,
 				FA4501A60AD2B5200097C977 /* IFImageCGImage.m in Sources */,
 				FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */,
+				FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */,
+				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1605,10 +1633,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = ImageFlow;
 				WRAPPER_EXTENSION = app;
@@ -1631,10 +1661,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = ImageFlow;
 				SKIP_INSTALL = NO;

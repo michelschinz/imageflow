@@ -20,7 +20,6 @@
 + (id)extentOf:(IFExpression*)imageExpr;
 + (id)resample:(IFExpression*)imageExpr by:(float)scale;
 + (id)histogramOf:(IFExpression*)imageExpr;
-+ (id)brush:(NSString*)style color:(NSColor*)color size:(float)size;
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
 + (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(NSString*)mode;
 

@@ -48,6 +48,8 @@ let eval expr =
       out_image (Coreimage.compositing_filter (filter_for_blend_mode m) i1 i2)
   | Op("checkerboard", [|Point c; Color c1; Color c2; Num w; Num s|]) ->
       out_image (Coreimage.checkerboard c c1 c2 w s)
+  | Op("circle", [|Point c; Num r; Color o|]) ->
+      out_image (Coreimage.circle c r o)
   | Op("constant-color", [|Color c|]) ->
       out_image (Coreimage.constant_color c)
   | Op("color-controls", [| Image i; Num c; Num b; Num s |]) ->
@@ -57,7 +59,7 @@ let eval expr =
   | Op("crop-overlay", [|Image i; Rect r|]) ->
       out_image (Coreimage.crop_overlay i r)
   | Op("empty", [||]) ->
-      out_image (Coreimage.constant_color Color.transparent)
+      Image (Image.empty)
   | Op("extent", [|Image i|]) ->
       Rect (Image.extent i)
   | Op("gaussian-blur", [|Image i; Num r|]) ->
@@ -66,7 +68,7 @@ let eval expr =
       out_image (Coreimage.invert i)
   | Op("load", [|String f; _; _; _; _; _; _; _; _|]) ->
       begin try
-        Image (Image.of_cgimage (Load.eval_load f))
+        Image (Load.eval_load f)
       with Failure _ ->
         Error (Some "toto")
       end
@@ -77,14 +79,13 @@ let eval expr =
   | Op("opacity", [|Image i; Num a|]) ->
       out_image (Coreimage.opacity i a)
   | Op("paint", [|Image b; Array ps|]) ->
-      failwith "TODO"
-(*       Image (Image.of_cglayer (Paint.eval b ps)) *)
+      Image (Paint.eval_paint b ps)
   | Op("print", _) ->
-      Action("print", execute)
+      Action(Print, execute)
   | Op("resample", [|Image i; Num f|]) ->
       out_image (Coreimage.affine_transform i (Affinetransform.scale f f))
   | Op("save", _) ->
-      Action("save", execute)
+      Action(Save, execute)
   | Op("single-color", [|Image i; Color c|]) ->
       out_image (Coreimage.single_color i c)
   | Op("threshold", [|Image i; Num t|]) ->

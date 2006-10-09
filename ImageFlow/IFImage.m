@@ -8,13 +8,32 @@
 
 #import "IFImage.h"
 #import "IFImageCGImage.h"
+#import "IFImageCGLayer.h"
 #import "IFImageCIImage.h"
 
 @implementation IFImage
 
+static IFImage* emptyImage = nil;
+
++ (id)emptyImage;
+{
+  if (emptyImage == nil) {
+    CIFilter* ccFilter = [CIFilter filterWithName:@"CIConstantColorGenerator" keysAndValues:
+      @"inputColor", [CIColor colorWithRed:0 green:0 blue:0 alpha:0],
+      nil];
+    emptyImage = [[self imageWithCIImage:[ccFilter valueForKey:@"outputImage"]] retain];
+  }
+  return emptyImage;
+}
+
 + (id)imageWithCGImage:(CGImageRef)theImage;
 {
   return [[[IFImageCGImage alloc] initWithCGImage:theImage] autorelease];
+}
+
++ (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
+{
+  return [[[IFImageCGLayer alloc] initWithCGLayer:theLayer origin:theOrigin] autorelease];
 }
 
 + (id)imageWithCIImage:(CIImage*)theImage;

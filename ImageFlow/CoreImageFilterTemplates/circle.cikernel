@@ -1,0 +1,5 @@
+kernel vec4 circle(vec2 c, float r, __color col)
+{
+  vec2 p = destCoord() - c;
+  return (p.x*p.x + p.y*p.y <= r*r) ? col : vec4(0.,0.,0.,0.);
+}

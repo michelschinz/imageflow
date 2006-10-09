@@ -8,6 +8,10 @@
 #import "corefoundation.h"
 #import "IFImage.h"
 
+CAMLprim value IFImage__emptyImage() {
+  return objc_wrap([IFImage emptyImage]);
+}
+
 CAMLprim value IFImage__imageWithCGImage(value cgimage) {
   CAMLparam1(cgimage);
   CAMLreturn(objc_wrap([IFImage imageWithCGImage:(CGImageRef)cf_unwrap(cgimage)]));
