@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Print image</title>
+  <description>Print image</description>
+  <tree id="1">
+    <filter>
+      <name>print</name>
+      <env>
+        <key>printToFile</key>
+        <number>0</number>
+        <key>fileName</key>
+        <string>/tmp/output.pdf</string>
+      </env>
+    </filter>
+  </tree>
+</imageflow>

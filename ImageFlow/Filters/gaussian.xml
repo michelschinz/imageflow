@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<filter>
+  <name>gaussian</name>
+  <description>Blur input image by given radius</description>
+  <expression>
+    <operation name="gaussian-blur">
+      <parent index="0"/>
+      <variable name="radius"/>
+    </operation>
+  </expression>
+  <min_parents>1</min_parents>
+  <max_parents>1</max_parents>
+  <settings_nib>IFGaussianBlurFilter</settings_nib>
+  <delegate_class>IFGaussianBlurFilterDelegate</delegate_class>
+</filter>

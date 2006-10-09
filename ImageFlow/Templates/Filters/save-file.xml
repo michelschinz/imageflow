@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Save file</title>
+  <description>Save image to file</description>
+  <tree id="1">
+    <filter>
+      <name>save-file</name>
+      <env>
+        <key>fileName</key>
+        <string>/tmp/out.jpg</string>
+        <key>fileType</key>
+        <string>public.jpeg</string>
+        <key>quality</key>
+        <number>0.95</number>
+        <key>TIFFCompression</key>
+        <number>1</number>
+      </env>
+    </filter>
+  </tree>
+</imageflow>

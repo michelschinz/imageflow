@@ -1,0 +1,36 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                debugCheckTree = id; 
+                exportAllFiles = id; 
+                exportAllPrints = id; 
+                goToBookmark = id; 
+                makeNodeAlias = id; 
+                newCacheInspector = id; 
+                newDocumentSettingsInspector = id; 
+                newFilterSettingsInspector = id; 
+                newHistogramInspector = id; 
+                newImageInspector = id; 
+                removeBookmark = id; 
+                setBookmark = id; 
+                showCacheViewerWindow = id; 
+                stickToBookmark = id; 
+                toggleNodeFoldingState = id; 
+                zoomIn = id; 
+                zoomOut = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {showPreferencesPanel = id; }; 
+            CLASS = IFAppController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {templatesMenu = NSMenu; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

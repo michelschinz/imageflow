@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<filter>
+  <name>bitmap</name>
+  <description>Draw bitmap image with various tools.</description>
+  <expression>
+    <operation name="crop">
+      <operation name="blend">
+        <operation name="constant-color">
+          <variable name="defaultColor"/>
+        </operation>
+        <variable name="drawing"/>
+        <constant type="string">over</constant>
+      </operation>
+      <variable name="drawingArea"/>
+    </operation>
+  </expression>
+  <min_parents>0</min_parents>
+  <max_parents>0</max_parents>
+  <settings_nib>IFBitmapSource</settings_nib>
+  <delegate_class>IFBitmapDrawingSourceDelegate</delegate_class>
+</filter>

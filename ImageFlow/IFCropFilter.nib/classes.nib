@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFCropFilterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {filterController = IFFilterController; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

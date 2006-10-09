@@ -1,0 +1,21 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {applySettings = id; }; 
+            CLASS = IFDocumentInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                documentController = NSObjectController; 
+                rgbProfilesController = NSArrayController; 
+            }; 
+            SUPERCLASS = IFInspectorWindowController; 
+        }, 
+        {
+            CLASS = IFInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

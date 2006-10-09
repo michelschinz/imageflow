@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="unsharp-mask">
+      <wildcard name="image"/>
+      <wildcard name="intensity"/>
+      <wildcard name="radius"/>
+    </operation>
+  </operation>
+  <operation name="extent">
+    <wildcard name="image"/>
+  </operation>
+</rule>

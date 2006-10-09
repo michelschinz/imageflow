@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="gaussian-blur">
+      <wildcard name="image"/>
+      <wildcard name="radius"/>
+    </operation>
+  </operation>
+  <operation name="rect-outset">
+    <operation name="extent">
+      <wildcard name="image"/>
+    </operation>
+    <wildcard name="radius"/>
+  </operation>
+</rule>

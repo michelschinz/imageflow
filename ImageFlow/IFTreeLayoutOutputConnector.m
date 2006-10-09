@@ -1,0 +1,114 @@
+//
+//  IFTreeLayoutOutputConnector.m
+//  ImageFlow
+//
+//  Created by Michel Schinz on 07.12.05.
+//  Copyright 2005 Michel Schinz. All rights reserved.
+//
+
+#import "IFTreeLayoutOutputConnector.h"
+#import "IFTreeView.h"
+
+@interface IFTreeLayoutOutputConnector (Private)
+- (void)computeOutlinePath;
+@end
+
+@implementation IFTreeLayoutOutputConnector
+
++ (id)layoutConnectorWithNode:(IFTreeNode*)theNode
+               containingView:(IFTreeView*)theContainingView
+                          tag:(NSString*)theTag
+                    leftReach:(float)theLeftReach
+                   rightReach:(float)theRightReach;
+{
+  return [[[self alloc] initWithNode:theNode
+                      containingView:(IFTreeView*)theContainingView
+                                 tag:theTag
+                           leftReach:theLeftReach
+                          rightReach:theRightReach] autorelease];
+}
+
+- (id)initWithNode:(IFTreeNode*)theNode
+    containingView:(IFTreeView*)theContainingView
+               tag:(NSString*)theTag
+         leftReach:(float)theLeftReach
+        rightReach:(float)theRightReach;
+{
+  if (![super initWithNode:theNode containingView:theContainingView])
+    return nil;
+  
+  NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
+  [parStyle setAlignment:NSCenterTextAlignment];
+  tag = [[NSMutableAttributedString alloc] initWithString:theTag
+                                               attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 parStyle, NSParagraphStyleAttributeName,
+                                                 [theContainingView labelFont], NSFontAttributeName,
+                                                 [theContainingView connectorLabelColor], NSForegroundColorAttributeName,
+                                                 nil]];
+  leftReach = theLeftReach;
+  rightReach = theRightReach;
+  [self computeOutlinePath];
+  return self;
+}
+
+- (void) dealloc;
+{
+  [tag release];
+  tag = nil;
+  [super dealloc];
+}
+
+- (IFTreeLayoutElementKind)kind;
+{
+  return IFTreeLayoutElementKindOutputConnector;
+}
+
+- (void)drawForLocalRect:(NSRect)rect;
+{
+  [[containingView connectorColor] set];
+  [[self outlinePath] fill];
+
+  if (tag != nil) {
+    float textHeight = [containingView labelFontHeight];
+    [tag drawWithRect:NSMakeRect(0,-(textHeight + 1.0),[containingView columnWidth],textHeight) options:0];
+  }
+}
+
+@end
+
+@implementation IFTreeLayoutOutputConnector (Private)
+
+- (void)computeOutlinePath;
+{
+  // The outline path is constructed in such a way that the connector is correctly placed under a node whose bottom-left corner lies at the origin. For that reason, most of the points of the outline path have negative Y components.
+  NSBezierPath* outline = [NSBezierPath bezierPath];
+
+  const float margin = [containingView nodeInternalMargin];
+  const float arrowSize = [containingView connectorArrowSize];
+  const float columnWidth = [containingView columnWidth];
+  const float internalWidth = columnWidth - 2.0 * margin;
+  const float textHeight = [containingView labelFontHeight];
+
+  // Build the path in a clockwise direction, starting from the top-left part of the top arrow
+  [outline moveToPoint:NSMakePoint(margin,0)];
+  [outline relativeLineToPoint:NSMakePoint(internalWidth,0)];
+  [outline relativeLineToPoint:NSMakePoint(-arrowSize,-arrowSize)];
+
+  float totalRightLength = arrowSize + margin + rightReach;
+  [outline relativeLineToPoint:NSMakePoint(totalRightLength, 0)];
+  [outline relativeLineToPoint:NSMakePoint(0,-(textHeight + 2.0))];
+  [outline relativeLineToPoint:NSMakePoint(-totalRightLength, 0)];
+
+  [outline relativeLineToPoint:NSMakePoint(-(internalWidth - 2.0 * arrowSize), 0)];
+
+  float totalLeftLength = arrowSize + margin + leftReach;
+  [outline relativeLineToPoint:NSMakePoint(-totalLeftLength, 0)];
+  [outline relativeLineToPoint:NSMakePoint(0,textHeight + 2.0)];
+  [outline relativeLineToPoint:NSMakePoint(totalLeftLength, 0)];
+
+  [outline closePath];
+  
+  [self setOutlinePath:outline];  
+}
+
+@end

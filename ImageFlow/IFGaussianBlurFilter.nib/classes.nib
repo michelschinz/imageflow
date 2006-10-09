@@ -1,0 +1,14 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {toggleUndoRegistration = id; }; 
+            CLASS = IFGaussianBlurFilterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {radiusSlider = NSSlider; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

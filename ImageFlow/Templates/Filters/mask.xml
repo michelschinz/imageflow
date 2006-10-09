@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Mask</title>
+  <description>Mask images</description>
+  <tree id="1">
+    <filter>
+      <name>mask</name>
+      <env>
+        <key>channel</key>
+        <number>0</number>
+      </env>
+    </filter>
+    <tree id="2">
+      <filter><name>nop</name><env/></filter>
+    </tree>
+    <tree id="3">
+      <filter><name>nop</name><env/></filter>
+    </tree>
+  </tree>
+</imageflow>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="mask">
+      <wildcard name="image"/>
+      <wildcard name="mask"/>
+      <wildcard name="channel"/>
+    </operation>
+  </operation>
+  <operation name="extent"><wildcard name="image"/></operation>
+</rule>

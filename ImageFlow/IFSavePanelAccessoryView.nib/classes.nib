@@ -1,0 +1,12 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFSavePanelController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {directoryMatrix = NSMatrix; savePanel = NSObject; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

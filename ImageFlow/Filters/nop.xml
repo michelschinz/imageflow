@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<filter>
+  <name>nop</name>
+  <expression>
+    <operation name="nop"/>
+  </expression>
+  <min_parents>0</min_parents>
+  <max_parents>1000</max_parents>
+  <min_children>0</min_children>
+  <max_children>1</max_children>
+  <settings_nib>IFGhostFilter</settings_nib>
+</filter>

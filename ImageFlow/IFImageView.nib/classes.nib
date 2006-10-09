@@ -1,0 +1,41 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFBorderlessWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            CLASS = IFCIScrollableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SampleCIScrollableView; 
+        }, 
+        {
+            CLASS = IFImageInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                filterNameTextField = NSTextField; 
+                filterSettingsSubView = RBSplitSubview; 
+                filterSettingsTabView = NSTabView; 
+                imageView = IFImageView; 
+                mainVariantButton = NSPopUpButton; 
+                mainVariantWindow = NSWindow; 
+                thumbnailView = IFImageView; 
+                thumbnailWindow = NSWindow; 
+            }; 
+            SUPERCLASS = IFProbeWindowController; 
+        }, 
+        {CLASS = IFImageView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {stickToBookmark = id; }; 
+            CLASS = IFProbeWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = IFTransparentPopupButton; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = SampleCIScrollableView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

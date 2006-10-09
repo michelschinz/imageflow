@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<filter>
+  <name>drop-shadow</name>
+  <description>Drop shadow</description>
+  <expression>
+    <operation name="blend">
+      <operation name="gaussian-blur">
+        <operation name="translate">
+          <operation name="single-color">
+            <parent index="0"/>
+            <variable name="color"/>
+          </operation>
+          <variable name="offset"/>
+        </operation>
+        <variable name="blur"/>
+      </operation>
+      <parent index="0"/>
+      <constant type="string">over</constant>
+    </operation>
+  </expression>
+  <min_parents>1</min_parents>
+  <max_parents>1</max_parents>
+  <settings_nib>IFDropShadowFilter</settings_nib>
+  <delegate_class>IFDropShadowFilterDelegate</delegate_class>
+</filter>

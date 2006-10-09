@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Load file</title>
+  <description>Load image from file</description>
+  <tree id="1">
+    <filter>
+      <name>load</name>
+      <env>
+        <key>fileName</key>
+        <string></string>
+
+        <key>useEmbeddedProfile</key>
+        <number>0</number>
+        <key>defaultRGBProfileFileName</key>
+        <string>/System/Library/ColorSync/Profiles/Generic RGB Profile.icc</string>
+        <key>defaultGrayProfileFileName</key>
+        <string>/System/Library/ColorSync/Profiles/Generic Gray Profile.icc</string>
+        <key>defaultCMYKProfileFileName</key>
+        <string>/System/Library/ColorSync/Profiles/Generic CMYK Profile.icc</string>
+
+        <key>useEmbeddedResolution</key>
+        <number>0</number>
+        <key>useDocumentResolutionAsDefault</key>
+        <number>1</number>
+        <key>defaultResolutionX</key>
+        <number>72</number>
+        <key>defaultResolutionY</key>
+        <number>72</number>
+
+        <key>embedResources</key>
+        <number>1</number>
+      </env>
+    </filter>
+  </tree>
+</imageflow>

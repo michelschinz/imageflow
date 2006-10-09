@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Draw bitmap</title>
+  <description>Draw bitmap image</description>
+  <tree id="1">
+    <filter>
+      <name>bitmap</name>
+      <env>
+        <key>drawing</key>
+        <expression>&lt;operation name="empty"/&gt;</expression>
+        <key>drawingArea</key>
+        <rect>{{10,10}{100,100}}</rect>
+        <key>defaultColor</key>
+        <color>0 0 0 0</color>
+        <key>brushShape</key>
+        <number>0</number>
+        <key>brushSize</key>
+        <number>10</number>
+        <key>brushColor</key>
+        <color>0 0 0 1</color>
+        <key>brushMode</key>
+        <string>over</string>
+        <key>brushOpacity</key>
+        <number>1</number>
+      </env>
+    </filter>
+  </tree>
+</imageflow>

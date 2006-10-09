@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="resample">
+    <operation name="crop-overlay">
+      <wildcard name="image"/>
+      <wildcard name="rectangle"/>
+    </operation>
+    <wildcard name="scale"/>
+  </operation>
+  <operation name="crop-overlay">
+    <operation name="resample">
+      <wildcard name="image"/>
+      <wildcard name="scale"/>
+    </operation>
+    <operation name="rect-mul">
+      <wildcard name="rectangle"/>
+      <wildcard name="scale"/>
+    </operation>
+  </operation>
+</rule>

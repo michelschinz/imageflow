@@ -1,0 +1,4 @@
+float luminosity(vec4 p)
+{
+  return 0.3*p.r + 0.592*p.g + 0.108*p.b;
+}

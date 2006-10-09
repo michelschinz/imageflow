@@ -1,0 +1,55 @@
+//
+//  IFGhostFilterController.m
+//  ImageFlow
+//
+//  Created by Michel Schinz on 24.10.05.
+//  Copyright 2005 Michel Schinz. All rights reserved.
+//
+
+#import "IFGhostFilterController.h"
+#import "IFTreeLayoutGhost.h"
+
+@interface IFGhostFilterController (Private)
+- (void)setArrayController:(NSArrayController*)newArrayController;
+@end
+
+@implementation IFGhostFilterController
+
+- (void)awakeFromNib;
+{
+  [filterController addObserver:self forKeyPath:@"configuredFilter" options:0 context:nil];
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController configuredFilter]]];
+}
+
+- (void) dealloc;
+{
+  [arrayController release];
+  arrayController = nil;
+  [filterController removeObserver:self forKeyPath:@"configuredFilter"];
+  [super dealloc];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+{
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController configuredFilter]]];
+}
+
+- (NSArrayController*)arrayController;
+{
+  return arrayController;
+}
+
+@end
+
+@implementation IFGhostFilterController (Private)
+
+- (void)setArrayController:(NSArrayController*)newArrayController;
+{
+  if (newArrayController == arrayController)
+    return;
+  [arrayController release];
+  arrayController = [newArrayController retain];
+}
+
+@end
+

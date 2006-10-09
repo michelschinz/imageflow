@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="crop-overlay">
+      <wildcard name="image"/>
+      <wildcard name="rectangle"/>
+    </operation>
+  </operation>
+  <wildcard name="image"/>
+</rule>

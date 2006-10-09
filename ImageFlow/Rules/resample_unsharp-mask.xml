@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="resample">
+    <operation name="unsharp-mask">
+      <wildcard name="image"/>
+      <wildcard name="intensity"/>
+      <wildcard name="radius"/>
+    </operation>
+    <wildcard name="scale"/>
+  </operation>
+  <operation name="unsharp-mask">
+    <operation name="resample">
+      <wildcard name="image"/>
+      <wildcard name="scale"/>
+    </operation>
+    <wildcard name="intensity"/>
+    <operation name="mul">
+      <wildcard name="radius"/>
+      <wildcard name="scale"/>
+    </operation>
+  </operation>
+</rule>

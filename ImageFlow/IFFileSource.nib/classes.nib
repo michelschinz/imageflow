@@ -1,0 +1,27 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {browseFile = id; }; 
+            CLASS = IFFileSource; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = IFFilter; 
+        }, 
+        {
+            ACTIONS = {browseFile = id; }; 
+            CLASS = IFFileSourceController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                environmentController = NSObjectController; 
+                filterController = IFFilterController; 
+                profilesController = NSArrayController; 
+                profilesPopUp1 = NSPopUpButton; 
+                profilesPopUp2 = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = IFFilter; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

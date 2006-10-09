@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFTreeView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {document = IFDocument; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            CLASS = IFTreeViewWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {treeView = IFTreeView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSPersistentDocument; }, 
+        {CLASS = NSPersistentDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
+    ); 
+    IBVersion = 1; 
+}

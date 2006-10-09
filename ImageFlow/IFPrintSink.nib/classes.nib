@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {browseFile = id; managePrinters = id; }; 
+            CLASS = IFPrintSinkController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                filterController = IFFilterController; 
+                paperSizeArrayController = NSArrayController; 
+                printersArrayController = NSArrayController; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

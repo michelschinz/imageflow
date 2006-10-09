@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="resample">
+    <operation name="threshold">
+      <wildcard name="image"/>
+      <wildcard name="threshold"/>
+    </operation>
+    <wildcard name="scale"/>
+  </operation>
+  <operation name="threshold">
+    <operation name="resample">
+      <wildcard name="image"/>
+      <wildcard name="scale"/>
+    </operation>
+    <wildcard name="threshold"/>
+  </operation>
+</rule>

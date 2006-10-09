@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<filter>
+  <name>load</name>
+  <description>Load image from file</description>
+  <expression>
+    <operation name="load">
+      <variable name="fileName"/>
+      <variable name="useEmbeddedProfile"/>
+      <variable name="defaultRGBProfileFileName"/>
+      <variable name="defaultGrayProfileFileName"/>
+      <variable name="defaultCMYKProfileFileName"/>
+      <variable name="useEmbeddedResolution"/>
+      <variable name="useDocumentResolutionAsDefault"/>
+      <variable name="defaultResolutionX"/>
+      <variable name="defaultResolutionY"/>
+    </operation>
+  </expression>
+  <min_parents>0</min_parents>
+  <max_parents>0</max_parents>
+  <settings_nib>IFFileSource</settings_nib>
+  <delegate_class>IFFileSourceDelegate</delegate_class>
+</filter>

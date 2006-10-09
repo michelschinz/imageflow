@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFGhostFilterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {filterController = IFFilterController; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

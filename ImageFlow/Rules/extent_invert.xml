@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="invert">
+      <wildcard name="image"/>
+    </operation>
+  </operation>
+  <operation name="extent">
+    <wildcard name="image"/>
+  </operation>
+</rule>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Blend</title>
+  <description>Blend images</description>
+  <tree id="1">
+    <filter>
+      <name>blend</name>
+      <env>
+        <key>mode</key>
+        <string>over</string>
+        <key>translation</key>
+        <point>{0,0}</point>
+        <key>alpha</key>
+        <number>1.0</number>
+      </env>
+    </filter>
+    <tree id="2">
+      <filter><name>nop</name><env/></filter>
+    </tree>
+    <tree id="3">
+      <filter><name>nop</name><env/></filter>
+    </tree>
+  </tree>
+</imageflow>

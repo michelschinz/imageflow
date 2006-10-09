@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFHistogramInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {histogramView = IFHistogramView; progressIndicator = NSProgressIndicator; }; 
+            SUPERCLASS = IFProbeWindowController; 
+        }, 
+        {CLASS = IFHistogramView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {stickToBookmark = id; }; 
+            CLASS = IFProbeWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }
+    ); 
+    IBVersion = 1; 
+}

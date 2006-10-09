@@ -1,0 +1,15 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFBlendFilterImageView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {filterController = IFFilterController; }; 
+            SUPERCLASS = IFImageView; 
+        }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFGrabbableView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = IFImageView; LANGUAGE = ObjC; SUPERCLASS = IFGrabbableView; }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,21 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = IFPreferencesWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                cmykProfilesController = NSArrayController; 
+                grayProfilesController = NSArrayController; 
+                rgbProfilesController = NSArrayController; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

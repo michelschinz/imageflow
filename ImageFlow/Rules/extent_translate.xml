@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<rule>
+  <operation name="extent">
+    <operation name="translate">
+      <wildcard name="image"/>
+      <wildcard name="point"/>
+    </operation>
+  </operation>
+  <operation name="rect-translate">
+    <operation name="extent">
+      <wildcard name="image"/>
+    </operation>
+    <wildcard name="point"/>
+  </operation>
+</rule>

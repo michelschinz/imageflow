@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<filter>
+  <name>save-file</name>
+  <description>Save image to a file</description>
+  <expression>
+    <operation name="save-file"/>
+  </expression>
+  <min_parents>1</min_parents>
+  <max_parents>1</max_parents>
+  <min_children>0</min_children>
+  <max_children>0</max_children>
+  <settings_nib>IFFileSink</settings_nib>
+  <delegate_class>IFFileSinkDelegate</delegate_class>
+</filter>

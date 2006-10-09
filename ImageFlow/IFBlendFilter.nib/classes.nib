@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFBlendFilterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {blendingModesController = NSArrayController; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

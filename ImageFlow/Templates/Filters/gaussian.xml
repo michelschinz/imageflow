@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<imageflow>
+  <title>Gaussian blur</title>
+  <description>Blur input image</description>
+  <tree id="1">
+    <filter>
+      <name>gaussian</name>
+      <env>
+        <key>radius</key>
+        <number>5</number>
+      </env>
+    </filter>
+    <tree id="2">
+      <filter>
+        <name>nop</name>
+      </filter>
+    </tree>
+  </tree>
+</imageflow>

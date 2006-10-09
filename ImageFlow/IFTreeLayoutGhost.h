@@ -1,0 +1,23 @@
+//
+//  IFTreeLayoutGhost.h
+//  ImageFlow
+//
+//  Created by Michel Schinz on 14.07.05.
+//  Copyright 2005 Michel Schinz. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+#import "IFTreeLayoutSingle.h"
+
+@interface IFTreeLayoutGhost : IFTreeLayoutSingle {
+  BOOL activated;
+  NSArrayController* arrayController;
+  NSTextFieldCell* textCell;
+}
+
++ (NSArrayController*)arrayControllerForFilter:(IFConfiguredFilter*)filter;
+
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+
+@end

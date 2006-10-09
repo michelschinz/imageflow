@@ -1,0 +1,9 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFGrabbableView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = IFImageView; LANGUAGE = ObjC; SUPERCLASS = IFGrabbableView; }, 
+        {CLASS = IFMaskFilterImageView; LANGUAGE = ObjC; SUPERCLASS = IFImageView; }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<filter>
+  <name>color-controls</name>
+  <description>Control contrast, brightness and saturation.</description>
+  <expression>
+    <operation name="color-controls">
+      <parent index="0"/>
+      <variable name="contrast"/>
+      <variable name="brightness"/>
+      <variable name="saturation"/>
+    </operation>
+  </expression>
+  <min_parents>1</min_parents>
+  <max_parents>1</max_parents>
+  <settings_nib>IFColorControlsFilter</settings_nib>
+  <delegate_class>IFColorControlsFilterDelegate</delegate_class>
+</filter>

@@ -1,0 +1,30 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {changeMode = id; }; 
+            CLASS = IFImageInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                filterNameTextField = NSTextField; 
+                filterSettingsTabView = NSTabView; 
+                imageView = IFImageView; 
+                scrollView = NSScrollView; 
+            }; 
+            SUPERCLASS = IFProbeWindowController; 
+        }, 
+        {
+            CLASS = IFInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {stickToBookmark = id; }; 
+            CLASS = IFProbeWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = IFInspectorWindowController; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }
+    ); 
+    IBVersion = 1; 
+}

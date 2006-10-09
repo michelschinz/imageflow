@@ -1,0 +1,60 @@
+//
+//  IFTreeLayoutElement.h
+//  ImageFlow
+//
+//  Created by Michel Schinz on 17.06.05.
+//  Copyright 2005 Michel Schinz. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+#import "IFTreeNode.h"
+#import "IFDocument.h"
+
+typedef enum {
+  IFTreeLayoutElementKindNode,
+  IFTreeLayoutElementKindInputConnector,
+  IFTreeLayoutElementKindOutputConnector
+} IFTreeLayoutElementKind;
+
+@class IFTreeLayoutSingle;
+@class IFTreeView;
+@interface IFTreeLayoutElement : NSObject {
+  IFTreeView* containingView; // not retained
+  NSPoint translation;
+  NSRect bounds;
+}
+
+- (id)initWithContainingView:(IFTreeView*)theContainingView;
+
+- (IFTreeView*)containingView;
+
+- (void)setBounds:(NSRect)newBounds;
+- (NSRect)bounds;
+
+- (void)setTranslation:(NSPoint)thePoint;
+- (NSPoint)translation;
+- (void)translateBy:(NSPoint)thePoint;
+
+- (NSRect)frame;
+
+- (IFTreeNode*)node;
+
+- (void)activate;
+- (void)activateWithMouseDown:(NSEvent*)event;
+- (void)deactivate;
+- (void)setNeedsDisplay;
+- (void)drawForRect:(NSRect)rect;
+
+- (NSImage*)dragImage;
+
+- (NSSet*)leavesOfKind:(IFTreeLayoutElementKind)kind;
+
+- (IFTreeLayoutSingle*)layoutElementForNode:(IFTreeNode*)node kind:(IFTreeLayoutElementKind)kind;
+- (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)thePoint;
+- (NSSet*)layoutElementsIntersectingRect:(NSRect)rect kind:(IFTreeLayoutElementKind)kind;
+
+// protected
+- (void)drawForLocalRect:(NSRect)localRect;
+
+@end
