@@ -88,7 +88,7 @@ let color_controls =
                               @@@ number !@"inputSaturation")
 
 let constant_color =
-  filter !@"CIConstantColor" (color !@"inputColor")
+  filter !@"CIConstantColorGenerator" (color !@"inputColor")
 
 let crop =
   filter !@"CICrop" (image !@"inputImage" @@@ rectangle !@"inputRectangle")
