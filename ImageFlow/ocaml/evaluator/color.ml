@@ -5,6 +5,11 @@ type t = { cr_r: float; cr_g: float; cr_b: float; cr_a: float }
 let make r g b a =
   { cr_r = r; cr_g = g; cr_b = b; cr_a = a }
 
+let red c = c.cr_r
+let green c = c.cr_g
+let blue c = c.cr_b
+let alpha c = c.cr_a
+
 let components c =
   (c.cr_r, c.cr_g, c.cr_b, c.cr_a)
 
