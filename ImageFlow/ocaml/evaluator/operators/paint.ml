@@ -11,7 +11,6 @@ let eval_paint brush points =
     [| |] ->
       Image.empty
   | [| Point p |] ->
-      let bext = Image.extent brush in
       let trans = Affinetransform.translation (Point.x p) (Point.y p) in
       Image.of_ciimage (Coreimage.output_image
                           (Coreimage.affine_transform brush trans))
