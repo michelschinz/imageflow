@@ -12,6 +12,7 @@
 
 @interface IFImageCIImage : IFImage {
   CIImage* image;
+  BOOL isInfinite;
   CIImageAccumulator* cache;
   unsigned usages;
   unsigned usagesBeforeCache;

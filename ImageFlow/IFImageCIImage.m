@@ -19,6 +19,7 @@
   if (![super init])
     return nil;
   image = [theImage retain];
+  isInfinite = CGRectIsInfinite([image extent]);
   cache = nil;
   usages = 0;
   usagesBeforeCache = 2;
@@ -88,7 +89,7 @@
 - (void)incrementUsagesAndCacheIfNeeded;
 {
   ++usages;
-  if (cache == nil && usages >= usagesBeforeCache) {
+  if (!isInfinite && cache == nil && usages >= usagesBeforeCache) {
     cache = [[CIImageAccumulator imageAccumulatorWithExtent:[self extent] format:kCIFormatARGB8] retain]; // TODO color space, format
     [cache setImage:image];
   }
