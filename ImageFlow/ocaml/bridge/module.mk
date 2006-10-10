@@ -1,17 +1,17 @@
-SRC += bridge/cgimage.c
-SRC += bridge/cicolor.c
-SRC += bridge/cifilter.c
-SRC += bridge/ciimage.c
-SRC += bridge/ciimageaccumulator.c
-SRC += bridge/civector.c
-SRC += bridge/nsaffinetransform.c
-SRC += bridge/nsautoreleasepool.c
-SRC += bridge/nsnumber.c
+SRC += bridge/objc.m
+SRC += bridge/cicolor.m
+SRC += bridge/cifilter.m
+SRC += bridge/ciimage.m
+SRC += bridge/ciimageaccumulator.m
+SRC += bridge/civector.m
+SRC += bridge/nsaffinetransform.m
+SRC += bridge/nsautoreleasepool.m
+SRC += bridge/nsnumber.m
 SRC += bridge/nsobject.m
 SRC += bridge/nsstring.m
 SRC += bridge/ifimage.m
-SRC += bridge/objc.c
 SRC += bridge/corefoundation.c
+SRC += bridge/cgimage.c
 
 SRC += bridge/cgimage.mli
 SRC += bridge/cicolor.mli

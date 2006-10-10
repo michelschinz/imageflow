@@ -1,24 +1,15 @@
-#include <objc/objc.h>
-#include <objc/objc-runtime.h>
-#include <caml/mlvalues.h>
-#include <caml/memory.h>
+#import <caml/mlvalues.h>
+#import <caml/memory.h>
 
-#include "objc.h"
+#import <Foundation/Foundation.h>
 
-static id CIContextClass = NULL;
+#import "objc.h"
 
 CAMLprim value CIContext__contextWithCGContextOptions(value cgcontext,
                                                       value options) {
   CAMLparam2(cgcontext, options);
-  static SEL sel = NULL;
-  if (sel == NULL)
-    sel = sel_registerName("contextWithCGContext:options:");
-  if (CIContextClass == NULL)
-    CIContextClass = objc_getClass("CIContext");
-  CAMLreturn(objc_wrap(objc_msgSend(CIContextClass,
-                                    sel,
-                                    cf_unwrap(cgcontext),
-                                    objc_unwrap(options))));
+  CAMLreturn(objc_wrap([CIContext contextWithCGContext:cf_unwrap(cgcontext)
+                                  options:objc_unwrap(options)]));
 }
 
 CAMLprim value CIContext_createCGImageFromRect(value self,
@@ -33,7 +24,8 @@ CAMLprim value CIContext_createCGImageFromRect(value self,
                              Double_field(rect, 2),
                              Double_field(rect, 3));
   value wrapped_image =
-    cf_wrap(objc_msgSend(objc_unwrap(self), sel, objc_unwrap(image), cgRect));
+    cf_wrap([objc_unwrap(self) createCGImage:objc_unwrap(image)
+                        fromRect:cgRect]);
   CGImageRelease(cf_unwrap(wrapped_image));
   CAMLreturn(wrapped_image);
 }

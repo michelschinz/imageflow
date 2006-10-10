@@ -1,9 +1,9 @@
-#include <caml/mlvalues.h>
-#include <caml/memory.h>
+#import <caml/mlvalues.h>
+#import <caml/memory.h>
 
-#include <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
-#include "objc.h"
+#import "objc.h"
 
 CAMLprim value NSObject_retain(value self) {
   CAMLparam1(self);
