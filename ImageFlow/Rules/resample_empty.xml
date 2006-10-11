@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<rule>
-  <operation name="resample">
-    <operation name="empty"/>
-    <wildcard name="scale"/>
-  </operation>
-  <operation name="empty"/>
-</rule>

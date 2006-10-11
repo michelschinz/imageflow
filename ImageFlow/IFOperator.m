@@ -9,7 +9,6 @@
 #import "IFOperator.h"
 #import "IFXMLCoder.h"
 #import "IFDirectoryManager.h"
-#import "IFRewriteRule.h"
 
 @interface IFOperator (Private)
 + (id)operatorWithXMLFile:(NSString*)xmlFile;

@@ -9,7 +9,6 @@
 #import "IFImageView.h"
 #import "IFImageConstantExpression.h"
 #import "IFOperatorExpression.h"
-#import "IFExpressionEvaluatorCI.h"
 #import "IFUtilities.h"
 #import "IFAnnotation.h"
 #import "IFCursorRect.h"

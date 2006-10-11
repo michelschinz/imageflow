@@ -11,7 +11,6 @@
 #import "IFDocumentXMLDecoder.h"
 #import "IFTreeViewWindowController.h"
 #import "IFConfiguredFilter.h"
-#import "IFExpressionEvaluatorCI.h"
 #import "IFExpressionEvaluatorOCaml.h"
 #import "IFDirectoryManager.h"
 #import "IFDocumentTemplate.h"
