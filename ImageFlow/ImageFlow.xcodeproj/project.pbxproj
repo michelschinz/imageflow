@@ -54,6 +54,7 @@
 		FA2D394F094D74110068F20A /* IFThresholdFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D394D094D74110068F20A /* IFThresholdFilterDelegate.m */; };
 		FA2D3955094D74740068F20A /* IFMaskFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D3953094D74740068F20A /* IFMaskFilterDelegate.m */; };
 		FA2D39E0094D776C0068F20A /* IFGaussianBlurFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D39DE094D776C0068F20A /* IFGaussianBlurFilterDelegate.m */; };
+		FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FA2F6BAC095AFEEE00CB2780 /* IFTreeNodeAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */; };
 		FA34AD950AA3152E00C8A63A /* IFTransparentPopupButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AD930AA3152E00C8A63A /* IFTransparentPopupButton.m */; };
 		FA34AE340AA34DE300C8A63A /* IFAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AE320AA34DE300C8A63A /* IFAnnotation.m */; };
@@ -74,7 +75,6 @@
 		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */; };
 		FA4E2D83093CB4E900204C3C /* IFEmptyCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */; };
-		FA54B2E00ACD5C0C0004E71C /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA54B2DF0ACD5C0C0004E71C /* libcamlrun.a */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA64C5A60AC9BA40001EB3B4 /* button_delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */; };
 		FA68DE9F092DBC14009D02CB /* IFPercentValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */; };
@@ -301,6 +301,7 @@
 		FA2D3953094D74740068F20A /* IFMaskFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskFilterDelegate.m; sourceTree = "<group>"; };
 		FA2D39DD094D776C0068F20A /* IFGaussianBlurFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGaussianBlurFilterDelegate.h; sourceTree = "<group>"; };
 		FA2D39DE094D776C0068F20A /* IFGaussianBlurFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGaussianBlurFilterDelegate.m; sourceTree = "<group>"; };
+		FA2F19E40ADD3F420049C88D /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeAlias.h; sourceTree = "<group>"; };
 		FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeAlias.m; sourceTree = "<group>"; };
 		FA34AD920AA3152E00C8A63A /* IFTransparentPopupButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTransparentPopupButton.h; sourceTree = "<group>"; };
@@ -320,7 +321,7 @@
 		FA4327AB0ADA7B1900109D58 /* libbigarray.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbigarray.a; path = lib/ocaml/libbigarray.a; sourceTree = ocaml; };
 		FA43286A0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCircleGeneratorCIFilter.h; sourceTree = "<group>"; };
 		FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCircleGeneratorCIFilter.m; sourceTree = "<group>"; };
-		FA4328BC0ADAC14F00109D58 /* circle.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = circle.cikernel; path = ../../../../Users/michelschinz/projects/imageflow/branch/ImageFlow/CoreImageFilterTemplates/circle.cikernel; sourceTree = ocaml; };
+		FA4328BC0ADAC14F00109D58 /* circle.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = circle.cikernel; sourceTree = "<group>"; };
 		FA447E7E0ACD196D001C9718 /* IFExpressionTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionTags.h; sourceTree = "<group>"; };
 		FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = opacity.cikernel.m4; sourceTree = "<group>"; };
 		FA45019E0AD2B4AE0097C977 /* IFImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImage.h; sourceTree = "<group>"; };
@@ -334,7 +335,6 @@
 		FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageVariant.m; sourceTree = "<group>"; };
 		FA4E2D80093CB4E900204C3C /* IFEmptyCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEmptyCIFilter.h; sourceTree = "<group>"; };
 		FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEmptyCIFilter.m; sourceTree = "<group>"; };
-		FA54B2DF0ACD5C0C0004E71C /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA57F9D50924CFA8002AAA68 /* IFFNVHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFNVHash.h; sourceTree = "<group>"; };
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
 		FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = button_delete.tiff; sourceTree = "<group>"; };
@@ -532,10 +532,10 @@
 				FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */,
 				FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */,
 				FA2C0ABD08FBCF11009FE5ED /* RBSplitView.framework in Frameworks */,
-				FA54B2E00ACD5C0C0004E71C /* libcamlrun.a in Frameworks */,
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
 				FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */,
 				FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */,
+				FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,10 +641,10 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA2F19E40ADD3F420049C88D /* libcamlrun.a */,
 				FA4327AB0ADA7B1900109D58 /* libbigarray.a */,
 				FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */,
 				FA033C780ACD647500D2775B /* libcurses.dylib */,
-				FA54B2DF0ACD5C0C0004E71C /* libcamlrun.a */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
@@ -1633,12 +1633,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml/bridge\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/ocaml\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(ocaml)/lib/ocaml\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = ImageFlow;
 				WRAPPER_EXTENSION = app;
@@ -1661,12 +1659,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml/bridge\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/ocaml\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"/usr/local/stow/ocaml-3.09.3/lib/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(ocaml)/lib/ocaml\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = ImageFlow;
 				SKIP_INSTALL = NO;
