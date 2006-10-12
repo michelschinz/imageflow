@@ -118,7 +118,7 @@ int countAncestors(IFTreeNode* node) {
   [label drawWithRect:NSOffsetRect(labelFrame,0,-[[containingView labelFont] descender]) options:0];
   
   // Draw thumbnail, if any
-  if (!NSIsEmptyRect(thumbnailFrame) && [evaluator hasValue:evaluatedExpression]) {
+  if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
     CIImage* image = [evaluatedExpression imageValueCI];
     [backgroundCompositor setValue:image forKey:@"inputImage"];
     CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
@@ -255,7 +255,7 @@ int countAncestors(IFTreeNode* node) {
   }
   
   IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:[node expression]]];
-  if ([evaluator hasValue:extentExpr]) {
+  if (![extentExpr isError]) {
     NSRect extent = [extentExpr rectValueNS];
 
     float maxSide = [containingView columnWidth] - 2.0 * margin;

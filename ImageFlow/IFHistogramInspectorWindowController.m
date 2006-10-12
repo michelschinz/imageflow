@@ -73,9 +73,9 @@
 {
   IFTreeNode* node = [[probe mark] node];
   NSArray* histogramRGB = nil;
-  if (node != nil && [evaluator hasValue:[node expression]]) {
-    IFExpression* expr = [IFOperatorExpression histogramOf:[node expression]];
-    IFHistogramConstantExpression* histogram = (IFHistogramConstantExpression*)[evaluator evaluateExpression:expr];
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression histogramOf:[node expression]]];
+  if (node != nil && ![evaluatedExpr isError]) {
+    IFHistogramConstantExpression* histogram = (IFHistogramConstantExpression*)evaluatedExpr;
     histogramRGB = [histogram histogramValue];
   }
   [histogramView setHistogramsRGB:histogramRGB];

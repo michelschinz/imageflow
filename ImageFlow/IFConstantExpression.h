@@ -37,6 +37,8 @@
 - (BOOL)boolValue;
 - (float)floatValue;
 
+- (BOOL)isError;
+
 + (id)expressionWithCamlValue:(value)camlValue;
 
 @end

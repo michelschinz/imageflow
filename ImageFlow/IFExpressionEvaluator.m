@@ -17,14 +17,6 @@
 
 @implementation IFExpressionEvaluator
 
-+ (IFConstantExpression*)invalidValue;
-{
-  static IFConstantExpression* invalidValue = nil;
-  if (invalidValue == nil)
-    invalidValue = [[IFConstantExpression expressionWithObject:@"<invalid_value>"] retain];
-  return invalidValue;
-}
-
 - (id)init;
 {
   if (![super init])
@@ -97,11 +89,6 @@ static void camlEval(value cache, IFExpression* expression, IFConstantExpression
   IFConstantExpression* result = nil;
   camlEval(cache, expression, &result);
   return result;
-}
-
-- (BOOL)hasValue:(IFExpression*)expression;
-{
-  return [self evaluateExpression:expression] != [IFExpressionEvaluator invalidValue];
 }
 
 static void camlDelta(value cache, IFExpression* oldExpression, IFExpression* newExpression, NSRect* result) {

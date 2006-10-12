@@ -16,8 +16,6 @@
   value cache;
 }
 
-+ (IFConstantExpression*)invalidValue;
-
 - (CGColorSpaceRef)workingColorSpace;
 - (void)setWorkingColorSpace:(CGColorSpaceRef)newWorkingColorSpace;
 
@@ -27,7 +25,6 @@
 - (void)setResolutionY:(float)newResolution;
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
-- (BOOL)hasValue:(IFExpression*)expression;
 - (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
 
 @end

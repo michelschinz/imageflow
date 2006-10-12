@@ -70,6 +70,7 @@
 		FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */; };
 		FA4E2D83093CB4E900204C3C /* IFEmptyCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
+		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
 		FA64C5A60AC9BA40001EB3B4 /* button_delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */; };
 		FA68DE9F092DBC14009D02CB /* IFPercentValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */; };
 		FA68E05A092DCEC1009D02CB /* IFPrintView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68E058092DCEC1009D02CB /* IFPrintView.m */; };
@@ -316,6 +317,8 @@
 		FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEmptyCIFilter.m; sourceTree = "<group>"; };
 		FA57F9D50924CFA8002AAA68 /* IFFNVHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFNVHash.h; sourceTree = "<group>"; };
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
+		FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFErrorConstantExpression.h; sourceTree = "<group>"; };
+		FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFErrorConstantExpression.m; sourceTree = "<group>"; };
 		FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = button_delete.tiff; sourceTree = "<group>"; };
 		FA68DE9C092DBC14009D02CB /* IFPercentValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPercentValueTransformer.h; sourceTree = "<group>"; };
 		FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPercentValueTransformer.m; sourceTree = "<group>"; };
@@ -662,6 +665,8 @@
 				FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */,
 				FA40F2630912438100C8B8DD /* IFHistogramConstantExpression.h */,
 				FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */,
+				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
+				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
 				FA690AE0090573250096B97D /* IFOperator.h */,
 				FA690AE1090573250096B97D /* IFOperator.m */,
 				FA0606210914B1FF002A2527 /* IFExpressionVisitor.h */,
@@ -1484,6 +1489,7 @@
 				FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */,
 				FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */,
 				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
+				FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

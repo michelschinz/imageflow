@@ -77,7 +77,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
     
   IFConstantExpression* evaluatedExtent = [evaluator evaluateExpression:[IFOperatorExpression extentOf:[[translateExpression operands] objectAtIndex:0]]];
   
-  return [evaluator hasValue:evaluatedExtent] ? [evaluatedExtent rectValueNS] : NSZeroRect;
+  return [evaluatedExtent isError] ? NSZeroRect : [evaluatedExtent rectValueNS];
 }
 
 - (NSRect)rect;

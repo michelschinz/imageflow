@@ -51,6 +51,8 @@ let eval cache expr =
 let eval_extent cache expr =
   match eval cache (Op("extent", [|expr|])) with
     Rect extent ->
-      extent
+      Some extent
+  | Error _ ->
+      None
   | o ->
       failwith ("unexpected result from evaluator: "^(Printer.to_string(o)))

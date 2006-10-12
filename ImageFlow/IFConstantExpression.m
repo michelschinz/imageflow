@@ -10,6 +10,7 @@
 #import "IFXMLCoder.h"
 #import "IFUtilities.h"
 #import "IFImageConstantExpression.h"
+#import "IFErrorConstantExpression.h"
 #import "IFExpressionVisitor.h"
 #import "IFExpressionTags.h"
 #import "IFExpressionEvaluator.h"
@@ -154,6 +155,11 @@
   return [(NSNumber*)object floatValue];
 }
 
+- (BOOL)isError;
+{
+  return NO;
+}
+
 - (void)accept:(IFExpressionVisitor*)visitor;
 {
   [visitor caseConstantExpression:self];
@@ -233,9 +239,12 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     case IFExpressionTag_Bool:
       *result = [IFConstantExpression expressionWithInt:Bool_val(Field(camlValue, 0))];
       break;
-    case IFExpressionTag_Error:
-      *result = [IFExpressionEvaluator invalidValue];
-      break;
+    case IFExpressionTag_Error: {
+      NSString* msg = (Field(camlValue, 0) == Val_int(0/*None*/))
+      ? nil
+      : [NSString stringWithCString:String_val(Field(Field(camlValue,0),0)) encoding:NSISOLatin1StringEncoding];
+      *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:msg];
+      } break;
     default:
       abort();
       //NSAssert1(NO, @"unknown tag: %d",tag);
@@ -261,11 +270,7 @@ static value elemAsCaml(const char* elem) {
   CAMLlocalN(args,4);
   int tag = -1;
 
-  if (self == [IFExpressionEvaluator invalidValue]) {
-    // TODO remove once errors are handled correctly
-    tag = IFExpressionTag_Error;
-    contents = Val_int(0);
-  } else if ([object isKindOfClass:[NSString class]]) {
+  if ([object isKindOfClass:[NSString class]]) {
     tag = IFExpressionTag_String;
     contents = caml_copy_string([(NSString*)object cStringUsingEncoding:NSISOLatin1StringEncoding]);
   } else if ([object isKindOfClass:[NSValue class]]) {

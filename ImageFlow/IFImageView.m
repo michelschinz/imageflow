@@ -198,9 +198,9 @@ static CIImage* emptyImage;
 {
   CGRect dirtyRectCG = CGRectFromNSRect(dirtyRect);
   IFImageConstantExpression* imageExpr = [self evaluatedExpression];
-  CIImage* image = (imageExpr != nil && [evaluator hasValue:imageExpr])
-    ? [imageExpr imageValueCI]
-    : emptyImage;
+  CIImage* image = (imageExpr == nil || [imageExpr isError])
+    ? emptyImage
+    : [imageExpr imageValueCI];
   [backgroundCompositingFilter setValue:image forKey:@"inputImage"];
   CIImage* imageWithBackground = [backgroundCompositingFilter valueForKey:@"outputImage"];
   CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
@@ -326,7 +326,7 @@ static CIImage* emptyImage;
 - (NSRect)imageExtent;
 {
   IFImageConstantExpression* imageExpr = [self evaluatedExpression];
-  return (imageExpr == nil || ![evaluator hasValue:imageExpr])
+  return (imageExpr == nil || [imageExpr isError])
     ? NSZeroRect
     : [[evaluator evaluateExpression:[IFOperatorExpression extentOf:imageExpr]] rectValueNS];
 }
