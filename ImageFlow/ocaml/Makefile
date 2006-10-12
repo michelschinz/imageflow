@@ -44,6 +44,7 @@ CAML_SORTED_OBJS += evaluator/typechecker.cmo
 CAML_SORTED_OBJS += evaluator/evaluator.cmo
 CAML_SORTED_OBJS += evaluator/cache.cmo
 CAML_SORTED_OBJS += evaluator/optevaluator.cmo
+CAML_SORTED_OBJS += evaluator/delta.cmo
 CAML_SORTED_OBJS += evaluator/registerer.cmo
 
 INCLUDE_FLAGS := $(foreach module,$(MODULES),-I $(module)) -I ..

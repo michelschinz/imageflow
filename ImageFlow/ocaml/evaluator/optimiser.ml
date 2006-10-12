@@ -69,8 +69,8 @@ let rec rewriteOp = function
       Rect (Rect.infinite)
   | Op("extent", [|Op("circle", [|Point c; Num r; _|])|]) ->
       Rect (Rect.make ((Point.x c) -. r) ((Point.y c) -. r) (2. *. r) (2. *. r))
-  | Op("extent", [|Op("constant-color", _)|]) ->
-      Rect (Rect.infinite)
+  | Op("extent", [|Op("constant-color", [|Color c|])|]) ->
+      Rect (if Color.alpha c == 0.0 then Rect.zero else Rect.infinite)
   | Op("extent", [|Op("color-controls", [|i;_;_;_|])|]) ->
       Op("extent", [|i|])
   | Op("extent", [|Op("crop", [|i; r|])|]) ->
@@ -89,6 +89,8 @@ let rec rewriteOp = function
       Op("rect-union", [|Op("extent", [|i|]); Op("extent", [|m|])|])
   | Op("extent", [|Op("opacity", [|i; Num a|])|]) ->
       if a = 0.0 then Rect Rect.zero else Op("extent", [|i|])
+  | Op("extent", [|Op("paint",[|b;ps|])|]) ->
+      Op("paint-extent", [|Op("extent",[|b|]);ps|])
   | Op("extent", [|Op("resample", [|i; f|])|]) ->
       Op("rect-scale", [|Op("extent", [|i|]); f|])
   | Op("extent", [|Op("single-color", [|i; _|])|]) ->

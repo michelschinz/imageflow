@@ -116,6 +116,11 @@ static CIImage* emptyImage;
 {
   if (newExpression == expression)
     return;
+  
+  NSRect dirtyRect = (expression == nil || newExpression == nil)
+    ? NSRectInfinite()
+    : [evaluator deltaFromOld:expression toNew:newExpression];
+  
   [expression release];
   expression = [newExpression retain];
   
@@ -124,7 +129,7 @@ static CIImage* emptyImage;
     [self updateFrameSize];
     [self updateBoundsOrigin];
   }
-  [self setNeedsDisplay:YES];
+  [self setNeedsDisplayInRect:dirtyRect];
 }
 
 - (void)setAnnotations:(NSArray*)newAnnotations;

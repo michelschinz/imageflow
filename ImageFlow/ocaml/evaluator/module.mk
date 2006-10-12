@@ -23,6 +23,7 @@ LOCAL_SRC += typechecker.ml typechecker.mli
 LOCAL_SRC += evaluator.ml evaluator.mli
 LOCAL_SRC += cache.ml cache.mli
 LOCAL_SRC += optevaluator.ml optevaluator.mli
+LOCAL_SRC += delta.ml delta.mli
 LOCAL_SRC += registerer.ml
 
 SRC += $(foreach local_file,$(LOCAL_SRC),evaluator/$(local_file))

@@ -95,6 +95,16 @@ let eval expr =
       out_image (Coreimage.affine_transform i at)
   | Op("unsharp-mask", [| Image i; Num y; Num r |]) ->
       out_image (Coreimage.unsharp_mask i y r)
+
+        (* Miscellaneous operators *)
+  | Op("paint-extent", [|_; Array [| |]|]) ->
+      Rect Rect.zero
+  | Op("paint-extent", [|Rect r; Array ps|]) ->
+      let pt = fun (Point p) -> Rect.translate r (Point.x p) (Point.y p) in
+      Rect (Array.fold_left
+              (fun e p -> Rect.union e (pt p))
+              (pt ps.(0))
+              ps)
   | Op("nop", _) ->
       Error None                        (* TODO *)
   | Var _ ->

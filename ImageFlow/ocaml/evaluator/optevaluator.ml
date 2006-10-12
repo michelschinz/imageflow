@@ -47,3 +47,10 @@ let (++) f g x = f (g x)
 let eval cache expr =
   (recursingEval ++ (cacheingEval cache) ++ propagatingEval) Evaluator.eval
     (Optimiser.rewrite expr)
+
+let eval_extent cache expr =
+  match eval cache (Op("extent", [|expr|])) with
+    Rect extent ->
+      extent
+  | o ->
+      failwith ("unexpected result from evaluator: "^(Printer.to_string(o)))

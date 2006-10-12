@@ -28,5 +28,6 @@
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 - (BOOL)hasValue:(IFExpression*)expression;
+- (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
 
 @end

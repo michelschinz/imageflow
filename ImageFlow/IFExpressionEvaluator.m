@@ -81,7 +81,7 @@
 }
 
 static void camlEval(value cache, IFExpression* expression, IFConstantExpression** result) {
-  CAMLparam0();
+  CAMLparam1(cache);
   CAMLlocal2(camlExpr, camlRes);
   camlExpr = [expression asCaml];
   static value* evalClosure = NULL;
@@ -102,6 +102,33 @@ static void camlEval(value cache, IFExpression* expression, IFConstantExpression
 - (BOOL)hasValue:(IFExpression*)expression;
 {
   return [self evaluateExpression:expression] != [IFExpressionEvaluator invalidValue];
+}
+
+static void camlDelta(value cache, IFExpression* oldExpression, IFExpression* newExpression, NSRect* result) {
+  CAMLparam1(cache);
+  CAMLlocal3(camlOld, camlNew, camlRes);
+  camlOld = [oldExpression asCaml];
+  camlNew = [newExpression asCaml];
+  static value* deltaClosure = NULL;
+  if (deltaClosure == NULL)
+    deltaClosure = caml_named_value("Delta.delta_array");
+  CAMLlocalN(args, 3);
+  args[0] = cache;
+  args[1] = camlOld;
+  args[2] = camlNew;
+  camlRes = caml_callbackN(*deltaClosure, 3, args);
+  *result = NSMakeRect(Double_field(camlRes, 0),
+                       Double_field(camlRes, 1),
+                       Double_field(camlRes, 2),
+                       Double_field(camlRes, 3));
+  CAMLreturn0;
+}
+
+- (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
+{
+  NSRect result = NSZeroRect;
+  camlDelta(cache, oldExpression, newExpression, &result);
+  return result;
 }
 
 @end
