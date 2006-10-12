@@ -29,7 +29,6 @@
 		FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */; };
 		FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */; };
 		FA164C9E0AD1132A0007C9EA /* IFExpressionEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */; };
-		FA1650A70AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1650A50AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m */; };
 		FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */; };
 		FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */; };
 		FA1BF2370918E67B00E288BB /* IFBlendFilterController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF2350918E67B00E288BB /* IFBlendFilterController.m */; };
@@ -247,8 +246,6 @@
 		FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCGLayer.m; sourceTree = "<group>"; };
 		FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionEvaluator.h; sourceTree = "<group>"; };
 		FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionEvaluator.m; sourceTree = "<group>"; };
-		FA1650A40AD12C030007C9EA /* IFExpressionEvaluatorOCaml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionEvaluatorOCaml.h; sourceTree = "<group>"; };
-		FA1650A50AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionEvaluatorOCaml.m; sourceTree = "<group>"; };
 		FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 		FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBlendFilter.nib; sourceTree = "<group>"; };
@@ -1082,8 +1079,6 @@
 			children = (
 				FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */,
 				FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */,
-				FA1650A40AD12C030007C9EA /* IFExpressionEvaluatorOCaml.h */,
-				FA1650A50AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m */,
 				FAEC284C0916137200AB4196 /* IFHistogramConstantExpressionCI.h */,
 				FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */,
 			);
@@ -1484,7 +1479,6 @@
 				FA0A53550ACB90740077A945 /* IFUnsharpMaskFilterDelegate.m in Sources */,
 				FAE6A41D0ACBD9050059BA3B /* IFGrabableViewMixin.m in Sources */,
 				FA164C9E0AD1132A0007C9EA /* IFExpressionEvaluator.m in Sources */,
-				FA1650A70AD12C030007C9EA /* IFExpressionEvaluatorOCaml.m in Sources */,
 				FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */,
 				FA4501A60AD2B5200097C977 /* IFImageCGImage.m in Sources */,
 				FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */,

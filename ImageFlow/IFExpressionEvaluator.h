@@ -13,6 +13,7 @@
 @interface IFExpressionEvaluator : IFExpressionVisitor {
   CGColorSpaceRef workingColorSpace;
   float resolutionX, resolutionY;
+  value cache;
 }
 
 + (IFConstantExpression*)invalidValue;
@@ -27,8 +28,5 @@
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 - (BOOL)hasValue:(IFExpression*)expression;
-
-// protected
-- (void)clearCache;
 
 @end

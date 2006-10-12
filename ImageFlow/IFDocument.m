@@ -11,7 +11,7 @@
 #import "IFDocumentXMLDecoder.h"
 #import "IFTreeViewWindowController.h"
 #import "IFConfiguredFilter.h"
-#import "IFExpressionEvaluatorOCaml.h"
+#import "IFExpressionEvaluator.h"
 #import "IFDirectoryManager.h"
 #import "IFDocumentTemplate.h"
 #import "IFDocumentTemplateManager.h"
@@ -52,7 +52,7 @@ static IFDocumentTemplateManager* templateManager;
 {
   if (![super init]) return nil;
 //  evaluator = [IFExpressionEvaluatorCI new];
-  evaluator = [IFExpressionEvaluatorOCaml new];
+  evaluator = [IFExpressionEvaluator new];
 
   marks = [[NSArray alloc] initWithObjects:
     [IFTreeMark markWithTag:@"c"],

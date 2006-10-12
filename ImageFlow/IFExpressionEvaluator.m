@@ -8,6 +8,12 @@
 
 #import "IFExpressionEvaluator.h"
 
+#import <caml/memory.h>
+#import <caml/callback.h>
+
+@interface IFExpressionEvaluator (Private)
+- (void)clearCache;
+@end
 
 @implementation IFExpressionEvaluator
 
@@ -25,11 +31,14 @@
     return nil;
   workingColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
   resolutionX = resolutionY = 300;
+  caml_register_global_root(&cache);
+  cache = caml_callback(*caml_named_value("Cache.make"), Val_int(100000000));
   return self;
 }
 
 - (void)dealloc;
 {
+  caml_remove_global_root(&cache);
   CGColorSpaceRelease(workingColorSpace);
   workingColorSpace = NULL;
   [super dealloc];
@@ -71,10 +80,23 @@
   resolutionY = newResolution;
 }
 
+static void camlEval(value cache, IFExpression* expression, IFConstantExpression** result) {
+  CAMLparam0();
+  CAMLlocal2(camlExpr, camlRes);
+  camlExpr = [expression asCaml];
+  static value* evalClosure = NULL;
+  if (evalClosure == NULL)
+    evalClosure = caml_named_value("Optevaluator.eval");
+  camlRes = caml_callback2(*evalClosure, cache, camlExpr);
+  *result = [IFConstantExpression expressionWithCamlValue:camlRes];
+  CAMLreturn0;
+}
+
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  IFConstantExpression* result = nil;
+  camlEval(cache, expression, &result);
+  return result;
 }
 
 - (BOOL)hasValue:(IFExpression*)expression;
@@ -82,8 +104,13 @@
   return [self evaluateExpression:expression] != [IFExpressionEvaluator invalidValue];
 }
 
+@end
+
+@implementation IFExpressionEvaluator (Private)
+
 - (void)clearCache;
 {
+  // TODO
 }
 
 @end
