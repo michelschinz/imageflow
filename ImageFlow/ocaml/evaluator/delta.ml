@@ -11,10 +11,42 @@ let rec delta cache old_expr new_expr =
   else match old_expr, new_expr with
     b1, Op("blend",[|b2;f;_|]) when b1 = b2 ->
       extent f
+  | Op("paint", [|b1;Array ps1|]), Op("paint", [|b2;Array ps2|])
+    when b1 = b2 && Marray.is_prefix ps1 ps2 ->
+      let l1 = Array.length ps1 and l2 = Array.length ps2 in
+      let new_ps = Array.sub ps2 (l1 - 1) (l2 - l1 + 1) in
+      extent (Op("paint", [|b1; Array new_ps|]))
+  | Op("crop-overlay", [|i1;Rect r1|]), Op("crop-overlay", [|i2;Rect r2|])
+    when i1 = i2 ->
+      Rect.union r1 r2
+
+        (* Recursing rules*)
+  | Op("blend",[|b1;f1;m1|]), Op("blend",[|b2;f2;m2|]) when f1 = f2 && m1 = m2->
+      delta cache b1 b2
   | Op("blend",[|b1;f1;m1|]), Op("blend",[|b2;f2;m2|]) when b1 = b2 && m1 = m2->
       delta cache f1 f2
   | Op("crop", [|i1;Rect r1|]), Op("crop", [|i2; Rect r2|]) when r1 = r2 ->
       Rect.intersection r1 (delta cache i1 i2)
+  | Op("gaussian-blur", [|i1;Num r1|]), Op("gaussian-blur", [|i2; Num r2|])
+    when r1 = r2 ->
+      Rect.outset (delta cache i1 i2) r1 r1
+  | Op("invert",[|i1|]), Op("invert",[|i2|]) ->
+      delta cache i1 i2
+        (* TODO mask, mask-overlay *)
+  | Op("opacity",[|i1;a1|]), Op("opacity",[|i2;a2|]) when a1 = a2 ->
+      delta cache i1 i2
+  | Op("resample",[|i1;Num f1|]), Op("resample",[|i2;Num f2|]) when f1 = f2 ->
+      delta cache i1 i2
+  | Op("single-color",[|i1;Color c1|]), Op("single-color",[|i2;Color c2|])
+    when c1 = c2 ->
+      delta cache i1 i2
+  | Op("threshold",[|i1;Num t1|]), Op("threshold",[|i2;Num t2|]) when t1 = t2 ->
+      delta cache i1 i2
+  | Op("translate",[|i1;p1|]), Op("translate",[|i2;p2|]) when p1 = p2 ->
+      delta cache i1 i2
+  | Op("unsharp-mask",[|i1;Num y1; Num r1|]), Op("unsharp-mask",[|i2;Num y2; Num r2|])
+    when y1 = y2 && r1 = r2 ->
+      delta cache i1 i2
   | _, _ ->
       Rect.union (extent old_expr) (extent new_expr)
 
