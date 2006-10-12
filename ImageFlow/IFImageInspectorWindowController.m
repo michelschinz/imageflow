@@ -449,7 +449,9 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 - (void)updateAuxiliaryImageViewExpression;
 {
   IFExpression* thumbnailExpression = [[[probe mark] node] expression];
-  [thumbnailView setExpression:[IFOperatorExpression resample:thumbnailExpression by:(1.0/thumbnailFactor)]];
+  [thumbnailView setExpression:(thumbnailExpression == nil
+                                ? nil
+                                : [IFOperatorExpression resample:thumbnailExpression by:(1.0/thumbnailFactor)])];
 }
 
 - (NSArray*)variantsForMark:(IFTreeMark*)mark;
