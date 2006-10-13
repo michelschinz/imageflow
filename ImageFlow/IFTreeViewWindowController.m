@@ -8,6 +8,7 @@
 
 #import "IFTreeViewWindowController.h"
 #import "IFDocument.h"
+#import "IFCenteringClipView.h"
 
 @implementation IFTreeViewWindowController
 
@@ -37,6 +38,16 @@
   windowFrame.size.height += deltaH;
   windowFrame.origin.y -= deltaH;
   return windowFrame;
+}
+
+- (void)windowDidLoad;
+{
+  NSView* docView = [[[scrollView documentView] retain] autorelease];
+  IFCenteringClipView* newClipView = [[[IFCenteringClipView alloc] initWithFrame:[[scrollView contentView] frame]] autorelease];
+  [newClipView setBackgroundColor:[treeView backgroundColor]];
+  [newClipView setCenterVertically:NO];
+  [scrollView setContentView:newClipView];
+  [scrollView setDocumentView:docView];
 }
 
 @end

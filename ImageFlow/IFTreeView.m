@@ -29,6 +29,7 @@
 typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 
 @interface IFTreeView (Private)
+- (NSRect)paddedBounds;
 - (void)recomputeFrameSize;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
 - (void)clearHighlighting;
@@ -90,6 +91,7 @@ static NSSize sidePaneSize;
 
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
   
+  backgroundColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] retain];
   layoutLayers = [[NSMutableArray alloc] initWithObjects:
     [NSNull null],
     [NSNull null],
@@ -153,6 +155,8 @@ static NSSize sidePaneSize;
   trackingRectTags = nil;
   [layoutLayers release];
   layoutLayers = nil;
+  [backgroundColor release];
+  backgroundColor = nil;
   
   [grabableViewMixin release];
   grabableViewMixin = nil;
@@ -218,6 +222,11 @@ static NSSize sidePaneSize;
     return;
   columnWidth = roundedNewColumnWidth;
   [self invalidateLayout];
+}
+
+- (NSColor*)backgroundColor;
+{
+  return backgroundColor;
 }
 
 - (float)nodeInternalMargin;
@@ -315,10 +324,7 @@ static NSSize sidePaneSize;
 
 - (NSSize)idealSize;
 {
-  NSMutableSet* layerSet = [NSMutableSet setWithArray:layoutLayers];
-  [layerSet removeObject:[NSNull null]];
-  IFTreeLayoutElement* allLayers = [IFTreeLayoutComposite layoutCompositeWithElements:layerSet containingView:self];
-  return [allLayers frame].size;
+  return [self paddedBounds].size;
 }
 
 - (BOOL)showThumbnails;
@@ -785,7 +791,7 @@ static enum {
 
 - (void)drawRect:(NSRect)rect;
 {
-  [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
+  [[self backgroundColor] set];
   [[NSBezierPath bezierPathWithRect:[self bounds]] fill];
   
   for (int i = 0; i < [layoutLayers count]; ++i) {
@@ -811,29 +817,22 @@ static enum {
   [self invalidateLayout];
 }
 
-- (void)viewWillMoveToSuperview:(NSView *)newSuperview;
+- (NSRect)paddedBounds;
 {
-  if ([self superview] != nil)
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:[self superview]];
-  if (newSuperview != nil)
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enclosingFrameDidChange:) name:NSViewFrameDidChangeNotification object:newSuperview];
-}
-
-- (void)enclosingFrameDidChange:(NSNotification*)notification;
-{
-  [self recomputeFrameSize];
-}
+  IFTreeLayoutElement* nodeLayer = [layoutLayers objectAtIndex:IFLayoutLayerTree];
+  NSRect unpaddedBounds = (nodeLayer == (IFTreeLayoutElement*)[NSNull null]) ? NSZeroRect : [nodeLayer frame];
+  return NSInsetRect(unpaddedBounds,-GUTTER_WIDTH,-3.0);
+}  
 
 - (void)recomputeFrameSize;
 {
-  NSSize enclosingSize = [[self superview] frame].size;
-  NSSize idealSize = [self idealSize];
-  NSSize newSize = NSMakeSize(fmax(enclosingSize.width, idealSize.width),
-                              fmax(enclosingSize.height, idealSize.height));
+  NSRect newBounds = [self paddedBounds];
   
-  if (NSEqualSizes(newSize,[self frame].size))
+  if (NSEqualSizes([self frame].size, newBounds.size) && NSEqualPoints([self bounds].origin,newBounds.origin))
     return;
-  [self setFrameSize:newSize];
+  
+  [self setFrameSize:newBounds.size];
+  [self setBoundsOrigin:newBounds.origin];
   [self setNeedsDisplay:YES];
 }
 

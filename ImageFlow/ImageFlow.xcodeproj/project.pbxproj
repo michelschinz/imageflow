@@ -120,6 +120,7 @@
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
 		FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */; };
 		FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0DF2308C3876C00595ED4 /* Accelerate.framework */; };
+		FAE110580ADFC1CC007EEFFD /* IFCenteringClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */; };
 		FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */; };
 		FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */; };
 		FAE4C335092DAF71003A2555 /* IFSetAlphaCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */; };
@@ -397,6 +398,8 @@
 		FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramView.m; sourceTree = "<group>"; };
 		FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHistogramView.nib; sourceTree = "<group>"; };
 		FAE0DF2308C3876C00595ED4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		FAE110550ADFC1CC007EEFFD /* IFCenteringClipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCenteringClipView.h; sourceTree = "<group>"; };
+		FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCenteringClipView.m; sourceTree = "<group>"; };
 		FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFCropFilter.nib; sourceTree = "<group>"; };
 		FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "crop-overlay.cikernel"; sourceTree = "<group>"; };
 		FAE4C332092DAF71003A2555 /* IFSetAlphaCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSetAlphaCIFilter.h; sourceTree = "<group>"; };
@@ -1187,6 +1190,8 @@
 		FAFDC5920860481E00DABA6F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				FAE110550ADFC1CC007EEFFD /* IFCenteringClipView.h */,
+				FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */,
 				FAE6A41A0ACBD9050059BA3B /* IFGrabableViewMixin.h */,
 				FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */,
 				FA34AD920AA3152E00C8A63A /* IFTransparentPopupButton.h */,
@@ -1446,6 +1451,7 @@
 				FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */,
 				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
 				FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */,
+				FAE110580ADFC1CC007EEFFD /* IFCenteringClipView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

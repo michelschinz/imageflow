@@ -12,6 +12,7 @@
 
 @interface IFTreeViewWindowController : NSWindowController {
   IBOutlet IFTreeView* treeView;
+  IBOutlet NSScrollView* scrollView;
 }
 
 @end

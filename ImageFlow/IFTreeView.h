@@ -22,6 +22,7 @@ extern NSString* IFTreeNodesPboardType;
   IFGrabableViewMixin* grabableViewMixin;
 
   IFDocument* document;
+  NSColor* backgroundColor;
   unsigned int upToDateLayers;
   NSMutableArray* layoutLayers;
   NSMutableArray* trackingRectTags;
@@ -54,6 +55,8 @@ extern NSString* IFTreeNodesPboardType;
 
 - (float)columnWidth;
 - (void)setColumnWidth:(float)theColumnWidth;
+
+- (NSColor*)backgroundColor;
 
 - (float)nodeInternalMargin;
 - (NSFont*)labelFont;

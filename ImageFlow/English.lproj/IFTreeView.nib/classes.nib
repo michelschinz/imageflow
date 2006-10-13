@@ -10,7 +10,7 @@
         {
             CLASS = IFTreeViewWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {treeView = IFTreeView; }; 
+            OUTLETS = {scrollView = NSScrollView; treeView = IFTreeView; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSPersistentDocument; }, 
