@@ -17,4 +17,9 @@
   return [NSString stringWithFormat:@"USM (%.1f int, %.1f rad)", [(NSNumber*)[env valueForKey:@"intensity"] floatValue], [(NSNumber*)[env valueForKey:@"radius"] floatValue]];
 }
 
+- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
+{
+  return [NSAffineTransform transform];
+}
+
 @end
