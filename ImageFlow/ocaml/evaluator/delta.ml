@@ -25,6 +25,9 @@ let rec delta cache old_expr new_expr =
       delta cache b1 b2
   | Op("blend",[|b1;f1;m1|]), Op("blend",[|b2;f2;m2|]) when b1 = b2 && m1 = m2->
       delta cache f1 f2
+  | Op("channel-to-mask", [|i1;c1|]), Op("channel-to-mask", [|i2;c2|])
+    when c1 = c2 ->
+      delta cache i1 i2
   | Op("crop", [|i1;Rect r1|]), Op("crop", [|i2; Rect r2|]) when r1 = r2 ->
       Rect.intersection r1 (delta cache i1 i2)
   | Op("gaussian-blur", [|i1;Num r1|]), Op("gaussian-blur", [|i2; Num r2|])
@@ -32,7 +35,16 @@ let rec delta cache old_expr new_expr =
       Rect.outset (delta cache i1 i2) r1 r1
   | Op("invert",[|i1|]), Op("invert",[|i2|]) ->
       delta cache i1 i2
-        (* TODO mask, mask-overlay *)
+  | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when i1 = i2 ->
+      delta cache m1 m2
+  | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when m1 = m2 ->
+      delta cache i1 i2
+  | Op("mask-overlay",[|i1;m1;c1|]), Op("mask-overlay",[|i2;m2;c2|])
+    when i1 = i2 && c1 = c2 ->
+      delta cache m1 m2
+  | Op("mask-overlay",[|i1;m1;c1|]), Op("mask-overlay",[|i2;m2;c2|])
+    when m1 = m2 && c1 = c2 ->
+      delta cache i1 i2
   | Op("opacity",[|i1;a1|]), Op("opacity",[|i2;a2|]) when a1 = a2 ->
       delta cache i1 i2
   | Op("resample",[|i1;Num f1|]), Op("resample",[|i2;Num f2|]) when f1 = f2 ->

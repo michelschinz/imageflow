@@ -40,6 +40,11 @@ let number key k filter number =
   Cifilter.setNumber ~filter:filter ~number:nsnumber ~key:key;
   k filter
 
+let string key k filter string =
+  let nsstring = Nsstring.stringWithUTF8String string in
+  Cifilter.setString ~filter:filter ~string:nsstring ~key:key;
+  k filter
+
 let parameterless k filter () = k filter
 
 let output_image f =
@@ -68,6 +73,10 @@ let blend_multiply = compositing_filter !@"CIMultiplyBlendMode"
 let blend_overlay = compositing_filter !@"CIOverlayBlendMode"
 let blend_screen = compositing_filter !@"CIScreenBlendMode"
 let composite_source_over = compositing_filter !@"CISourceOverCompositing"
+
+let channel_to_mask =
+  filter !@"IFChannelToMask" (image !@"inputImage"
+                              @@@ string !@"inputChannel")
 
 let checkerboard =
   filter !@"CICheckerboardGenerator" (point !@"inputCenter"
@@ -107,7 +116,12 @@ let mask =
   filter !@"IFMask" (image !@"inputImage" @@@ image !@"inputMask")
 
 let mask_overlay =
-  filter !@"IFMaskOverlay" (image !@"inputImage" @@@ image !@"inputMask")
+  filter !@"IFMaskOverlay" (image !@"inputImage"
+                            @@@ image !@"inputMask"
+                            @@@ color !@"inputColor")
+
+let mask_to_image =
+  filter !@"IFMaskToImage" (image !@"inputMask")
 
 let opacity =
   filter !@"IFSetAlpha" (image !@"inputImage" @@@ number !@"inputAlpha")

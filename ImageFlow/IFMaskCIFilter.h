@@ -11,9 +11,7 @@
 
 @interface IFMaskCIFilter : CIFilter {
   CIImage* inputImage;
-  CIImage* inputMaskImage;
-  NSNumber* inputMaskChannel;
-  NSNumber* inputMode;
+  CIImage* inputMask;
 }
 
 @end

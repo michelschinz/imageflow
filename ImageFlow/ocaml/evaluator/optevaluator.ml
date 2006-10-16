@@ -56,3 +56,10 @@ let eval_extent cache expr =
       None
   | o ->
       failwith ("unexpected result from evaluator: "^(Printer.to_string(o)))
+
+let eval_as_image cache expr =
+  match eval cache expr with
+    Mask m ->
+      eval cache (Op("mask-to-image", [|Mask m|]))
+  | other ->
+      other

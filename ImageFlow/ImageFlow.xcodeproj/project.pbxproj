@@ -38,6 +38,17 @@
 		FA2411680962BEF400173105 /* IFDocumentXMLEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2411660962BEF400173105 /* IFDocumentXMLEncoder.m */; };
 		FA2411700962C2DD00173105 /* IFDocumentXMLDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24116E0962C2DD00173105 /* IFDocumentXMLDecoder.m */; };
 		FA2413110962EFE000173105 /* IFTreeIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2411780962C98100173105 /* IFTreeIdentifier.m */; };
+		FA256A970AE379F600077863 /* channel-to-mask.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FA256A900AE379F600077863 /* channel-to-mask.cikernel.m4 */; };
+		FA256A980AE379F600077863 /* mask-overlay.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA256A910AE379F600077863 /* mask-overlay.cikernel */; };
+		FA256A990AE379F600077863 /* mask-to-image.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA256A920AE379F600077863 /* mask-to-image.cikernel */; };
+		FA256A9A0AE379F600077863 /* mask.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA256A930AE379F600077863 /* mask.cikernel */; };
+		FA256A9B0AE379F600077863 /* opacity.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA256A940AE379F600077863 /* opacity.cikernel */; };
+		FA256A9C0AE379F600077863 /* single-color.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA256A950AE379F600077863 /* single-color.cikernel */; };
+		FA256AB80AE37EDB00077863 /* IFChannelToMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256AB60AE37EDB00077863 /* IFChannelToMaskCIFilter.m */; };
+		FA256ACA0AE38BF500077863 /* IFMaskToImageCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256AC80AE38BF500077863 /* IFMaskToImageCIFilter.m */; };
+		FA256AD00AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256ACE0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m */; };
+		FA256AD40AE391D600077863 /* IFChannelToMask.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA256AD30AE391D600077863 /* IFChannelToMask.nib */; };
+		FA256BF00AE3B85000077863 /* IFMaskOverlayCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256BEE0AE3B85000077863 /* IFMaskOverlayCIFilter.m */; };
 		FA2C0ABD08FBCF11009FE5ED /* RBSplitView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
 		FA2C0AF608FBCF25009FE5ED /* RBSplitView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
 		FA2D38FD094D70AB0068F20A /* IFFileSourceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D38FB094D70AB0068F20A /* IFFileSourceDelegate.m */; };
@@ -59,7 +70,6 @@
 		FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
 		FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */; };
 		FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA4328BC0ADAC14F00109D58 /* circle.cikernel */; };
-		FA4501120AD2564B0097C977 /* opacity.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */; };
 		FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA45019F0AD2B4AE0097C977 /* IFImage.m */; };
 		FA4501A60AD2B5200097C977 /* IFImageCGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A40AD2B5200097C977 /* IFImageCGImage.m */; };
 		FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A80AD2B5560097C977 /* IFImageCIImage.m */; };
@@ -164,13 +174,10 @@
 		FAF8821E0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF8821D0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
-		FAF9F6870932485600FB2B0B /* single-color.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAF9F6860932485600FB2B0B /* single-color.cikernel.m4 */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
 		FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */; };
 		FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */; };
-		FAFC1B33092C76270032A19F /* mask.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B32092C76270032A19F /* mask.cikernel.m4 */; };
 		FAFC1B3C092C76E20032A19F /* IFMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */; };
-		FAFC1BA8092C90600032A19F /* IFMaskFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1BA7092C90600032A19F /* IFMaskFilter.nib */; };
 		FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAD1C091B91A700D83BBE /* IFFileSinkController.m */; };
 		FAFDC5A20860484700DABA6F /* IFTreeView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFDC5A10860484700DABA6F /* IFTreeView.m */; };
 		FAFDC62208605A1300DABA6F /* IFTreeViewWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFDC62108605A1300DABA6F /* IFTreeViewWindowController.m */; };
@@ -260,6 +267,22 @@
 		FA24116E0962C2DD00173105 /* IFDocumentXMLDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDocumentXMLDecoder.m; sourceTree = "<group>"; };
 		FA2411770962C98100173105 /* IFTreeIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeIdentifier.h; sourceTree = "<group>"; };
 		FA2411780962C98100173105 /* IFTreeIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeIdentifier.m; sourceTree = "<group>"; };
+		FA256A8F0AE379F600077863 /* channel-to-mask.ci */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "channel-to-mask.ci"; sourceTree = "<group>"; };
+		FA256A900AE379F600077863 /* channel-to-mask.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "channel-to-mask.cikernel.m4"; sourceTree = "<group>"; };
+		FA256A910AE379F600077863 /* mask-overlay.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-overlay.cikernel"; sourceTree = "<group>"; };
+		FA256A920AE379F600077863 /* mask-to-image.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-to-image.cikernel"; sourceTree = "<group>"; };
+		FA256A930AE379F600077863 /* mask.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = mask.cikernel; sourceTree = "<group>"; };
+		FA256A940AE379F600077863 /* opacity.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = opacity.cikernel; sourceTree = "<group>"; };
+		FA256A950AE379F600077863 /* single-color.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "single-color.cikernel"; sourceTree = "<group>"; };
+		FA256AB50AE37EDB00077863 /* IFChannelToMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFChannelToMaskCIFilter.h; sourceTree = "<group>"; };
+		FA256AB60AE37EDB00077863 /* IFChannelToMaskCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFChannelToMaskCIFilter.m; sourceTree = "<group>"; };
+		FA256AC70AE38BF500077863 /* IFMaskToImageCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskToImageCIFilter.h; sourceTree = "<group>"; };
+		FA256AC80AE38BF500077863 /* IFMaskToImageCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskToImageCIFilter.m; sourceTree = "<group>"; };
+		FA256ACD0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFChannelToMaskFilterDelegate.h; sourceTree = "<group>"; };
+		FA256ACE0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFChannelToMaskFilterDelegate.m; sourceTree = "<group>"; };
+		FA256AD30AE391D600077863 /* IFChannelToMask.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFChannelToMask.nib; sourceTree = "<group>"; };
+		FA256BED0AE3B85000077863 /* IFMaskOverlayCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskOverlayCIFilter.h; sourceTree = "<group>"; };
+		FA256BEE0AE3B85000077863 /* IFMaskOverlayCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskOverlayCIFilter.m; sourceTree = "<group>"; };
 		FA2A705508DE995F00397488 /* IFHistogramData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFHistogramData.m; sourceTree = "<group>"; };
 		FA2A705708DE997300397488 /* IFHistogramData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramData.h; sourceTree = "<group>"; };
 		FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RBSplitView.framework; path = Frameworks/RBSplitView.framework; sourceTree = "third-party-cocoa-libraries"; };
@@ -297,7 +320,6 @@
 		FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCircleGeneratorCIFilter.m; sourceTree = "<group>"; };
 		FA4328BC0ADAC14F00109D58 /* circle.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = circle.cikernel; sourceTree = "<group>"; };
 		FA447E7E0ACD196D001C9718 /* IFExpressionTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionTags.h; sourceTree = "<group>"; };
-		FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = opacity.cikernel.m4; sourceTree = "<group>"; };
 		FA45019E0AD2B4AE0097C977 /* IFImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImage.h; sourceTree = "<group>"; };
 		FA45019F0AD2B4AE0097C977 /* IFImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImage.m; sourceTree = "<group>"; };
 		FA4501A30AD2B5200097C977 /* IFImageCGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageCGImage.h; sourceTree = "<group>"; };
@@ -472,17 +494,13 @@
 		FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFXMLCoder.m; sourceTree = "<group>"; };
 		FAF934FB0908094E00558366 /* IFConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConstantExpression.h; sourceTree = "<group>"; };
 		FAF934FC0908094E00558366 /* IFConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConstantExpression.m; sourceTree = "<group>"; };
-		FAF9F6860932485600FB2B0B /* single-color.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "single-color.cikernel.m4"; sourceTree = "<group>"; };
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
 		FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSingleColorCIFilter.m; sourceTree = "<group>"; };
 		FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFDropShadowFilter.nib; sourceTree = "<group>"; };
 		FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = threshold.cikernel.m4; sourceTree = "<group>"; };
 		FAFC1B2D092C70ED0032A19F /* luminosity.ci */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = luminosity.ci; sourceTree = "<group>"; };
-		FAFC1B2E092C70ED0032A19F /* mask.ci */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = mask.ci; sourceTree = "<group>"; };
-		FAFC1B32092C76270032A19F /* mask.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = mask.cikernel.m4; sourceTree = "<group>"; };
 		FAFC1B39092C76E20032A19F /* IFMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskCIFilter.h; sourceTree = "<group>"; };
 		FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskCIFilter.m; sourceTree = "<group>"; };
-		FAFC1BA7092C90600032A19F /* IFMaskFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFMaskFilter.nib; sourceTree = "<group>"; };
 		FAFCAD1B091B91A700D83BBE /* IFFileSinkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileSinkController.h; sourceTree = "<group>"; };
 		FAFCAD1C091B91A700D83BBE /* IFFileSinkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileSinkController.m; sourceTree = "<group>"; };
 		FAFDC5A00860484700DABA6F /* IFTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeView.h; sourceTree = "<group>"; };
@@ -776,6 +794,26 @@
 			name = Environment;
 			sourceTree = "<group>";
 		};
+		FA256ABB0AE37EEC00077863 /* Channel to mask */ = {
+			isa = PBXGroup;
+			children = (
+				FA256AB50AE37EDB00077863 /* IFChannelToMaskCIFilter.h */,
+				FA256AB60AE37EDB00077863 /* IFChannelToMaskCIFilter.m */,
+				FA256ACD0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.h */,
+				FA256ACE0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m */,
+			);
+			name = "Channel to mask";
+			sourceTree = "<group>";
+		};
+		FA256AC60AE38BC000077863 /* Mask to image */ = {
+			isa = PBXGroup;
+			children = (
+				FA256AC70AE38BF500077863 /* IFMaskToImageCIFilter.h */,
+				FA256AC80AE38BF500077863 /* IFMaskToImageCIFilter.m */,
+			);
+			name = "Mask to image";
+			sourceTree = "<group>";
+		};
 		FA2D39E1094D777B0068F20A /* Gaussian blur */ = {
 			isa = PBXGroup;
 			children = (
@@ -831,6 +869,7 @@
 		FA402736091A3625001626A2 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				FA256AD30AE391D600077863 /* IFChannelToMask.nib */,
 				46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */,
 				5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */,
 				FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */,
@@ -838,7 +877,6 @@
 				FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */,
 				FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */,
 				FA1BF71609194BDD00E288BB /* IFThresholdFilter.nib */,
-				FAFC1BA7092C90600032A19F /* IFMaskFilter.nib */,
 				FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */,
 			);
 			name = Filters;
@@ -1114,7 +1152,9 @@
 				FA1BF2380918E67F00E288BB /* Blend */,
 				FA1BF71309194AAA00E288BB /* Threshold */,
 				5250C38709A87DE50089B4FC /* Unsharp mask */,
+				FA256ABB0AE37EEC00077863 /* Channel to mask */,
 				FAFC1B3D092C76E60032A19F /* Mask */,
+				FA256AC60AE38BC000077863 /* Mask to image */,
 				FAF9F68E093248C700FB2B0B /* Single Color */,
 				46457A3D09A88038009825E9 /* Color Controls */,
 			);
@@ -1144,14 +1184,17 @@
 		FAFC168D092C67BB0032A19F /* Core Image Templates */ = {
 			isa = PBXGroup;
 			children = (
+				FA256A8F0AE379F600077863 /* channel-to-mask.ci */,
+				FA256A900AE379F600077863 /* channel-to-mask.cikernel.m4 */,
+				FA256A910AE379F600077863 /* mask-overlay.cikernel */,
+				FA256A920AE379F600077863 /* mask-to-image.cikernel */,
+				FA256A930AE379F600077863 /* mask.cikernel */,
+				FA256A940AE379F600077863 /* opacity.cikernel */,
+				FA256A950AE379F600077863 /* single-color.cikernel */,
 				FA4328BC0ADAC14F00109D58 /* circle.cikernel */,
 				FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */,
 				FAFC1B2D092C70ED0032A19F /* luminosity.ci */,
-				FAFC1B2E092C70ED0032A19F /* mask.ci */,
-				FA4501110AD2564B0097C977 /* opacity.cikernel.m4 */,
-				FAFC1B32092C76270032A19F /* mask.cikernel.m4 */,
 				FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */,
-				FAF9F6860932485600FB2B0B /* single-color.cikernel.m4 */,
 			);
 			name = "Core Image Templates";
 			path = CoreImageFilterTemplates;
@@ -1162,6 +1205,8 @@
 			children = (
 				FAFC1B39092C76E20032A19F /* IFMaskCIFilter.h */,
 				FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */,
+				FA256BED0AE3B85000077863 /* IFMaskOverlayCIFilter.h */,
+				FA256BEE0AE3B85000077863 /* IFMaskOverlayCIFilter.m */,
 				FA2D3952094D74740068F20A /* IFMaskFilterDelegate.h */,
 				FA2D3953094D74740068F20A /* IFMaskFilterDelegate.m */,
 			);
@@ -1309,14 +1354,11 @@
 				FA1BF71709194BDD00E288BB /* IFThresholdFilter.nib in Resources */,
 				FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */,
 				FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */,
-				FAFC1B33092C76270032A19F /* mask.cikernel.m4 in Resources */,
-				FAFC1BA8092C90600032A19F /* IFMaskFilter.nib in Resources */,
 				FA68E09E092DE56E009D02CB /* IFPrintSink.nib in Resources */,
 				FA68E178092E04EF009D02CB /* cursor_move.tiff in Resources */,
 				FA68E179092E04EF009D02CB /* Landscape.tiff in Resources */,
 				FA68E17A092E04EF009D02CB /* Portrait.tiff in Resources */,
 				FA68E17B092E04EF009D02CB /* ReverseLandscape.tiff in Resources */,
-				FAF9F6870932485600FB2B0B /* single-color.cikernel.m4 in Resources */,
 				FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */,
 				FAC0FD4A096D58D400E0915E /* alias_arrow.tiff in Resources */,
 				FAF8821E0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib in Resources */,
@@ -1330,8 +1372,14 @@
 				FA0A53570ACB90810077A945 /* IFColorControlsFilter.nib in Resources */,
 				FAE6A2FF0ACBA18B0059BA3B /* button_delete_active.tiff in Resources */,
 				FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */,
-				FA4501120AD2564B0097C977 /* opacity.cikernel.m4 in Resources */,
 				FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */,
+				FA256A970AE379F600077863 /* channel-to-mask.cikernel.m4 in Resources */,
+				FA256A980AE379F600077863 /* mask-overlay.cikernel in Resources */,
+				FA256A990AE379F600077863 /* mask-to-image.cikernel in Resources */,
+				FA256A9A0AE379F600077863 /* mask.cikernel in Resources */,
+				FA256A9B0AE379F600077863 /* opacity.cikernel in Resources */,
+				FA256A9C0AE379F600077863 /* single-color.cikernel in Resources */,
+				FA256AD40AE391D600077863 /* IFChannelToMask.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1452,6 +1500,10 @@
 				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
 				FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */,
 				FAE110580ADFC1CC007EEFFD /* IFCenteringClipView.m in Sources */,
+				FA256AB80AE37EDB00077863 /* IFChannelToMaskCIFilter.m in Sources */,
+				FA256ACA0AE38BF500077863 /* IFMaskToImageCIFilter.m in Sources */,
+				FA256AD00AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m in Sources */,
+				FA256BF00AE3B85000077863 /* IFMaskOverlayCIFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

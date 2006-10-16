@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<filter>
+  <name>channel-to-mask</name>
+  <description>Create mask from image channel.</description>
+  <expression>
+    <operation name="channel-to-mask">
+      <parent index="0"/>
+      <variable name="channel"/>
+    </operation>
+  </expression>
+  <min_parents>1</min_parents>
+  <max_parents>1</max_parents>
+  <settings_nib>IFChannelToMask</settings_nib>
+  <delegate_class>IFChannelToMaskFilterDelegate</delegate_class>
+</filter>

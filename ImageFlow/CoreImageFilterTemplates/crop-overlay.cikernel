@@ -1,6 +1,8 @@
+// -*- C -*-
+
 kernel vec4 crop_overlay(sampler image, vec4 r)
 {
-  vec2 pos = destCoord();	
+  vec2 pos = destCoord();
   vec4 pix = sample(image, samplerCoord(image));
   return all(bvec4(pos.x > r.x, pos.x < r.x+r.z, pos.y > r.y, pos.y < r.y+r.w))
     ? pix

@@ -1,36 +1,35 @@
 //
-//  IFMaskCIFilter.m
+//  IFMaskOverlayCIFilter.m
 //  ImageFlow
 //
-//  Created by Michel Schinz on 17.11.05.
-//  Copyright 2005 Michel Schinz. All rights reserved.
+//  Created by Michel Schinz on 16.10.06.
+//  Copyright 2006 Michel Schinz. All rights reserved.
 //
 
-#import "IFMaskCIFilter.h"
+#import "IFMaskOverlayCIFilter.h"
 
+@implementation IFMaskOverlayCIFilter
 
-@implementation IFMaskCIFilter
-
-static CIKernel *maskKernel = nil;
+static CIKernel *maskOverlayKernel = nil;
 
 - (id)init;
 {
-  if (maskKernel == nil) {
+  if (maskOverlayKernel == nil) {
     NSBundle* bundle = [NSBundle bundleForClass:[self class]];
-    NSString* file = [bundle pathForResource:@"mask" ofType:@"cikernel"];
+    NSString* file = [bundle pathForResource:@"mask-overlay" ofType:@"cikernel"];
     NSAssert1([[NSFileManager defaultManager] fileExistsAtPath:file], @"non-existent file %@",file);
     NSString* code = [NSString stringWithContentsOfFile:file];
-    maskKernel = [[[CIKernel kernelsWithString:code] objectAtIndex:0] retain];
+    maskOverlayKernel = [[[CIKernel kernelsWithString:code] objectAtIndex:0] retain];
   }
   return [super init];
 }
 
 + (void)initialize;
 {
-  [CIFilter registerFilterName:@"IFMask"
+  [CIFilter registerFilterName:@"IFMaskOverlay"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                 @"Mask", kCIAttributeFilterDisplayName,
+                 @"Mask overlay", kCIAttributeFilterDisplayName,
                  nil]];
 }
 
@@ -38,8 +37,8 @@ static CIKernel *maskKernel = nil;
 {
   CISampler* imageSampler = [CISampler samplerWithImage:inputImage];
   CISampler* maskSampler = [CISampler samplerWithImage:inputMask];
-  return [self apply:maskKernel
-           arguments:[NSArray arrayWithObjects:imageSampler,maskSampler,nil]
+  return [self apply:maskOverlayKernel
+           arguments:[NSArray arrayWithObjects:imageSampler,maskSampler,inputColor,nil]
              options:[NSDictionary dictionaryWithObject:[imageSampler definition] forKey:kCIApplyOptionDefinition]];
 }
 

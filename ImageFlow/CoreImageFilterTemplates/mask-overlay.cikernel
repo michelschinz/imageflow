@@ -1,0 +1,10 @@
+// -*- C -*-
+
+kernel vec4 maskOverlay(sampler image, sampler mask, __color maskColor)
+{
+  float a = sample(mask,samplerCoord(mask)).a * maskColor.a;
+  vec4 p = unpremultiply(sample(image, samplerCoord(image)));
+
+  return premultiply(vec4(maskColor.r, maskColor.g, maskColor.b, 1.0 - a))
+    + premultiply(vec4(p.r, p.g, p.b, p.a * a));
+}

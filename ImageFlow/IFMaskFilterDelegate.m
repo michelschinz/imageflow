@@ -11,20 +11,19 @@
 #import "IFExpression.h"
 #import "IFOperatorExpression.h"
 #import "IFEnvironment.h"
+#import "IFConstantExpression.h"
 
 @implementation IFMaskFilterDelegate
 
 static NSArray* parentNames = nil;
-static NSArray* shortChannelNames = nil;
-static NSArray* longChannelNames = nil;
 static NSArray* variantNames = nil;
+static IFConstantExpression* maskColor = nil;
 
 + (void)initialize;
 {
   parentNames = [[NSArray arrayWithObjects:@"image",@"mask",nil] retain];
-  shortChannelNames = [[NSArray arrayWithObjects:@"R",@"G",@"B",@"A",@"lum",nil] retain];
-  longChannelNames = [[NSArray arrayWithObjects:@"red",@"green",@"blue",@"opacity",@"luminosity",nil] retain];
-  variantNames = [[NSArray arrayWithObjects:@"",@"Image+Mask",nil] retain];
+  variantNames = [[NSArray arrayWithObjects:@"",@"Mask overlay",nil] retain];
+  maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;
@@ -34,12 +33,12 @@ static NSArray* variantNames = nil;
 
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;
 {
-  return [NSString stringWithFormat:@"mask (%@)", [shortChannelNames objectAtIndex:[(NSNumber*)[env valueForKey:@"channel"] intValue]]];
+  return @"mask";
 }
 
 - (NSString*)toolTipWithEnvironment:(IFEnvironment*)env;
 {
-  return [NSString stringWithFormat:@"mask\nchannel: %@", [longChannelNames objectAtIndex:[(NSNumber*)[env valueForKey:@"channel"] intValue]]];
+  return @"mask";
 }
 
 - (NSArray*)variantNamesForViewing;
@@ -54,13 +53,13 @@ static NSArray* variantNames = nil;
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
-  NSAssert1([variantName isEqualToString:@"Image+Mask"], @"invalid variant name: <%@>", variantName);
+  NSAssert1([variantName isEqualToString:@"Mask overlay"], @"invalid variant name: <%@>", variantName);
   
   if ([originalExpression isKindOfClass:[IFOperatorExpression class]]) {
     IFOperatorExpression* originalOpExpression = (IFOperatorExpression*)originalExpression;
     NSAssert([originalOpExpression operator]  == [IFOperator operatorForName:@"mask"], @"unexpected operator");
-    return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"quick-mask"]
-                                               operands:[originalOpExpression operands]];
+    return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"mask-overlay"]
+                                               operands:[[originalOpExpression operands] arrayByAddingObject:maskColor]];
   } else
     return originalExpression;
 }

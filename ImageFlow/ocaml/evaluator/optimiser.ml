@@ -7,6 +7,8 @@ let rec rewriteOp = function
     Op("resample", [|Op("blend", [|i1; i2; m|]); Num f|]) when f < 1. ->
       Op("blend", [|Op("resample", [|i1; Num f|]);
                     Op("resample", [|i2; Num f|]); m|])
+  | Op("resample", [|Op("channel-to-mask", [|i; c|]); Num f|]) ->
+      Op("channel-to-mask", [|Op("resample", [|i; Num f|]); c|])
   | Op("resample",
        [|Op("checkerboard", [|Point c; c1; c2; Num w; Num s|]); Num f|]) ->
          Op("checkerboard",
@@ -28,9 +30,12 @@ let rec rewriteOp = function
       Op("invert", [|Op("resample", [|i; Num f|])|])
   | Op("resample", [|Op("mask", [|i; m|]); Num f|]) when f < 1. ->
       Op("mask", [|Op("resample", [|i; Num f|]); Op("resample", [|m; Num f|])|])
-  | Op("resample", [|Op("mask-overlay", [|i; m|]); Num f|]) when f < 1. ->
+  | Op("resample", [|Op("mask-overlay", [|i; m; c|]); Num f|]) when f < 1. ->
       Op("mask-overlay", [|Op("resample", [|i; Num f|]);
-                           Op("resample", [|m; Num f|])|])
+                           Op("resample", [|m; Num f|]);
+                           c|])
+  | Op("resample", [|Op("mask-to-image", [|m|]); Num f|]) when f < 1. ->
+      Op("mask-to-image", [|Op("resample", [|m; Num f|])|])
   | Op("resample", [|Op("opacity", [|i; a|]); Num f|]) when f < 1. ->
       Op("opacity", [|Op("resample", [|i; Num f|]); a|])
   | Op("resample", [|Op("paint", [|b; Array ps|]); Num f|]) when f < 1. ->
@@ -65,6 +70,8 @@ let rec rewriteOp = function
         (* Extent *)
   | Op("extent", [|Op("blend", [|i1; i2; _|])|]) ->
       Op("rect-union", [|Op("extent", [|i1|]); Op("extent", [|i2|])|])
+  | Op("extent", [|Op("channel-to-mask", [|i;_|])|]) ->
+      Op("extent", [|i|])
   | Op("extent", [|Op("checkerboard", _)|]) ->
       Rect (Rect.infinite)
   | Op("extent", [|Op("circle", [|Point c; Num r; _|])|]) ->
@@ -85,8 +92,10 @@ let rec rewriteOp = function
       Op("extent", [|i|])
   | Op("extent", [|Op("mask", [|i; m|])|]) ->
       Op("rect-union", [|Op("extent", [|i|]); Op("extent", [|m|])|])
-  | Op("extent", [|Op("mask-overlay", [|i; m|])|]) ->
+  | Op("extent", [|Op("mask-overlay", [|i; m; _|])|]) ->
       Op("rect-union", [|Op("extent", [|i|]); Op("extent", [|m|])|])
+  | Op("extent", [|Op("mask-to-image", [|m|])|]) ->
+      Op("extent", [|m|])
   | Op("extent", [|Op("opacity", [|i; Num a|])|]) ->
       if a = 0.0 then Rect Rect.zero else Op("extent", [|i|])
   | Op("extent", [|Op("paint",[|b;ps|])|]) ->

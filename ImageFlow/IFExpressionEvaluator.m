@@ -78,7 +78,7 @@ static void camlEval(value cache, IFExpression* expression, IFConstantExpression
   camlExpr = [expression asCaml];
   static value* evalClosure = NULL;
   if (evalClosure == NULL)
-    evalClosure = caml_named_value("Optevaluator.eval");
+    evalClosure = caml_named_value("Optevaluator.eval_as_image");
   camlRes = caml_callback2(*evalClosure, cache, camlExpr);
   *result = [IFConstantExpression expressionWithCamlValue:camlRes];
   CAMLreturn0;

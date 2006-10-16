@@ -21,10 +21,13 @@
 #import "IFCropImageWithMaskCIFilter.h"
 #import "IFEmptyCIFilter.h"
 #import "IFMaskCIFilter.h"
+#import "IFMaskOverlayCIFilter.h"
 #import "IFSetAlphaCIFilter.h"
 #import "IFSingleColorCIFilter.h"
 #import "IFThresholdCIFilter.h"
 #import "IFCircleGeneratorCIFilter.h"
+#import "IFChannelToMaskCIFilter.h"
+#import "IFMaskToImageCIFilter.h"
 
 @implementation IFAppController
 
@@ -54,10 +57,13 @@
   [IFCropImageWithMaskCIFilter class];
   [IFEmptyCIFilter class];
   [IFMaskCIFilter class];
+  [IFMaskOverlayCIFilter class];
   [IFSetAlphaCIFilter class];
   [IFSingleColorCIFilter class];
   [IFThresholdCIFilter class];
   [IFCircleGeneratorCIFilter class];
+  [IFChannelToMaskCIFilter class];
+  [IFMaskToImageCIFilter class];
   
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFDirectoryManager* dirMgr = [IFDirectoryManager sharedDirectoryManager];

@@ -15,6 +15,9 @@ external setNumber: filter:[`CIFilter] objc -> number:[`NSNumber] objc -> key:[`
 external setVector: filter:[`CIFilter] objc -> vector:[`CIVector] objc -> key:[`NSString] objc -> unit
     = "CIFilter_setValueForKey"
 
+external setString: filter:[`CIFilter] objc -> string:[`NSString] objc -> key:[`NSString] objc -> unit
+    = "CIFilter_setValueForKey"
+
 external setTransform: filter:[`CIFilter] objc -> transform:[`NSAffineTransform] objc -> key:[`NSString] objc -> unit
     = "CIFilter_setValueForKey"
 

@@ -1,3 +1,5 @@
+// -*- C -*-
+
 kernel vec4 singleColor(sampler image, __color color)
 {
   float alpha = sample(image, samplerCoord(image)).a;

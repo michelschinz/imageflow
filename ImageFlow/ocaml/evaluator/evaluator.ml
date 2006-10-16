@@ -12,6 +12,8 @@ let execute = function
 let eval expr =
   let out_image filter =
     Image (Image.of_ciimage (Coreimage.output_image filter))
+  and out_mask filter =
+    Mask (Image.of_ciimage (Coreimage.output_image filter))
   and filter_for_blend_mode = function
       "color burn" -> Nsstring.stringWithUTF8String "CIColorBurnBlendMode"
     | "color dodge" -> Nsstring.stringWithUTF8String "CIColorDodgeBlendMode"
@@ -46,6 +48,8 @@ let eval expr =
     (* Image operators *)
   | Op("blend", [|Image i1; Image i2; String m|]) ->
       out_image (Coreimage.compositing_filter (filter_for_blend_mode m) i1 i2)
+  | Op("channel-to-mask", [|Image i; String c|]) ->
+      out_mask (Coreimage.channel_to_mask i c)
   | Op("checkerboard", [|Point c; Color c1; Color c2; Num w; Num s|]) ->
       out_image (Coreimage.checkerboard c c1 c2 w s)
   | Op("circle", [|Point c; Num r; Color o|]) ->
@@ -74,8 +78,10 @@ let eval expr =
       end
   | Op("mask", [|Image i; Mask m|]) ->
       out_image (Coreimage.mask i m)
-  | Op("mask-overlay", [|Image i; Mask m|]) ->
-      out_image (Coreimage.mask_overlay i m)
+  | Op("mask-overlay", [|Image i; Mask m; Color c|]) ->
+      out_image (Coreimage.mask_overlay i m c)
+  | Op("mask-to-image", [|Mask m|]) ->
+      out_image (Coreimage.mask_to_image m)
   | Op("opacity", [|Image i; Num a|]) ->
       out_image (Coreimage.opacity i a)
   | Op("paint", [|Image b; Array ps|]) ->

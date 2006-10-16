@@ -1,0 +1,10 @@
+m4_dnl -*- M4 -*-
+m4_dnl Parameters:
+m4_dnl   _channel  name of channel (r, g, b, a or l)
+
+kernel vec4 _channel`'ToMask(sampler image)
+{
+  vec4 p = sample(image, samplerCoord(image));
+  float a = m4_ifelse(_channel,`l',`luminosity(p)',`p._channel');
+  return vec4(0.0, 0.0, 0.0, a);
+}
