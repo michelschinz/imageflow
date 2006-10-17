@@ -34,13 +34,6 @@ static const float foldHeight = 2.0;
 {
   if (![super initWithNode:theNode containingView:theContainingView]) return nil;
   evaluator = [[theContainingView document] evaluator];
-  backgroundGenerator = [[CIFilter filterWithName:@"CICheckerboardGenerator" keysAndValues:
-    @"inputCenter", [CIVector vectorWithX:0 Y:0],
-    @"inputColor0", [CIColor colorWithRed:1 green:1 blue:1],
-    @"inputColor1", [CIColor colorWithRed:0.8 green:0.8 blue:0.8],
-    @"inputSharpness", [NSNumber numberWithInt:1],
-    nil] retain];
-  backgroundCompositor = [[CIFilter filterWithName:@"CISourceOverCompositing"] retain];
   [self updateExpression];
   [self updateInternalLayout];
 
@@ -56,10 +49,6 @@ static const float foldHeight = 2.0;
   [containingView removeObserver:self forKeyPath:@"columnWidth"];
   [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
   [node removeObserver:self forKeyPath:@"expression"];
-  [backgroundCompositor release];
-  backgroundCompositor = nil;
-  [backgroundGenerator release];
-  backgroundGenerator = nil;
   node = nil;
   [self setEvaluatedExpression:nil];
   [super dealloc];
@@ -120,17 +109,14 @@ int countAncestors(IFTreeNode* node) {
   // Draw thumbnail, if any
   if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
     CIImage* image = [evaluatedExpression imageValueCI];
-    [backgroundCompositor setValue:image forKey:@"inputImage"];
     CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                              options:[NSDictionary dictionary]]; // TODO working color space
     NSRect targetRect = thumbnailFrame;
-    NSRect sourceRect = NSRectFromCGRect([image extent]);
+    NSRect sourceRect = expressionExtent;
     float resizing = fmax(NSWidth(targetRect) / NSWidth(sourceRect), NSHeight(targetRect) / NSHeight(sourceRect));
     sourceRect.size.width = floor(NSWidth(targetRect) / resizing);
     sourceRect.size.height = floor(NSHeight(targetRect) / resizing);
-    [ctx drawImage:[backgroundCompositor valueForKey:@"outputImage"]
-            inRect:CGRectFromNSRect(targetRect)
-          fromRect:CGRectFromNSRect(sourceRect)];
+    [ctx drawImage:image inRect:CGRectFromNSRect(targetRect) fromRect:CGRectFromNSRect(sourceRect)];
   }
 
   // Draw name, if any
@@ -185,9 +171,6 @@ int countAncestors(IFTreeNode* node) {
     : NSMakeRect(x,y,internalWidth,floor(internalWidth / thumbnailAspectRatio));
     internalFrame = NSUnionRect(internalFrame,thumbnailFrame);
     y += NSHeight(thumbnailFrame) + margin;
-  
-    [backgroundGenerator setValue:[NSNumber numberWithFloat:floor(NSWidth(thumbnailFrame) / 5.0)] forKey:@"inputWidth"];
-    [backgroundCompositor setValue:[backgroundGenerator valueForKey:@"outputImage"] forKey:@"inputBackgroundImage"];
   } else
     thumbnailFrame = NSZeroRect;
 
@@ -249,7 +232,6 @@ int countAncestors(IFTreeNode* node) {
   const float margin = [containingView nodeInternalMargin];
 
   if (evaluatedExpression != nil) {
-    
     [evaluatedExpression release];
     evaluatedExpression = nil;
   }
@@ -261,8 +243,8 @@ int countAncestors(IFTreeNode* node) {
     float maxSide = [containingView columnWidth] - 2.0 * margin;
     float scaling = maxSide / fmax(NSWidth(extent), NSHeight(extent));
     IFExpression* scaledExpr = [IFOperatorExpression resample:[node expression] by:scaling];
-    evaluatedExpression = [[evaluator evaluateExpression:scaledExpr] retain];    
-    
+    [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:scaledExpr]];
+    expressionExtent = NSRectScale(extent, scaling);
     [self setThumbnailAspectRatio:NSIsEmptyRect(extent) ? 0.0 : (NSWidth(extent) / NSHeight(extent))];
   } else
     [self setThumbnailAspectRatio:0.0];

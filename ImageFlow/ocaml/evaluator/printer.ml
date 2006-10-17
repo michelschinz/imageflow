@@ -37,9 +37,9 @@ let rec print0 fmt = function
         pp_close_box fmt()
       end
   | Image i ->
-      pp_print_string fmt (Image.to_string i)
+      pp_print_string fmt ("<image " ^ (Rect.to_string (Image.extent i)) ^ ">")
   | Mask i ->
-      pp_print_string fmt (Image.to_string i)
+      pp_print_string fmt ("<mask " ^ (Rect.to_string (Image.extent i)) ^ ">")
   | Color c ->
       pp_print_string fmt (Color.to_string c)
   | Rect r ->

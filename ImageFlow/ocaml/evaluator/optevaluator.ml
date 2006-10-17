@@ -61,5 +61,12 @@ let eval_as_image cache expr =
   match eval cache expr with
     Mask m ->
       eval cache (Op("mask-to-image", [|Mask m|]))
+  | Image i ->
+      let bgd = Op("checkerboard", [| Point Point.zero;
+                                      Color (Color.make 1. 1. 1. 1.);
+                                      Color (Color.make 0.8 0.8 0.8 1.);
+                                      Num 40.0;
+                                      Num 1.0 |]) in
+      eval cache (Op("blend", [| bgd; Image i; String "over" |]))
   | other ->
       other

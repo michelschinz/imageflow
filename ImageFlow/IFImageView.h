@@ -22,8 +22,6 @@
 @interface IFImageView : NSView {
   IFGrabableViewMixin* grabableViewMixin;
 
-  CIImage* backgroundImage;
-  CIFilter* backgroundCompositingFilter;
   IFExpressionEvaluator* evaluator;
   IFExpression* expression;
   NSArray* annotations;
@@ -31,6 +29,7 @@
   unsigned delegateCapabilities;
   
   IFImageConstantExpression* evaluatedExpression;
+  NSRect expressionExtent;
   BOOL infiniteBoundsMode;
 }
 

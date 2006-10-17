@@ -22,7 +22,6 @@ typedef enum {
 @interface IFImageView (Private)
 - (IFImageConstantExpression*)evaluatedExpression;
 - (void)setEvaluatedExpression:(IFImageConstantExpression*)newEvaluatedExpression;
-- (NSRect)imageExtent;
 - (void)updateFrameSize;
 - (void)updateBoundsOrigin;
 @end
@@ -44,17 +43,6 @@ static CIImage* emptyImage;
   
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
   
-  CIFilter* backgroundFilter = [[CIFilter filterWithName:@"CICheckerboardGenerator" keysAndValues:
-    @"inputCenter", [CIVector vectorWithX:0 Y:0],
-    @"inputColor0", [CIColor colorWithRed:1 green:1 blue:1],
-    @"inputColor1", [CIColor colorWithRed:0.8 green:0.8 blue:0.8],
-    @"inputWidth", [NSNumber numberWithInt:40],
-    @"inputSharpness", [NSNumber numberWithInt:1],
-    nil] retain];
-  backgroundImage = [[backgroundFilter valueForKey:@"outputImage"] retain];
-  backgroundCompositingFilter = [[CIFilter filterWithName:@"CISourceOverCompositing" keysAndValues:
-    @"inputBackgroundImage", backgroundImage,
-    nil] retain];
   evaluator = nil;
   expression = nil;
   annotations = nil;
@@ -74,10 +62,6 @@ static CIImage* emptyImage;
   [self setAnnotations:nil];
   [expression release];
   expression = nil;
-  [backgroundCompositingFilter release];
-  backgroundCompositingFilter = nil;
-  [backgroundImage release];
-  backgroundImage = nil;
   
   [grabableViewMixin release];
   grabableViewMixin = nil;
@@ -154,7 +138,7 @@ static CIImage* emptyImage;
 
 - (NSSize)idealSize;
 {
-  return [self imageExtent].size;
+  return expressionExtent.size;
 }
 
 - (void)enterInfiniteBoundsMode;
@@ -201,11 +185,9 @@ static CIImage* emptyImage;
   CIImage* image = (imageExpr == nil || [imageExpr isError])
     ? emptyImage
     : [imageExpr imageValueCI];
-  [backgroundCompositingFilter setValue:image forKey:@"inputImage"];
-  CIImage* imageWithBackground = [backgroundCompositingFilter valueForKey:@"outputImage"];
   CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                            options:[NSDictionary dictionary]]; // TODO working color space
-  [ctx drawImage:imageWithBackground atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
+  [ctx drawImage:image atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
   
   // Draw annotations
   const int annotationsCount = [annotations count];
@@ -310,8 +292,16 @@ static CIImage* emptyImage;
   if (expression == nil)
     return nil;
 
-  if (evaluatedExpression == nil)
-    [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:expression]];
+  if (evaluatedExpression == nil) {
+    IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:expression]];
+    if ([extentExpr isError]) {
+      expressionExtent = NSZeroRect;
+      [self setEvaluatedExpression:nil];
+    } else {
+      expressionExtent = [extentExpr rectValueNS];
+      [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:expression]];
+    }
+  }
   return evaluatedExpression;
 }
 
@@ -321,14 +311,6 @@ static CIImage* emptyImage;
     return;
   [evaluatedExpression release];
   evaluatedExpression = [newEvaluatedExpression retain];
-}
-
-- (NSRect)imageExtent;
-{
-  IFImageConstantExpression* imageExpr = [self evaluatedExpression];
-  return (imageExpr == nil || [imageExpr isError])
-    ? NSZeroRect
-    : [[evaluator evaluateExpression:[IFOperatorExpression extentOf:imageExpr]] rectValueNS];
 }
 
 - (void)enclosingFrameDidChange:(NSNotification*)notification;
@@ -352,7 +334,7 @@ static CIImage* emptyImage;
 - (void)updateBoundsOrigin;
 {
   NSPoint visibleOrigin = [self visibleRect].origin;
-  [self setBoundsOrigin:[self imageExtent].origin];
+  [self setBoundsOrigin:expressionExtent.origin];
   [self scrollPoint:visibleOrigin];
 }
 

@@ -19,6 +19,7 @@ NSRect NSRectFromCGRect(CGRect r);
 NSRect NSRectFromCIVector(CIVector* v);
 
 NSRect NSRectInfinite();
+NSRect NSRectScale(NSRect r, float f);
 
 CGColorSpaceRef CreateColorSpaceFromSystemICCProfileName(NSString* profileName);
 

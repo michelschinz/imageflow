@@ -17,11 +17,10 @@
   float thumbnailAspectRatio;
   NSRect thumbnailFrame;
   NSRect nameFrame;
-  CIFilter* backgroundGenerator;
-  CIFilter* backgroundCompositor;
 
   IFExpressionEvaluator* evaluator;
   IFImageConstantExpression* evaluatedExpression;
+  NSRect expressionExtent;
 }
 
 + (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;

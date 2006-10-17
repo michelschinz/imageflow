@@ -51,6 +51,10 @@ NSRect NSRectFromCIVector(CIVector* v) {
   return NSMakeRect([v X],[v Y],[v Z],[v W]);
 }
 
+NSRect NSRectScale(NSRect r, float f) {
+  return NSMakeRect(NSMinX(r) * f, NSMinY(r) * f, NSWidth(r) * f, NSHeight(r) * f);
+}
+
 NSRect NSRectInfinite() {
   return NSRectFromCGRect(CGRectInfinite);
 }

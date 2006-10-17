@@ -21,6 +21,7 @@
 + expressionWithRectCG:(CGRect)theRect;
 + expressionWithColorNS:(NSColor*)theColor;
 + expressionWithString:(NSString*)theString;
++ expressionWithInt:(int)theInt;
 + expressionWithFloat:(float)theFloat;
 
 - initWithObject:(NSObject*)theConstant;
