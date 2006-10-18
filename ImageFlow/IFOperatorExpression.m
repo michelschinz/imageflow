@@ -36,11 +36,6 @@
                                nil]];
 }
 
-+ (id)histogramOf:(IFExpression*)imageExpr;
-{
-  return [self expressionWithOperator:[IFOperator operatorForName:@"histogram-rgb"] operands:[NSArray arrayWithObject:imageExpr]];
-}
-
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
 {
   static IFOperator* op = nil;
@@ -51,10 +46,23 @@
     nil]];
 }
 
++ (id)crop:(IFExpression*)expression along:(NSRect)rectangle;
+{
+  return [self expressionWithOperator:[IFOperator operatorForName:@"crop"]
+                             operands:[NSArray arrayWithObjects:
+                               expression,
+                               [IFConstantExpression expressionWithRectNS:rectangle]]];
+}
+
 + (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(NSString*)mode;
 {
   return [self expressionWithOperator:[IFOperator operatorForName:@"blend"]
                              operands:[NSArray arrayWithObjects:background,foreground,[IFConstantExpression expressionWithString:mode],nil]];
+}
+
++ (id)histogramOf:(IFExpression*)imageExpr;
+{
+  return [self expressionWithOperator:[IFOperator operatorForName:@"histogram-rgb"] operands:[NSArray arrayWithObject:imageExpr]];
 }
 
 + (id)expressionWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;

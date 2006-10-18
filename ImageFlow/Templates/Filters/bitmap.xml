@@ -8,8 +8,6 @@
       <env>
         <key>drawing</key>
         <expression>&lt;operation name="empty"/&gt;</expression>
-        <key>drawingArea</key>
-        <rect>{{10,10}{100,100}}</rect>
         <key>defaultColor</key>
         <color>0 0 0 0</color>
         <key>brushShape</key>

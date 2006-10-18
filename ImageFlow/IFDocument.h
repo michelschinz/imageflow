@@ -23,6 +23,7 @@ extern NSString* IFTreeChangedNotification;
   NSString* title;
   NSString* authorName;
   NSString* documentDescription;
+  NSRect canvasBounds;
   IFColorProfile* workingSpaceProfile;
   float resolutionX, resolutionY; // in DPI
   
@@ -45,6 +46,7 @@ extern NSString* IFTreeChangedNotification;
 - (void)setAuthorName:(NSString*)newAuthorName;
 - (NSString*)documentDescription;
 - (void)setDocumentDescription:(NSString*)newDocumentDescription;
+- (NSRect)canvasBounds;
 
 - (IFColorProfile*)workingSpaceProfile;
 - (void)setWorkingSpaceProfile:(IFColorProfile*)newProfile;

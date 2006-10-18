@@ -160,6 +160,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 - (void)documentDidChange:(IFDocument*)newDocument;
 {
   [imageView setEvaluator:[newDocument evaluator]];
+  [imageView setCanvasBounds:[newDocument canvasBounds]];
   [thumbnailView setEvaluator:[newDocument evaluator]];
   [super documentDidChange:newDocument];
 }

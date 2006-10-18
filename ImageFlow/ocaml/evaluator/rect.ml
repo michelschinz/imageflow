@@ -3,8 +3,13 @@ type t = { re_origin: Point.t; re_size: Size.t }
 let make x y w h = { re_origin = Point.make x y; re_size = Size.make w h }
 
 let zero = { re_origin = Point.zero; re_size = Size.zero }
-let infinite = { re_origin = Point.make min_float min_float;
-                 re_size = Size.make max_float max_float }
+
+(* To define the "infinite" rectangle, we make sure that its components *)
+(* fit into C's float type, otherwise overflow occurs and produces *)
+(* incorrect values. In other words, we cannot use Caml's min_float and *)
+(* max_float values, as they correspond to C's double type limits. *)
+let infinite = { re_origin = Point.make (-1.0e38) (-1.0e38);
+                 re_size = Size.make (3.0e38) (3.0e38) }
 
 let x_min r = Point.x r.re_origin
 let x_max r = (Point.x r.re_origin) +. (Size.width r.re_size)

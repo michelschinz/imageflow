@@ -3,15 +3,12 @@
   <name>bitmap</name>
   <description>Draw bitmap image with various tools.</description>
   <expression>
-    <operation name="crop">
-      <operation name="blend">
-        <operation name="constant-color">
-          <variable name="defaultColor"/>
-        </operation>
-        <variable name="drawing"/>
-        <constant type="string">over</constant>
+    <operation name="blend">
+      <operation name="constant-color">
+        <variable name="defaultColor"/>
       </operation>
-      <variable name="drawingArea"/>
+      <variable name="drawing"/>
+      <constant type="string">over</constant>
     </operation>
   </expression>
   <min_parents>0</min_parents>

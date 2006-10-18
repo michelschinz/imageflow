@@ -19,9 +19,10 @@
 + (id)nop;
 + (id)extentOf:(IFExpression*)imageExpr;
 + (id)resample:(IFExpression*)imageExpr by:(float)scale;
-+ (id)histogramOf:(IFExpression*)imageExpr;
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
++ (id)crop:(IFExpression*)expression along:(NSRect)rectangle;
 + (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(NSString*)mode;
++ (id)histogramOf:(IFExpression*)imageExpr;
 
 + (id)expressionWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
 - (id)initWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;

@@ -38,9 +38,15 @@ static CIKernel* maskToImageKernel = nil;
 - (CIImage*)outputImage;
 {
   CISampler* maskSampler = [CISampler samplerWithImage:inputMask];
+  NSArray* dod = [NSArray arrayWithObjects:
+    [NSNumber numberWithFloat:CGRectGetMinX(CGRectInfinite)],
+    [NSNumber numberWithFloat:CGRectGetMinY(CGRectInfinite)],
+    [NSNumber numberWithFloat:CGRectGetWidth(CGRectInfinite)],
+    [NSNumber numberWithFloat:CGRectGetHeight(CGRectInfinite)],
+    nil];
   return [self apply:maskToImageKernel
            arguments:[NSArray arrayWithObjects:maskSampler,nil]
-             options:[NSDictionary dictionaryWithObject:[maskSampler definition] forKey:kCIApplyOptionDefinition]];
+             options:[NSDictionary dictionaryWithObject:dod forKey:kCIApplyOptionDefinition]];
 }
 
 + (CIFilter*)filterWithName:(NSString*)name;

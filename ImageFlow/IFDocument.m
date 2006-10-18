@@ -71,6 +71,7 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
   [self startObservingTree:fakeRoot];
   
+  canvasBounds = NSMakeRect(0,0,800,600);
   workingSpaceProfile = nil;
   [self setWorkingSpaceProfile:[IFColorProfile profileDefaultRGB]];
   [self setResolutionX:300];
@@ -172,6 +173,53 @@ static IFDocumentTemplateManager* templateManager;
     return;
   [documentDescription release];
   documentDescription = [newDocumentDescription copy];
+}
+
+#pragma mask canvas
+
+- (float)canvasMinX;
+{
+  return NSMinX(canvasBounds);
+}
+
+- (void)setCanvasMinX:(float)newMinX;
+{
+  canvasBounds.origin.x = newMinX;
+}
+
+- (float)canvasMinY;
+{
+  return NSMinY(canvasBounds);
+}
+
+- (void)setCanvasMinY:(float)newMinY;
+{
+  canvasBounds.origin.y = newMinY;
+}
+
+- (float)canvasWidth;
+{
+  return NSWidth(canvasBounds);
+}
+
+- (void)setCanvasWidth:(float)newWidth;
+{
+  canvasBounds.size.width = newWidth;
+}
+
+- (float)canvasHeight;
+{
+  return NSHeight(canvasBounds);
+}
+
+- (void)setCanvasHeight:(float)newHeight;
+{
+  canvasBounds.size.height = newHeight;
+}
+
+- (NSRect)canvasBounds;
+{
+  return canvasBounds;
 }
 
 #pragma mark color

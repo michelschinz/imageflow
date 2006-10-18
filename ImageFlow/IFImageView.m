@@ -22,8 +22,6 @@ typedef enum {
 @interface IFImageView (Private)
 - (IFImageConstantExpression*)evaluatedExpression;
 - (void)setEvaluatedExpression:(IFImageConstantExpression*)newEvaluatedExpression;
-- (void)updateFrameSize;
-- (void)updateBoundsOrigin;
 @end
 
 @implementation IFImageView
@@ -47,9 +45,6 @@ static CIImage* emptyImage;
   expression = nil;
   annotations = nil;
   delegate = nil;
-
-  [self updateBoundsOrigin];
-  [self updateFrameSize];
   return self;
 }
 
@@ -67,14 +62,6 @@ static CIImage* emptyImage;
   grabableViewMixin = nil;
   
   [super dealloc];
-}
-
-- (void)viewWillMoveToSuperview:(NSView *)newSuperview;
-{
-  if ([self superview] != nil)
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:[self superview]];
-  if (newSuperview != nil)
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enclosingFrameDidChange:) name:NSViewFrameDidChangeNotification object:newSuperview];
 }
 
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
@@ -96,6 +83,25 @@ static CIImage* emptyImage;
   [self setNeedsDisplay:YES];
 }
 
+- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+{
+  if (NSEqualRects(canvasBounds,newCanvasBounds))
+    return;
+
+  canvasBounds = newCanvasBounds;
+  
+  NSPoint visibleOrigin = [self visibleRect].origin;
+  [self setBoundsOrigin:canvasBounds.origin];
+  NSScrollView* scrollView = [self enclosingScrollView];
+  if (scrollView != nil) {    
+    [[scrollView horizontalRulerView] setOriginOffset:-NSMinX(canvasBounds)];
+    [[scrollView verticalRulerView] setOriginOffset:-NSMinY(canvasBounds)];
+  }
+  [self setFrameSize:canvasBounds.size];
+  [self scrollPoint:visibleOrigin];
+  [self setNeedsDisplay:YES];
+}
+
 - (void)setExpression:(IFExpression*)newExpression;
 {
   if (newExpression == expression)
@@ -104,15 +110,10 @@ static CIImage* emptyImage;
   NSRect dirtyRect = (expression == nil || newExpression == nil)
     ? NSRectInfinite()
     : [evaluator deltaFromOld:expression toNew:newExpression];
-  
   [expression release];
   expression = [newExpression retain];
   
   [self setEvaluatedExpression:nil];
-  if (![self inInfiniteBoundsMode]) {
-    [self updateFrameSize];
-    [self updateBoundsOrigin];
-  }
   [self setNeedsDisplayInRect:dirtyRect];
 }
 
@@ -139,43 +140,6 @@ static CIImage* emptyImage;
 - (NSSize)idealSize;
 {
   return expressionExtent.size;
-}
-
-- (void)enterInfiniteBoundsMode;
-{
-  NSAssert(![self inInfiniteBoundsMode], @"already in infinite bounds mode");
-  
-  NSPoint visibleOrigin = [self visibleRect].origin;
-  [self setFrameSize:NSMakeSize(1000000,1000000)];
-  [self setBoundsOrigin:NSMakePoint(-500000,-500000)];
-  [self scrollPoint:visibleOrigin];
-
-  NSScrollView* scrollView = [self enclosingScrollView];
-  [[scrollView horizontalScroller] setEnabled:NO];
-  [[scrollView verticalScroller] setEnabled:NO];
-  
-  infiniteBoundsMode = YES;
-}
-
-- (void)leaveInfiniteBoundsMode;
-{
-  NSAssert([self inInfiniteBoundsMode], @"not in infinite bounds mode");
-  
-  NSScrollView* scrollView = [self enclosingScrollView];
-  [[scrollView horizontalScroller] setEnabled:YES];
-  [[scrollView verticalScroller] setEnabled:YES];
-  
-  NSPoint visibleOrigin = [self visibleRect].origin;
-  [self updateFrameSize];
-  [self updateBoundsOrigin];
-  [self scrollPoint:visibleOrigin];
-  
-  infiniteBoundsMode = NO;  
-}
-
-- (BOOL)inInfiniteBoundsMode;
-{
-  return infiniteBoundsMode;
 }
 
 - (void)drawRect:(NSRect)dirtyRect;
@@ -221,16 +185,6 @@ static CIImage* emptyImage;
 {
   [self setEvaluatedExpression:nil];
   [self setNeedsDisplay:YES];
-}
-
-- (void)setBoundsOrigin:(NSPoint)newOrigin;
-{
-  [super setBoundsOrigin:newOrigin];
-  NSScrollView* scrollView = [self enclosingScrollView];
-  if (scrollView != nil) {    
-    [[scrollView horizontalRulerView] setOriginOffset:-newOrigin.x];
-    [[scrollView verticalRulerView] setOriginOffset:-newOrigin.y];
-  }
 }
 
 #pragma mark event handling
@@ -311,31 +265,6 @@ static CIImage* emptyImage;
     return;
   [evaluatedExpression release];
   evaluatedExpression = [newEvaluatedExpression retain];
-}
-
-- (void)enclosingFrameDidChange:(NSNotification*)notification;
-{
-  [self updateFrameSize];
-}
-
-- (void)updateFrameSize;
-{
-  NSSize enclosingSize = [[self superview] frame].size;
-  NSSize idealSize = [self idealSize];
-  NSSize newSize = NSMakeSize(fmax(enclosingSize.width, idealSize.width),
-                              fmax(enclosingSize.height, idealSize.height));
-  if (NSEqualSizes(newSize,[self frame].size))
-    return;
-  
-  [self setFrameSize:newSize];
-  [self setNeedsDisplay:YES]; // TODO redisplay only exposed parts, if any
-}
-
-- (void)updateBoundsOrigin;
-{
-  NSPoint visibleOrigin = [self visibleRect].origin;
-  [self setBoundsOrigin:expressionExtent.origin];
-  [self scrollPoint:visibleOrigin];
 }
 
 @end

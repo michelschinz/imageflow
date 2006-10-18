@@ -239,13 +239,16 @@ int countAncestors(IFTreeNode* node) {
   IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:[node expression]]];
   if (![extentExpr isError]) {
     NSRect extent = [extentExpr rectValueNS];
-
+    NSRect canvasBounds = [[containingView document] canvasBounds]; // TODO observe
+    NSRect croppedExtent = NSIntersectionRect(extent, canvasBounds);
     float maxSide = [containingView columnWidth] - 2.0 * margin;
-    float scaling = maxSide / fmax(NSWidth(extent), NSHeight(extent));
-    IFExpression* scaledExpr = [IFOperatorExpression resample:[node expression] by:scaling];
-    [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:scaledExpr]];
-    expressionExtent = NSRectScale(extent, scaling);
-    [self setThumbnailAspectRatio:NSIsEmptyRect(extent) ? 0.0 : (NSWidth(extent) / NSHeight(extent))];
+    float scaling = maxSide / fmax(NSWidth(croppedExtent), NSHeight(croppedExtent));
+    IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression resample:[node expression] by:scaling]];
+    if (!NSContainsRect(canvasBounds,extent))
+      evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression crop:evaluatedExpr along:canvasBounds]];
+    [self setEvaluatedExpression:(IFImageConstantExpression*)evaluatedExpr];
+    expressionExtent = NSRectScale(croppedExtent, scaling);
+    [self setThumbnailAspectRatio:NSIsEmptyRect(croppedExtent) ? 0.0 : NSWidth(croppedExtent) / NSHeight(croppedExtent)];
   } else
     [self setThumbnailAspectRatio:0.0];
 }

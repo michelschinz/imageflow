@@ -22,6 +22,7 @@
 @interface IFImageView : NSView {
   IFGrabableViewMixin* grabableViewMixin;
 
+  NSRect canvasBounds;
   IFExpressionEvaluator* evaluator;
   IFExpression* expression;
   NSArray* annotations;
@@ -34,15 +35,12 @@
 }
 
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
+- (void)setCanvasBounds:(NSRect)newCanvasBounds;
 - (void)setExpression:(IFExpression*)newExpression;
 
 - (void)setAnnotations:(NSArray*)newAnnotations;
 - (void)setDelegate:(NSObject<IFImageViewDelegate>*)newDelegate;
 
 - (NSSize)idealSize;
-
-- (void)enterInfiniteBoundsMode;
-- (void)leaveInfiniteBoundsMode;
-- (BOOL)inInfiniteBoundsMode;
 
 @end

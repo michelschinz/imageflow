@@ -71,7 +71,7 @@ let rec rewriteOp = function
   | Op("extent", [|Op("blend", [|i1; i2; _|])|]) ->
       Op("rect-union", [|Op("extent", [|i1|]); Op("extent", [|i2|])|])
   | Op("extent", [|Op("channel-to-mask", [|i;_|])|]) ->
-      Op("extent", [|i|])
+      Rect (Rect.infinite)
   | Op("extent", [|Op("checkerboard", _)|]) ->
       Rect (Rect.infinite)
   | Op("extent", [|Op("circle", [|Point c; Num r; _|])|]) ->
