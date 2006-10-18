@@ -41,6 +41,7 @@ IFImage* _cg_paint(IFImage* brush, float points[], int pointsLen) {
   CGContextTranslateCTM(CGLayerGetContext(strokeLayer),
                         -(CGRectGetMinX(boundingRect) - brushOrigin.x),
                         -(CGRectGetMinY(boundingRect) - brushOrigin.y));
+  CGContextSetBlendMode(CGLayerGetContext(strokeLayer), kCGBlendModeDarken);
 
   float x = PX(0), y = PY(0);
   for (int i = 1; i < pointsCount; ++i) {
