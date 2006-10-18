@@ -110,7 +110,6 @@
 		FAAF1034090A5ADD00479538 /* IFFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF1032090A5ADD00479538 /* IFFilter.m */; };
 		FAAF1040090A7A5900479538 /* IFConfiguredFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF103E090A7A5900479538 /* IFConfiguredFilter.m */; };
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
-		FAB547A0092A65640028B0EC /* IFCacheInspectorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB5479E092A65640028B0EC /* IFCacheInspectorWindowController.m */; };
 		FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC3D52088AD689007E8691 /* IFTreeMark.m */; };
 		FABD2BDD0862E2A300D9A92D /* IFTreeLayoutElement.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD2BDC0862E2A300D9A92D /* IFTreeLayoutElement.m */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
@@ -124,7 +123,6 @@
 		FAD6A40A08879CE200D07873 /* IFTreeLayoutSingle.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6A40908879CE200D07873 /* IFTreeLayoutSingle.m */; };
 		FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */; };
 		FAD7189F08B5DDFF00CF732B /* IFProbeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */; };
-		FADC0A1E09100B9700A2E9B2 /* IFCacheViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = FADC0A1D09100B9700A2E9B2 /* IFCacheViewer.nib */; };
 		FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */; };
 		FADDD4CD08B0AB7B000A1EBE /* IFTreeLayoutMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDD4CC08B0AB7B000A1EBE /* IFTreeLayoutMark.m */; };
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
@@ -384,8 +382,6 @@
 		FAAF103D090A7A5900479538 /* IFConfiguredFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConfiguredFilter.h; sourceTree = "<group>"; };
 		FAAF103E090A7A5900479538 /* IFConfiguredFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConfiguredFilter.m; sourceTree = "<group>"; };
 		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
-		FAB5479D092A65640028B0EC /* IFCacheInspectorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCacheInspectorWindowController.h; sourceTree = "<group>"; };
-		FAB5479E092A65640028B0EC /* IFCacheInspectorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCacheInspectorWindowController.m; sourceTree = "<group>"; };
 		FABC3D51088AD689007E8691 /* IFTreeMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeMark.h; sourceTree = "<group>"; };
 		FABC3D52088AD689007E8691 /* IFTreeMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeMark.m; sourceTree = "<group>"; };
 		FABD2BDB0862E2A300D9A92D /* IFTreeLayoutElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutElement.h; sourceTree = "<group>"; };
@@ -409,7 +405,6 @@
 		FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGhostFilter.nib; sourceTree = "<group>"; };
 		FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProbeWindowController.h; sourceTree = "<group>"; };
 		FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProbeWindowController.m; sourceTree = "<group>"; };
-		FADC0A1D09100B9700A2E9B2 /* IFCacheViewer.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFCacheViewer.nib; sourceTree = "<group>"; };
 		FADD9A8F0AA727A300547F53 /* IFBorderlessWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBorderlessWindow.h; sourceTree = "<group>"; };
 		FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBorderlessWindow.m; sourceTree = "<group>"; };
 		FADDD4CB08B0AB7B000A1EBE /* IFTreeLayoutMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutMark.h; sourceTree = "<group>"; };
@@ -615,7 +610,6 @@
 				FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */,
 				FA11DD2608F245E500A3AF61 /* IFPreferences.nib */,
 				2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */,
-				FADC0A1D09100B9700A2E9B2 /* IFCacheViewer.nib */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				FAD718A208B5E2AF00CF732B /* Inspectors */,
@@ -830,8 +824,6 @@
 				FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */,
 				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
 				FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */,
-				FAB5479D092A65640028B0EC /* IFCacheInspectorWindowController.h */,
-				FAB5479E092A65640028B0EC /* IFCacheInspectorWindowController.m */,
 				FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */,
 				FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */,
 				FAE59F4008F3D26B00EF20ED /* IFImageInspectorWindowController.h */,
@@ -1349,7 +1341,6 @@
 				FAE874DB0908C4E300E856B9 /* Templates in Resources */,
 				FAE874E70908C5AC00E856B9 /* Operators in Resources */,
 				FAE54A93090CAAC5000DC147 /* Filters in Resources */,
-				FADC0A1E09100B9700A2E9B2 /* IFCacheViewer.nib in Resources */,
 				FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */,
 				FA1BF71709194BDD00E288BB /* IFThresholdFilter.nib in Resources */,
 				FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */,
@@ -1445,7 +1436,6 @@
 				FA402870091A4280001626A2 /* IFFileSinkDelegate.m in Sources */,
 				FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */,
 				FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */,
-				FAB547A0092A65640028B0EC /* IFCacheInspectorWindowController.m in Sources */,
 				FAFC1B3C092C76E20032A19F /* IFMaskCIFilter.m in Sources */,
 				FAE4C335092DAF71003A2555 /* IFSetAlphaCIFilter.m in Sources */,
 				FA68DE9F092DBC14009D02CB /* IFPercentValueTransformer.m in Sources */,

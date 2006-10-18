@@ -12,7 +12,6 @@
 #import "IFDocumentInspectorWindowController.h"
 #import "IFImageInspectorWindowController.h"
 #import "IFHistogramInspectorWindowController.h"
-#import "IFCacheInspectorWindowController.h"
 
 #import "IFPercentValueTransformer.h"
 #import "IFProfileNamePathValueTransformer.h"
@@ -145,11 +144,6 @@
 - (IBAction)newHistogramInspector:(id)sender;
 {
   [self newInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
-}
-
-- (IBAction)newCacheInspector:(id)sender;
-{
-  [self newInspectorOfClass:[IFCacheInspectorWindowController class] sender:sender];  
 }
 
 @end
