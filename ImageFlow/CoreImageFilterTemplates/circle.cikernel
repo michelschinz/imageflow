@@ -2,6 +2,14 @@
 
 kernel vec4 circle(vec2 c, float r, __color col)
 {
+  float e = 0.1;
   vec2 p = destCoord() - c;
-  return (p.x*p.x + p.y*p.y <= r*r) ? col : vec4(0.,0.,0.,0.);
+  vec2 xs = vec2(p.x - e, p.x + e);
+  xs = xs*xs;
+  vec2 ys = vec2(p.y - e, p.y + e);
+  ys = ys*ys;
+  vec4 rs = vec4(xs.x + ys.x, xs.y + ys.x, xs.x + ys.y, xs.y + ys.y);
+  vec4 as = compare(rs - r*r, vec4(1.,1.,1.,1.), vec4(0,0,0,0));
+  float a = (as.x + as.y + as.z + as.w) / 4.0;
+  return vec4(col.r, col.g, col.b, a);
 }
