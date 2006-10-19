@@ -8,9 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFExpressionVisitor.h"
+#import "IFConstantExpression.h"
+#import "IFImageConstantExpression.h"
 
-@interface IFExpressionEvaluator : IFExpressionVisitor {
+@interface IFExpressionEvaluator : NSObject {
   CGColorSpaceRef workingColorSpace;
   float resolutionX, resolutionY;
   value cache;
@@ -25,6 +26,7 @@
 - (void)setResolutionY:(float)newResolution;
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
+- (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
 - (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
 
 @end

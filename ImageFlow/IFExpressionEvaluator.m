@@ -72,22 +72,32 @@
   resolutionY = newResolution;
 }
 
-static void camlEval(value cache, IFExpression* expression, IFConstantExpression** result) {
+static void camlEval(value* closurePtr, value cache, IFExpression* expression, IFConstantExpression** result) {
   CAMLparam1(cache);
   CAMLlocal2(camlExpr, camlRes);
   camlExpr = [expression asCaml];
-  static value* evalClosure = NULL;
-  if (evalClosure == NULL)
-    evalClosure = caml_named_value("Optevaluator.eval_as_image");
-  camlRes = caml_callback2(*evalClosure, cache, camlExpr);
+  camlRes = caml_callback2(*closurePtr, cache, camlExpr);
   *result = [IFConstantExpression expressionWithCamlValue:camlRes];
   CAMLreturn0;
 }
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 {
+  static value* closurePtr = NULL;
+  if (closurePtr == NULL)
+    closurePtr = caml_named_value("Optevaluator.eval");
   IFConstantExpression* result = nil;
-  camlEval(cache, expression, &result);
+  camlEval(closurePtr, cache, expression, &result);
+  return result;
+}
+
+- (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
+{
+  static value* closurePtr = NULL;
+  if (closurePtr == NULL)
+    closurePtr = caml_named_value("Optevaluator.eval_as_image");
+  IFConstantExpression* result = nil;
+  camlEval(closurePtr, cache, expression, &result);
   return result;
 }
 

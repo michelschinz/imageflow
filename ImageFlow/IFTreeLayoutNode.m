@@ -236,17 +236,20 @@ int countAncestors(IFTreeNode* node) {
     evaluatedExpression = nil;
   }
   
-  IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:[node expression]]];
+  IFExpression* nodeExpression = [node expression];
+  IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:nodeExpression]];
   if (![extentExpr isError]) {
     NSRect extent = [extentExpr rectValueNS];
     NSRect canvasBounds = [[containingView document] canvasBounds]; // TODO observe
     NSRect croppedExtent = NSIntersectionRect(extent, canvasBounds);
     float maxSide = [containingView columnWidth] - 2.0 * margin;
     float scaling = maxSide / fmax(NSWidth(croppedExtent), NSHeight(croppedExtent));
-    IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression resample:[node expression] by:scaling]];
-    if (!NSContainsRect(canvasBounds,extent))
-      evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression crop:evaluatedExpr along:canvasBounds]];
-    [self setEvaluatedExpression:(IFImageConstantExpression*)evaluatedExpr];
+    IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:nodeExpression];
+    IFExpression* croppedExpression = NSContainsRect(canvasBounds, extent)
+      ? imageExpression
+      : [IFOperatorExpression crop:imageExpression along:canvasBounds];
+    IFExpression* scaledCroppedExpression = [IFOperatorExpression resample:croppedExpression by:scaling];
+    [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:scaledCroppedExpression]];
     expressionExtent = NSRectScale(croppedExtent, scaling);
     [self setThumbnailAspectRatio:NSIsEmptyRect(croppedExtent) ? 0.0 : NSWidth(croppedExtent) / NSHeight(croppedExtent)];
   } else

@@ -253,7 +253,7 @@ static CIImage* emptyImage;
       [self setEvaluatedExpression:nil];
     } else {
       expressionExtent = [extentExpr rectValueNS];
-      [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:expression]];
+      [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:expression]];
     }
   }
   return evaluatedExpression;

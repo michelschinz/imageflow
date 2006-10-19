@@ -69,5 +69,7 @@ let eval_as_image cache expr =
                                       Num 1.0 |])
       and m = Blendmode.to_int Blendmode.SourceOver in
       eval cache (Op("blend", [| bgd; Image i; Int m |]))
+  | Error _ as error ->
+      error
   | other ->
-      other
+      failwith ("non-image result from evaluator: "^(Printer.to_string(other)))
