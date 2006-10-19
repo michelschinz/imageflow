@@ -27,7 +27,7 @@ let eval expr =
   | Op("rect-union", [|Rect r1; Rect r2|]) ->
       Rect (Rect.union r1 r2)
 
-    (* Image operators *)
+    (* Image and mask operators *)
   | Op("blend", [|Image i1; Image i2; Int m|]) ->
       let m' = Nsstring.stringWithUTF8String
           (Blendmode.to_coreimage (Blendmode.of_int m)) in
@@ -48,12 +48,17 @@ let eval expr =
       out_image (Coreimage.crop_overlay i r)
   | Op("empty", [||]) ->
       Image (Image.empty)
-  | Op("extent", [|Image i|]) ->
+  | Op("extent", [|Image i|])
+  | Op("extent", [|Mask i|]) ->
       Rect (Image.extent i)
   | Op("gaussian-blur", [|Image i; Num r|]) ->
       out_image (Coreimage.gaussian_blur i r)
+  | Op("gaussian-blur", [|Mask m; Num r|]) ->
+      out_mask (Coreimage.gaussian_blur m r)
   | Op("invert", [|Image i|]) ->
       out_image (Coreimage.invert i)
+  | Op("invert", [|Mask m|]) ->
+      out_mask (Coreimage.invert_mask m)
   | Op("load", [|String f; _; _; _; _; _; _; _; _|]) ->
       begin try
         Image (Load.eval_load f)
@@ -74,15 +79,22 @@ let eval expr =
       Action(Print, execute)
   | Op("resample", [|Image i; Num f|]) ->
       out_image (Coreimage.affine_transform i (Affinetransform.scale f f))
+  | Op("resample", [|Mask m; Num f|]) ->
+      out_mask (Coreimage.affine_transform m (Affinetransform.scale f f))
   | Op("save", _) ->
       Action(Save, execute)
   | Op("single-color", [|Image i; Color c|]) ->
       out_image (Coreimage.single_color i c)
   | Op("threshold", [|Image i; Num t|]) ->
       out_image (Coreimage.threshold i t)
+  | Op("threshold", [|Mask m; Num t|]) ->
+      out_mask (Coreimage.threshold_mask m t)
   | Op("translate", [|Image i; Point t|]) ->
       let at = Affinetransform.translation (Point.x t) (Point.y t) in
       out_image (Coreimage.affine_transform i at)
+  | Op("translate", [|Mask m; Point t|]) ->
+      let at = Affinetransform.translation (Point.x t) (Point.y t) in
+      out_mask (Coreimage.affine_transform m at)
   | Op("unsharp-mask", [| Image i; Num y; Num r |]) ->
       out_image (Coreimage.unsharp_mask i y r)
 

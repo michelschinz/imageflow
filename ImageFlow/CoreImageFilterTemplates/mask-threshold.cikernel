@@ -1,0 +1,7 @@
+// -*- C -*-
+
+kernel vec4 maskThreshold(sampler mask, float threshold)
+{
+  float a = sample(mask, samplerCoord(mask)).a;
+  return vec4(0.0, 0.0, 0.0, a < threshold ? 0.0 : 1.0);
+}

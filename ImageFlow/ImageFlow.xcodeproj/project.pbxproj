@@ -157,6 +157,10 @@
 		FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */; };
 		FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */; };
 		FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */; };
+		FAEF26890AE7910100BD8954 /* IFMaskThresholdCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF26870AE7910100BD8954 /* IFMaskThresholdCIFilter.m */; };
+		FAEF26930AE7929B00BD8954 /* IFMaskInvertCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF26910AE7929B00BD8954 /* IFMaskInvertCIFilter.m */; };
+		FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF26990AE7947100BD8954 /* mask-invert.cikernel */; };
+		FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */; };
 		FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA81F0906145B00F76B8A /* IFEnvironment.m */; };
 		FAEFA87A09062A9C00F76B8A /* IFOperatorExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA87809062A9C00F76B8A /* IFOperatorExpression.m */; };
 		FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */; };
@@ -461,6 +465,12 @@
 		FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFObjectNamer.m; sourceTree = "<group>"; };
 		FAEE95D10935B90100583BDB /* IFColorProfileNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFColorProfileNamer.h; sourceTree = "<group>"; };
 		FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFColorProfileNamer.m; sourceTree = "<group>"; };
+		FAEF26860AE7910100BD8954 /* IFMaskThresholdCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskThresholdCIFilter.h; sourceTree = "<group>"; };
+		FAEF26870AE7910100BD8954 /* IFMaskThresholdCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskThresholdCIFilter.m; sourceTree = "<group>"; };
+		FAEF26900AE7929B00BD8954 /* IFMaskInvertCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskInvertCIFilter.h; sourceTree = "<group>"; };
+		FAEF26910AE7929B00BD8954 /* IFMaskInvertCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskInvertCIFilter.m; sourceTree = "<group>"; };
+		FAEF26990AE7947100BD8954 /* mask-invert.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-invert.cikernel"; sourceTree = "<group>"; };
+		FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-threshold.cikernel"; sourceTree = "<group>"; };
 		FAEFA81E0906145B00F76B8A /* IFEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEnvironment.h; sourceTree = "<group>"; };
 		FAEFA81F0906145B00F76B8A /* IFEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEnvironment.m; sourceTree = "<group>"; };
 		FAEFA87709062A9C00F76B8A /* IFOperatorExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFOperatorExpression.h; sourceTree = "<group>"; };
@@ -724,6 +734,8 @@
 			children = (
 				FA1BF70B091946FE00E288BB /* IFThresholdCIFilter.h */,
 				FA1BF70C091946FE00E288BB /* IFThresholdCIFilter.m */,
+				FAEF26860AE7910100BD8954 /* IFMaskThresholdCIFilter.h */,
+				FAEF26870AE7910100BD8954 /* IFMaskThresholdCIFilter.m */,
 				FA2D394C094D74110068F20A /* IFThresholdFilterDelegate.h */,
 				FA2D394D094D74110068F20A /* IFThresholdFilterDelegate.m */,
 			);
@@ -1110,6 +1122,15 @@
 			name = Image;
 			sourceTree = "<group>";
 		};
+		FAEF26940AE792A600BD8954 /* Invert mask */ = {
+			isa = PBXGroup;
+			children = (
+				FAEF26900AE7929B00BD8954 /* IFMaskInvertCIFilter.h */,
+				FAEF26910AE7929B00BD8954 /* IFMaskInvertCIFilter.m */,
+			);
+			name = "Invert mask";
+			sourceTree = "<group>";
+		};
 		FAF2532A090F4A15000AA819 /* Crop */ = {
 			isa = PBXGroup;
 			children = (
@@ -1150,6 +1171,7 @@
 				FA1BF71309194AAA00E288BB /* Threshold */,
 				5250C38709A87DE50089B4FC /* Unsharp mask */,
 				FA256ABB0AE37EEC00077863 /* Channel to mask */,
+				FAEF26940AE792A600BD8954 /* Invert mask */,
 				FAFC1B3D092C76E60032A19F /* Mask */,
 				FA256AC60AE38BC000077863 /* Mask to image */,
 				FAF9F68E093248C700FB2B0B /* Single Color */,
@@ -1181,6 +1203,8 @@
 		FAFC168D092C67BB0032A19F /* Core Image Templates */ = {
 			isa = PBXGroup;
 			children = (
+				FAEF26990AE7947100BD8954 /* mask-invert.cikernel */,
+				FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */,
 				FA256A8F0AE379F600077863 /* channel-to-mask.ci */,
 				FA256A900AE379F600077863 /* channel-to-mask.cikernel.m4 */,
 				FA256A910AE379F600077863 /* mask-overlay.cikernel */,
@@ -1376,6 +1400,8 @@
 				FA256A9B0AE379F600077863 /* opacity.cikernel in Resources */,
 				FA256A9C0AE379F600077863 /* single-color.cikernel in Resources */,
 				FA256AD40AE391D600077863 /* IFChannelToMask.nib in Resources */,
+				FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */,
+				FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1500,6 +1526,8 @@
 				FA256BF00AE3B85000077863 /* IFMaskOverlayCIFilter.m in Sources */,
 				FA6E98070AE691590074184E /* IFPair.m in Sources */,
 				FA6E98B10AE6A0DC0074184E /* IFBlendMode.m in Sources */,
+				FAEF26890AE7910100BD8954 /* IFMaskThresholdCIFilter.m in Sources */,
+				FAEF26930AE7929B00BD8954 /* IFMaskInvertCIFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

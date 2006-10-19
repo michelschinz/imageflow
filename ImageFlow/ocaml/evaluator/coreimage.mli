@@ -30,11 +30,13 @@ val crop : Image.t -> Rect.t -> [ `CIFilter ] objc
 val crop_overlay : Image.t -> Rect.t -> [ `CIFilter ] objc
 val gaussian_blur : Image.t -> float -> [ `CIFilter ] objc
 val invert : Image.t -> [ `CIFilter ] objc
+val invert_mask : Image.t -> [ `CIFilter ] objc
 val mask : Image.t -> Image.t -> [ `CIFilter ] objc
 val mask_overlay : Image.t -> Image.t -> Color.t -> [ `CIFilter ] objc
 val mask_to_image : Image.t -> [ `CIFilter ] objc
 val opacity : Image.t -> float -> [ `CIFilter ] objc
 val single_color : Image.t -> Color.t -> [ `CIFilter ] objc
 val threshold : Image.t -> float -> [ `CIFilter ] objc
+val threshold_mask : Image.t -> float -> [ `CIFilter ] objc
 val unsharp_mask : Image.t -> float -> float -> [ `CIFilter ] objc
 val random : unit -> [ `CIFilter ] objc

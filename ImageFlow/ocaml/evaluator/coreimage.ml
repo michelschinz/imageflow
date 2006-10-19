@@ -117,6 +117,9 @@ let gaussian_blur =
 let invert =
   filter !@"CIColorInvert" (image !@"inputImage")
 
+let invert_mask =
+  filter !@"IFMaskInvert" (image !@"inputImage")
+
 let mask =
   filter !@"IFMask" (image !@"inputImage" @@@ image !@"inputMask")
 
@@ -136,6 +139,10 @@ let single_color =
 
 let threshold =
   filter !@"IFThreshold" (image !@"inputImage" @@@ number !@"inputThreshold")
+
+let threshold_mask =
+  filter !@"IFMaskThreshold" (image !@"inputImage"
+                              @@@ number !@"inputThreshold")
 
 let unsharp_mask =
   filter !@"CIUnsharpMask" (image !@"inputImage"

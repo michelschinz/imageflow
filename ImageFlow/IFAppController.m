@@ -27,6 +27,8 @@
 #import "IFCircleGeneratorCIFilter.h"
 #import "IFChannelToMaskCIFilter.h"
 #import "IFMaskToImageCIFilter.h"
+#import "IFMaskInvertCIFilter.h"
+#import "IFMaskThresholdCIFilter.h"
 
 @implementation IFAppController
 
@@ -63,6 +65,8 @@
   [IFCircleGeneratorCIFilter class];
   [IFChannelToMaskCIFilter class];
   [IFMaskToImageCIFilter class];
+  [IFMaskInvertCIFilter class];
+  [IFMaskThresholdCIFilter class];
   
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFDirectoryManager* dirMgr = [IFDirectoryManager sharedDirectoryManager];
