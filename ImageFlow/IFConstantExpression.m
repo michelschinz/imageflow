@@ -236,6 +236,9 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     case IFExpressionTag_Num:
       *result = [IFConstantExpression expressionWithFloat:Double_val(Field(camlValue, 0))];
       break;
+    case IFExpressionTag_Int:
+      *result = [IFConstantExpression expressionWithInt:Int_val(Field(camlValue, 0))];
+      break;
     case IFExpressionTag_Bool:
       *result = [IFConstantExpression expressionWithInt:Bool_val(Field(camlValue, 0))];
       break;
@@ -276,7 +279,10 @@ static value elemAsCaml(const char* elem) {
   } else if ([object isKindOfClass:[NSValue class]]) {
     NSValue* val = (NSValue*)object;
     const char* objectType = [val objCType];
-    if (strcmp(objectType,@encode(float)) == 0) {
+    if (strcmp(objectType,@encode(int)) == 0) {
+      tag = IFExpressionTag_Int;
+      contents = Val_int([(NSNumber*)val intValue]);
+    } else if (strcmp(objectType,@encode(float)) == 0) {
       tag = IFExpressionTag_Num;
       contents = caml_copy_double([(NSNumber*)val floatValue]);
     } else if (strcmp(objectType,@encode(double)) == 0) {

@@ -26,7 +26,7 @@ static IFXMLCoder* sharedCoder = nil;
 {
   if (![super init])
     return nil;
-  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"point",@"rect",@"color",@"profile",@"expression",@"data",nil] retain];
+  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"profile",@"expression",@"data",nil] retain];
   numberFormatter = [NSNumberFormatter new];
   [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
   [numberFormatter setNumberStyle:NSNumberFormatterScientificStyle];
@@ -45,9 +45,17 @@ static IFXMLCoder* sharedCoder = nil;
 {
   if ([data isKindOfClass:[NSString class]])
     return IFXMLDataTypeString;
-  else if ([data isKindOfClass:[NSNumber class]])
-    return IFXMLDataTypeNumber;
-  else if ([data isKindOfClass:[NSValue class]]) {
+  else if ([data isKindOfClass:[NSNumber class]]) {
+    NSNumber* numberData = (NSNumber*)data;
+    if (strcmp([numberData objCType], @encode(int)) == 0)
+      return IFXMLDataTypeInteger;
+    else if (strcmp([numberData objCType], @encode(float)) == 0)
+      return IFXMLDataTypeNumber;
+    else {
+      NSAssert1(NO, @"invalid type in NSNumber: %@", [numberData objCType]);
+      return IFXMLDataTypeInvalid;
+    }
+  } else if ([data isKindOfClass:[NSValue class]]) {
     NSValue* valueData = (NSValue*)data;
     if (strcmp([valueData objCType], @encode(NSPoint)) == 0)
       return IFXMLDataTypePoint;
@@ -83,6 +91,8 @@ static IFXMLCoder* sharedCoder = nil;
       return (NSString*)data;
     case IFXMLDataTypeNumber:
       return [numberFormatter stringFromNumber:(NSNumber*)data];
+    case IFXMLDataTypeInteger:
+      return [data description];
     case IFXMLDataTypePoint:
       return NSStringFromPoint([(NSValue*)data pointValue]);
     case IFXMLDataTypeRectangle:
@@ -124,6 +134,8 @@ static IFXMLCoder* sharedCoder = nil;
   switch (type) {
     case IFXMLDataTypeString:
       return string;
+    case IFXMLDataTypeInteger:
+      return [NSNumber numberWithInt:[[numberFormatter numberFromString:string] intValue]];
     case IFXMLDataTypeNumber:
       return [numberFormatter numberFromString:string];
     case IFXMLDataTypePoint:

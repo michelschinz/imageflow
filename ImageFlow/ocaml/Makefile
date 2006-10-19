@@ -26,6 +26,7 @@ CAML_SORTED_OBJS :=
 CAML_SORTED_OBJS += evaluator/log.cmo
 CAML_SORTED_OBJS += evaluator/marray.cmo
 CAML_SORTED_OBJS += evaluator/mlist.cmo
+CAML_SORTED_OBJS += evaluator/blendmode.cmo
 CAML_SORTED_OBJS += evaluator/point.cmo
 CAML_SORTED_OBJS += evaluator/color.cmo
 CAML_SORTED_OBJS += evaluator/interval.cmo

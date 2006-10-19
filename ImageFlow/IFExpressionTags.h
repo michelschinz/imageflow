@@ -26,6 +26,7 @@ typedef enum {
   IFExpressionTag_Point,
   IFExpressionTag_String,
   IFExpressionTag_Num,
+  IFExpressionTag_Int,
   IFExpressionTag_Bool,
   IFExpressionTag_Action,
   IFExpressionTag_Error

@@ -16,6 +16,7 @@ type t =
   | Point of Point.t
   | String of string
   | Num of float
+  | Int of int
   | Bool of bool
   | Action of action_kind * (t -> unit)
   | Error of string option

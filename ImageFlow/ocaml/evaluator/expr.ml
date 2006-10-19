@@ -13,6 +13,7 @@ type t =
   | Point of Point.t
   | String of string
   | Num of float
+  | Int of int
   | Bool of bool
   | Action of action_kind * (t -> unit)
   | Error of string option
@@ -31,6 +32,7 @@ let is_value = function
   | Point _
   | String _
   | Num _
+  | Int _
   | Bool _
   | Action _
   | Error _ ->
@@ -57,6 +59,7 @@ let rec equal e1 e2 =
   | (Point _, Point _)
   | (String _, String _)
   | (Num _, Num _)
+  | (Int _, Int _)
   | (Bool _, Bool _)
   | (Error _, Error _) ->
       e1 = e2

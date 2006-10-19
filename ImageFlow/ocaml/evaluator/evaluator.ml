@@ -14,24 +14,6 @@ let eval expr =
     Image (Image.of_ciimage (Coreimage.output_image filter))
   and out_mask filter =
     Mask (Image.of_ciimage (Coreimage.output_image filter))
-  and filter_for_blend_mode = function
-      "color burn" -> Nsstring.stringWithUTF8String "CIColorBurnBlendMode"
-    | "color dodge" -> Nsstring.stringWithUTF8String "CIColorDodgeBlendMode"
-    | "color" -> Nsstring.stringWithUTF8String "CIColorBlendMode"
-    | "darken" -> Nsstring.stringWithUTF8String "CIDarkenBlendMode"
-    | "difference" -> Nsstring.stringWithUTF8String "CIDifferenceBlendMode"
-    | "exclusion" -> Nsstring.stringWithUTF8String "CIExclusionBlendMode"
-    | "hard light" -> Nsstring.stringWithUTF8String "CIHardLightBlendMode"
-    | "hue" -> Nsstring.stringWithUTF8String "CIHueBlendMode"
-    | "lighten" -> Nsstring.stringWithUTF8String "CILightenBlendMode"
-    | "luminosity" -> Nsstring.stringWithUTF8String "CILuminosityBlendMode"
-    | "multiply" -> Nsstring.stringWithUTF8String "CIMultiplyBlendMode"
-    | "over" -> Nsstring.stringWithUTF8String "CISourceOverCompositing"
-    | "overlay" -> Nsstring.stringWithUTF8String "CIOverlayBlendMode"
-    | "saturation" -> Nsstring.stringWithUTF8String "CISaturationBlendMode"
-    | "screen" -> Nsstring.stringWithUTF8String "CIScreenBlendMode"
-    | "soft light" -> Nsstring.stringWithUTF8String "CISoftLightBlendMode"
-    | mode -> failwith ("internal error: unknown blend mode " ^ mode)
   in match expr with
     (* Rectangle operators *)
     Op("rect-intersection", [|Rect r1; Rect r2|]) ->
@@ -46,9 +28,11 @@ let eval expr =
       Rect (Rect.union r1 r2)
 
     (* Image operators *)
-  | Op("blend", [|Image i1; Image i2; String m|]) ->
-      out_image (Coreimage.compositing_filter (filter_for_blend_mode m) i1 i2)
-  | Op("channel-to-mask", [|Image i; String c|]) ->
+  | Op("blend", [|Image i1; Image i2; Int m|]) ->
+      let m' = Nsstring.stringWithUTF8String
+          (Blendmode.to_coreimage (Blendmode.of_int m)) in
+      out_image (Coreimage.compositing_filter m' i1 i2)
+  | Op("channel-to-mask", [|Image i; Int c|]) ->
       out_mask (Coreimage.channel_to_mask i c)
   | Op("checkerboard", [|Point c; Color c1; Color c2; Num w; Num s|]) ->
       out_image (Coreimage.checkerboard c c1 c2 w s)

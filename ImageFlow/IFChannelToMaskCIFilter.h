@@ -18,7 +18,7 @@ typedef enum {
 
 @interface IFChannelToMaskCIFilter : CIFilter {
   CIImage* inputImage;
-  NSString* inputChannel;
+  NSNumber* inputChannel;
 }
 
 @end

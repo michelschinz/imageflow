@@ -66,7 +66,8 @@ let eval_as_image cache expr =
                                       Color (Color.make 1. 1. 1. 1.);
                                       Color (Color.make 0.8 0.8 0.8 1.);
                                       Num 40.0;
-                                      Num 1.0 |]) in
-      eval cache (Op("blend", [| bgd; Image i; String "over" |]))
+                                      Num 1.0 |])
+      and m = Blendmode.to_int Blendmode.SourceOver in
+      eval cache (Op("blend", [| bgd; Image i; Int m |]))
   | other ->
       other

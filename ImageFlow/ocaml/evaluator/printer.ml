@@ -52,6 +52,8 @@ let rec print0 fmt = function
       pp_print_string fmt ("\"" ^ s ^ "\"")
   | Num n ->
       pp_print_float fmt n
+  | Int n ->
+      pp_print_int fmt n
   | Bool b ->
       pp_print_bool fmt b
   | Action (k, _) ->

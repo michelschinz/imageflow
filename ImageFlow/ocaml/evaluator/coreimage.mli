@@ -21,7 +21,7 @@ val blend_multiply : Image.t -> Image.t -> [ `CIFilter ] objc
 val blend_overlay : Image.t -> Image.t -> [ `CIFilter ] objc
 val blend_screen : Image.t -> Image.t -> [ `CIFilter ] objc
 val composite_source_over : Image.t -> Image.t -> [ `CIFilter ] objc
-val channel_to_mask : Image.t -> string -> [ `CIFilter ] objc
+val channel_to_mask : Image.t -> int -> [ `CIFilter ] objc
 val checkerboard : Point.t -> Color.t -> Color.t -> float -> float -> [ `CIFilter ] objc
 val circle : Point.t -> float -> Color.t -> [ `CIFilter ] objc
 val color_controls : Image.t -> float -> float -> float -> [ `CIFilter ] objc

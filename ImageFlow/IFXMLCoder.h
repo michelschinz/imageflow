@@ -12,6 +12,7 @@ typedef enum {
   IFXMLDataTypeInvalid = -1,
   IFXMLDataTypeString,
   IFXMLDataTypeNumber,
+  IFXMLDataTypeInteger,
   IFXMLDataTypePoint,
   IFXMLDataTypeRectangle,
   IFXMLDataTypeColor,

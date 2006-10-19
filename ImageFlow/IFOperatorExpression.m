@@ -54,10 +54,14 @@
                                [IFConstantExpression expressionWithRectNS:rectangle]]];
 }
 
-+ (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(NSString*)mode;
++ (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(IFConstantExpression*)mode;
 {
   return [self expressionWithOperator:[IFOperator operatorForName:@"blend"]
-                             operands:[NSArray arrayWithObjects:background,foreground,[IFConstantExpression expressionWithString:mode],nil]];
+                             operands:[NSArray arrayWithObjects:
+                               background,
+                               foreground,
+                               mode,
+                               nil]];
 }
 
 + (id)histogramOf:(IFExpression*)imageExpr;

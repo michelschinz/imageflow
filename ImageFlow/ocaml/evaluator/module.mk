@@ -8,6 +8,7 @@ LOCAL_SRC += marray.ml marray.mli
 LOCAL_SRC += mlist.ml mlist.mli
 
 # Evaluator sources
+LOCAL_SRC += blendmode.ml blendmode.mli
 LOCAL_SRC += point.ml point.mli
 LOCAL_SRC += color.ml color.mli
 LOCAL_SRC += interval.ml interval.mli

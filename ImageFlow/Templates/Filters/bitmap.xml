@@ -17,7 +17,7 @@
         <key>brushColor</key>
         <color>0 0 0 1</color>
         <key>brushMode</key>
-        <string>over</string>
+        <integer>0</integer>
         <key>brushOpacity</key>
         <number>1</number>
       </env>

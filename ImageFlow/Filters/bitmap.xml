@@ -8,7 +8,7 @@
         <variable name="defaultColor"/>
       </operation>
       <variable name="drawing"/>
-      <constant type="string">over</constant>
+      <constant type="integer">0</constant>
     </operation>
   </expression>
   <min_parents>0</min_parents>

@@ -41,8 +41,9 @@ static NSDictionary* channelToMaskKernels = nil;
 
 - (CIImage*)outputImage;
 {
+  char* channelNames = "rgbal";
   CISampler* imageSampler = [CISampler samplerWithImage:inputImage];
-  NSString* kernelName = [NSString stringWithFormat:@"%@ToMask",inputChannel];
+  NSString* kernelName = [NSString stringWithFormat:@"%cToMask",channelNames[[inputChannel intValue]]];
   CIKernel* kernel = [channelToMaskKernels objectForKey:kernelName];
   NSAssert1(kernel != nil, @"no kernel named %@",kernelName);
   return [self apply:kernel

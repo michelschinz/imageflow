@@ -7,7 +7,7 @@
       <name>blend</name>
       <env>
         <key>mode</key>
-        <string>over</string>
+        <integer>0</integer>
         <key>translation</key>
         <point>{0,0}</point>
         <key>alpha</key>

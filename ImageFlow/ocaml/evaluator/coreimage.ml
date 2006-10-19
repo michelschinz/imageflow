@@ -40,6 +40,11 @@ let number key k filter number =
   Cifilter.setNumber ~filter:filter ~number:nsnumber ~key:key;
   k filter
 
+let integer key k filter number =
+  let nsnumber = Nsnumber.numberWithInt number in
+  Cifilter.setNumber ~filter:filter ~number:nsnumber ~key:key;
+  k filter
+
 let string key k filter string =
   let nsstring = Nsstring.stringWithUTF8String string in
   Cifilter.setString ~filter:filter ~string:nsstring ~key:key;
@@ -76,7 +81,7 @@ let composite_source_over = compositing_filter !@"CISourceOverCompositing"
 
 let channel_to_mask =
   filter !@"IFChannelToMask" (image !@"inputImage"
-                              @@@ string !@"inputChannel")
+                              @@@ integer !@"inputChannel")
 
 let checkerboard =
   filter !@"CICheckerboardGenerator" (point !@"inputCenter"

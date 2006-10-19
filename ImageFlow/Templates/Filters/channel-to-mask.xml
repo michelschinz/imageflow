@@ -7,7 +7,7 @@
       <name>channel-to-mask</name>
       <env>
         <key>channel</key>
-        <string>r</string>
+        <integer>0</integer>
       </env>
     </filter>
     <tree id="2">
