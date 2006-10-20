@@ -315,7 +315,7 @@ static value elemAsCaml(const char* elem) {
     static value* colorMakeClosure = NULL;
     if (colorMakeClosure == NULL)
       colorMakeClosure = caml_named_value("Color.make");
-    NSColor* color = (NSColor*)object;
+    NSColor* color = [(NSColor*)object colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; // TODO use correct color space
     args[0] = caml_copy_double([color redComponent]);
     args[1] = caml_copy_double([color greenComponent]);
     args[2] = caml_copy_double([color blueComponent]);
