@@ -62,20 +62,16 @@
   float maxY = docRect.size.height - clipRect.size.height;
   
   // If the clip view is wider than the doc, we can't scroll horizontally
-  if (centerHorizontally) {
-    if (docRect.size.width < clipRect.size.width )
-      newScrollPoint.x = roundf( maxX / 2.0 );
-    else
-      newScrollPoint.x = roundf( MAX(0,MIN(newScrollPoint.x,maxX)) );
-  }
+  if (docRect.size.width < clipRect.size.width )
+    newScrollPoint.x = centerHorizontally ? roundf( maxX / 2.0 ) : 0.0;
+  else
+    newScrollPoint.x = roundf( MAX(0,MIN(newScrollPoint.x,maxX)) );
   
-  if (centerVertically) {
-    // If the clip view is taller than the doc, we can't scroll vertically
-    if( docRect.size.height < clipRect.size.height )
-      newScrollPoint.y = roundf( maxY / 2.0 );
-    else
-      newScrollPoint.y = roundf( MAX(0,MIN(newScrollPoint.y,maxY)) );
-  }
+  // If the clip view is taller than the doc, we can't scroll vertically
+  if( docRect.size.height < clipRect.size.height )
+    newScrollPoint.y = centerVertically ? roundf( maxY / 2.0 ) : 0.0;
+  else
+    newScrollPoint.y = roundf( MAX(0,MIN(newScrollPoint.y,maxY)) );
   
   return newScrollPoint;
 }
