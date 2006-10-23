@@ -3,10 +3,6 @@
 kernel vec4 mask(sampler image, sampler mask)
 {
   float a = sample(mask,samplerCoord(mask)).a;
-  vec4 p = unpremultiply(sample(image, samplerCoord(image)));
-
-  return (a == 0.0)
-    ? vec4(0.0, 0.0, 0.0, 0.0)
-    : premultiply(vec4(p.r, p.g, p.b, p.a * a));
+  vec4 p = sample(image, samplerCoord(image));
+  return p * a;
 }
-
