@@ -21,6 +21,9 @@ static NSArray* parentNames = nil;
 
 + (void)initialize;
 {
+  if (self != [IFBlendFilterDelegate class])
+    return; // avoid repeated initialisation
+
   parentNames = [[NSArray arrayWithObjects:@"background",@"foreground",nil] retain];
 }
 

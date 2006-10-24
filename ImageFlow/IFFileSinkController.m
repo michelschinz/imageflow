@@ -25,6 +25,9 @@ static NSDictionary* fileTypesOptions = nil;
 
 + (void)initialize;
 {
+  if (self != [IFFileSinkController class])
+    return; // avoid repeated initialisation
+
   fileTypes = (NSArray*)CGImageDestinationCopyTypeIdentifiers();
   fileTypesNames = [(NSArray*)[[self collect] imageIOLocalizedString:[fileTypes each]] retain];
   fileTypesOptions = [[NSDictionary dictionaryWithObjectsAndKeys:

@@ -16,6 +16,9 @@ static NSDictionary* stringToInt;
 
 + (void)initialize;
 {
+  if (self != [IFProbeWindowController class])
+    return; // avoid repeated initialisation
+
   stringToInt = [NSDictionary dictionaryWithObjectsAndKeys:
     [NSNumber numberWithInt:0], @"0",
     [NSNumber numberWithInt:1], @"1",

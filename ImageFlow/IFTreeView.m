@@ -94,6 +94,9 @@ static NSSize sidePaneSize;
 
 + (void)initialize;
 {
+  if (self != [IFTreeView class])
+    return; // avoid repeated initialisation
+
   sidePaneColor = [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] retain];
   sidePaneSize = NSMakeSize(15,50);
 }

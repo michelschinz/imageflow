@@ -26,6 +26,9 @@ static CIKernel *setAlphaKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFSetAlphaCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFSetAlpha"  
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

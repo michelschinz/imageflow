@@ -25,6 +25,9 @@ static CIKernel *thresholdKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFThresholdCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFThreshold"  
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

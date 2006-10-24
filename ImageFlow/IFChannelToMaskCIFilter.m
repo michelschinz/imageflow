@@ -32,6 +32,9 @@ static NSDictionary* channelToMaskKernels = nil;
 
 + (void)initialize;
 {
+  if (self != [IFChannelToMaskCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFChannelToMask"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

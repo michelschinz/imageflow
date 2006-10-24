@@ -27,6 +27,9 @@ static CIKernel *maskKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFMaskCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFMask"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

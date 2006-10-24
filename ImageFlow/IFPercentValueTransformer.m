@@ -13,6 +13,9 @@
 
 + (void)initialize;
 {
+  if (self != [IFPercentValueTransformer class])
+    return; // avoid repeated initialisation
+
   [NSValueTransformer setValueTransformer:[[[self alloc] init] autorelease]
                                   forName:@"IFPercentTransformer"];
 }

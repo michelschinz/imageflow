@@ -26,6 +26,9 @@ static CIKernel *maskOverlayKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFMaskOverlayCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFMaskOverlay"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

@@ -21,6 +21,9 @@ static IFConstantExpression* maskColor = nil;
 
 + (void)initialize;
 {
+  if (self != [IFMaskFilterDelegate class])
+    return; // avoid repeated initialisation
+
   parentNames = [[NSArray arrayWithObjects:@"image",@"mask",nil] retain];
   variantNames = [[NSArray arrayWithObjects:@"",@"Mask overlay",nil] retain];
   maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];

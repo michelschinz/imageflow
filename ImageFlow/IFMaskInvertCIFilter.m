@@ -26,6 +26,9 @@ static CIKernel *maskInvertKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFMaskInvertCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFMaskInvert"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

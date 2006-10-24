@@ -13,6 +13,9 @@
 
 + (void)initialize;
 {
+  if (self != [IFProfileNamePathValueTransformer class])
+    return; // avoid repeated initialisation
+
   [NSValueTransformer setValueTransformer:[[[self alloc] init] autorelease]
                                   forName:@"IFProfileNamePathTransformer"];
 }

@@ -26,6 +26,9 @@ static CIKernel *singleColorKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFSingleColorCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFSingleColor"  
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

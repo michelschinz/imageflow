@@ -23,6 +23,9 @@ static NSMutableDictionary* filterArrayControllers = nil;
 
 + (void)initialize;
 {
+  if (self != [IFTreeLayoutGhost class])
+    return; // avoid repeated initialisation
+
   filterArrayControllers = [NSMutableDictionary new];
 }
 

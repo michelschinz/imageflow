@@ -27,6 +27,9 @@ static NSDictionary* allFiltersByName;
 
 + (void)initialize;
 {
+  if (self != [IFFilter class])
+    return; // avoid repeated initialisation
+
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   NSString* filtersDir = [[IFDirectoryManager sharedDirectoryManager] filtersDirectory];
   NSArray* allFiles = (NSArray*)[[filtersDir collect] stringByAppendingPathComponent:[[fileMgr directoryContentsAtPath:filtersDir] each]];

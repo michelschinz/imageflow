@@ -26,6 +26,9 @@ static CIKernel *circleGeneratorKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFCircleGeneratorCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFCircleGenerator"  
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

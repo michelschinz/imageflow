@@ -30,6 +30,9 @@ static CIImage* emptyImage;
 
 + (void)initialize;
 {
+  if (self != [IFImageView class])
+    return; // avoid repeated initialisation
+
   CIFilter* emptyFilter = [CIFilter filterWithName:@"IFEmpty"];
   emptyImage = [[emptyFilter valueForKey:@"outputImage"] retain];
 }

@@ -23,6 +23,9 @@ static NSDictionary* allOperatorsByName;
 
 + (void)initialize;
 {
+  if (self != [IFOperator class])
+    return; // avoid repeated initialisation
+  
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   NSString* operatorsDir = [[IFDirectoryManager sharedDirectoryManager] operatorsDirectory];
   NSArray* allFiles = (NSArray*)[[operatorsDir collect] stringByAppendingPathComponent:[[fileMgr directoryContentsAtPath:operatorsDir] each]];

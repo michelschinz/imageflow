@@ -28,6 +28,9 @@ static CIKernel* maskToImageKernel = nil;
 
 + (void)initialize;
 {
+  if (self != [IFMaskToImageCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFMaskToImage"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:

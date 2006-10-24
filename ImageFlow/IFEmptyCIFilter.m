@@ -15,6 +15,9 @@ static CIImage* emptyImage = nil;
 
 + (void)initialize;
 {
+  if (self != [IFEmptyCIFilter class])
+    return; // avoid repeated initialisation
+
   [CIFilter registerFilterName:@"IFEmpty"  
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
