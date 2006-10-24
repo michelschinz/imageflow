@@ -1,6 +1,12 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFBitmapUIConfigurator; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {opacityTextField = NSTextField; }; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = IFFilterController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }
     ); 
