@@ -13,17 +13,18 @@
 
 @implementation IFTreeNodeMacro
 
-+ (id)nodeMacroWithRoot:(IFTreeNode*)theRoot;
++ (id)nodeMacroWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
 {
-  return [[[self alloc] initWithRoot:theRoot] autorelease];
+  return [[[self alloc] initWithRoot:theRoot inlineOnInsertion:theInlineOnInsertion] autorelease];
 }
 
-- (id)initWithRoot:(IFTreeNode*)theRoot;
+- (id)initWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
 {
   IFTreeNodeReference* rootReference = [IFTreeNodeReference referenceWithTreeNode:theRoot];
   if (![super initWithFilter:[IFConfiguredFilter configuredFilterWithFilter:[IFFilterMacro filterWithMacroRootReference:rootReference]
                                                                 environment:[IFEnvironment environment]]])
     return nil;
+  inlineOnInsertion = theInlineOnInsertion;
   rootRef = [rootReference retain];
   return self;
 }
@@ -37,18 +38,23 @@
 
 - (IFTreeNode*)cloneNode;
 {
-  return [IFTreeNodeMacro nodeMacroWithRoot:[self root]];
+  return [IFTreeNodeMacro nodeMacroWithRoot:[self root] inlineOnInsertion:inlineOnInsertion];
+}
+
+- (BOOL)inlineOnInsertion;
+{
+  return inlineOnInsertion;
+}
+
+- (IFTreeNode*)root;
+{
+  return [rootRef treeNode];
 }
 
 - (void)unlinkTree;
 {
   NSAssert(NO, @"TODO");
   // TODO clone tree deeply, and make sure that clients are informed of the change
-}
-
-- (IFTreeNode*)root;
-{
-  return [rootRef treeNode];
 }
 
 @end

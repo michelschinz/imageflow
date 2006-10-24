@@ -342,6 +342,11 @@ static IFDocumentTemplateManager* templateManager;
   for (int i = 0; i < ghostsToAdd; ++i)
     [replacement insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]
              inParentsAtIndex:parentsCount + i];
+  if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
+    IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
+    if ([macroReplacement inlineOnInsertion])
+      [self inlineMacroNode:macroReplacement];
+  }
   [self ensureGhostNodes];
 }
 
@@ -392,10 +397,10 @@ static IFTreeNode* rootOf(NSSet* nodeSet)
   return root;
 }
 
-- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes;
+- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes inlineOnInsertion:(BOOL)inlineOnInsertion;
 {
   int paramsCounter = 0;
-  return [IFTreeNodeMacro nodeMacroWithRoot:cloneNodesInSet(nodes, rootOf(nodes), &paramsCounter)];
+  return [IFTreeNodeMacro nodeMacroWithRoot:cloneNodesInSet(nodes, rootOf(nodes), &paramsCounter) inlineOnInsertion:inlineOnInsertion];
 }
 
 static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boundary)

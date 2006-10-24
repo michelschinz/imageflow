@@ -33,6 +33,8 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (void)recomputeFrameSize;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
 - (void)clearHighlighting;
+- (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
+- (IFTreeNode*)copiedNode;
 - (void)clearSelectedNodes;
 - (void)setSelectedNodes:(NSSet*)newSelectedNodes;
 - (NSSet*)selectedNodes;
@@ -62,8 +64,11 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 
 @implementation IFTreeView
 
+static NSString* IFPrivatePboard = @"ImageFlowPrivatePasteboard";
+
 NSString* IFMarkPboardType = @"IFMarkPboardType";
 NSString* IFTreeNodesPboardType = @"IFTreeNodesPboardType";
+NSString* IFTreeNodePboardType = @"IFTreeNodePboardType";
 
 typedef enum {
   IFLayoutLayerTree,
@@ -108,6 +113,7 @@ static NSSize sidePaneSize;
     nil];
   trackingRectTags = [NSMutableArray new];
   selectedNodes = [NSMutableSet new];
+  copiedNode = nil;
   showThumbnails = NO;
   columnWidth = 50.0;
 
@@ -161,6 +167,8 @@ static NSSize sidePaneSize;
   [labelFont release];
   labelFont = nil;
 
+  [copiedNode release];
+  copiedNode = nil;
   [selectedNodes release];
   selectedNodes = nil;
   [trackingRectTags release];
@@ -558,17 +566,22 @@ static NSSize sidePaneSize;
     [[self layoutNodeForTreeNode:[self cursorNode]] activate];
 }
 
-- (void)deleteBackward:(id)sender;
+- (void)delete:(id)sender;
 {
   NSSet* nodesToDelete = [self selectedNodes];
   IFTreeNode* nodeToDelete;
   if ([nodesToDelete count] > 1) {
-    IFTreeNodeMacro* macroNode = [document macroNodeByCopyingNodesOf:nodesToDelete];
+    IFTreeNodeMacro* macroNode = [document macroNodeByCopyingNodesOf:nodesToDelete inlineOnInsertion:NO];
     [document replaceNodesIn:nodesToDelete byMacroNode:macroNode];
     nodeToDelete = macroNode;
   } else
     nodeToDelete = [nodesToDelete anyObject];
   [document deleteNode:nodeToDelete];
+}
+
+- (void)deleteBackward:(id)sender;
+{
+  [self delete:sender];
 }
 
 - (void)deleteNodeUnderMouse:(id)sender;
@@ -623,6 +636,53 @@ static NSSize sidePaneSize;
   IFAppController* appController = [[NSApplication sharedApplication] delegate];
   IFProbeWindowController* inspectorController = (IFProbeWindowController*)[appController newInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
   [inspectorController stickToBookmarkIndex:[(NSMenuItem*)sender tag]];
+}
+
+#pragma mark Copy and paste
+
+- (void)copy:(id)sender;
+{
+  NSSet* nodesToCopy = [self selectedNodes];
+  IFTreeNode* nodeToCopy = [document macroNodeByCopyingNodesOf:nodesToCopy inlineOnInsertion:YES];
+  NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:IFPrivatePboard];
+  [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodePboardType] owner:self];
+  [self setCopiedNode:nodeToCopy];
+}  
+
+- (void)pasteboard:(NSPasteboard*)sender provideDataForType:(NSString*)type;
+{
+  NSAssert1([type isEqualToString:IFTreeNodePboardType], @"unexpected pasteboard type: %@",type);
+  [sender setData:[NSArchiver archivedDataWithRootObject:[IFTreeNodeProxy proxyForNode:[self copiedNode] ofDocument:document]]
+          forType:IFTreeNodePboardType];
+}
+
+- (void)pasteboardChangedOwner:(NSPasteboard *)sender;
+{
+  [self setCopiedNode:nil];
+}
+
+- (void)cut:(id)sender;
+{
+  [self copy:sender];
+  [self delete:sender];
+}
+
+- (void)paste:(id)sender;
+{
+  if (![[self cursorNode] isGhost]) {
+    NSBeep(); // TODO error message
+    return;
+  }
+
+  NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:IFPrivatePboard];
+  NSString* available = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:IFTreeNodePboardType]];
+  if (available == nil) {
+    NSBeep(); // TODO deactivate menu instead (or additionally)
+    return;
+  }
+  IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
+
+  [document replaceNode:[self cursorNode] usingNode:[proxy node]];
 }
 
 #pragma mark Drag and drop
@@ -892,6 +952,21 @@ static enum {
     highlightingPath = nil;
     pointedElement = nil;
   }
+}
+
+#pragma mark Copy and paste
+
+- (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
+{
+  if (newCopiedNode == copiedNode)
+    return;
+  [copiedNode release];
+  copiedNode = [newCopiedNode retain];
+}
+
+- (IFTreeNode*)copiedNode;
+{
+  return copiedNode;
 }
 
 #pragma mark Selection

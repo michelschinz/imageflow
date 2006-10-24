@@ -119,11 +119,7 @@
   else {
     NSMutableSet* nodes = [NSMutableSet new];
     [self extractTemplateNodesFor:root into:nodes];
-    nodeRequiresInlining = ([nodes count] > 1);
-    if (nodeRequiresInlining)
-      node = [[document macroNodeByCopyingNodesOf:nodes] retain]; // create a macro-node which will be inlined on insertion
-    else
-      node = [[[nodes anyObject] cloneNode] retain];
+    node = [[document macroNodeByCopyingNodesOf:nodes inlineOnInsertion:YES] retain];
   }
 
   isLoaded = YES;

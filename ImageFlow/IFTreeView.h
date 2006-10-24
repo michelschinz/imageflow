@@ -23,6 +23,7 @@ extern NSString* IFTreeNodesPboardType;
 
   IFDocument* document;
   NSMutableSet* selectedNodes;
+  IFTreeNode* copiedNode;
 
   NSColor* backgroundColor;
   unsigned int upToDateLayers;

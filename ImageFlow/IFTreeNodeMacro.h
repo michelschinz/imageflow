@@ -12,13 +12,15 @@
 #import "IFTreeNodeReference.h"
 
 @interface IFTreeNodeMacro : IFTreeNode {
+  BOOL inlineOnInsertion;
   IFTreeNodeReference* rootRef;
   NSMutableArray* parameterNames;
 }
 
-+ (id)nodeMacroWithRoot:(IFTreeNode*)theRoot;
-- (id)initWithRoot:(IFTreeNode*)theRoot;
++ (id)nodeMacroWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
+- (id)initWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
 
+- (BOOL)inlineOnInsertion;
 - (IFTreeNode*)root;
 
 - (void)unlinkTree;
