@@ -67,7 +67,7 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 static NSString* IFPrivatePboard = @"ImageFlowPrivatePasteboard";
 
 NSString* IFMarkPboardType = @"IFMarkPboardType";
-NSString* IFTreeNodesPboardType = @"IFTreeNodesPboardType";
+NSString* IFTreeNodeArrayPboardType = @"IFTreeNodeArrayPboardType";
 NSString* IFTreeNodePboardType = @"IFTreeNodePboardType";
 
 typedef enum {
@@ -133,7 +133,7 @@ static NSSize sidePaneSize;
   layoutNodes = createMutableDictionaryWithRetainedKeys();
   layoutThumbnails = createMutableDictionaryWithRetainedKeys();
   
-  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodesPboardType,IFMarkPboardType,nil]];
+  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
   return self;
 }
@@ -493,10 +493,10 @@ static NSSize sidePaneSize;
 
   if ([elementUnderMouse node] == [self cursorNode]) {
     NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodesPboardType] owner:self];
-    NSArray* nodes = [NSArray arrayWithObject:[IFTreeNodeProxy proxyForNode:[elementUnderMouse node] ofDocument:document]];
+    [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodeArrayPboardType] owner:self];
+    NSArray* nodes = [[IFTreeNodeProxy collect] proxyForNode:[[self selectedNodes] each] ofDocument:document];
     NSData* data = [NSArchiver archivedDataWithRootObject:nodes];
-    [pasteboard setData:data forType:IFTreeNodesPboardType];
+    [pasteboard setData:data forType:IFTreeNodeArrayPboardType];
   
     [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pasteboard source:self slideBack:YES];    
   }
@@ -568,15 +568,7 @@ static NSSize sidePaneSize;
 
 - (void)delete:(id)sender;
 {
-  NSSet* nodesToDelete = [self selectedNodes];
-  IFTreeNode* nodeToDelete;
-  if ([nodesToDelete count] > 1) {
-    IFTreeNodeMacro* macroNode = [document macroNodeByCopyingNodesOf:nodesToDelete inlineOnInsertion:NO];
-    [document replaceNodesIn:nodesToDelete byMacroNode:macroNode];
-    nodeToDelete = macroNode;
-  } else
-    nodeToDelete = [nodesToDelete anyObject];
-  [document deleteNode:nodeToDelete];
+  [document deleteContiguousNodes:[self selectedNodes]];
 }
 
 - (void)deleteBackward:(id)sender;
@@ -705,10 +697,9 @@ static NSSize sidePaneSize;
   if ([types containsObject:IFMarkPboardType]) {
     int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
     [(IFTreeMark*)[[document marks] objectAtIndex:markIndex] unset];
-  } else if ([types containsObject:IFTreeNodesPboardType]) {
-    NSArray* nodes = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodesPboardType]];
-    for (int i = 0; i < [nodes count]; ++i)
-      [document deleteNode:(id)[(IFTreeNodeProxy*)[nodes objectAtIndex:i] node]];
+  } else if ([types containsObject:IFTreeNodeArrayPboardType]) {
+    NSArray* nodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
+    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]];
   }
 }
 
@@ -727,7 +718,7 @@ static enum {
     [[self layoutNodeForTreeNode:[self cursorNode]] deactivate];
 
   NSArray* types = [[sender draggingPasteboard] types];
-  if ([types containsObject:IFTreeNodesPboardType])
+  if ([types containsObject:IFTreeNodeArrayPboardType])
     dragKind = IFDragKindNode;
   else if ([types containsObject:NSFilenamesPboardType])
     dragKind = IFDragKindFileName; // TODO check that we can load the files being dragged
@@ -793,8 +784,8 @@ static enum {
   NSPasteboard* pboard = [sender draggingPasteboard];
   switch (dragKind) {
     case IFDragKindNode: {
-      NSArray* draggedNodesProxy = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodesPboardType]];
-      IFTreeNode* draggedNode = [[draggedNodesProxy objectAtIndex:0] node];
+      NSArray* draggedNodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
+      NSSet* draggedNodes = [NSSet setWithArray:(NSArray*)[[draggedNodeProxies collect] node]];
       NSDragOperation operation = [sender draggingSourceOperationMask];
 
       if (targetNode == nil)
@@ -802,31 +793,31 @@ static enum {
       
       if ((operation & (NSDragOperationCopy|NSDragOperationMove)) != 0) {
         // Copy or move node
-        IFTreeNode* draggedClone = [draggedNode cloneNode];
+        IFTreeNodeMacro* draggedMacro = [document macroNodeByCopyingNodesOf:draggedNodes inlineOnInsertion:YES];
         if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]]) {
-          if ([document canInsertNode:draggedClone asParentOf:targetNode])
-            [document insertNode:draggedClone asParentOf:targetNode];
+          if ([document canInsertNode:draggedMacro asParentOf:targetNode])
+            [document insertNode:draggedMacro asParentOf:targetNode];
           else
             return NO;
         } else if ([targetElement isKindOfClass:[IFTreeLayoutOutputConnector class]]) {
-          if ([document canInsertNode:draggedClone asChildOf:targetNode])
-            [document insertNode:draggedClone asChildOf:targetNode];
+          if ([document canInsertNode:draggedMacro asChildOf:targetNode])
+            [document insertNode:draggedMacro asChildOf:targetNode];
           else
             return NO;
         } else {
           NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
-          if ([document canReplaceNode:targetNode usingNode:draggedClone])
-            [document replaceNode:targetNode usingNode:draggedClone];
+          if ([document canReplaceNode:targetNode usingNode:draggedMacro])
+            [document replaceNode:targetNode usingNode:draggedMacro];
           else
             return NO;
         }
         if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
-          [document deleteNode:draggedNode];        
+          [document deleteContiguousNodes:draggedNodes];
         return YES;        
       } else if ((operation & NSDragOperationLink) != 0) {
         // Link: create node alias
-        if ([[targetNode parents] count] == 0) {
-          [document replaceNode:targetNode usingNode:[IFTreeNodeAlias nodeAliasWithOriginal:draggedNode]];
+        if ([draggedNodes count] == 1 && [[targetNode parents] count] == 0) {
+          [document replaceNode:targetNode usingNode:[IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]]];
           return YES;
         } else
           return NO;

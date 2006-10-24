@@ -377,6 +377,18 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
+- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
+{
+  IFTreeNode* nodeToDelete;
+  if ([contiguousNodes count] > 1) {
+    IFTreeNodeMacro* macroNode = [self macroNodeByCopyingNodesOf:contiguousNodes inlineOnInsertion:NO];
+    [self replaceNodesIn:contiguousNodes byMacroNode:macroNode];
+    nodeToDelete = macroNode;
+  } else
+    nodeToDelete = [contiguousNodes anyObject];
+  [self deleteNode:nodeToDelete];
+}
+
 static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* paramsCounter)
 {
   if ([nodes containsObject:root]) {

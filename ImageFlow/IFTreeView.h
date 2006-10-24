@@ -16,7 +16,6 @@
 #import "IFGrabableViewMixin.h"
 
 extern NSString* IFMarkPboardType;
-extern NSString* IFTreeNodesPboardType;
 
 @interface IFTreeView : NSControl {
   IFGrabableViewMixin* grabableViewMixin;
