@@ -237,6 +237,8 @@ int countAncestors(IFTreeNode* node) {
   }
   
   IFExpression* nodeExpression = [node expression];
+  if (nodeExpression == nil)
+    return;
   IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:nodeExpression]];
   if (![extentExpr isError]) {
     NSRect extent = [extentExpr rectValueNS];

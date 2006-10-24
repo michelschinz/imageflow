@@ -35,7 +35,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   [super dealloc];
 }
 
-- (IFTreeNode*)shallowClone;
+- (IFTreeNode*)cloneNode;
 {
   return [IFTreeNodeAlias nodeAliasWithOriginal:original];
 }

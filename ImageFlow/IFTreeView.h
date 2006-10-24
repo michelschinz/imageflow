@@ -22,6 +22,8 @@ extern NSString* IFTreeNodesPboardType;
   IFGrabableViewMixin* grabableViewMixin;
 
   IFDocument* document;
+  NSMutableSet* selectedNodes;
+
   NSColor* backgroundColor;
   unsigned int upToDateLayers;
   NSMutableArray* layoutLayers;

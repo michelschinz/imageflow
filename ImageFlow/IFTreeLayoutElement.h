@@ -51,10 +51,12 @@ typedef enum {
 - (NSSet*)leavesOfKind:(IFTreeLayoutElementKind)kind;
 
 - (IFTreeLayoutSingle*)layoutElementForNode:(IFTreeNode*)node kind:(IFTreeLayoutElementKind)kind;
+- (NSSet*)layoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)thePoint;
 - (NSSet*)layoutElementsIntersectingRect:(NSRect)rect kind:(IFTreeLayoutElementKind)kind;
 
 // protected
 - (void)drawForLocalRect:(NSRect)localRect;
+- (void)collectLayoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind inSet:(NSMutableSet*)resultSet;
 
 @end

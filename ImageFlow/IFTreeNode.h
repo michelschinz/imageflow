@@ -24,8 +24,8 @@ extern const unsigned int ID_NONE;
 
 + (id)nodeWithFilter:(IFConfiguredFilter*)theFilter;
 - (id)initWithFilter:(IFConfiguredFilter*)theFilter;
-- (IFTreeNode*)shallowClone;
-- (IFTreeNode*)deepClone;
+- (IFTreeNode*)cloneNode;
+- (IFTreeNode*)cloneNodeAndAncestors;
 
 - (NSArray*)parents;
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
@@ -47,6 +47,7 @@ extern const unsigned int ID_NONE;
 - (BOOL)acceptsParents:(int)inputCount;
 - (BOOL)acceptsChildren:(int)outputCount;
 
+- (NSSet*)ancestors;
 - (BOOL)isParentOf:(IFTreeNode*)other;
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;

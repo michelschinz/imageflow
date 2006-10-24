@@ -33,7 +33,13 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (void)recomputeFrameSize;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
 - (void)clearHighlighting;
+- (void)clearSelectedNodes;
+- (void)setSelectedNodes:(NSSet*)newSelectedNodes;
+- (NSSet*)selectedNodes;
+- (void)setCursorNode:(IFTreeNode*)newCursorNode;
+- (IFTreeNode*)cursorNode;
 - (void)updateLayout:(NSNotification*)notification;
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node;
 - (void)invalidateLayoutLayer:(int)layoutLayer;
 - (void)invalidateLayout;
 - (void)enqueueLayoutNotification;
@@ -42,7 +48,7 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (IFTreeLayoutElement*)layoutInputConnectorForTreeNode:(IFTreeNode*)node;
 - (IFTreeLayoutElement*)layoutOutputConnectorForTreeNode:(IFTreeNode*)node tag:(NSString*)tag leftReach:(float)lReach rightReach:(float)rReach;
 - (IFTreeLayoutElement*)layoutSidePaneForElement:(IFTreeLayoutSingle*)base;
-- (IFTreeLayoutElement*)layoutCursor:(IFTreeMark*)cursorMark forTreeLayout:(IFTreeLayoutElement*)rootLayout;
+- (IFTreeLayoutElement*)layoutSelectedNodes:(NSSet*)nodes cursor:(IFTreeNode*)cursorNode forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 - (IFTreeLayoutElement*)layoutMarks:(NSArray*)marks forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;
@@ -62,7 +68,7 @@ NSString* IFTreeNodesPboardType = @"IFTreeNodesPboardType";
 typedef enum {
   IFLayoutLayerTree,
   IFLayoutLayerSidePane,
-  IFLayoutLayerCursor,
+  IFLayoutLayerSelection,
   IFLayoutLayerMarks
 } IFLayoutLayer;
 
@@ -75,6 +81,8 @@ static NSString* IFBoundsChangedContext = @"IFBoundsChangedContext";
 static const float NODE_INTERNAL_MARGIN = 4.0;
 static const float GUTTER_WIDTH = 14.0 + 4.0;
 static const float SIDE_PANE_CORNER_RADIUS = 4.0;
+static const float CURSOR_PATH_WIDTH = 3.0;
+static const float SELECTION_PATH_WIDTH = 1.0;
 
 static NSColor* sidePaneColor;
 static NSSize sidePaneSize;
@@ -99,6 +107,7 @@ static NSSize sidePaneSize;
     [NSNull null],
     nil];
   trackingRectTags = [NSMutableArray new];
+  selectedNodes = [NSMutableSet new];
   showThumbnails = NO;
   columnWidth = 50.0;
 
@@ -151,6 +160,9 @@ static NSSize sidePaneSize;
   connectorColor = nil;
   [labelFont release];
   labelFont = nil;
+
+  [selectedNodes release];
+  selectedNodes = nil;
   [trackingRectTags release];
   trackingRectTags = nil;
   [layoutLayers release];
@@ -342,12 +354,12 @@ static NSSize sidePaneSize;
 
 - (IBAction)makeNodeAlias:(id)sender;
 {
-  [document addTree:[IFTreeNodeAlias nodeAliasWithOriginal:[[document cursorMark] node]]];
+  [document addTree:[IFTreeNodeAlias nodeAliasWithOriginal:[self cursorNode]]];
 }
 
 - (IBAction)toggleNodeFoldingState:(id)sender;
 {
-  IFTreeNode* node = [[document cursorMark] node];
+  IFTreeNode* node = [self cursorNode];
   [node setIsFolded:![node isFolded]];
   [self invalidateLayout];
 }
@@ -356,7 +368,7 @@ static NSSize sidePaneSize;
 {
   const SEL action = [item action];
   if (action == @selector(toggleNodeFoldingState:))
-    return [[[[document cursorMark] node] parents] count] > 0;
+    return [[[self cursorNode] parents] count] > 0;
   else if (action == @selector(removeBookmark:) || action == @selector(goToBookmark:))
     return [[[document marks] objectAtIndex:[item tag]] isSet];
   else
@@ -399,8 +411,8 @@ static NSSize sidePaneSize;
                        context:(void *)context;
 {
   if (context == IFCursorMovedContext) {
-    [self invalidateLayoutLayer:IFLayoutLayerCursor];
-    [self scrollRectToVisible:[[self layoutNodeForTreeNode:[[document cursorMark] node]] frame]];
+    [self invalidateLayoutLayer:IFLayoutLayerSelection];
+    [self scrollRectToVisible:[[self layoutNodeForTreeNode:[self cursorNode]] frame]];
   } else if (context == IFMarkChangedContext)
     [self invalidateLayoutLayer:IFLayoutLayerMarks];
   else if (context == IFBoundsChangedContext)
@@ -445,9 +457,18 @@ static NSSize sidePaneSize;
           [self moveToNodeRepresentedBy:clickedElement];
         [clickedElement activateWithMouseDown:theEvent];
         break;
-      case 2: {
-        // TODO select subtree
-      } break;
+      case 2:
+        if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
+          IFTreeNode* clickedNode = [clickedElement node];
+          [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode];
+        }
+        break;
+      case 3:
+        if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
+          IFTreeNode* clickedNode = [clickedElement node];
+          [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode];
+        }
+        break;
       default:
         ; // ignore
     }
@@ -462,7 +483,7 @@ static NSSize sidePaneSize;
   NSPoint localPoint = [self convertPoint:[event locationInWindow] fromView:nil];
   IFTreeLayoutElement* elementUnderMouse = [self layoutElementAtPoint:localPoint];
 
-  if ([elementUnderMouse node] == [[document cursorMark] node]) {
+  if ([elementUnderMouse node] == [self cursorNode]) {
     NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodesPboardType] owner:self];
     NSArray* nodes = [NSArray arrayWithObject:[IFTreeNodeProxy proxyForNode:[elementUnderMouse node] ofDocument:document]];
@@ -481,7 +502,7 @@ static NSSize sidePaneSize;
 
 - (void)moveUp:(id)sender;
 {
-  IFTreeNode* node = [[document cursorMark] node];
+  IFTreeNode* node = [self cursorNode];
   if (![node isFolded] && [[node parents] count] > 0)
     [self moveToNode:[[node parents] objectAtIndex:0]];
   else
@@ -490,7 +511,7 @@ static NSSize sidePaneSize;
 
 - (void)moveDown:(id)sender;
 {
-  IFTreeNode* current = [[document cursorMark] node];
+  IFTreeNode* current = [self cursorNode];
   if ([[document roots] indexOfObject:current] == NSNotFound)
     [self moveToNode:[current child]];
   else
@@ -499,7 +520,7 @@ static NSSize sidePaneSize;
 
 - (void)moveLeft:(id)sender;
 {
-  IFTreeNode* current = [[document cursorMark] node];
+  IFTreeNode* current = [self cursorNode];
   NSArray* siblings = [[current child] parents];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings > 0)
@@ -510,7 +531,7 @@ static NSSize sidePaneSize;
 
 - (void)moveRight:(id)sender;
 {
-  IFTreeNode* current = [[document cursorMark] node];
+  IFTreeNode* current = [self cursorNode];
   NSArray* siblings = [[current child] parents];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
@@ -534,12 +555,20 @@ static NSSize sidePaneSize;
 - (void)cancelOperation:(id)sender;
 {
   if ([[document cursorMark] isSet])
-    [[self layoutNodeForTreeNode:[[document cursorMark] node]] activate];
+    [[self layoutNodeForTreeNode:[self cursorNode]] activate];
 }
 
 - (void)deleteBackward:(id)sender;
 {
-  [document deleteNode:[[document cursorMark] node]];
+  NSSet* nodesToDelete = [self selectedNodes];
+  IFTreeNode* nodeToDelete;
+  if ([nodesToDelete count] > 1) {
+    IFTreeNodeMacro* macroNode = [document macroNodeByCopyingNodesOf:nodesToDelete];
+    [document replaceNodesIn:nodesToDelete byMacroNode:macroNode];
+    nodeToDelete = macroNode;
+  } else
+    nodeToDelete = [nodesToDelete anyObject];
+  [document deleteNode:nodeToDelete];
 }
 
 - (void)deleteNodeUnderMouse:(id)sender;
@@ -550,9 +579,8 @@ static NSSize sidePaneSize;
 
 - (void)insertNewline:(id)sender
 {
-  IFTreeMark* cursor = [document cursorMark];
-  [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[cursor node]];
-  [self moveToNode:[[cursor node] child]];
+  [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[self cursorNode]];
+  [self moveToNode:[self cursorNode]];
 }
 
 - (NSMenu*)menuForEvent:(NSEvent*)event;
@@ -636,7 +664,7 @@ static enum {
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
 {
   if ([[document cursorMark] isSet])
-    [[self layoutNodeForTreeNode:[[document cursorMark] node]] deactivate];
+    [[self layoutNodeForTreeNode:[self cursorNode]] deactivate];
 
   NSArray* types = [[sender draggingPasteboard] types];
   if ([types containsObject:IFTreeNodesPboardType])
@@ -714,7 +742,7 @@ static enum {
       
       if ((operation & (NSDragOperationCopy|NSDragOperationMove)) != 0) {
         // Copy or move node
-        IFTreeNode* draggedClone = [draggedNode shallowClone];
+        IFTreeNode* draggedClone = [draggedNode cloneNode];
         if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]]) {
           if ([document canInsertNode:draggedClone asParentOf:targetNode])
             [document insertNode:draggedClone asParentOf:targetNode];
@@ -753,7 +781,7 @@ static enum {
         IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         for (int i = 0; i < [fileNames count]; ++i) {
-          IFTreeNode* newNode = [loadNode shallowClone];
+          IFTreeNode* newNode = [loadNode cloneNode];
           [[[newNode filter] environment] setValue:[fileNames objectAtIndex:i] forKey:@"fileName"];
           [document addTree:newNode];
         }
@@ -763,7 +791,7 @@ static enum {
         IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
-        [document replaceNode:targetNode usingNode:[loadNode shallowClone]];
+        [document replaceNode:targetNode usingNode:[loadNode cloneNode]];
         return YES;
       } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
         // Change "fileName" entry in environment to the dropped file name.
@@ -866,6 +894,54 @@ static enum {
   }
 }
 
+#pragma mark Selection
+
+- (void)clearSelectedNodes;
+{
+  [self setSelectedNodes:[NSSet set]];
+}
+
+- (void)setSelectedNodes:(NSSet*)newSelectedNodes;
+{
+  if (newSelectedNodes == selectedNodes)
+    return;
+  [selectedNodes release];
+  selectedNodes = [newSelectedNodes copy];
+  
+  [self invalidateLayoutLayer:IFLayoutLayerSelection];
+}
+
+- (NSSet*)selectedNodes;
+{
+  if ([self cursorNode] == nil)
+    return [NSSet set];
+  else if ([selectedNodes count] == 0)
+    return [NSSet setWithObject:[self cursorNode]];
+  else
+    return selectedNodes;
+}
+
+- (void)setCursorNode:(IFTreeNode*)newCursorNode;
+{
+  if (newCursorNode == [self cursorNode])
+    return;
+
+  [self clearSelectedNodes];
+  [[document cursorMark] setNode:newCursorNode];  
+}
+
+- (IFTreeNode*)cursorNode;
+{
+  return [[document cursorMark] node];
+}
+
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node;
+{
+  NSAssert([nodes containsObject:node], @"invalid selection");
+  [self setCursorNode:node];
+  [self setSelectedNodes:nodes];
+}
+
 #pragma mark Layout
 
 - (void)enqueueLayoutNotification;
@@ -896,8 +972,8 @@ static enum {
     }
     case IFLayoutLayerSidePane:
       return [self layoutSidePaneForElement:(IFTreeLayoutSingle*)pointedElement];
-    case IFLayoutLayerCursor:
-      return [self layoutCursor:[document cursorMark] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
+    case IFLayoutLayerSelection:
+      return [self layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     case IFLayoutLayerMarks:
       return [self layoutMarks:[document marks] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     default:
@@ -1038,13 +1114,21 @@ static enum {
   return [IFTreeLayoutSidePane layoutSidePaneWithBase:base];
 }
 
-- (IFTreeLayoutElement*)layoutCursor:(IFTreeMark*)cursorMark forTreeLayout:(IFTreeLayoutElement*)rootLayout;
+- (IFTreeLayoutElement*)layoutSelectedNodes:(NSSet*)nodes
+                                     cursor:(IFTreeNode*)cursorNode
+                              forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 {
-  if (![cursorMark isSet])
-    return [IFTreeLayoutComposite layoutComposite];
-
-  IFTreeLayoutSingle* nodeLayout = [rootLayout layoutElementForNode:[cursorMark node] kind:IFTreeLayoutElementKindNode];
-  return [IFTreeLayoutCursor layoutCursorWithBase:nodeLayout];
+  NSMutableSet* result = [NSMutableSet set];
+  NSSet* elements = [rootLayout layoutElementsForNodes:nodes kind:IFTreeLayoutElementKindNode];
+  NSEnumerator* elemsEnumerator = [elements objectEnumerator];
+  IFTreeLayoutSingle* element;
+  while (element = [elemsEnumerator nextObject]) {
+    BOOL isCursor = [element node] == cursorNode;
+    [result addObject:[IFTreeLayoutCursor layoutCursorWithBase:element pathWidth:(isCursor ? CURSOR_PATH_WIDTH : SELECTION_PATH_WIDTH)]];
+  }
+  return [result count] == 1
+    ? [result anyObject]
+    : [IFTreeLayoutComposite layoutCompositeWithElements:result containingView:self];
 }
 
 - (IFTreeLayoutElement*)layoutMarks:(NSArray*)marks forTreeLayout:(IFTreeLayoutElement*)rootLayout;
@@ -1141,7 +1225,7 @@ static enum {
 - (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem;
 {
   if (layoutElem != nil)
-    [[document cursorMark] setNode:[layoutElem node]];
+    [self setCursorNode:[layoutElem node]];
 }
 
 NSPoint IFMidPoint(NSPoint p1, NSPoint p2)
@@ -1205,7 +1289,7 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
   const float searchDistance = 1000;
 
   IFTreeLayoutElement* treeLayout = [layoutLayers objectAtIndex:IFLayoutLayerTree];
-  IFTreeLayoutSingle* refLayoutElement = [treeLayout layoutElementForNode:[[document cursorMark] node] kind:IFTreeLayoutElementKindNode];
+  IFTreeLayoutSingle* refLayoutElement = [treeLayout layoutElementForNode:[self cursorNode] kind:IFTreeLayoutElementKindNode];
   NSRect refRect = [refLayoutElement frame];
   
   NSPoint refMidPoint = IFFaceMidPoint(refRect,direction);

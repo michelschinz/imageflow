@@ -14,6 +14,7 @@
   NSBezierPath* cursorPath;
 }
 
-+ (id)layoutCursorWithBase:(IFTreeLayoutSingle*)theBase;
++ (id)layoutCursorWithBase:(IFTreeLayoutSingle*)theBase pathWidth:(float)thePathWidth;
+- (id)initWithBase:(IFTreeLayoutSingle*)theBase pathWidth:(float)thePathWidth;
 
 @end

@@ -11,20 +11,18 @@
 
 @implementation IFTreeLayoutCursor
 
-const float CURSOR_WIDTH = 3.0;
-
-+ (id)layoutCursorWithBase:(IFTreeLayoutSingle*)theBase;
++ (id)layoutCursorWithBase:(IFTreeLayoutSingle*)theBase pathWidth:(float)thePathWidth;
 {
-  return [[[self alloc] initWithBase:theBase] autorelease];
+  return [[[self alloc] initWithBase:theBase pathWidth:thePathWidth] autorelease];
 }
 
-- (id)initWithBase:(IFTreeLayoutSingle*)theBase;
+- (id)initWithBase:(IFTreeLayoutSingle*)theBase pathWidth:(float)thePathWidth;
 {
   if (![super initWithBase:theBase])
     return nil;
   cursorPath = [[base outlinePath] copy];
-  [cursorPath setLineWidth:CURSOR_WIDTH];
-  [self setBounds:NSInsetRect([cursorPath bounds],-CURSOR_WIDTH,-CURSOR_WIDTH)];
+  [cursorPath setLineWidth:thePathWidth];
+  [self setBounds:NSInsetRect([cursorPath bounds], -thePathWidth, -thePathWidth)];
   return self;
 }
 

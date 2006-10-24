@@ -28,6 +28,8 @@
 		FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */; };
 		FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */; };
 		FA164C9E0AD1132A0007C9EA /* IFExpressionEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */; };
+		FA1774A40AEC8EE70013D98B /* IFBitmapUIConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1774A20AEC8EE70013D98B /* IFBitmapUIConfigurator.m */; };
+		FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */ = {isa = PBXBuildFile; fileRef = FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */; };
 		FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */; };
 		FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */; };
 		FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF70C091946FE00E288BB /* IFThresholdCIFilter.m */; };
@@ -252,6 +254,10 @@
 		FA150A300ADA2FC0007DA372 /* IFImageCGLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCGLayer.m; sourceTree = "<group>"; };
 		FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionEvaluator.h; sourceTree = "<group>"; };
 		FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionEvaluator.m; sourceTree = "<group>"; };
+		FA1774A10AEC8EE70013D98B /* IFBitmapUIConfigurator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBitmapUIConfigurator.h; sourceTree = "<group>"; };
+		FA1774A20AEC8EE70013D98B /* IFBitmapUIConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBitmapUIConfigurator.m; sourceTree = "<group>"; };
+		FA1776490AED3DCA0013D98B /* IFTreeNodeReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeReference.h; sourceTree = "<group>"; };
+		FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeReference.m; sourceTree = "<group>"; };
 		FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 		FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBlendFilter.nib; sourceTree = "<group>"; };
@@ -701,6 +707,8 @@
 			children = (
 				FA2D393E094D72D60068F20A /* IFBitmapDrawingSourceDelegate.h */,
 				FA2D393F094D72D60068F20A /* IFBitmapDrawingSourceDelegate.m */,
+				FA1774A10AEC8EE70013D98B /* IFBitmapUIConfigurator.h */,
+				FA1774A20AEC8EE70013D98B /* IFBitmapUIConfigurator.m */,
 			);
 			name = Bitmap;
 			sourceTree = "<group>";
@@ -759,6 +767,8 @@
 				FA2411780962C98100173105 /* IFTreeIdentifier.m */,
 				FAF020C6096445130098D336 /* IFTreeNodeProxy.h */,
 				FAF020C7096445130098D336 /* IFTreeNodeProxy.m */,
+				FA1776490AED3DCA0013D98B /* IFTreeNodeReference.h */,
+				FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */,
 			);
 			name = Tree;
 			sourceTree = "<group>";
@@ -1528,6 +1538,8 @@
 				FA6E98B10AE6A0DC0074184E /* IFBlendMode.m in Sources */,
 				FAEF26890AE7910100BD8954 /* IFMaskThresholdCIFilter.m in Sources */,
 				FAEF26930AE7929B00BD8954 /* IFMaskInvertCIFilter.m in Sources */,
+				FA1774A40AEC8EE70013D98B /* IFBitmapUIConfigurator.m in Sources */,
+				FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,10 +12,10 @@
 #import "IFTreeNodeMacro.h"
 
 @interface IFFilterMacro : IFFilter {
-  IFTreeNode* macroRoot; // not retained
+  IFTreeNodeReference* macroRootRef;
 }
 
-+ (id)filterWithMacroRoot:(IFTreeNode*)theMacroRoot;
-- (id)initWithMacroRoot:(IFTreeNode*)theMacroRoot;
++ (id)filterWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
+- (id)initWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 
 @end

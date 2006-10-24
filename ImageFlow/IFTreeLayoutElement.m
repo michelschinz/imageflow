@@ -162,6 +162,13 @@
   return nil;
 }
 
+- (NSSet*)layoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind;
+{
+  NSMutableSet* accumulator = [NSMutableSet setWithCapacity:[nodes count]];
+  [self collectLayoutElementsForNodes:nodes kind:kind inSet:accumulator];
+  return accumulator;
+}
+
 -(IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)thePoint;
 {
   return nil;
@@ -171,6 +178,11 @@
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
+- (void)collectLayoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind inSet:(NSMutableSet*)resultSet;
+{
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 @end

@@ -53,18 +53,18 @@ const unsigned int ID_NONE = ~0;
   [super dealloc];
 }
 
-- (IFTreeNode*)shallowClone;
+- (IFTreeNode*)cloneNode;
 {
   NSAssert([self class] == [IFTreeNode class], @"missing redefiniton of <clone> method");
   return [IFTreeNode nodeWithFilter:[filter clone]];
 }
 
-- (IFTreeNode*)deepClone;
+- (IFTreeNode*)cloneNodeAndAncestors;
 {
-  IFTreeNode* clone = [self shallowClone];
+  IFTreeNode* clone = [self cloneNode];
   NSArray* parentsToClone = [self parents];
   for (int i = 0; i < [parentsToClone count]; ++i)
-    [clone insertObject:[[parentsToClone objectAtIndex:i] deepClone] inParentsAtIndex:i];
+    [clone insertObject:[[parentsToClone objectAtIndex:i] cloneNodeAndAncestors] inParentsAtIndex:i];
   return clone;
 }
 
@@ -186,6 +186,19 @@ const unsigned int ID_NONE = ~0;
 - (BOOL)acceptsChildren:(int)outputCount;
 {
   return [filter acceptsChildren:outputCount];
+}
+
+- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
+{
+  [accumulator addObject:self];
+  [[parents do] collectAncestorsInSet:accumulator];
+}
+
+- (NSSet*)ancestors;
+{
+  NSMutableSet* result = [NSMutableSet set];
+  [self collectAncestorsInSet:result];
+  return result;
 }
 
 - (BOOL)isParentOf:(IFTreeNode*)other;

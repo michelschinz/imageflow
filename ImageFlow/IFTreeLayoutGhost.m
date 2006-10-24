@@ -171,7 +171,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
     if ([selected count] > 0) {
       IFDocument* doc = [containingView document];
       IFDocumentTemplate* template = [selected objectAtIndex:0];
-      IFTreeNode* clonedTemplateNode = [[template node] shallowClone];
+      IFTreeNode* clonedTemplateNode = [[template node] cloneNode];
       [doc replaceNode:node usingNode:clonedTemplateNode];
       if ([template nodeRequiresInlining])
         [doc inlineMacroNode:(IFTreeNodeMacro*)clonedTemplateNode];

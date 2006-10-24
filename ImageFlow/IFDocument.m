@@ -372,6 +372,63 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
+static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* paramsCounter)
+{
+  if ([nodes containsObject:root]) {
+    IFTreeNode* clonedRoot = [root cloneNode];
+    NSArray* parents = [root parents];
+    for (int i = 0; i < [parents count]; ++i)
+      [clonedRoot insertObject:cloneNodesInSet(nodes, [parents objectAtIndex:i], paramsCounter) inParentsAtIndex:i];
+    return clonedRoot;
+  } else
+    return [IFTreeNodeParameter nodeParameterWithIndex:(*paramsCounter)++];
+}
+
+static IFTreeNode* rootOf(NSSet* nodeSet)
+{
+  IFTreeNode* root;
+  for (root = [nodeSet anyObject]; [nodeSet containsObject:[root child]]; root = [root child])
+    ;
+  return root;
+}
+
+- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes;
+{
+  int paramsCounter = 0;
+  return [IFTreeNodeMacro nodeMacroWithRoot:cloneNodesInSet(nodes, rootOf(nodes), &paramsCounter)];
+}
+
+static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boundary)
+{
+  NSCAssert([nodes containsObject:root], @"invalid root");
+
+  NSArray* parents = [root parents];
+  for (int i = 0; i < [parents count]; ++i) {
+    IFTreeNode* parent = [parents objectAtIndex:i];
+    if ([nodes containsObject:parent])
+      collectBoundary(parent, nodes, boundary);
+    else {
+      [boundary addObject:parent];
+      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
+    }
+  }
+}
+
+- (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
+{
+  IFTreeNode* root = rootOf(nodes);
+  int rootIndex = [[[root child] parents] indexOfObject:root];
+  // detach root
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
+  // attach parent nodes to macro node
+  NSMutableArray* actualParameters = [NSMutableArray array];
+  collectBoundary(root, nodes, actualParameters);
+  for (int i = 0; i < [actualParameters count]; ++i)
+    [macroNode replaceObjectInParentsAtIndex:i withObject:[actualParameters objectAtIndex:i]];
+  // attach new root (the macro node)
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
+}
+
 static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNodes)
 {
   NSArray* parents = [root parents];
@@ -397,13 +454,27 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   }
 
   // Clone macro node body, and replace parameter nodes by parent nodes, introducing aliases when necessary
-  IFTreeNode* bodyRootClone = [[macroNode root] deepClone];
+  IFTreeNode* bodyRootClone = [[macroNode root] cloneNodeAndAncestors];
   NSAssert(![bodyRootClone isKindOfClass:[IFTreeNodeParameter class]], @"unexpected parameter node");
   replaceParameterNodes(bodyRootClone, detachedMacroParents);
   int macroIndex = [[[macroNode child] parents] indexOfObject:macroNode];
   [[macroNode child] replaceObjectInParentsAtIndex:macroIndex withObject:bodyRootClone];
   
   [[marks do] setNode:bodyRootClone ifCurrentNodeIs:macroNode];
+}
+
+- (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
+{
+  return [node ancestors];
+}
+
+- (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
+{
+  IFTreeNode* root = node;
+  while (root != nil && [root child] != fakeRoot)
+    root = [root child];
+  NSAssert1(root != nil, @"cannot find root of tree containing %@",node);
+  return [root ancestors];
 }
 
 #pragma mark exportation

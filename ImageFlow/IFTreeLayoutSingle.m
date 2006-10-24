@@ -85,4 +85,10 @@
     return [NSSet set];
 }
 
+- (void)collectLayoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind inSet:(NSMutableSet*)resultSet;
+{
+  if ([nodes containsObject:node] && kind == [self kind])
+    [resultSet addObject:self];
+}
+
 @end

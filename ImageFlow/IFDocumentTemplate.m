@@ -121,9 +121,9 @@
     [self extractTemplateNodesFor:root into:nodes];
     nodeRequiresInlining = ([nodes count] > 1);
     if (nodeRequiresInlining)
-      node = [[IFTreeNodeMacro nodeMacroForExistingNodes:nodes root:root] retain]; // create a macro-node which will be inlined on insertion
+      node = [[document macroNodeByCopyingNodesOf:nodes] retain]; // create a macro-node which will be inlined on insertion
     else
-      node = [[[nodes anyObject] shallowClone] retain];
+      node = [[[nodes anyObject] cloneNode] retain];
   }
 
   isLoaded = YES;

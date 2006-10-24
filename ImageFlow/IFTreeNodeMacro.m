@@ -13,25 +13,6 @@
 
 @implementation IFTreeNodeMacro
 
-static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* parentsCount)
-{
-  if ([nodes containsObject:root]) {
-    IFTreeNode* clonedRoot = [root shallowClone];
-    NSArray* parents = [root parents];
-    for (int i = 0; i < [parents count]; ++i)
-      [clonedRoot insertObject:cloneNodesInSet(nodes, [parents objectAtIndex:i], parentsCount) inParentsAtIndex:i];
-    return clonedRoot;
-  } else
-    return [IFTreeNodeParameter nodeParameterWithIndex:(*parentsCount)++];
-}
-
-+ (id)nodeMacroForExistingNodes:(NSSet*)nodes root:(IFTreeNode*)root;
-{
-  NSAssert([nodes containsObject:root], @"root not contained in nodes");
-  int parentsCount = 0;
-  return [self nodeMacroWithRoot:cloneNodesInSet(nodes, root, &parentsCount)];
-}
-
 + (id)nodeMacroWithRoot:(IFTreeNode*)theRoot;
 {
   return [[[self alloc] initWithRoot:theRoot] autorelease];
@@ -39,28 +20,35 @@ static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* parentsC
 
 - (id)initWithRoot:(IFTreeNode*)theRoot;
 {
-  if (![super initWithFilter:[IFConfiguredFilter configuredFilterWithFilter:[IFFilterMacro filterWithMacroRoot:theRoot]
+  IFTreeNodeReference* rootReference = [IFTreeNodeReference referenceWithTreeNode:theRoot];
+  if (![super initWithFilter:[IFConfiguredFilter configuredFilterWithFilter:[IFFilterMacro filterWithMacroRootReference:rootReference]
                                                                 environment:[IFEnvironment environment]]])
     return nil;
-  root = [theRoot retain];
+  rootRef = [rootReference retain];
   return self;
 }
 
 - (void)dealloc;
 {
-  [root release];
-  root = nil;
+  [rootRef release];
+  rootRef = nil;
   [super dealloc];
 }
 
-- (IFTreeNode*)shallowClone;
+- (IFTreeNode*)cloneNode;
 {
-  return [IFTreeNodeMacro nodeMacroWithRoot:root];
+  return [IFTreeNodeMacro nodeMacroWithRoot:[self root]];
+}
+
+- (void)unlinkTree;
+{
+  NSAssert(NO, @"TODO");
+  // TODO clone tree deeply, and make sure that clients are informed of the change
 }
 
 - (IFTreeNode*)root;
 {
-  return root;
+  return [rootRef treeNode];
 }
 
 @end

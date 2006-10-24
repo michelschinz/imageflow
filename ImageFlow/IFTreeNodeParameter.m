@@ -25,7 +25,7 @@
   return self;
 }
 
-- (IFTreeNode*)shallowClone;
+- (IFTreeNode*)cloneNode;
 {
   return [IFTreeNodeParameter nodeParameterWithIndex:index];
 }

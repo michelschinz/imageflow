@@ -25,29 +25,31 @@ static int parametersCount(IFTreeNode* root) {
   }
 }
 
-+ (id)filterWithMacroRoot:(IFTreeNode*)theMacroRoot;
++ (id)filterWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 {
-  return [[[self alloc] initWithMacroRoot:theMacroRoot] autorelease];
+  return [[[self alloc] initWithMacroRootReference:theMacroRootRef] autorelease];
 }
 
-- (id)initWithMacroRoot:(IFTreeNode*)theMacroRoot;
+- (id)initWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 {
-  int parentsCount = parametersCount(theMacroRoot);
+  int parentsCount = parametersCount([theMacroRootRef treeNode]);
   if (![super initWithName:@"<macro>"
-                expression:[theMacroRoot expression]
+                expression:[[theMacroRootRef treeNode] expression]
               parentsArity:NSMakeRange(parentsCount,1)
-                childArity:NSMakeRange(0, [theMacroRoot acceptsChildren:1] ? 2 : 1)
+                childArity:NSMakeRange(0, [[theMacroRootRef treeNode] acceptsChildren:1] ? 2 : 1)
            settingsNibName:nil
                   delegate:nil])
     return nil;
-  macroRoot = theMacroRoot;
-  [macroRoot addObserver:self forKeyPath:@"expression" options:0 context:IFRootExpressionChangedContext];
+  macroRootRef = [theMacroRootRef retain];
+  [macroRootRef addObserver:self forKeyPath:@"treeNode.expression" options:0 context:IFRootExpressionChangedContext];
   return self;
 }
 
 - (void)dealloc;
 {
-  [macroRoot removeObserver:self forKeyPath:@"expression"];
+  [macroRootRef removeObserver:self forKeyPath:@"treeNode.expression"];
+  [macroRootRef release];
+  macroRootRef = nil;
   [super dealloc];
 }
 

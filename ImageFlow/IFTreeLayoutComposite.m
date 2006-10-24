@@ -107,4 +107,9 @@
   return result;
 }
 
+- (void)collectLayoutElementsForNodes:(NSSet*)nodes kind:(IFTreeLayoutElementKind)kind inSet:(NSMutableSet*)resultSet;
+{
+  [[elements do] collectLayoutElementsForNodes:nodes kind:kind inSet:resultSet];
+}
+
 @end

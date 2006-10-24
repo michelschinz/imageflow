@@ -65,6 +65,12 @@ extern NSString* IFTreeChangedNotification;
 - (BOOL)canReplaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 - (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 - (void)deleteNode:(IFTreeNode*)node;
+
+- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes;
+- (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
 - (void)inlineMacroNode:(IFTreeNodeMacro*)node;
+
+- (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
+- (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 
 @end

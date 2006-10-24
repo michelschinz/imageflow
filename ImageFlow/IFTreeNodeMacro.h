@@ -9,16 +9,18 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeNode.h"
+#import "IFTreeNodeReference.h"
 
 @interface IFTreeNodeMacro : IFTreeNode {
-  IFTreeNode* root;
+  IFTreeNodeReference* rootRef;
   NSMutableArray* parameterNames;
 }
 
-+ (id)nodeMacroForExistingNodes:(NSSet*)nodes root:(IFTreeNode*)root;
 + (id)nodeMacroWithRoot:(IFTreeNode*)theRoot;
 - (id)initWithRoot:(IFTreeNode*)theRoot;
 
 - (IFTreeNode*)root;
+
+- (void)unlinkTree;
 
 @end
