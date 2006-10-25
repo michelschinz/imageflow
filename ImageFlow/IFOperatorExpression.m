@@ -51,7 +51,8 @@
   return [self expressionWithOperator:[IFOperator operatorForName:@"crop"]
                              operands:[NSArray arrayWithObjects:
                                expression,
-                               [IFConstantExpression expressionWithRectNS:rectangle]]];
+                               [IFConstantExpression expressionWithRectNS:rectangle],
+                               nil]];
 }
 
 + (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(IFConstantExpression*)mode;
