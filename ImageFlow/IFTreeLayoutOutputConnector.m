@@ -42,8 +42,8 @@
   tag = [[NSMutableAttributedString alloc] initWithString:theTag
                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                  parStyle, NSParagraphStyleAttributeName,
-                                                 [theContainingView labelFont], NSFontAttributeName,
-                                                 [theContainingView connectorLabelColor], NSForegroundColorAttributeName,
+                                                 [[theContainingView layoutParameters] labelFont], NSFontAttributeName,
+                                                 [[theContainingView layoutParameters] connectorLabelColor], NSForegroundColorAttributeName,
                                                  nil]];
   leftReach = theLeftReach;
   rightReach = theRightReach;
@@ -65,12 +65,13 @@
 
 - (void)drawForLocalRect:(NSRect)rect;
 {
-  [[containingView connectorColor] set];
+  IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
+  [[layoutParams connectorColor] set];
   [[self outlinePath] fill];
 
   if (tag != nil) {
-    float textHeight = [containingView labelFontHeight];
-    [tag drawWithRect:NSMakeRect(0,-(textHeight + 1.0),[containingView columnWidth],textHeight) options:0];
+    float textHeight = [layoutParams labelFontHeight];
+    [tag drawWithRect:NSMakeRect(0,-(textHeight + 1.0),[layoutParams columnWidth],textHeight) options:0];
   }
 }
 
@@ -83,11 +84,12 @@
   // The outline path is constructed in such a way that the connector is correctly placed under a node whose bottom-left corner lies at the origin. For that reason, most of the points of the outline path have negative Y components.
   NSBezierPath* outline = [NSBezierPath bezierPath];
 
-  const float margin = [containingView nodeInternalMargin];
-  const float arrowSize = [containingView connectorArrowSize];
-  const float columnWidth = [containingView columnWidth];
+  IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
+  const float margin = [layoutParams nodeInternalMargin];
+  const float arrowSize = [layoutParams connectorArrowSize];
+  const float columnWidth = [layoutParams columnWidth];
   const float internalWidth = columnWidth - 2.0 * margin;
-  const float textHeight = [containingView labelFontHeight];
+  const float textHeight = [layoutParams labelFontHeight];
 
   // Build the path in a clockwise direction, starting from the top-left part of the top arrow
   [outline moveToPoint:NSMakePoint(margin,0)];

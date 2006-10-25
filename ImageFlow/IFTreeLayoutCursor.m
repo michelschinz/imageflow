@@ -35,7 +35,7 @@
 
 - (void)drawForLocalRect:(NSRect)rect;
 {
-  [[containingView cursorColor] set];
+  [[[containingView layoutParameters] cursorColor] set];
   [cursorPath stroke];
 }
 

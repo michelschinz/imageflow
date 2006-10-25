@@ -35,7 +35,7 @@
 
 - (void)drawForLocalRect:(NSRect)rect;
 {
-  [[containingView connectorColor] set];
+  [[[containingView layoutParameters] connectorColor] set];
   [[self outlinePath] fill];
 }
 
@@ -47,9 +47,10 @@
 {
   NSBezierPath* outline = [NSBezierPath bezierPath];
   
-  const float margin = [containingView nodeInternalMargin];
-  const float arrowSize = [containingView connectorArrowSize];
-  const float internalWidth = [containingView columnWidth] - 2.0 * margin;
+  IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
+  const float margin = [layoutParams nodeInternalMargin];
+  const float arrowSize = [layoutParams connectorArrowSize];
+  const float internalWidth = [layoutParams columnWidth] - 2.0 * margin;
   
   // Build the path in a clockwise direction, starting from the top-left part of the "arrow"
   [outline moveToPoint:NSMakePoint(margin,0)];

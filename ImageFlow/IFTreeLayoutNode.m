@@ -39,14 +39,14 @@ static const float foldHeight = 2.0;
 
   [node addObserver:self forKeyPath:@"expression" options:0 context:(id)kExpressionChangeContext];
   [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:(id)kExpressionChangeContext];
-  [containingView addObserver:self forKeyPath:@"columnWidth" options:0 context:(id)kLayoutChangeContext];
+  [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:(id)kLayoutChangeContext];
   [node addObserver:self forKeyPath:@"isFolded" options:0 context:(id)kLayoutChangeContext];
   return self;
 }
 
 - (void)dealloc {
   [node removeObserver:self forKeyPath:@"isFolded"];
-  [containingView removeObserver:self forKeyPath:@"columnWidth"];
+  [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
   [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
   [node removeObserver:self forKeyPath:@"expression"];
   node = nil;
@@ -93,6 +93,7 @@ int countAncestors(IFTreeNode* node) {
   }
   
   // Draw label
+  NSFont* labelFont = [[containingView layoutParameters] labelFont];
   NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
   [parStyle setAlignment:NSCenterTextAlignment];
   NSString* labelStr = [node isFolded]
@@ -101,10 +102,10 @@ int countAncestors(IFTreeNode* node) {
   NSAttributedString* label = [[[NSAttributedString alloc] initWithString:labelStr
                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                  parStyle, NSParagraphStyleAttributeName,
-                                                                 [containingView labelFont], NSFontAttributeName,
+                                                                 labelFont, NSFontAttributeName,
                                                                  [NSColor blackColor], NSForegroundColorAttributeName,
                                                                  nil]] autorelease];
-  [label drawWithRect:NSOffsetRect(labelFrame,0,-[[containingView labelFont] descender]) options:0];
+  [label drawWithRect:NSOffsetRect(labelFrame,0,-[labelFont descender]) options:0];
   
   // Draw thumbnail, if any
   if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
@@ -124,12 +125,12 @@ int countAncestors(IFTreeNode* node) {
     NSAttributedString* name = [[[NSAttributedString alloc] initWithString:@"name" // TODO
                                                                 attributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                   parStyle, NSParagraphStyleAttributeName,
-                                                                  [containingView labelFont], NSFontAttributeName,
+                                                                  labelFont, NSFontAttributeName,
                                                                   [NSColor blackColor], NSForegroundColorAttributeName,
                                                                   nil]] autorelease];
     [[NSColor yellowColor] set];
     [[NSBezierPath bezierPathWithRect:nameFrame] fill];
-    [name drawWithRect:NSOffsetRect(nameFrame,0,-[[containingView labelFont] descender]) options:0];
+    [name drawWithRect:NSOffsetRect(nameFrame,0,-[labelFont descender]) options:0];
   }
   
   // Draw alias arrow, if necessary
@@ -151,15 +152,15 @@ int countAncestors(IFTreeNode* node) {
 
 - (void)updateInternalLayout;
 {
-  const float margin = [containingView nodeInternalMargin];
-  const float externalWidth = [containingView columnWidth];
+  const float margin = [[containingView layoutParameters] nodeInternalMargin];
+  const float externalWidth = [[containingView layoutParameters] columnWidth];
   const float internalWidth = externalWidth - 2.0 * margin;
   NSRect internalFrame = NSZeroRect;
   
   float x = margin, y = margin;
 
   if ([node name] != nil) {
-    nameFrame = NSMakeRect(x,y,internalWidth,[containingView labelFontHeight]);
+    nameFrame = NSMakeRect(x,y,internalWidth,[[containingView layoutParameters] labelFontHeight]);
     internalFrame = NSUnionRect(internalFrame,nameFrame);
     y += NSHeight(nameFrame) + margin;
   } else
@@ -174,7 +175,7 @@ int countAncestors(IFTreeNode* node) {
   } else
     thumbnailFrame = NSZeroRect;
 
-  labelFrame = NSMakeRect(x,y,internalWidth,[containingView labelFontHeight]);
+  labelFrame = NSMakeRect(x,y,internalWidth,[[containingView layoutParameters] labelFontHeight]);
   y += NSHeight(labelFrame);
   internalFrame = NSUnionRect(internalFrame,labelFrame);
   
@@ -186,7 +187,7 @@ int countAncestors(IFTreeNode* node) {
     foldingFrame = NSZeroRect;
 
   NSRect externalFrame = NSInsetRect(internalFrame,-margin,-margin);
-  NSAssert(fabs(NSWidth(externalFrame) - [containingView columnWidth]) < 0.001, @"invalid external frame");
+  NSAssert(fabs(NSWidth(externalFrame) - [[containingView layoutParameters] columnWidth]) < 0.001, @"invalid external frame");
   
   NSBezierPath* outline = [NSBezierPath bezierPath];
   if (isSink) {
@@ -229,7 +230,7 @@ int countAncestors(IFTreeNode* node) {
 
 - (void)updateExpression;
 {
-  const float margin = [containingView nodeInternalMargin];
+  const float margin = [[containingView layoutParameters] nodeInternalMargin];
 
   if (evaluatedExpression != nil) {
     [evaluatedExpression release];
@@ -244,7 +245,7 @@ int countAncestors(IFTreeNode* node) {
     NSRect extent = [extentExpr rectValueNS];
     NSRect canvasBounds = [[containingView document] canvasBounds]; // TODO observe
     NSRect croppedExtent = NSIntersectionRect(extent, canvasBounds);
-    float maxSide = [containingView columnWidth] - 2.0 * margin;
+    float maxSide = [[containingView layoutParameters] columnWidth] - 2.0 * margin;
     float scaling = maxSide / fmax(NSWidth(croppedExtent), NSHeight(croppedExtent));
     IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:nodeExpression];
     IFExpression* croppedExpression = NSContainsRect(canvasBounds, extent)
@@ -265,6 +266,7 @@ int countAncestors(IFTreeNode* node) {
   if (delta < 0.00001)
     return;
   [self updateInternalLayout];
+  [containingView invalidateLayout];
 }
 
 @end

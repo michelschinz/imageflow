@@ -14,72 +14,36 @@
 #import "IFTreeNode.h"
 #import "IFTreeMark.h"
 #import "IFGrabableViewMixin.h"
+#import "IFTreeLayoutStrategy.h"
+#import "IFTreeLayoutParameters.h"
 
 extern NSString* IFMarkPboardType;
 
 @interface IFTreeView : NSControl {
   IFGrabableViewMixin* grabableViewMixin;
+  IFTreeLayoutStrategy* layoutStrategy;
+  IFTreeLayoutParameters* layoutParameters;
 
   IFDocument* document;
   NSMutableSet* selectedNodes;
   IFTreeNode* copiedNode;
 
-  NSColor* backgroundColor;
   unsigned int upToDateLayers;
   NSMutableArray* layoutLayers;
   NSMutableArray* trackingRectTags;
   IFTreeLayoutElement* pointedElement;
   NSBezierPath* highlightingPath;
-
-  BOOL showThumbnails;
-  float columnWidth;
-
-  NSFont* labelFont;
-  float labelFontHeight;
-  
-  NSButtonCell* deleteButtonCell;
-  NSBezierPath* sidePanePath;
-
-  NSColor* connectorColor;
-  NSColor* connectorLabelColor;
-  float connectorArrowSize;
-
-  NSColor* cursorColor;
-  NSColor* markBackgroundColor;
-  NSColor* highlightingColor;
-  
-  NSMutableDictionary* layoutNodes;
-  NSMutableDictionary* layoutThumbnails;
 }
 
 - (void)setDocument:(IFDocument*)document;
 - (IFDocument*)document;
 
-- (float)columnWidth;
-- (void)setColumnWidth:(float)theColumnWidth;
-
-- (NSColor*)backgroundColor;
-
-- (float)nodeInternalMargin;
-- (NSFont*)labelFont;
-- (float)labelFontHeight;
-
-- (NSColor*)sidePaneColor;
-- (NSSize)sidePaneSize;
-- (NSBezierPath*)sidePanePath;
-- (NSButtonCell*)deleteButtonCell;
-
-- (NSColor*)connectorColor;
-- (NSColor*)connectorLabelColor;
-- (float)connectorArrowSize;
-
-- (NSColor*)cursorColor;
-- (NSColor*)markBackgroundColor;
+- (IFTreeLayoutStrategy*)layoutStrategy;
+- (IFTreeLayoutParameters*)layoutParameters;
 
 - (NSSize)idealSize;
 
-- (BOOL)showThumbnails;
-- (void)setShowThumbnails:(BOOL)theValue;
+- (void)invalidateLayout;
 
 - (IBAction)makeNodeAlias:(id)sender;
 - (IBAction)toggleNodeFoldingState:(id)sender;

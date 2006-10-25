@@ -8,17 +8,12 @@
 
 #import "IFTreeView.h"
 #import "IFTreeNodeAlias.h"
+#import "IFTreeNode.h"
 #import "IFTreeLayoutElement.h"
-#import "IFTreeLayoutNode.h"
+#import "IFTreeLayoutMark.h"
 #import "IFTreeLayoutInputConnector.h"
 #import "IFTreeLayoutOutputConnector.h"
-#import "IFTreeLayoutMark.h"
-#import "IFTreeLayoutSidePane.h"
-#import "IFTreeLayoutCursor.h"
-#import "IFTreeLayoutGhost.h"
 #import "IFTreeLayoutComposite.h"
-#import "IFTreeNode.h"
-#import "IFUtilities.h"
 #import "IFAppController.h"
 #import "IFImageInspectorWindowController.h"
 #import "IFHistogramInspectorWindowController.h"
@@ -43,15 +38,7 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (void)updateLayout:(NSNotification*)notification;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node;
 - (void)invalidateLayoutLayer:(int)layoutLayer;
-- (void)invalidateLayout;
 - (void)enqueueLayoutNotification;
-- (IFTreeLayoutElement*)layoutTree:(IFTreeNode*)root;
-- (IFTreeLayoutNode*)layoutNodeForTreeNode:(IFTreeNode*)theNode;
-- (IFTreeLayoutElement*)layoutInputConnectorForTreeNode:(IFTreeNode*)node;
-- (IFTreeLayoutElement*)layoutOutputConnectorForTreeNode:(IFTreeNode*)node tag:(NSString*)tag leftReach:(float)lReach rightReach:(float)rReach;
-- (IFTreeLayoutElement*)layoutSidePaneForElement:(IFTreeLayoutSingle*)base;
-- (IFTreeLayoutElement*)layoutSelectedNodes:(NSSet*)nodes cursor:(IFTreeNode*)cursorNode forTreeLayout:(IFTreeLayoutElement*)rootLayout;
-- (IFTreeLayoutElement*)layoutMarks:(NSArray*)marks forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
@@ -81,33 +68,16 @@ static NSString* IFTreeViewNeedsLayout = @"IFTreeViewNeedsLayout";
 
 static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
 static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
-static NSString* IFBoundsChangedContext = @"IFBoundsChangedContext";
-
-static const float NODE_INTERNAL_MARGIN = 4.0;
-static const float GUTTER_WIDTH = 14.0 + 4.0;
-static const float SIDE_PANE_CORNER_RADIUS = 4.0;
-static const float CURSOR_PATH_WIDTH = 3.0;
-static const float SELECTION_PATH_WIDTH = 1.0;
-
-static NSColor* sidePaneColor;
-static NSSize sidePaneSize;
-
-+ (void)initialize;
-{
-  if (self != [IFTreeView class])
-    return; // avoid repeated initialisation
-
-  sidePaneColor = [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] retain];
-  sidePaneSize = NSMakeSize(15,50);
-}
+static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
 - (id)initWithFrame:(NSRect)frame;
 {
   if (![super initWithFrame:frame]) return nil;
 
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
+  layoutParameters = [IFTreeLayoutParameters new];
+  layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
   
-  backgroundColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] retain];
   layoutLayers = [[NSMutableArray alloc] initWithObjects:
     [NSNull null],
     [NSNull null],
@@ -117,58 +87,23 @@ static NSSize sidePaneSize;
   trackingRectTags = [NSMutableArray new];
   selectedNodes = [NSMutableSet new];
   copiedNode = nil;
-  showThumbnails = NO;
-  columnWidth = 50.0;
 
-  labelFont = [[NSFont fontWithName:@"Verdana" size:9.0] retain];
-  NSLayoutManager* layoutManager = [[NSLayoutManager alloc] init];
-  labelFontHeight = [layoutManager defaultLineHeightForFont:labelFont];
-  [layoutManager release];
-  
-  connectorColor = [[NSColor colorWithCalibratedWhite:0.2 alpha:1.0] retain];
-  connectorLabelColor = [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] retain];
-  connectorArrowSize = 4.0;
-
-  cursorColor = [[NSColor redColor] retain];
-  markBackgroundColor = [[NSColor blueColor] retain];
-  highlightingColor = [[[NSColor blueColor] colorWithAlphaComponent:0.5] retain];
-
-  layoutNodes = createMutableDictionaryWithRetainedKeys();
-  layoutThumbnails = createMutableDictionaryWithRetainedKeys();
-  
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
+
+  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
   return self;
 }
 
 - (void) dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
+
   [self unregisterDraggedTypes];
 
   [self clearHighlighting];
   [self removeAllTrackingRects];
   [self setDocument:nil];
-
-  [sidePanePath release];
-  sidePanePath = nil;
-  [deleteButtonCell release];
-  deleteButtonCell = nil;
-  [layoutThumbnails release];
-  layoutThumbnails = nil;
-  [layoutNodes release];
-  layoutNodes = nil;
-  [highlightingColor release];
-  highlightingColor = nil;
-  [markBackgroundColor release];
-  markBackgroundColor = nil;
-  [cursorColor release];
-  cursorColor = nil;
-  [connectorLabelColor release];
-  connectorLabelColor = nil;
-  [connectorColor release];
-  connectorColor = nil;
-  [labelFont release];
-  labelFont = nil;
 
   [copiedNode release];
   copiedNode = nil;
@@ -178,9 +113,11 @@ static NSSize sidePaneSize;
   trackingRectTags = nil;
   [layoutLayers release];
   layoutLayers = nil;
-  [backgroundColor release];
-  backgroundColor = nil;
   
+  [layoutParameters release];
+  layoutParameters = nil;
+  [layoutStrategy release];
+  layoutStrategy = nil;
   [grabableViewMixin release];
   grabableViewMixin = nil;
   [super dealloc];
@@ -233,116 +170,14 @@ static NSSize sidePaneSize;
 
 #pragma mark Layout parameters
 
-- (float)columnWidth;
+- (IFTreeLayoutStrategy*)layoutStrategy;
 {
-  return columnWidth;
+  return layoutStrategy;
 }
 
-- (void)setColumnWidth:(float)newColumnWidth;
+- (IFTreeLayoutParameters*)layoutParameters;
 {
-  float roundedNewColumnWidth = round(newColumnWidth);
-  if (roundedNewColumnWidth == columnWidth)
-    return;
-  columnWidth = roundedNewColumnWidth;
-  [self invalidateLayout];
-}
-
-- (NSColor*)backgroundColor;
-{
-  return backgroundColor;
-}
-
-- (float)nodeInternalMargin;
-{
-  return NODE_INTERNAL_MARGIN;
-}
-
-- (NSFont*)labelFont;
-{
-  return labelFont;
-}
-
-- (float)labelFontHeight;
-{
-  return labelFontHeight;
-}
-
-- (NSColor*)sidePaneColor;
-{
-  return sidePaneColor;
-}
-
-- (NSSize)sidePaneSize;
-{
-  return sidePaneSize;
-}
-
-- (NSBezierPath*)sidePanePath;
-{
-  if (sidePanePath == nil) {
-    NSSize sidePaneSize = [self sidePaneSize];
-    float externalMargin = [self nodeInternalMargin];
-    
-    sidePanePath = [[NSBezierPath bezierPath] retain];
-    [sidePanePath moveToPoint:NSMakePoint(0,externalMargin)];
-    [sidePanePath lineToPoint:NSMakePoint(0,sidePaneSize.height + externalMargin)];
-    [sidePanePath appendBezierPathWithArcWithCenter:NSMakePoint(-(sidePaneSize.width - SIDE_PANE_CORNER_RADIUS),
-                                                                sidePaneSize.height + externalMargin - SIDE_PANE_CORNER_RADIUS)
-                                             radius:SIDE_PANE_CORNER_RADIUS
-                                         startAngle:90
-                                           endAngle:180];
-    [sidePanePath appendBezierPathWithArcWithCenter:NSMakePoint(-(sidePaneSize.width - SIDE_PANE_CORNER_RADIUS),
-                                                                externalMargin + SIDE_PANE_CORNER_RADIUS)
-                                             radius:SIDE_PANE_CORNER_RADIUS
-                                         startAngle:180
-                                           endAngle:270];
-    [sidePanePath closePath];
-    [sidePanePath setCachesBezierPath:YES];
-  }
-  return sidePanePath;
-}
-
-- (NSButtonCell*)deleteButtonCell;
-{
-  if (deleteButtonCell == nil) {
-    deleteButtonCell = [[NSButtonCell alloc] initImageCell:[NSImage imageNamed:@"button_delete"]];
-    [deleteButtonCell setAlternateImage:[NSImage imageNamed:@"button_delete_active"]];
-    [deleteButtonCell setButtonType:NSMomentaryChangeButton];
-    [deleteButtonCell setBordered:NO];
-    [deleteButtonCell setAction:@selector(deleteNodeUnderMouse:)];
-    [deleteButtonCell setTarget:self];
-  }
-  return deleteButtonCell;
-}
-
-- (NSColor*)connectorColor;
-{
-  return connectorColor;
-}
-
-- (NSColor*)connectorLabelColor;
-{
-  return connectorLabelColor;
-}
-
-- (float)connectorArrowSize;
-{
-  return connectorArrowSize;
-}
-
-- (NSColor*)cursorColor;
-{
-  return cursorColor;
-}
-
-- (NSColor*)markBackgroundColor;
-{
-  return markBackgroundColor;
-}
-
-- (NSColor*)highlightingColor;
-{
-  return highlightingColor;
+  return layoutParameters;
 }
 
 - (NSSize)idealSize;
@@ -350,17 +185,10 @@ static NSSize sidePaneSize;
   return [self paddedBounds].size;
 }
 
-- (BOOL)showThumbnails;
+- (void)invalidateLayout;
 {
-  return showThumbnails;
-}
-
-- (void)setShowThumbnails:(BOOL)theValue;
-{
-  if (theValue != showThumbnails) {
-    showThumbnails = theValue;
-    [self invalidateLayout];
-  }
+  upToDateLayers = 0;
+  [self enqueueLayoutNotification];  
 }
 
 - (IBAction)makeNodeAlias:(id)sender;
@@ -423,13 +251,13 @@ static NSSize sidePaneSize;
 {
   if (context == IFCursorMovedContext) {
     [self invalidateLayoutLayer:IFLayoutLayerSelection];
-    [self scrollRectToVisible:[[self layoutNodeForTreeNode:[self cursorNode]] frame]];
+    [self scrollRectToVisible:[[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] frame]];
   } else if (context == IFMarkChangedContext)
     [self invalidateLayoutLayer:IFLayoutLayerMarks];
-  else if (context == IFBoundsChangedContext)
+  else if (context == IFColumnWidthChangedContext)
     [self invalidateLayout];
   else
-    NSAssert(NO,@"unexpected key path");
+    NSAssert1(NO, @"unexpected context: %@", context);
 }  
 
 - (void)mouseEntered:(NSEvent*)event;
@@ -566,7 +394,7 @@ static NSSize sidePaneSize;
 - (void)cancelOperation:(id)sender;
 {
   if ([[document cursorMark] isSet])
-    [[self layoutNodeForTreeNode:[self cursorNode]] activate];
+    [[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] activate];
 }
 
 - (void)delete:(id)sender;
@@ -718,7 +546,7 @@ static enum {
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
 {
   if ([[document cursorMark] isSet])
-    [[self layoutNodeForTreeNode:[self cursorNode]] deactivate];
+    [[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] deactivate];
 
   NSArray* types = [[sender draggingPasteboard] types];
   if ([types containsObject:IFTreeNodeArrayPboardType])
@@ -873,7 +701,7 @@ static enum {
 
 - (void)drawRect:(NSRect)rect;
 {
-  [[self backgroundColor] set];
+  [[layoutParameters backgroundColor] set];
   [[NSBezierPath bezierPathWithRect:[self bounds]] fill];
   
   for (int i = 0; i < [layoutLayers count]; ++i) {
@@ -884,7 +712,7 @@ static enum {
   }
   
   if (highlightingPath != nil) {
-    [[self highlightingColor] set];
+    [[layoutParameters highlightingColor] set];
     [highlightingPath fill];
     [highlightingPath stroke];
   }
@@ -903,7 +731,7 @@ static enum {
 {
   IFTreeLayoutElement* nodeLayer = [layoutLayers objectAtIndex:IFLayoutLayerTree];
   NSRect unpaddedBounds = (nodeLayer == (IFTreeLayoutElement*)[NSNull null]) ? NSZeroRect : [nodeLayer frame];
-  return NSInsetRect(unpaddedBounds,-GUTTER_WIDTH,-3.0);
+  return NSInsetRect(unpaddedBounds,-[layoutParameters gutterWidth],-3.0);
 }  
 
 - (void)recomputeFrameSize;
@@ -1028,9 +856,9 @@ static enum {
       [self removeAllTrackingRects];
       [self removeAllToolTips];
       
-      NSArray* roots = (NSArray*)[[self collect] layoutTree:[[document roots] each]];
+      NSArray* roots = (NSArray*)[[layoutStrategy collect] layoutTree:[[document roots] each]];
       for (int i = 1; i < [roots count]; ++i)
-        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + GUTTER_WIDTH,0)];
+        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + [layoutParameters gutterWidth],0)];
       IFTreeLayoutElement* layer = [IFTreeLayoutComposite layoutCompositeWithElements:[NSSet setWithArray:roots] containingView:self];
       
       // Now that all elements are at their final position, establish tool tips and tracking rects
@@ -1040,11 +868,11 @@ static enum {
       return layer;
     }
     case IFLayoutLayerSidePane:
-      return [self layoutSidePaneForElement:(IFTreeLayoutSingle*)pointedElement];
+      return [layoutStrategy layoutSidePaneForElement:(IFTreeLayoutSingle*)pointedElement];
     case IFLayoutLayerSelection:
-      return [self layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
+      return [layoutStrategy layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     case IFLayoutLayerMarks:
-      return [self layoutMarks:[document marks] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
+      return [layoutStrategy layoutMarks:[document marks] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     default:
       NSAssert(NO, @"unexpected layer");
       return nil;
@@ -1071,156 +899,6 @@ static enum {
 {
   upToDateLayers &= ~(1 << layoutLayer);
   [self enqueueLayoutNotification];
-}
-
-- (void)invalidateLayout;
-{
-  upToDateLayers = 0;
-  [self enqueueLayoutNotification];  
-}
-
-- (IFTreeLayoutElement*)layoutTree:(IFTreeNode*)root;
-{
-  NSMutableSet* layoutElems = [NSMutableSet set];
-  
-  // Layout all parents
-  NSArray* parents = [root isFolded] ? [NSArray array] : [root parents];
-  const int parentsCount = [parents count];
-  NSMutableArray* directParentsLayout = [NSMutableArray arrayWithCapacity:parentsCount];
-  float x = 0.0;
-  for (int i = 0; i < parentsCount; i++) {
-    if (i > 0) x += GUTTER_WIDTH;
-    IFTreeNode* parent = [parents objectAtIndex:i];
-  
-    IFTreeLayoutElement* parentLayout = [self layoutTree:parent];
-    [layoutElems addObject:parentLayout];
-    [directParentsLayout addObject:[parentLayout layoutElementForNode:parent kind:IFTreeLayoutElementKindNode]];
-
-    [parentLayout translateBy:NSMakePoint(x, 0)];
-    x += NSWidth([parentLayout frame]);
-  }
-
-  // Layout output connectors, if any.
-  if (parentsCount > 1) {
-    float connectorsHeight = 0.0;
-    IFFilter* rootFilter = [[root filter] filter];
-    for (int i = 0; i < parentsCount; ++i) {
-      float currLeft = NSMinX([[directParentsLayout objectAtIndex:i] frame]);
-      float leftReach = (i > 0)
-        ? (currLeft - NSMinX([[directParentsLayout objectAtIndex:i-1] frame]) - columnWidth) / 2.0
-        : 0.0;
-      float rightReach = (i < parentsCount - 1)
-        ? (NSMinX([[directParentsLayout objectAtIndex:i+1] frame]) - currLeft - columnWidth) / 2.0
-        : 0.0;
-      
-      IFTreeLayoutElement* outputConnectorLayout = [self layoutOutputConnectorForTreeNode:[parents objectAtIndex:i]
-                                                                                      tag:[rootFilter nameOfParentAtIndex:i]
-                                                                                leftReach:leftReach
-                                                                               rightReach:rightReach];
-      [outputConnectorLayout translateBy:NSMakePoint(currLeft,0)];
-      [layoutElems addObject:outputConnectorLayout];
-      connectorsHeight = NSHeight([outputConnectorLayout frame]);
-    }
-    [[layoutElems do] translateBy:NSMakePoint(0,connectorsHeight)];
-  }
-
-  // Layout input connector
-  float rootColumnLeft;
-  if (parentsCount == 0)
-    rootColumnLeft = 0;
-  else {
-    float directParentsLeft = NSMinX([[directParentsLayout objectAtIndex:0] frame]);
-    float directParentsRight = NSMaxX([[directParentsLayout lastObject] frame]);
-    rootColumnLeft = directParentsLeft + (directParentsRight - directParentsLeft - columnWidth) / 2.0;
-  
-    IFTreeLayoutElement* inputConnectorLayout = [self layoutInputConnectorForTreeNode:root];
-    [inputConnectorLayout translateBy:NSMakePoint(rootColumnLeft,0)];
-    [layoutElems addObject:inputConnectorLayout];
-    [[layoutElems do] translateBy:NSMakePoint(0,NSHeight([inputConnectorLayout frame]))];
-  }
-  
-  // Layout root.
-  IFTreeLayoutNode* rootLayoutElem = [self layoutNodeForTreeNode:root];
-  [rootLayoutElem setTranslation:NSMakePoint(rootColumnLeft,0)];
-  [[layoutElems do] translateBy:NSMakePoint(0,NSHeight([rootLayoutElem frame]))];
-
-  [layoutElems addObject:rootLayoutElem];
-  return [layoutElems count] > 1
-    ? [IFTreeLayoutComposite layoutCompositeWithElements:layoutElems containingView:self]
-    : [layoutElems anyObject];
-}
-
-- (IFTreeLayoutNode*)layoutNodeForTreeNode:(IFTreeNode*)theNode;
-{
-  IFTreeLayoutNode* layoutNode = [layoutNodes objectForKey:theNode];
-  if (layoutNode == nil) {
-    layoutNode = [IFTreeLayoutSingle layoutSingleWithNode:theNode containingView:self];
-    CFDictionarySetValue((CFMutableDictionaryRef)layoutNodes, theNode, layoutNode);
-    [layoutNode addObserver:self forKeyPath:@"bounds" options:0 context:IFBoundsChangedContext];
-  }
-  return layoutNode;
-}
-
-- (IFTreeLayoutElement*)layoutInputConnectorForTreeNode:(IFTreeNode*)node;
-{
-  return [IFTreeLayoutInputConnector layoutConnectorWithNode:node containingView:self];
-}
-
-- (IFTreeLayoutElement*)layoutOutputConnectorForTreeNode:(IFTreeNode*)node tag:(NSString*)tag leftReach:(float)lReach rightReach:(float)rReach;
-{
-  return [IFTreeLayoutOutputConnector layoutConnectorWithNode:node
-                                               containingView:self
-                                                          tag:tag
-                                                    leftReach:lReach
-                                                   rightReach:rReach];
-}
-
-- (IFTreeLayoutElement*)layoutSidePaneForElement:(IFTreeLayoutSingle*)base;
-{
-  if (base == nil)
-    return [IFTreeLayoutComposite layoutComposite];
-  
-  return [IFTreeLayoutSidePane layoutSidePaneWithBase:base];
-}
-
-- (IFTreeLayoutElement*)layoutSelectedNodes:(NSSet*)nodes
-                                     cursor:(IFTreeNode*)cursorNode
-                              forTreeLayout:(IFTreeLayoutElement*)rootLayout;
-{
-  NSMutableSet* result = [NSMutableSet set];
-  NSSet* elements = [rootLayout layoutElementsForNodes:nodes kind:IFTreeLayoutElementKindNode];
-  NSEnumerator* elemsEnumerator = [elements objectEnumerator];
-  IFTreeLayoutSingle* element;
-  while (element = [elemsEnumerator nextObject]) {
-    BOOL isCursor = [element node] == cursorNode;
-    [result addObject:[IFTreeLayoutCursor layoutCursorWithBase:element pathWidth:(isCursor ? CURSOR_PATH_WIDTH : SELECTION_PATH_WIDTH)]];
-  }
-  return [result count] == 1
-    ? [result anyObject]
-    : [IFTreeLayoutComposite layoutCompositeWithElements:result containingView:self];
-}
-
-- (IFTreeLayoutElement*)layoutMarks:(NSArray*)marks forTreeLayout:(IFTreeLayoutElement*)rootLayout;
-{
-  NSCountedSet* markedNodes = [NSCountedSet set];
-  NSMutableSet* elems = [NSMutableSet set];
-  unsigned int i, count = [marks count];
-  for (i = 1; i < count; i++) {
-    IFTreeMark *mark = [marks objectAtIndex:i];
-    if (![mark isSet])
-      continue;
-
-    IFTreeLayoutSingle* node = [rootLayout layoutElementForNode:[mark node] kind:IFTreeLayoutElementKindNode];
-    if (node == nil)
-      continue;
-
-    IFTreeLayoutMark* markLayout = [IFTreeLayoutMark layoutMarkWithBase:node position:[markedNodes countForObject:node] markIndex:i];
-    [markedNodes addObject:node];
-    [elems addObject:markLayout];
-  }
-  return [elems count] == 1
-    ? [elems anyObject]
-    : [IFTreeLayoutComposite layoutCompositeWithElements:elems containingView:self];
 }
 
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
@@ -1288,7 +966,7 @@ static enum {
 
 - (void)moveToNode:(IFTreeNode*)node;
 {
-  [self moveToNodeRepresentedBy:[self layoutNodeForTreeNode:node]];
+  [self moveToNodeRepresentedBy:[layoutStrategy layoutNodeForTreeNode:node]];
 }
 
 - (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem;

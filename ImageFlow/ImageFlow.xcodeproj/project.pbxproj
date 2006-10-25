@@ -105,6 +105,8 @@
 		FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */; };
 		FA92E81808B3448000E57EF7 /* IFImageView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA92E81708B3448000E57EF7 /* IFImageView.nib */; };
 		FA92E84108B3468500E57EF7 /* IFProbe.m in Sources */ = {isa = PBXBuildFile; fileRef = FA92E84008B3468500E57EF7 /* IFProbe.m */; };
+		FA9649760AEF81B700EC46A5 /* IFTreeLayoutStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */; };
+		FA9649870AEF892B00EC46A5 /* IFTreeLayoutParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */; };
 		FA9CC2770948B6AC00F30C5A /* IFTreeLayoutInputConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9CC2750948B6AC00F30C5A /* IFTreeLayoutInputConnector.m */; };
 		FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */; };
 		FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */; };
@@ -380,6 +382,10 @@
 		FA92E81708B3448000E57EF7 /* IFImageView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFImageView.nib; sourceTree = "<group>"; };
 		FA92E83F08B3468500E57EF7 /* IFProbe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProbe.h; sourceTree = "<group>"; };
 		FA92E84008B3468500E57EF7 /* IFProbe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProbe.m; sourceTree = "<group>"; };
+		FA9649730AEF81B700EC46A5 /* IFTreeLayoutStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutStrategy.h; sourceTree = "<group>"; };
+		FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutStrategy.m; sourceTree = "<group>"; };
+		FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutParameters.h; sourceTree = "<group>"; };
+		FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutParameters.m; sourceTree = "<group>"; };
 		FA9CC2740948B6AC00F30C5A /* IFTreeLayoutInputConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutInputConnector.h; sourceTree = "<group>"; };
 		FA9CC2750948B6AC00F30C5A /* IFTreeLayoutInputConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutInputConnector.m; sourceTree = "<group>"; };
 		FAA2AF2A08FFA1750055AFDD /* IFSavePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSavePanelController.h; sourceTree = "<group>"; };
@@ -778,6 +784,10 @@
 			children = (
 				FAFDC5A00860484700DABA6F /* IFTreeView.h */,
 				FAFDC5A10860484700DABA6F /* IFTreeView.m */,
+				FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */,
+				FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */,
+				FA9649730AEF81B700EC46A5 /* IFTreeLayoutStrategy.h */,
+				FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */,
 				FABD2BDB0862E2A300D9A92D /* IFTreeLayoutElement.h */,
 				FABD2BDC0862E2A300D9A92D /* IFTreeLayoutElement.m */,
 				FACF8C190866B57D00985FA3 /* IFTreeLayoutComposite.h */,
@@ -1540,6 +1550,8 @@
 				FAEF26930AE7929B00BD8954 /* IFMaskInvertCIFilter.m in Sources */,
 				FA1774A40AEC8EE70013D98B /* IFBitmapUIConfigurator.m in Sources */,
 				FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */,
+				FA9649760AEF81B700EC46A5 /* IFTreeLayoutStrategy.m in Sources */,
+				FA9649870AEF892B00EC46A5 /* IFTreeLayoutParameters.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -30,13 +30,13 @@ static const float MARGIN = 1.5;
   [parStyle setAlignment:NSCenterTextAlignment];
   NSDictionary* tagAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
     parStyle, NSParagraphStyleAttributeName,
-    [containingView labelFont], NSFontAttributeName,
+    [[containingView layoutParameters] labelFont], NSFontAttributeName,
     [NSColor whiteColor], NSForegroundColorAttributeName,
     nil];
   tag = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d",theMarkIndex] attributes:tagAttributes];
   
   NSRect baseBounds = [theBase bounds];
-  float sideLen = [containingView labelFontHeight] + 2.0 * MARGIN;
+  float sideLen = [[containingView layoutParameters] labelFontHeight] + 2.0 * MARGIN;
   outlinePath = [[NSBezierPath bezierPathWithOvalInRect:NSMakeRect(NSMaxX(baseBounds) - sideLen / 2.0,
                                                                    NSMaxY(baseBounds) - sideLen / 2.0 - (position * (sideLen + 1.0)),
                                                                    sideLen,
@@ -64,7 +64,7 @@ static const float MARGIN = 1.5;
 
 - (void)drawForLocalRect:(NSRect)rect;
 {
-  [[containingView markBackgroundColor] set];
+  [[[containingView layoutParameters] markBackgroundColor] set];
   [outlinePath fill];
   [tag drawInRect:NSOffsetRect([self bounds],MARGIN,MARGIN)];
 }

@@ -49,21 +49,21 @@ static NSMutableDictionary* filterArrayControllers = nil;
   arrayController = [[IFTreeLayoutGhost arrayControllerForFilter:[theNode filter]] retain];
   
   textCell = [[NSTextFieldCell alloc] initTextCell:@""];
-  [textCell setFont:[theContainingView labelFont]];
+  [textCell setFont:[[theContainingView layoutParameters] labelFont]];
   [textCell setDrawsBackground:YES];
   [textCell setEditable:YES];
   [textCell setEnabled:YES];
   [textCell setPlaceholderString:@"filter name"];
   
   [self updateLayout];
-  [containingView addObserver:self forKeyPath:@"columnWidth" options:0 context:nil];
+  [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:nil];
 
   return self;
 }
 
 - (void) dealloc;
 {
-  [containingView removeObserver:self forKeyPath:@"columnWidth"];
+  [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
   [textCell release];
   textCell = nil;
   [arrayController release];
@@ -192,7 +192,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
   [self deactivate];
   NSSize textCellSize = [textCell cellSize];
   const float margin = 3.0;
-  [self setOutlinePath:[NSBezierPath bezierPathWithRect:NSMakeRect(0,0,[containingView columnWidth],textCellSize.height + 2.0*margin)]];
+  [self setOutlinePath:[NSBezierPath bezierPathWithRect:NSMakeRect(0,0,[[containingView layoutParameters] columnWidth],textCellSize.height + 2.0*margin)]];
 }
 
 - (NSRect)textCellFrame;

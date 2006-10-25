@@ -24,16 +24,16 @@
 {
   if (![super initWithBase:theBase])
     return nil;
-  [self setBounds:[[containingView sidePanePath] bounds]];
+  [self setBounds:[[[containingView layoutStrategy] sidePanePath] bounds]];
   return self;
 }
 
 - (void)drawForLocalRect:(NSRect)rect;
 {  
-  [[containingView sidePaneColor] set];
-  [[containingView sidePanePath] fill];
+  [[[containingView layoutParameters] sidePaneColor] set];
+  [[[containingView layoutStrategy] sidePanePath] fill];
   
-  NSButtonCell* deleteButtonCell = [containingView deleteButtonCell];
+  NSButtonCell* deleteButtonCell = [[containingView layoutStrategy] deleteButtonCell];
   [deleteButtonCell setRepresentedObject:[base node]];
   [deleteButtonCell drawWithFrame:[self deleteButtonFrame] inView:containingView];
 }
@@ -42,12 +42,12 @@
 {
   NSPoint offset = [self translation];
   NSPoint localPoint = NSMakePoint(thePoint.x - offset.x, thePoint.y - offset.y);
-  return NSPointInRect(localPoint, [self bounds]) && [[containingView sidePanePath] containsPoint:localPoint] ? self : nil;
+  return NSPointInRect(localPoint, [self bounds]) && [[[containingView layoutStrategy] sidePanePath] containsPoint:localPoint] ? self : nil;
 }
 
 - (void)activateWithMouseDown:(NSEvent*)event;
 {
-  NSButtonCell* deleteButtonCell = [containingView deleteButtonCell];
+  NSButtonCell* deleteButtonCell = [[containingView layoutStrategy] deleteButtonCell];
   [deleteButtonCell highlight:YES withFrame:[self deleteButtonFrame] inView:containingView];
   [self setNeedsDisplay];
   [deleteButtonCell trackMouse:event inRect:[self frame] ofView:containingView untilMouseUp:NO];
@@ -61,7 +61,7 @@
 
 - (NSRect)deleteButtonFrame;
 {
-  NSButtonCell* cell = [containingView deleteButtonCell];
+  NSButtonCell* cell = [[containingView layoutStrategy] deleteButtonCell];
   NSSize cellSize = [cell cellSize];
   float offsetX = floor((NSWidth([self bounds]) - cellSize.width) / 2.0);
   return NSMakeRect(NSMinX([self bounds]) + offsetX,NSMinY([self bounds]) + 2,cellSize.width,cellSize.height);
