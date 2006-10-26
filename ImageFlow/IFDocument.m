@@ -434,15 +434,14 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
 - (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
 {
   IFTreeNode* root = rootOf(nodes);
-  int rootIndex = [[[root child] parents] indexOfObject:root];
-  // detach root
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
   // attach parent nodes to macro node
   NSMutableArray* actualParameters = [NSMutableArray array];
   collectBoundary(root, nodes, actualParameters);
   for (int i = 0; i < [actualParameters count]; ++i)
-    [macroNode replaceObjectInParentsAtIndex:i withObject:[actualParameters objectAtIndex:i]];
-  // attach new root (the macro node)
+    [macroNode insertObject:[actualParameters objectAtIndex:i] inParentsAtIndex:i];
+  // detach old root and attach new one (the macro node)
+  int rootIndex = [[[root child] parents] indexOfObject:root];
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
   [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
 }
 
@@ -487,11 +486,31 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 {
+  return [[self rootOfTreeContainingNode:node] ancestors];
+}
+
+- (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
+{
   IFTreeNode* root = node;
   while (root != nil && [root child] != fakeRoot)
     root = [root child];
   NSAssert1(root != nil, @"cannot find root of tree containing %@",node);
-  return [root ancestors];
+  return root;  
+}
+
+// private
+- (void)collectPathFromRootToNode:(IFTreeNode*)node inArray:(NSMutableArray*)result;
+{
+  if ([node child] != fakeRoot)
+    [self collectPathFromRootToNode:[node child] inArray:result];
+  [result addObject:node];
+}
+
+- (NSArray*)pathFromRootTo:(IFTreeNode*)node;
+{
+  NSMutableArray* result = [NSMutableArray array];
+  [self collectPathFromRootToNode:node inArray:result];
+  return result;
 }
 
 #pragma mark exportation

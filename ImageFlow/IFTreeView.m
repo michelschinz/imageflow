@@ -36,7 +36,7 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 - (IFTreeNode*)cursorNode;
 - (void)updateLayout:(NSNotification*)notification;
-- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node;
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (void)invalidateLayoutLayer:(int)layoutLayer;
 - (void)enqueueLayoutNotification;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
@@ -44,9 +44,9 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)layoutNodes;
 - (void)removeAllTrackingRects;
-- (void)moveToNode:(IFTreeNode*)node;
-- (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem;
-- (void)moveToClosestNodeInDirection:(IFDirection)direction;
+- (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
+- (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem extendingSelection:(BOOL)extendSelection;
+- (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 @end
 
 @implementation IFTreeView
@@ -290,22 +290,23 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
     [self dragImage:[clickedElement dragImage] at:[clickedElement frame].origin offset:NSZeroSize event:theEvent pasteboard:pasteBoard source:self slideBack:YES];
   } else {
+    BOOL extendSelection = ([theEvent modifierFlags] & NSShiftKeyMask) != 0;
     switch ([theEvent clickCount]) {
       case 1:
         if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]])
-          [self moveToNodeRepresentedBy:clickedElement];
+          [self moveToNodeRepresentedBy:clickedElement extendingSelection:extendSelection];
         [clickedElement activateWithMouseDown:theEvent];
         break;
       case 2:
         if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
           IFTreeNode* clickedNode = [clickedElement node];
-          [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode];
+          [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
         }
         break;
       case 3:
         if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
           IFTreeNode* clickedNode = [clickedElement node];
-          [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode];
+          [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
         }
         break;
       default:
@@ -339,44 +340,86 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
     [super mouseUp:event];
 }
 
-- (void)moveUp:(id)sender;
+// Cursor movement
+
+- (void)moveUpExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* node = [self cursorNode];
   if (![node isFolded] && [[node parents] count] > 0)
-    [self moveToNode:[[node parents] objectAtIndex:0]];
+    [self moveToNode:[[node parents] objectAtIndex:(([[node parents] count] - 1) / 2)] extendingSelection:extendSelection];
   else
-    [self moveToClosestNodeInDirection:IFUp];
+    [self moveToClosestNodeInDirection:IFDown extendingSelection:extendSelection];
+}
+
+- (void)moveUp:(id)sender;
+{
+  [self moveUpExtendingSelection:NO];
+}
+
+- (void)moveUpAndModifySelection:(id)sender;
+{
+  [self moveUpExtendingSelection:YES];
+}
+
+- (void)moveDownExtendingSelection:(BOOL)extendSelection;
+{
+  IFTreeNode* current = [self cursorNode];
+  if ([[document roots] indexOfObject:current] == NSNotFound)
+    [self moveToNode:[current child] extendingSelection:extendSelection];
+  else
+    [self moveToClosestNodeInDirection:IFDown extendingSelection:extendSelection];
 }
 
 - (void)moveDown:(id)sender;
 {
-  IFTreeNode* current = [self cursorNode];
-  if ([[document roots] indexOfObject:current] == NSNotFound)
-    [self moveToNode:[current child]];
-  else
-    [self moveToClosestNodeInDirection:IFDown];
+  [self moveDownExtendingSelection:NO];
 }
 
-- (void)moveLeft:(id)sender;
+- (void)moveDownAndModifySelection:(id)sender;
+{
+  [self moveDownExtendingSelection:YES];
+}
+
+- (void)moveLeftExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* current = [self cursorNode];
   NSArray* siblings = [[current child] parents];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings > 0)
-    [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)]];
+    [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)] extendingSelection:extendSelection];
   else
-    [self moveToClosestNodeInDirection:IFLeft];
+    [self moveToClosestNodeInDirection:IFLeft extendingSelection:extendSelection];
 }
 
-- (void)moveRight:(id)sender;
+- (void)moveLeft:(id)sender;
+{
+  [self moveLeftExtendingSelection:NO];
+}
+
+- (void)moveLeftAndModifySelection:(id)sender;
+{
+  [self moveLeftExtendingSelection:YES];
+}
+
+- (void)moveRightExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* current = [self cursorNode];
   NSArray* siblings = [[current child] parents];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
-    [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)]];
+    [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)] extendingSelection:extendSelection];
   else
-    [self moveToClosestNodeInDirection:IFRight];
+    [self moveToClosestNodeInDirection:IFRight extendingSelection:extendSelection];
+}
+
+- (void)moveRight:(id)sender;
+{
+  [self moveRightExtendingSelection:NO];
+}
+
+- (void)moveRightAndModifySelection:(id)sender;
+{
+  [self moveRightExtendingSelection:YES];
 }
 
 - (void)keyDown:(NSEvent*)event;
@@ -416,7 +459,7 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 - (void)insertNewline:(id)sender
 {
   [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[self cursorNode]];
-  [self moveToNode:[self cursorNode]];
+  [self moveToNode:[self cursorNode] extendingSelection:NO];
 }
 
 - (NSMenu*)menuForEvent:(NSEvent*)event;
@@ -832,11 +875,41 @@ static enum {
   return [[document cursorMark] node];
 }
 
-- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node;
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 {
   NSAssert([nodes containsObject:node], @"invalid selection");
+  if (extendSelection) {
+    NSMutableSet* allNodes = [NSMutableSet setWithSet:nodes];
+    [allNodes unionSet:[self selectedNodes]];
+    nodes = allNodes;
+  }
   [self setCursorNode:node];
   [self setSelectedNodes:nodes];
+}
+
+- (BOOL)canExtendSelectionTo:(IFTreeNode*)node;
+{
+  return [document rootOfTreeContainingNode:node] == [document rootOfTreeContainingNode:[self cursorNode]];
+}
+
+- (void)extendSelectionTo:(IFTreeNode*)node;
+{
+  NSArray* nodeRootPath = [document pathFromRootTo:node];
+  NSArray* cursorRootPath = [document pathFromRootTo:[self cursorNode]];
+  NSAssert([nodeRootPath objectAtIndex:0] == [cursorRootPath objectAtIndex:0], @"unexpected paths!");
+
+  int i = 0;
+  while (i < [nodeRootPath count]
+         && i < [cursorRootPath count]
+         && [nodeRootPath objectAtIndex:i] == [cursorRootPath objectAtIndex:i])
+    ++i;
+  int commonPrefixLen = i;
+  
+  NSMutableSet* newSelection = [NSMutableSet set];
+  [newSelection unionSet:[NSSet setWithArray:nodeRootPath]];
+  [newSelection unionSet:[NSSet setWithArray:cursorRootPath]];
+  [newSelection minusSet:[NSSet setWithArray:[nodeRootPath subarrayWithRange:NSMakeRange(0,commonPrefixLen - 1)]]];
+  [self selectNodes:newSelection puttingCursorOn:node extendingSelection:YES];
 }
 
 #pragma mark Layout
@@ -964,15 +1037,21 @@ static enum {
 
 #pragma mark Cursor movement
 
-- (void)moveToNode:(IFTreeNode*)node;
+- (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 {
-  [self moveToNodeRepresentedBy:[layoutStrategy layoutNodeForTreeNode:node]];
+  [self moveToNodeRepresentedBy:[layoutStrategy layoutNodeForTreeNode:node] extendingSelection:extendSelection];
 }
 
-- (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem;
+- (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem extendingSelection:(BOOL)extendSelection;
 {
-  if (layoutElem != nil)
-    [self setCursorNode:[layoutElem node]];
+  NSAssert(layoutElem != nil, @"nil layout element");
+  if (!extendSelection || [self canExtendSelectionTo:[layoutElem node]]) {
+    if (extendSelection)
+      [self extendSelectionTo:[layoutElem node]];
+    else
+      [self setCursorNode:[layoutElem node]];
+  } else
+    NSBeep();
 }
 
 NSPoint IFMidPoint(NSPoint p1, NSPoint p2)
@@ -1031,7 +1110,7 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
   : IFMakeInterval(NSMinY(r),NSMaxY(r));
 }
 
-- (void)moveToClosestNodeInDirection:(IFDirection)direction;
+- (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 {
   const float searchDistance = 1000;
 
@@ -1085,7 +1164,10 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
         bestCandidateDistancePer = dPer;
       }
     }
-    [self moveToNodeRepresentedBy:bestCandidate];
+    if (bestCandidate != nil)
+      [self moveToNodeRepresentedBy:bestCandidate extendingSelection:extendSelection];
+    else
+      NSBeep();
   } else
     NSBeep();
 }
