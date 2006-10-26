@@ -77,7 +77,6 @@
 		FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */; };
-		FA4E2D83093CB4E900204C3C /* IFEmptyCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
 		FA64C5A60AC9BA40001EB3B4 /* button_delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */; };
@@ -338,8 +337,6 @@
 		FA47F50308F6587800C906A8 /* MPWFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MPWFoundation.framework; path = Frameworks/MPWFoundation.framework; sourceTree = "third-party-cocoa-libraries"; };
 		FA4ABF990AB096EA008E71B6 /* IFImageVariant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageVariant.h; sourceTree = "<group>"; };
 		FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageVariant.m; sourceTree = "<group>"; };
-		FA4E2D80093CB4E900204C3C /* IFEmptyCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEmptyCIFilter.h; sourceTree = "<group>"; };
-		FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEmptyCIFilter.m; sourceTree = "<group>"; };
 		FA57F9D50924CFA8002AAA68 /* IFFNVHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFNVHash.h; sourceTree = "<group>"; };
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
 		FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFErrorConstantExpression.h; sourceTree = "<group>"; };
@@ -964,15 +961,6 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
-		FA4E2D84093CB4F500204C3C /* Empty */ = {
-			isa = PBXGroup;
-			children = (
-				FA4E2D80093CB4E900204C3C /* IFEmptyCIFilter.h */,
-				FA4E2D81093CB4E900204C3C /* IFEmptyCIFilter.m */,
-			);
-			name = Empty;
-			sourceTree = "<group>";
-		};
 		FA68E05B092DCEC7009D02CB /* Printing */ = {
 			isa = PBXGroup;
 			children = (
@@ -1203,7 +1191,6 @@
 		FAF97C2E08EBF27B00FC2B61 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E2D84093CB4F500204C3C /* Empty */,
 				FA43286E0ADA8D4300109D58 /* Circle */,
 				FA33FB0D08B60B290013AA0E /* File */,
 				FA0AA6CD091F8208005F5DD9 /* Bitmap */,
@@ -1496,7 +1483,6 @@
 				FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */,
 				FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */,
 				FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */,
-				FA4E2D83093CB4E900204C3C /* IFEmptyCIFilter.m in Sources */,
 				FA89DA7B0946116D0015B01E /* IFTreeLayoutOrnament.m in Sources */,
 				FA79DF6B09475668004493E7 /* IFTreeLayoutOutputConnector.m in Sources */,
 				FA9CC2770948B6AC00F30C5A /* IFTreeLayoutInputConnector.m in Sources */,

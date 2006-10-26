@@ -16,9 +16,7 @@
 #import "IFPercentValueTransformer.h"
 #import "IFProfileNamePathValueTransformer.h"
 
-#import "IFEmptyCIFilter.h"
 #import "IFCropImageWithMaskCIFilter.h"
-#import "IFEmptyCIFilter.h"
 #import "IFMaskCIFilter.h"
 #import "IFMaskOverlayCIFilter.h"
 #import "IFSetAlphaCIFilter.h"
@@ -54,9 +52,7 @@
   [IFProfileNamePathValueTransformer class];
   
   // Register filters
-  [IFEmptyCIFilter class];
   [IFCropImageWithMaskCIFilter class];
-  [IFEmptyCIFilter class];
   [IFMaskCIFilter class];
   [IFMaskOverlayCIFilter class];
   [IFSetAlphaCIFilter class];

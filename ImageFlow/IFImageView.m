@@ -26,17 +26,6 @@ typedef enum {
 
 @implementation IFImageView
 
-static CIImage* emptyImage;
-
-+ (void)initialize;
-{
-  if (self != [IFImageView class])
-    return; // avoid repeated initialisation
-
-  CIFilter* emptyFilter = [CIFilter filterWithName:@"IFEmpty"];
-  emptyImage = [[emptyFilter valueForKey:@"outputImage"] retain];
-}
-
 - (id)initWithFrame:(NSRect)frame;
 {
   if (![super initWithFrame:frame])
@@ -147,14 +136,17 @@ static CIImage* emptyImage;
 
 - (void)drawRect:(NSRect)dirtyRect;
 {
-  CGRect dirtyRectCG = CGRectFromNSRect(dirtyRect);
   IFImageConstantExpression* imageExpr = [self evaluatedExpression];
-  CIImage* image = (imageExpr == nil || [imageExpr isError])
-    ? emptyImage
-    : [imageExpr imageValueCI];
+  if (imageExpr == nil || [imageExpr isError]) {
+    [[NSColor blackColor] set];
+    NSRectFill(dirtyRect);
+    return;
+  }
+
   CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                            options:[NSDictionary dictionary]]; // TODO working color space
-  [ctx drawImage:image atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
+  CGRect dirtyRectCG = CGRectFromNSRect(dirtyRect);
+  [ctx drawImage:[imageExpr imageValueCI] atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
   
   // Draw annotations
   const int annotationsCount = [annotations count];
