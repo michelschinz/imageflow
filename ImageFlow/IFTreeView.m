@@ -348,7 +348,7 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   if (![node isFolded] && [[node parents] count] > 0)
     [self moveToNode:[[node parents] objectAtIndex:(([[node parents] count] - 1) / 2)] extendingSelection:extendSelection];
   else
-    [self moveToClosestNodeInDirection:IFDown extendingSelection:extendSelection];
+    [self moveToClosestNodeInDirection:IFUp extendingSelection:extendSelection];
 }
 
 - (void)moveUp:(id)sender;
@@ -548,7 +548,7 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   }
   IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
 
-  [document replaceNode:[self cursorNode] usingNode:[proxy node]];
+  [document replaceNode:[self cursorNode] usingNode:[[proxy node] cloneNode]];
 }
 
 #pragma mark Drag and drop
@@ -845,8 +845,18 @@ static enum {
 {
   if (newSelectedNodes == selectedNodes)
     return;
+  
+  NSMutableSet* expandedNodes = [NSMutableSet set];
+  NSEnumerator* nodesEnum = [newSelectedNodes objectEnumerator];
+  IFTreeNode* node;
+  while (node = [nodesEnum nextObject]) {
+    if ([node isFolded])
+      [expandedNodes unionSet:[document ancestorsOfNode:node]];
+    else
+      [expandedNodes addObject:node];
+  }
   [selectedNodes release];
-  selectedNodes = [newSelectedNodes copy];
+  selectedNodes = [expandedNodes retain];
   
   [self invalidateLayoutLayer:IFLayoutLayerSelection];
 }
@@ -855,9 +865,12 @@ static enum {
 {
   if ([self cursorNode] == nil)
     return [NSSet set];
-  else if ([selectedNodes count] == 0)
-    return [NSSet setWithObject:[self cursorNode]];
-  else
+  else if ([selectedNodes count] == 0) {
+    IFTreeNode* cursorNode = [self cursorNode];
+    return [cursorNode isFolded]
+      ? [document ancestorsOfNode:cursorNode]
+      : [NSSet setWithObject:cursorNode];
+  } else
     return selectedNodes;
 }
 
