@@ -16,6 +16,7 @@
 #import "IFDocumentTemplate.h"
 #import "IFDocumentTemplateManager.h"
 #import "IFTreeNodeParameter.h"
+#import "IFTreeNodeAlias.h"
 
 @interface IFDocument (Private)
 - (void)overwriteWith:(IFDocument*)other;
@@ -350,7 +351,8 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
-- (void)deleteNode:(IFTreeNode*)node;
+// private
+- (void)deleteSingleNode:(IFTreeNode*)node;
 {
   NSArray* parents = [node parents];
   IFTreeNode* child = [node child];
@@ -377,8 +379,19 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
+- (void)deleteNode:(IFTreeNode*)node;
+{
+  [self deleteContiguousNodes:[NSSet setWithObject:node]];
+}
+
 - (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
 {
+  // Delete aliases of nodes we're about to delete
+  NSMutableSet* aliases = [NSMutableSet setWithSet:[self aliasesForNodes:contiguousNodes]];
+  [aliases minusSet:contiguousNodes];
+  [[self do] deleteSingleNode:[aliases each]];
+
+  // Delete the nodes themselves
   IFTreeNode* nodeToDelete;
   if ([contiguousNodes count] > 1) {
     IFTreeNodeMacro* macroNode = [self macroNodeByCopyingNodesOf:contiguousNodes inlineOnInsertion:NO];
@@ -386,7 +399,7 @@ static IFDocumentTemplateManager* templateManager;
     nodeToDelete = macroNode;
   } else
     nodeToDelete = [contiguousNodes anyObject];
-  [self deleteNode:nodeToDelete];
+  [self deleteSingleNode:nodeToDelete];
 }
 
 static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* paramsCounter)
@@ -511,6 +524,24 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   NSMutableArray* result = [NSMutableArray array];
   [self collectPathFromRootToNode:node inArray:result];
   return result;
+}
+
+// private
+- (void)collectAliasesForNodes:(NSSet*)nodes startingAt:(IFTreeNode*)root inSet:(NSMutableSet*)resultSet;
+{
+  NSArray* parents = [root parents];
+  if ([parents count] == 0) {
+    if ([root isKindOfClass:[IFTreeNodeAlias class]] && [nodes containsObject:[(IFTreeNodeAlias*)root original]])
+      [resultSet addObject:root];
+  } else
+    [[self do] collectAliasesForNodes:nodes startingAt:[parents each] inSet:resultSet];
+}
+
+- (NSSet*)aliasesForNodes:(NSSet*)nodes;
+{
+  NSMutableSet* aliases = [NSMutableSet set];
+  [self collectAliasesForNodes:nodes startingAt:fakeRoot inSet:aliases];
+  return aliases;
 }
 
 #pragma mark exportation

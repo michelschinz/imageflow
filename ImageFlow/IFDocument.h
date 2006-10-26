@@ -75,5 +75,6 @@ extern NSString* IFTreeChangedNotification;
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
+- (NSSet*)aliasesForNodes:(NSSet*)nodes;
 
 @end
