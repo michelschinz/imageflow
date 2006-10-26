@@ -11,6 +11,7 @@
 #import "IFUtilities.h"
 #import "IFFilterController.h"
 #import "IFAnnotation.h"
+#import "IFErrorConstantExpression.h"
 
 typedef enum {
   IFFilterDelegateHasMouseDown = 1<<0,
@@ -19,6 +20,11 @@ typedef enum {
 } IFFilterDelegateCapabilities;
 
 @interface IFImageInspectorWindowController (Private)
+- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
+- (void)setMainExpression:(IFExpression*)newExpression;
+- (void)setThumbnailExpression:(IFExpression*)newExpression;
+- (void)setErrorMessage:(NSString*)newErrorMessage;
+- (NSString*)errorMessage;
 - (void)installSecondaryProbe;
 - (void)removeSecondaryProbe;
 - (void)setCurrentSecondaryNode:(IFTreeNode*)newNode;
@@ -52,6 +58,9 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   panelSizes = [NSMutableDictionary new];
   mode = IFImageInspectorModeView;
   layout = IFImageInspectorLayoutSingle;
+  evaluator = nil;
+  mainExpression = nil;
+  thumbnailExpression = nil;
   variants = [[NSArray array] retain];
   activeVariant = nil;
   editViewTransform = [[NSAffineTransform transform] retain];
@@ -130,6 +139,11 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
 - (void)dealloc;
 {
+  [self setEvaluator:nil];
+  [self setMainExpression:nil];
+  [self setThumbnailExpression:nil];
+  [self setErrorMessage:nil];
+
   [self setCurrentNode:nil];
   [self removeSecondaryProbe];
 
@@ -159,9 +173,8 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
 - (void)documentDidChange:(IFDocument*)newDocument;
 {
-  [imageView setEvaluator:[newDocument evaluator]];
+  [self setEvaluator:[newDocument evaluator]];
   [imageView setCanvasBounds:[newDocument canvasBounds]];
-  [thumbnailView setEvaluator:[newDocument evaluator]];
   [super documentDidChange:newDocument];
 }
 
@@ -194,7 +207,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   // TODO take settings sub-view into account, as well as sliders (if possible)
   NSRect windowFrame = [window frame];
   NSSize visibleViewSize = [imageView visibleRect].size;
-  NSSize idealViewSize = [imageView idealSize];
+  NSSize idealViewSize = [imageView bounds].size;
   NSSize minSize = [window minSize];
 
   float deltaW = fmax(idealViewSize.width - visibleViewSize.width,  minSize.width - NSWidth(windowFrame));
@@ -399,6 +412,73 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
 @implementation IFImageInspectorWindowController (Private)
 
+- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
+{
+  if (newEvaluator == evaluator)
+    return;
+  [evaluator release];
+  evaluator = [newEvaluator retain];
+}
+
+- (void)setMainExpression:(IFExpression*)newExpression;
+{
+  if (newExpression == mainExpression)
+    return;
+  
+  NSRect dirtyRect = (mainExpression == nil || newExpression == nil)
+    ? NSRectInfinite()
+    : [evaluator deltaFromOld:mainExpression toNew:newExpression];
+
+  [mainExpression release];
+  mainExpression = [newExpression retain];
+  
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsImage:mainExpression];
+  
+  if ([evaluatedExpr isError]) {
+    [imageView setImage:nil dirtyRect:NSRectInfinite()];
+    [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
+    [imageOrErrorTabView selectTabViewItemAtIndex:1];
+    [self setMode:IFImageInspectorModeEdit];
+  } else {
+    [imageView setImage:[(IFImageConstantExpression*)evaluatedExpr image] dirtyRect:dirtyRect];
+    [self setErrorMessage:nil];
+    [imageOrErrorTabView selectTabViewItemAtIndex:0];
+  }
+}
+
+- (void)setThumbnailExpression:(IFExpression*)newExpression;
+{
+  if (newExpression == thumbnailExpression)
+    return;
+  
+  NSRect dirtyRect = (thumbnailExpression == nil || newExpression == nil)
+    ? NSRectInfinite()
+    : [evaluator deltaFromOld:thumbnailExpression toNew:newExpression];
+  
+  [thumbnailExpression release];
+  thumbnailExpression = [newExpression retain];
+  
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsImage:thumbnailExpression];
+  
+  if ([evaluatedExpr isError])
+    [thumbnailView setImage:nil dirtyRect:NSRectInfinite()];
+  else
+    [thumbnailView setImage:[(IFImageConstantExpression*)evaluatedExpr image] dirtyRect:dirtyRect];
+}
+
+- (void)setErrorMessage:(NSString*)newErrorMessage;
+{
+  if (newErrorMessage == errorMessage)
+    return;
+  [errorMessage release];
+  errorMessage = [newErrorMessage copy];
+}
+
+- (NSString*)errorMessage;
+{
+  return errorMessage;
+}
+
 - (void)installSecondaryProbe;
 {
   secondaryProbe = [[IFProbe probeWithMark:[activeVariant mark]] retain];
@@ -444,15 +524,15 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   IFExpression* expression = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[[self activeVariant] name] isEqualToString:@""])
     expression = [filter variantNamed:[[self activeVariant] name] ofExpression:expression];
-  [imageView setExpression:expression];
+  [self setMainExpression:expression];
 }
 
 - (void)updateAuxiliaryImageViewExpression;
 {
-  IFExpression* thumbnailExpression = [[[probe mark] node] expression];
-  [thumbnailView setExpression:(thumbnailExpression == nil
+  IFExpression* expr = [[[probe mark] node] expression];
+  [self setThumbnailExpression:(expr == nil
                                 ? nil
-                                : [IFOperatorExpression resample:thumbnailExpression by:(1.0/thumbnailFactor)])];
+                                : [IFOperatorExpression resample:expr by:(1.0/thumbnailFactor)])];
 }
 
 - (NSArray*)variantsForMark:(IFTreeMark*)mark;

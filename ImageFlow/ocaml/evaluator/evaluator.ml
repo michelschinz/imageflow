@@ -63,7 +63,8 @@ let eval expr =
       begin try
         Image (Load.eval_load f)
       with Failure _ ->
-        Error (Some "toto")
+        let name = if f = "" then "(no name given)" else f in
+        Error (Some ("Unable to load file "^name^""))
       end
   | Op("mask", [|Image i; Mask m|]) ->
       out_image (Coreimage.mask i m)

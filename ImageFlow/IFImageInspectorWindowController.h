@@ -26,6 +26,7 @@ typedef enum {
 } IFImageInspectorLayout;
 
 @interface IFImageInspectorWindowController : IFProbeWindowController<IFImageViewDelegate> {
+  IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
   IBOutlet RBSplitSubview* filterSettingsSubView;
   IBOutlet NSTabView* filterSettingsTabView;
@@ -40,6 +41,11 @@ typedef enum {
   IFImageInspectorMode mode;
   IFImageInspectorLayout layout;
 
+  IFExpressionEvaluator* evaluator;
+  IFExpression* mainExpression;
+  IFExpression* thumbnailExpression;
+  NSString* errorMessage;
+  
   IFTreeNode* currentNode;
   NSObject<IFFilterDelegate>* filterDelegate;
   unsigned filterDelegateCapabilities;

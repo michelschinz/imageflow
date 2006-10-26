@@ -19,6 +19,7 @@
 + (id)imageConstantExpressionWithCIImage:(CIImage*)theImage;
 + (id)imageConstantExpressionWithCGImage:(CGImageRef)theImage;
 
+- (IFImage*)image;
 - (CIImage*)imageValueCI;
 - (CGImageRef)imageValueCG;
 

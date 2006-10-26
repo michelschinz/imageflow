@@ -9,9 +9,9 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFGrabableViewMixin.h"
-#import "IFExpressionEvaluator.h"
 #import "IFExpression.h"
-#import "IFImageConstantExpression.h"
+#import "IFExpressionEvaluator.h"
+#import "IFImage.h"
 
 @protocol IFImageViewDelegate
 - (void)handleMouseDown:(NSEvent*)event;
@@ -23,24 +23,17 @@
   IFGrabableViewMixin* grabableViewMixin;
 
   NSRect canvasBounds;
-  IFExpressionEvaluator* evaluator;
-  IFExpression* expression;
+  IFImage* image;
   NSArray* annotations;
+  
   NSObject<IFImageViewDelegate>* delegate;
   unsigned delegateCapabilities;
-  
-  IFImageConstantExpression* evaluatedExpression;
-  NSRect expressionExtent;
-  BOOL infiniteBoundsMode;
 }
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
 - (void)setCanvasBounds:(NSRect)newCanvasBounds;
-- (void)setExpression:(IFExpression*)newExpression;
+- (void)setImage:(IFImage*)newImage dirtyRect:(NSRect)dirtyRect;
 
 - (void)setAnnotations:(NSArray*)newAnnotations;
 - (void)setDelegate:(NSObject<IFImageViewDelegate>*)newDelegate;
-
-- (NSSize)idealSize;
 
 @end

@@ -32,13 +32,20 @@
   return [self imageConstantExpressionWithIFImage:[IFImage imageWithCGImage:theImage]];
 }
 
+- (IFImage*)image;
+{
+  return (IFImage*)object;
+}
+
 - (CIImage*)imageValueCI;
 {
+  // TODO remove
   return [(IFImage*)object imageCI];
 }
 
 - (CGImageRef)imageValueCG;
 {
+  // TODO remove
   return [(IFImage*)object imageCG];
 }
 

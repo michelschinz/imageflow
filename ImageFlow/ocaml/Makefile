@@ -41,7 +41,6 @@ CAML_SORTED_OBJS += evaluator/operators/paint.cmo
 CAML_SORTED_OBJS += evaluator/expr.cmo
 CAML_SORTED_OBJS += evaluator/printer.cmo
 CAML_SORTED_OBJS += evaluator/optimiser.cmo
-CAML_SORTED_OBJS += evaluator/typechecker.cmo
 CAML_SORTED_OBJS += evaluator/evaluator.cmo
 CAML_SORTED_OBJS += evaluator/cache.cmo
 CAML_SORTED_OBJS += evaluator/optevaluator.cmo

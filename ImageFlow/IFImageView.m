@@ -19,11 +19,6 @@ typedef enum {
   IFImageViewDelegateHasHandleMouseUp      = (1<<2)
 } IFImageViewDelegateCapabilities;
 
-@interface IFImageView (Private)
-- (IFImageConstantExpression*)evaluatedExpression;
-- (void)setEvaluatedExpression:(IFImageConstantExpression*)newEvaluatedExpression;
-@end
-
 @implementation IFImageView
 
 - (id)initWithFrame:(NSRect)frame;
@@ -32,9 +27,8 @@ typedef enum {
     return nil;
   
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
-  
-  evaluator = nil;
-  expression = nil;
+
+  image = nil;
   annotations = nil;
   delegate = nil;
   return self;
@@ -42,37 +36,13 @@ typedef enum {
 
 - (void) dealloc;
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-  [self setEvaluator:nil];
-  [self setEvaluatedExpression:nil];
   [self setAnnotations:nil];
-  [expression release];
-  expression = nil;
+  [self setImage:nil dirtyRect:NSZeroRect];
   
   [grabableViewMixin release];
   grabableViewMixin = nil;
   
   [super dealloc];
-}
-
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
-{
-  if (newEvaluator == evaluator)
-    return;
-
-  if (evaluator != nil) {
-    [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
-    [evaluator removeObserver:self forKeyPath:@"resolutionX"];
-    [evaluator removeObserver:self forKeyPath:@"resolutionY"];
-  }    
-  evaluator = newEvaluator;
-  if (evaluator != nil) {
-    [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:nil];
-    [evaluator addObserver:self forKeyPath:@"resolutionX" options:0 context:nil];
-    [evaluator addObserver:self forKeyPath:@"resolutionY" options:0 context:nil];
-  }  
-  [self setNeedsDisplay:YES];
 }
 
 - (void)setCanvasBounds:(NSRect)newCanvasBounds;
@@ -94,18 +64,12 @@ typedef enum {
   [self setNeedsDisplay:YES];
 }
 
-- (void)setExpression:(IFExpression*)newExpression;
+- (void)setImage:(IFImage*)newImage dirtyRect:(NSRect)dirtyRect;
 {
-  if (newExpression == expression)
+  if (newImage == image)
     return;
-  
-  NSRect dirtyRect = (expression == nil || newExpression == nil)
-    ? NSRectInfinite()
-    : [evaluator deltaFromOld:expression toNew:newExpression];
-  [expression release];
-  expression = [newExpression retain];
-  
-  [self setEvaluatedExpression:nil];
+  [image release];
+  image = [newImage retain];
   [self setNeedsDisplayInRect:dirtyRect];
 }
 
@@ -129,15 +93,9 @@ typedef enum {
     | ([delegate respondsToSelector:@selector(handleMouseUp:)] ? IFImageViewDelegateHasHandleMouseUp : 0);
 }
 
-- (NSSize)idealSize;
-{
-  return expressionExtent.size;
-}
-
 - (void)drawRect:(NSRect)dirtyRect;
 {
-  IFImageConstantExpression* imageExpr = [self evaluatedExpression];
-  if (imageExpr == nil || [imageExpr isError]) {
+  if (image == nil) {
     [[NSColor blackColor] set];
     NSRectFill(dirtyRect);
     return;
@@ -146,7 +104,7 @@ typedef enum {
   CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                            options:[NSDictionary dictionary]]; // TODO working color space
   CGRect dirtyRectCG = CGRectFromNSRect(dirtyRect);
-  [ctx drawImage:[imageExpr imageValueCI] atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
+  [ctx drawImage:[image imageCI] atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
   
   // Draw annotations
   const int annotationsCount = [annotations count];
@@ -174,12 +132,6 @@ typedef enum {
 - (BOOL)acceptsFirstResponder;
 {
   return YES;
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
-{
-  [self setEvaluatedExpression:nil];
-  [self setNeedsDisplay:YES];
 }
 
 #pragma mark event handling
@@ -230,36 +182,6 @@ typedef enum {
 {
   if (![grabableViewMixin handlesKeyUp:event])
     [super keyUp:event];
-}
-
-@end
-
-@implementation IFImageView (Private)
-
-- (IFImageConstantExpression*)evaluatedExpression;
-{
-  if (expression == nil)
-    return nil;
-
-  if (evaluatedExpression == nil) {
-    IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:expression]];
-    if ([extentExpr isError]) {
-      expressionExtent = NSZeroRect;
-      [self setEvaluatedExpression:nil];
-    } else {
-      expressionExtent = [extentExpr rectValueNS];
-      [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:expression]];
-    }
-  }
-  return evaluatedExpression;
-}
-
-- (void)setEvaluatedExpression:(IFImageConstantExpression*)newEvaluatedExpression;
-{
-  if (newEvaluatedExpression == evaluatedExpression)
-    return;
-  [evaluatedExpression release];
-  evaluatedExpression = [newEvaluatedExpression retain];
 }
 
 @end
