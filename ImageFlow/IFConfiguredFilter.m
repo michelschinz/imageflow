@@ -46,10 +46,8 @@
   [filterEnvironment removeObserver:self forKeyPath:@"keys"];
   [self stopObservingEnvironmentKeys:[filterEnvironment keys]];
   
-  [filterEnvironment release];
-  filterEnvironment = nil;
-  [filter release];
-  filter = nil;
+  OBJC_RELEASE(filterEnvironment);
+  OBJC_RELEASE(filter);
   [super dealloc];
 }
 

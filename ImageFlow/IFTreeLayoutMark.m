@@ -48,10 +48,8 @@ static const float MARGIN = 1.5;
 
 - (void) dealloc;
 {
-  [outlinePath release];
-  outlinePath = nil;
-  [tag release];
-  tag = nil;
+  OBJC_RELEASE(outlinePath);
+  OBJC_RELEASE(tag);
   [super dealloc];
 }
 

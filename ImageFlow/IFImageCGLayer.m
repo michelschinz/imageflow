@@ -25,8 +25,7 @@
 {
   CGLayerRelease(layer);
   if (image != nil) {
-    [image release];
-    image = nil;
+    OBJC_RELEASE(image);
   }
   [super dealloc];
 }

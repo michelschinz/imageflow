@@ -25,8 +25,7 @@
 }
 
 - (void) dealloc {
-  [image release];
-  image = nil;
+  OBJC_RELEASE(image);
   [super dealloc];
 }
 

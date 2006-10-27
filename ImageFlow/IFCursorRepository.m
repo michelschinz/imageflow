@@ -22,8 +22,7 @@ static IFCursorRepository* sharedRepository = nil;
 
 - (void)dealloc;
 {
-  [moveCursor release];
-  moveCursor = nil;
+  OBJC_RELEASE(moveCursor);
   [super dealloc];
 }
 

@@ -23,8 +23,7 @@
 
 - (void) dealloc;
 {
-  [arrayController release];
-  arrayController = nil;
+  OBJC_RELEASE(arrayController);
   [filterController removeObserver:self forKeyPath:@"configuredFilter"];
   [super dealloc];
 }

@@ -90,10 +90,8 @@
 }
 
 - (void) dealloc {
-  [operands release];
-  operands = nil;
-  [operator release];
-  operator = nil;
+  OBJC_RELEASE(operands);
+  OBJC_RELEASE(operator);
   [super dealloc];
 }
 

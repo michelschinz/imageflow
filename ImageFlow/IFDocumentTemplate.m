@@ -37,14 +37,10 @@
 
 - (void) dealloc;
 {
-  [node release];
-  node = nil;
-  [comment release];
-  comment = nil;
-  [name release];
-  name = nil;
-  [fileName release];
-  fileName = nil;
+  OBJC_RELEASE(node);
+  OBJC_RELEASE(comment);
+  OBJC_RELEASE(name);
+  OBJC_RELEASE(fileName);
   [super dealloc];
 }
 

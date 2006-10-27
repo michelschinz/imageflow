@@ -8,7 +8,6 @@
 
 #import "IFConstantExpression.h"
 #import "IFXMLCoder.h"
-#import "IFUtilities.h"
 #import "IFImageConstantExpression.h"
 #import "IFErrorConstantExpression.h"
 #import "IFExpressionVisitor.h"
@@ -77,8 +76,7 @@
 }
 
 - (void) dealloc {
-  [object release];
-  object = nil;
+  OBJC_RELEASE(object);
   [super dealloc];
 }
 

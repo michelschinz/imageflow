@@ -26,8 +26,7 @@
 
 - (void)dealloc;
 {
-  [treeNode release];
-  treeNode = nil;
+  OBJC_RELEASE(treeNode);
   [super dealloc];
 }
 

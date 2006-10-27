@@ -23,8 +23,7 @@
 
 - (void)dealloc;
 {
-  [ciImage release];
-  ciImage = nil;
+  OBJC_RELEASE(ciImage);
   CGImageRelease(image);
   image = NULL;
   [super dealloc];

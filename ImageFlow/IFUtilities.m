@@ -6,7 +6,6 @@
 //  Copyright 2005 Michel Schinz. All rights reserved.
 //
 
-#import "IFUtilities.h"
 
 static const void *retainCallback(CFAllocatorRef allocator, const void *value)
 {

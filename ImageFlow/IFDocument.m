@@ -84,29 +84,22 @@ static IFDocumentTemplateManager* templateManager;
 - (void)dealloc;
 {
   [self stopObservingTree:fakeRoot];
-  [fakeRoot release];
-  fakeRoot = nil;
-  [marks release];
-  marks = nil;
+  OBJC_RELEASE(fakeRoot);
+  OBJC_RELEASE(marks);
 
-  [workingSpaceProfile release];
-  workingSpaceProfile = nil;
+  OBJC_RELEASE(workingSpaceProfile);
   
   if (documentDescription != nil) {
-    [documentDescription release];
-    documentDescription = nil;
+    OBJC_RELEASE(documentDescription);
   }
   if (authorName != nil) {
-    [authorName release];
-    authorName = nil;
+    OBJC_RELEASE(authorName);
   }
   if (title != nil) {
-    [title release];
-    title = nil;
+    OBJC_RELEASE(title);
   }
   
-  [evaluator release];
-  evaluator = nil;
+  OBJC_RELEASE(evaluator);
   
   [super dealloc];
 }

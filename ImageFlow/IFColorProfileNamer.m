@@ -34,10 +34,8 @@ static IFColorProfileNamer* sharedNamer = nil;
 
 - (void) dealloc;
 {
-  [allProfiles release];
-  allProfiles = nil;
-  [namer release];
-  namer = nil;
+  OBJC_RELEASE(allProfiles);
+  OBJC_RELEASE(namer);
   [super dealloc];
 }
 

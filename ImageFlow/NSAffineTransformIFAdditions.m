@@ -7,7 +7,6 @@
 //
 
 #import "NSAffineTransformIFAdditions.h"
-#import "IFUtilities.h"
 
 @implementation NSAffineTransform (NSAffineTransformIFAdditions)
 

@@ -15,7 +15,6 @@
 #import "IFTreeLayoutCursor.h"
 #import "IFTreeLayoutGhost.h"
 #import "IFTreeLayoutComposite.h"
-#import "IFUtilities.h"
 
 @implementation IFTreeLayoutStrategy
 
@@ -33,15 +32,11 @@
 
 - (void)dealloc;
 {
-  [sidePanePath release];
-  sidePanePath = nil;
-  [deleteButtonCell release];
-  deleteButtonCell = nil;
+  OBJC_RELEASE(sidePanePath);
+  OBJC_RELEASE(deleteButtonCell);
     
-  [layoutNodes release];
-  layoutNodes = nil;
-  [layoutParams release];
-  layoutParams = nil;
+  OBJC_RELEASE(layoutNodes);
+  OBJC_RELEASE(layoutParams);
   [super dealloc];
 }
 

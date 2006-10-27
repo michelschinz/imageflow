@@ -36,10 +36,8 @@
 
 - (void)dealloc;
 {
-  [tag release];
-  tag = nil;
-  [node release];
-  node = nil;
+  OBJC_RELEASE(tag);
+  OBJC_RELEASE(node);
   [super dealloc];
 }
 

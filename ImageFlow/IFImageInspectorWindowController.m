@@ -8,7 +8,6 @@
 
 #import "IFImageInspectorWindowController.h"
 #import "IFDocument.h"
-#import "IFUtilities.h"
 #import "IFFilterController.h"
 #import "IFAnnotation.h"
 #import "IFErrorConstantExpression.h"
@@ -147,27 +146,17 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   [self setCurrentNode:nil];
   [self removeSecondaryProbe];
 
-  [zoomToolbarItem release];
-  zoomToolbarItem = nil;
-  [modeToolbarItem release];
-  modeToolbarItem = nil;
+  OBJC_RELEASE(zoomToolbarItem);
+  OBJC_RELEASE(modeToolbarItem);
 
-  [proxy release];
-  proxy = nil;
-  [viewEditTransform release];
-  viewEditTransform = nil;
-  [editViewTransform release];
-  editViewTransform = nil;
-  [activeVariant release];
-  activeVariant = nil;
-  [variants release];
-  variants = nil;
-  [panelSizes release];
-  panelSizes = nil;
-  [tabIndices release];
-  tabIndices = nil;
-  [filterControllers release];
-  filterControllers = nil;
+  OBJC_RELEASE(proxy);
+  OBJC_RELEASE(viewEditTransform);
+  OBJC_RELEASE(editViewTransform);
+  OBJC_RELEASE(activeVariant);
+  OBJC_RELEASE(variants);
+  OBJC_RELEASE(panelSizes);
+  OBJC_RELEASE(tabIndices);
+  OBJC_RELEASE(filterControllers);
   [super dealloc];
 }
 
@@ -489,8 +478,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 - (void)removeSecondaryProbe;
 {
   [secondaryProbe removeObserver:self forKeyPath:@"mark.node.expression"];
-  [secondaryProbe release];
-  secondaryProbe = nil;
+  OBJC_RELEASE(secondaryProbe);
   [self setCurrentSecondaryNode:nil];
 }
 

@@ -27,8 +27,7 @@
 - (void) dealloc {
   CGColorSpaceRelease(colorSpace);
   colorSpace = NULL;
-  [imageExpression release];
-  imageExpression = nil;
+  OBJC_RELEASE(imageExpression);
   [super dealloc];
 }
 

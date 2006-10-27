@@ -275,8 +275,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
     @"profileNames", @"selectedProfileName",
     nil];
   [[self do] willChangeValueForKey:(id)[keys objectEnumerator]];
-  [fileProperties release];
-  fileProperties = nil;
+  OBJC_RELEASE(fileProperties);
   selectedProfileName = nil;
   [[self do] didChangeValueForKey:(id)[keys reverseObjectEnumerator]];
 }

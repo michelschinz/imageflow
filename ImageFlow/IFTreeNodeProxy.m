@@ -26,10 +26,8 @@
 
 - (void)dealloc;
 {
-  [node release];
-  node = nil;
-  [document release];
-  document = nil;
+  OBJC_RELEASE(node);
+  OBJC_RELEASE(document);
   [super dealloc];
 }
 

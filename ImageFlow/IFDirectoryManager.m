@@ -29,8 +29,7 @@ static IFDirectoryManager* sharedDirectoryManager = nil;
 }
 
 - (void) dealloc {
-  [applicationSupportDirectory release];
-  applicationSupportDirectory = nil;
+  OBJC_RELEASE(applicationSupportDirectory);
   [super dealloc];
 }
 

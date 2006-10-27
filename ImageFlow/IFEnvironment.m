@@ -28,8 +28,7 @@
 
 - (void) dealloc;
 {
-  [env release];
-  env = nil;
+  OBJC_RELEASE(env);
   [super dealloc];
 }
 

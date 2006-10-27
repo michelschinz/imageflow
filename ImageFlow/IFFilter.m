@@ -84,16 +84,11 @@ static NSDictionary* allFiltersByName;
 
 - (void)dealloc;
 {
-  [delegate release];
-  delegate = nil;
-  [settingsNib release];
-  settingsNib = nil;
-  [settingsNibName release];
-  settingsNibName = nil;
-  [expression release];
-  expression = nil;
-  [name release];
-  name = nil;
+  OBJC_RELEASE(delegate);
+  OBJC_RELEASE(settingsNib);
+  OBJC_RELEASE(settingsNibName);
+  OBJC_RELEASE(expression);
+  OBJC_RELEASE(name);
   [super dealloc];
 }
 

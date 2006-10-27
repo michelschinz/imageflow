@@ -27,10 +27,8 @@
 
  - (void)dealloc;
 {
-  [fst release];
-  fst = nil;
-  [snd release];
-  snd = nil;
+  OBJC_RELEASE(fst);
+  OBJC_RELEASE(snd);
   [super dealloc];
 }
 

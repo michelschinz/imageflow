@@ -37,18 +37,12 @@
 
 - (void)dealloc;
 {
-  [backgroundColor release];
-  backgroundColor = nil;
-  [markBackgroundColor release];
-  markBackgroundColor = nil;
-  [cursorColor release];
-  cursorColor = nil;
-  [connectorLabelColor release];
-  connectorLabelColor = nil;
-  [connectorColor release];
-  connectorColor = nil;
-  [labelFont release];
-  labelFont = nil;
+  OBJC_RELEASE(backgroundColor);
+  OBJC_RELEASE(markBackgroundColor);
+  OBJC_RELEASE(cursorColor);
+  OBJC_RELEASE(connectorLabelColor);
+  OBJC_RELEASE(connectorColor);
+  OBJC_RELEASE(labelFont);
   [super dealloc];
 }
 

@@ -28,10 +28,8 @@
 
 - (void)dealloc;
 {
-  [cache release];
-  cache = nil;
-  [image release];
-  image = nil;
+  OBJC_RELEASE(cache);
+  OBJC_RELEASE(image);
   [super dealloc];
 }
 

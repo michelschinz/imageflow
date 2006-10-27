@@ -27,10 +27,8 @@
 
 - (void)dealloc;
 {
-  [mark release];
-  mark = nil;
-  [name release];
-  name = nil;
+  OBJC_RELEASE(mark);
+  OBJC_RELEASE(name);
   [super dealloc];
 }
 

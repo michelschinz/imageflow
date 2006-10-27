@@ -26,10 +26,8 @@
 }
 
 - (void) dealloc {
-  [directory release];
-  directory = nil;
-  [templates release];
-  templates = nil;
+  OBJC_RELEASE(directory);
+  OBJC_RELEASE(templates);
   [super dealloc];
 }
 

@@ -41,15 +41,11 @@ const unsigned int ID_NONE = ~0;
   child = nil;
   while ([parents count] > 0)
     [self removeObjectFromParentsAtIndex:0];
-  [parents release];
-  parents = nil;
-  [expression release];
-  expression = nil;
+  OBJC_RELEASE(parents);
+  OBJC_RELEASE(expression);
   [filter removeObserver:self forKeyPath:@"expression"];  
-  [filter release];
-  filter = nil;
-  [name release];
-  name = nil;
+  OBJC_RELEASE(filter);
+  OBJC_RELEASE(name);
   [super dealloc];
 }
 

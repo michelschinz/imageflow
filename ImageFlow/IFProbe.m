@@ -23,8 +23,7 @@
 }
 
 - (void) dealloc {
-  [mark release];
-  mark = nil;
+  OBJC_RELEASE(mark);
   [super dealloc];
 }
 

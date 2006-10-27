@@ -64,10 +64,8 @@ static NSMutableDictionary* filterArrayControllers = nil;
 - (void) dealloc;
 {
   [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
-  [textCell release];
-  textCell = nil;
-  [arrayController release];
-  arrayController = nil;
+  OBJC_RELEASE(textCell);
+  OBJC_RELEASE(arrayController);
   [super dealloc];
 }
 

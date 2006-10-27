@@ -29,8 +29,7 @@
 
 - (void)dealloc;
 {
-  [outlinePath release];
-  outlinePath = nil;
+  OBJC_RELEASE(outlinePath);
   [super dealloc];
 }
 

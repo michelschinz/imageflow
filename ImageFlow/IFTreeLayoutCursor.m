@@ -28,8 +28,7 @@
 
 - (void) dealloc;
 {
-  [cursorPath release];
-  cursorPath = nil;
+  OBJC_RELEASE(cursorPath);
   [super dealloc];
 }
 

@@ -31,8 +31,7 @@
 
 - (void)dealloc;
 {
-  [rootRef release];
-  rootRef = nil;
+  OBJC_RELEASE(rootRef);
   [super dealloc];
 }
 

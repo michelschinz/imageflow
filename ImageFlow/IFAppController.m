@@ -40,8 +40,7 @@
 }
 
 - (void) dealloc {
-  [inspectorControllers release];
-  inspectorControllers = nil;
+  OBJC_RELEASE(inspectorControllers);
   [super dealloc];
 }
 

@@ -21,8 +21,7 @@
 
 - (void) dealloc;
 {
-  [base release];
-  base = nil;
+  OBJC_RELEASE(base);
   [super dealloc];
 }
 

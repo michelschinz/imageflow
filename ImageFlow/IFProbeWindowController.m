@@ -54,8 +54,7 @@ static NSDictionary* stringToInt;
 
 - (void) dealloc {
   [[self window] setDelegate:nil];
-  [probe release];
-  probe = nil;
+  OBJC_RELEASE(probe);
   [super dealloc];
 }
 

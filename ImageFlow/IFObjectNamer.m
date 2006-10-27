@@ -22,10 +22,8 @@
 
 - (void) dealloc;
 {
-  [objectToName release];
-  objectToName = nil;
-  [nameToObject release];
-  nameToObject = nil;
+  OBJC_RELEASE(objectToName);
+  OBJC_RELEASE(nameToObject);
   [super dealloc];
 }
 

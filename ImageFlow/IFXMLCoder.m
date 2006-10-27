@@ -33,11 +33,10 @@ static IFXMLCoder* sharedCoder = nil;
   return self;
 }
 
-- (void) dealloc {
-  [numberFormatter release];
-  numberFormatter = nil;
-  [typeNames release];
-  typeNames = nil;
+- (void) dealloc;
+{
+  OBJC_RELEASE(numberFormatter);
+  OBJC_RELEASE(typeNames);
   [super dealloc];
 }
 

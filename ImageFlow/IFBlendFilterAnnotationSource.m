@@ -37,8 +37,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 - (void)dealloc;
 {
   [node removeObserver:self forKeyPath:@"expression"];
-  [node release];
-  node = nil;
+  OBJC_RELEASE(node);
   [super dealloc];
 }
 

@@ -30,8 +30,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 - (void)dealloc;
 {
   [original removeObserver:self forKeyPath:@"expression"];
-  [original release];
-  original = nil;
+  OBJC_RELEASE(original);
   [super dealloc];
 }
 

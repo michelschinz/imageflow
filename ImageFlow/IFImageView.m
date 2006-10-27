@@ -9,7 +9,6 @@
 #import "IFImageView.h"
 #import "IFImageConstantExpression.h"
 #import "IFOperatorExpression.h"
-#import "IFUtilities.h"
 #import "IFAnnotation.h"
 #import "IFCursorRect.h"
 
@@ -39,8 +38,7 @@ typedef enum {
   [self setAnnotations:nil];
   [self setImage:nil dirtyRect:NSZeroRect];
   
-  [grabableViewMixin release];
-  grabableViewMixin = nil;
+  OBJC_RELEASE(grabableViewMixin);
   
   [super dealloc];
 }

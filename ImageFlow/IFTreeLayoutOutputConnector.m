@@ -53,8 +53,7 @@
 
 - (void) dealloc;
 {
-  [tag release];
-  tag = nil;
+  OBJC_RELEASE(tag);
   [super dealloc];
 }
 

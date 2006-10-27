@@ -34,10 +34,8 @@ static NSString* IFValueChangedContext = @"IFValueChangedContext";
 - (void)dealloc;
 {
   [environment removeObserver:self forKeyPath:variableName];
-  [environment release];
-  environment = nil;
-  [variableName release];
-  variableName = nil;
+  OBJC_RELEASE(environment);
+  OBJC_RELEASE(variableName);
   [super dealloc];
 }
 

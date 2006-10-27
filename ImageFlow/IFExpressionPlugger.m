@@ -96,8 +96,7 @@ typedef enum {
 }
 
 - (void) dealloc {
-  [environment release];
-  environment = nil;
+  OBJC_RELEASE(environment);
   [super dealloc];
 }
 

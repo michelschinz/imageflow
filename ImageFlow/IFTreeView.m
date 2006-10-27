@@ -105,21 +105,14 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   [self removeAllTrackingRects];
   [self setDocument:nil];
 
-  [copiedNode release];
-  copiedNode = nil;
-  [selectedNodes release];
-  selectedNodes = nil;
-  [trackingRectTags release];
-  trackingRectTags = nil;
-  [layoutLayers release];
-  layoutLayers = nil;
+  OBJC_RELEASE(copiedNode);
+  OBJC_RELEASE(selectedNodes);
+  OBJC_RELEASE(trackingRectTags);
+  OBJC_RELEASE(layoutLayers);
   
-  [layoutParameters release];
-  layoutParameters = nil;
-  [layoutStrategy release];
-  layoutStrategy = nil;
-  [grabableViewMixin release];
-  grabableViewMixin = nil;
+  OBJC_RELEASE(layoutParameters);
+  OBJC_RELEASE(layoutStrategy);
+  OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
 }
 
@@ -813,8 +806,7 @@ static enum {
   if (highlightingPath != nil) {
     const float width = [highlightingPath lineWidth];
     [self setNeedsDisplayInRect:NSInsetRect([highlightingPath bounds],-width,-width)];
-    [highlightingPath release];
-    highlightingPath = nil;
+    OBJC_RELEASE(highlightingPath);
     pointedElement = nil;
   }
 }

@@ -48,8 +48,7 @@ static int parametersCount(IFTreeNode* root) {
 - (void)dealloc;
 {
   [macroRootRef removeObserver:self forKeyPath:@"treeNode.expression"];
-  [macroRootRef release];
-  macroRootRef = nil;
+  OBJC_RELEASE(macroRootRef);
   [super dealloc];
 }
 

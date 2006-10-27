@@ -25,12 +25,9 @@
 - (void)dealloc;
 {
   [source removeObserver:self forKeyPath:@"value"];
-  [inverseTransform release];
-  inverseTransform = nil;
-  [transform release];
-  transform = nil;
-  [source release];
-  source = nil;
+  OBJC_RELEASE(inverseTransform);
+  OBJC_RELEASE(transform);
+  OBJC_RELEASE(source);
   view = nil;
   [super dealloc];
 }

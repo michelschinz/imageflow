@@ -8,7 +8,6 @@
 
 #import "IFTreeLayoutNode.h"
 #import "IFTreeView.h"
-#import "IFUtilities.h"
 
 @interface IFTreeLayoutNode (Private)
 - (void)updateInternalLayout;
@@ -233,8 +232,7 @@ int countAncestors(IFTreeNode* node) {
   const float margin = [[containingView layoutParameters] nodeInternalMargin];
 
   if (evaluatedExpression != nil) {
-    [evaluatedExpression release];
-    evaluatedExpression = nil;
+    OBJC_RELEASE(evaluatedExpression);
   }
   
   IFExpression* nodeExpression = [node expression];

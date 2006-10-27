@@ -8,7 +8,6 @@
 
 #import "IFPrintSinkDelegate.h"
 #import "IFPrintView.h"
-#import "IFUtilities.h"
 #import "IFDocument.h"
 
 @implementation IFPrintSinkDelegate

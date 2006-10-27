@@ -38,8 +38,7 @@
 
 - (void)dealloc;
 {
-  [elements release];
-  elements = nil;
+  OBJC_RELEASE(elements);
   [super dealloc];
 }
 

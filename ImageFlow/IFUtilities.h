@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define OBJC_RELEASE(o) { [o release]; o = nil; }
+
 NSMutableDictionary* createMutableDictionaryWithRetainedKeys();
 
 CGSize CGSizeFromNSSize(NSSize s);

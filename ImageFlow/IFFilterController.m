@@ -20,8 +20,7 @@
 
 - (void) dealloc;
 {
-  [filter release];
-  filter = nil;
+  OBJC_RELEASE(filter);
   [super dealloc];
 }
 
