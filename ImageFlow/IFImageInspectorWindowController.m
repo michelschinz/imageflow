@@ -11,6 +11,7 @@
 #import "IFFilterController.h"
 #import "IFAnnotation.h"
 #import "IFErrorConstantExpression.h"
+#import "NSAffineTransformIFAdditions.h"
 
 typedef enum {
   IFFilterDelegateHasMouseDown = 1<<0,
@@ -375,26 +376,20 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
 - (void)handleMouseDown:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDown) {
-    NSPoint point = [viewEditTransform transformPoint:[imageView convertPoint:[event locationInWindow] fromView:nil]];
-    [filterDelegate mouseDown:event atPoint:point withEnvironment:[[currentNode filter] environment]];
-  }
+  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDown)
+    [filterDelegate mouseDown:event inView:imageView viewFilterTransform:viewEditTransform withEnvironment:[[currentNode filter] environment]];
 }
 
 - (void)handleMouseDragged:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDragged) {
-    NSPoint point = [viewEditTransform transformPoint:[imageView convertPoint:[event locationInWindow] fromView:nil]];
-    [filterDelegate mouseDragged:event atPoint:point withEnvironment:[[currentNode filter] environment]];
-  }
+  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDragged)
+    [filterDelegate mouseDragged:event inView:imageView viewFilterTransform:viewEditTransform withEnvironment:[[currentNode filter] environment]];
 }
 
 - (void)handleMouseUp:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseUp) {
-    NSPoint point = [viewEditTransform transformPoint:[imageView convertPoint:[event locationInWindow] fromView:nil]];
-    [filterDelegate mouseUp:event atPoint:point withEnvironment:[[currentNode filter] environment]];
-  }
+  if (filterDelegateCapabilities & IFFilterDelegateHasMouseUp)
+    [filterDelegate mouseUp:event inView:imageView viewFilterTransform:viewEditTransform withEnvironment:[[currentNode filter] environment]];
 }
 
 @end
@@ -416,7 +411,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   
   NSRect dirtyRect = (mainExpression == nil || newExpression == nil)
     ? NSRectInfinite()
-    : [evaluator deltaFromOld:mainExpression toNew:newExpression];
+    : [editViewTransform transformRect:[evaluator deltaFromOld:mainExpression toNew:newExpression]];
 
   [mainExpression release];
   mainExpression = [newExpression retain];
@@ -499,9 +494,12 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
   filterDelegate = [[[currentNode filter] filter] delegate];
   filterDelegateCapabilities = 0
-    | ([filterDelegate respondsToSelector:@selector(mouseDown:atPoint:withEnvironment:)] ? IFFilterDelegateHasMouseDown : 0)
-    | ([filterDelegate respondsToSelector:@selector(mouseDragged:atPoint:withEnvironment:)] ? IFFilterDelegateHasMouseDragged : 0)
-    | ([filterDelegate respondsToSelector:@selector(mouseUp:atPoint:withEnvironment:)] ? IFFilterDelegateHasMouseUp : 0);
+    | ([filterDelegate respondsToSelector:@selector(mouseDown:inView:viewFilterTransform:withEnvironment:)]
+       ? IFFilterDelegateHasMouseDown : 0)
+    | ([filterDelegate respondsToSelector:@selector(mouseDragged:inView:viewFilterTransform:withEnvironment:)]
+       ? IFFilterDelegateHasMouseDragged : 0)
+    | ([filterDelegate respondsToSelector:@selector(mouseUp:inView:viewFilterTransform:withEnvironment:)]
+       ? IFFilterDelegateHasMouseUp : 0);
 }
 
 - (void)updateMainImageViewExpression;

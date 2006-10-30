@@ -46,28 +46,27 @@
 {
   NSPoint pos = [[self inverseTransform] transformPoint:[[self view] convertPoint:[event locationInWindow] fromView:nil]];
   NSRect rect = [(NSValue*)[[self source] value] rectValue];
-  dragging = NSMouseInRect(pos,rect,NO);
-  return dragging;
-}
-
-- (bool)handleMouseUp:(NSEvent*)event;
-{
-  if (dragging) {
-    dragging = NO;
-    return YES;
-  } else
+  if (!NSMouseInRect(pos,rect,NO))
     return NO;
-}
 
-- (bool)handleMouseDragged:(NSEvent*)event;
-{
-  if (dragging) {
-    NSRect rect = [(NSValue*)[[self source] value] rectValue];
-    NSSize delta = [[self inverseTransform] transformSize:NSMakeSize([event deltaX],-[event deltaY])];
-    [[self source] updateValue:[NSValue valueWithRect:NSOffsetRect(rect,delta.width,delta.height)]];
-    return YES;
-  } else
-    return NO;
+  for (;;) {
+    NSEvent* event = [[view window] nextEventMatchingMask:NSLeftMouseDraggedMask|NSLeftMouseUpMask];
+
+    switch ([event type]) {
+      case NSLeftMouseDragged: {
+        NSRect rect = [(NSValue*)[[self source] value] rectValue];
+        NSSize delta = [[self inverseTransform] transformSize:NSMakeSize([event deltaX],-[event deltaY])];
+        [[self source] updateValue:[NSValue valueWithRect:NSOffsetRect(rect,delta.width,delta.height)]];
+      } break;
+
+      case NSLeftMouseUp:
+        return YES;
+
+      default:
+        NSAssert1(NO, @"unexpected event type (%@)",event);
+        break;
+    }
+  }
 }
 
 @end

@@ -11,7 +11,6 @@
 #import "IFAnnotation.h"
 
 @interface IFAnnotationRect : IFAnnotation {
-  bool dragging;
 }
 
 + (id)annotationRectWithView:(NSView*)theView source:(IFAnnotationSource*)theSource;

@@ -14,6 +14,7 @@
 
 @class IFDocument;
 @class IFTreeNode;
+@class IFImageView;
 
 @protocol IFFilterDelegate
 // Tree view support
@@ -29,9 +30,9 @@
 
 - (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env; // mandatory, except for sources and sinks
 
-- (void)mouseDown:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env; // optional
-- (void)mouseDragged:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env; // optional
-- (void)mouseUp:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env; // optional
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)transform withEnvironment:(IFEnvironment*)env; // optional
+- (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)transform withEnvironment:(IFEnvironment*)env; // optional
+- (void)mouseUp:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)transform withEnvironment:(IFEnvironment*)env; // optional
 
 // Export support (these methods must either be all present or all absent)
 - (NSString*)exporterKind;

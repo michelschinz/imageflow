@@ -20,7 +20,16 @@
   return @"draw bitmap";
 }
 
-- (void)mouseDown:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env;
+IFExpression* paintExpr(IFExpression* brushExpr, NSArray* points)
+{
+  return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"paint"]
+                                             operands:[NSArray arrayWithObjects:
+                                               brushExpr,
+                                               [IFConstantExpression expressionWithArray:points],
+                                               nil]];
+}
+
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)vfTransform withEnvironment:(IFEnvironment*)env;
 {
   IFExpression* curExpr = [env valueForKey:@"drawing"];
   IFExpression* brushExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"circle"]
@@ -29,42 +38,32 @@
                                                                   [IFConstantExpression expressionWithFloat:[[env valueForKey:@"brushSize"] floatValue]],
                                                                   [IFConstantExpression expressionWithColorNS:[env valueForKey:@"brushColor"]],
                                                                   nil]];
-  IFExpression* pointExpr = [IFConstantExpression expressionWithArray:[NSArray arrayWithObject:[IFConstantExpression expressionWithPointNS:point]]];  
-  IFExpression* paintExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"paint"]
-                                                                operands:[NSArray arrayWithObjects:brushExpr,pointExpr,nil]];
-  IFConstantExpression* mode = [IFConstantExpression expressionWithInt:[[env valueForKey:@"brushMode"] intValue]];
-  IFExpression* newExpr = [IFOperatorExpression blendBackground:curExpr
-                                                 withForeground:paintExpr
-                                                         inMode:mode];
-  [env setValue:newExpr forKey:@"drawing"];
-}
+  IFConstantExpression* modeExpr = [IFConstantExpression expressionWithInt:[[env valueForKey:@"brushMode"] intValue]];
 
-- (void)mouseDragged:(NSEvent*)event atPoint:(NSPoint)point withEnvironment:(IFEnvironment*)env;
-{
-  IFOperatorExpression* curBlendExpr = (IFOperatorExpression*)[env valueForKey:@"drawing"];
-  NSAssert1([curBlendExpr isKindOfClass:[IFOperatorExpression class]]
-            && [(IFOperatorExpression*)curBlendExpr operator] == [IFOperator operatorForName:@"blend"],
-            @"unexpected expression:", curBlendExpr);
+  NSPoint point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
+  NSMutableArray* points = [NSMutableArray arrayWithObject:[IFConstantExpression expressionWithPointNS:point]];
+  [env setValue:[IFOperatorExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr]
+         forKey:@"drawing"];
 
-  IFOperatorExpression* curPaintExpr = (IFOperatorExpression*)[[curBlendExpr operands] objectAtIndex:1];
-  NSAssert1([curPaintExpr isKindOfClass:[IFOperatorExpression class]]
-            && [(IFOperatorExpression*)curPaintExpr operator] == [IFOperator operatorForName:@"paint"],
-            @"unexpected expression:", curPaintExpr);
-
-  IFExpression* brush = [[curPaintExpr operands] objectAtIndex:0];
-  NSArray* curPoints = [[[curPaintExpr operands] objectAtIndex:1] arrayValue];
-
-  IFExpression* pointExpr = [IFConstantExpression expressionWithPointNS:point];
-  NSArray* newPoints = [IFConstantExpression expressionWithArray:[curPoints arrayByAddingObject:pointExpr]];
-  IFOperatorExpression* newPaintExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"paint"]
-                                                                           operands:[NSArray arrayWithObjects:brush,newPoints,nil]];
-  IFOperatorExpression* newBlendExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"blend"]
-                                                                           operands:[NSArray arrayWithObjects:
-                                                                             [[curBlendExpr operands] objectAtIndex:0],
-                                                                             newPaintExpr,
-                                                                             [[curBlendExpr operands] objectAtIndex:2],
-                                                                             nil]];
-  [env setValue:newBlendExpr forKey:@"drawing"];
+  for (;;) {
+    NSEvent* event = [[view window] nextEventMatchingMask:NSLeftMouseDraggedMask|NSLeftMouseUpMask];
+    
+    switch ([event type]) {
+      case NSLeftMouseDragged: {
+        point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
+        [points addObject:[IFConstantExpression expressionWithPointNS:point]];
+        [env setValue:[IFOperatorExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr]
+               forKey:@"drawing"];        
+      } break;
+        
+      case NSLeftMouseUp:
+        return;
+        
+      default:
+        NSAssert1(NO, @"unexpected event type (%@)",event);
+        break;
+    }
+  }
 }
 
 - (NSArray*)modes;
