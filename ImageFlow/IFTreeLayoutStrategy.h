@@ -20,6 +20,8 @@
   NSMutableDictionary* layoutNodes;
   
   NSButtonCell* deleteButtonCell;
+  NSButtonCell* foldButtonCell;
+  NSButtonCell* menuButtonCell;
   NSBezierPath* sidePanePath;
 }
 
@@ -34,7 +36,10 @@
                               forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 - (IFTreeLayoutElement*)layoutMarks:(NSArray*)marks forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 
+// side pane
 - (NSBezierPath*)sidePanePath;
 - (NSButtonCell*)deleteButtonCell;
+- (NSButtonCell*)foldButtonCell;
+- (NSButtonCell*)menuButtonCell;
 
 @end

@@ -214,14 +214,38 @@
 - (NSButtonCell*)deleteButtonCell;
 {
   if (deleteButtonCell == nil) {
-    deleteButtonCell = [[NSButtonCell alloc] initImageCell:[NSImage imageNamed:@"button_delete"]];
-    [deleteButtonCell setAlternateImage:[NSImage imageNamed:@"button_delete_active"]];
+    deleteButtonCell = [[NSButtonCell alloc] initImageCell:[NSImage imageNamed:@"side_button_delete"]];
     [deleteButtonCell setButtonType:NSMomentaryChangeButton];
     [deleteButtonCell setBordered:NO];
     [deleteButtonCell setAction:@selector(deleteNodeUnderMouse:)];
-    [deleteButtonCell setTarget:self];
+    [deleteButtonCell setTarget:view];
   }
   return deleteButtonCell;
+}
+
+- (NSButtonCell*)foldButtonCell;
+{
+  if (foldButtonCell == nil) {
+    foldButtonCell = [[NSButtonCell alloc] initImageCell:[NSImage imageNamed:@"side_button_fold"]];
+    [foldButtonCell setAlternateImage:[NSImage imageNamed:@"side_button_unfold"]];
+    [foldButtonCell setButtonType:NSToggleButton];
+    [foldButtonCell setBordered:NO];
+    [foldButtonCell setAction:@selector(foldNodeUnderMouse:)];
+    [foldButtonCell setTarget:view];
+  }
+  return foldButtonCell;
+}
+
+- (NSButtonCell*)menuButtonCell;
+{
+  if (menuButtonCell == nil) {
+    menuButtonCell = [[NSButtonCell alloc] initImageCell:[NSImage imageNamed:@"side_button_menu"]];
+    [menuButtonCell setButtonType:NSMomentaryChangeButton];
+    [menuButtonCell setBordered:NO];
+    [menuButtonCell setAction:@selector(menuForNodeUnderMouse:)];
+    [menuButtonCell setTarget:view];
+  }
+  return menuButtonCell;
 }
 
 @end

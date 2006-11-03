@@ -79,7 +79,7 @@
 		FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
-		FA64C5A60AC9BA40001EB3B4 /* button_delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */; };
+		FA6609170AF7D6270049AD02 /* warning-sign.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6609160AF7D6270049AD02 /* warning-sign.png */; };
 		FA68DE9F092DBC14009D02CB /* IFPercentValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */; };
 		FA68E05A092DCEC1009D02CB /* IFPrintView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68E058092DCEC1009D02CB /* IFPrintView.m */; };
 		FA68E09A092DE516009D02CB /* IFPrintSinkController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68E094092DE2EC009D02CB /* IFPrintSinkController.m */; };
@@ -116,6 +116,10 @@
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
 		FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC3D52088AD689007E8691 /* IFTreeMark.m */; };
 		FABD2BDD0862E2A300D9A92D /* IFTreeLayoutElement.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD2BDC0862E2A300D9A92D /* IFTreeLayoutElement.m */; };
+		FABF844C0AFB324900EABEAB /* side_button_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF84480AFB324900EABEAB /* side_button_delete.png */; };
+		FABF844D0AFB324900EABEAB /* side_button_fold.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF84490AFB324900EABEAB /* side_button_fold.png */; };
+		FABF844E0AFB324900EABEAB /* side_button_menu.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF844A0AFB324900EABEAB /* side_button_menu.png */; };
+		FABF844F0AFB324900EABEAB /* side_button_unfold.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF844B0AFB324900EABEAB /* side_button_unfold.png */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FAC0FD4A096D58D400E0915E /* alias_arrow.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FAC0FD49096D58D400E0915E /* alias_arrow.tiff */; };
 		FACF8B6F08668C5800985FA3 /* IFTreeLayoutNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8B6E08668C5800985FA3 /* IFTreeLayoutNode.m */; };
@@ -151,7 +155,6 @@
 		FAE63B5A0AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE63B580AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m */; };
 		FAE653DC08F1847B00FE2949 /* IFDocumentSettings.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */; };
 		FAE6553508F1A8F600FE2949 /* IFColorProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6553408F1A8F600FE2949 /* IFColorProfile.m */; };
-		FAE6A2FF0ACBA18B0059BA3B /* button_delete_active.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FAE6A2FE0ACBA18B0059BA3B /* button_delete_active.tiff */; };
 		FAE6A41D0ACBD9050059BA3B /* IFGrabableViewMixin.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */; };
 		FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE8129908CF307C00B43274 /* IFImageView.m */; };
 		FAE874DB0908C4E300E856B9 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = FAE8749F0908C2B800E856B9 /* Templates */; };
@@ -341,7 +344,7 @@
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
 		FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFErrorConstantExpression.h; sourceTree = "<group>"; };
 		FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFErrorConstantExpression.m; sourceTree = "<group>"; };
-		FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = button_delete.tiff; sourceTree = "<group>"; };
+		FA6609160AF7D6270049AD02 /* warning-sign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warning-sign.png"; sourceTree = "<group>"; };
 		FA68DE9C092DBC14009D02CB /* IFPercentValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPercentValueTransformer.h; sourceTree = "<group>"; };
 		FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPercentValueTransformer.m; sourceTree = "<group>"; };
 		FA68E057092DCEC1009D02CB /* IFPrintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPrintView.h; sourceTree = "<group>"; };
@@ -402,6 +405,10 @@
 		FABC3D52088AD689007E8691 /* IFTreeMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeMark.m; sourceTree = "<group>"; };
 		FABD2BDB0862E2A300D9A92D /* IFTreeLayoutElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutElement.h; sourceTree = "<group>"; };
 		FABD2BDC0862E2A300D9A92D /* IFTreeLayoutElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutElement.m; sourceTree = "<group>"; };
+		FABF84480AFB324900EABEAB /* side_button_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_delete.png; sourceTree = "<group>"; };
+		FABF84490AFB324900EABEAB /* side_button_fold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_fold.png; sourceTree = "<group>"; };
+		FABF844A0AFB324900EABEAB /* side_button_menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_menu.png; sourceTree = "<group>"; };
+		FABF844B0AFB324900EABEAB /* side_button_unfold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_unfold.png; sourceTree = "<group>"; };
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FAC0FD49096D58D400E0915E /* alias_arrow.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = alias_arrow.tiff; sourceTree = "<group>"; };
 		FACF8B6D08668C5800985FA3 /* IFTreeLayoutNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutNode.h; sourceTree = "<group>"; };
@@ -459,7 +466,6 @@
 		FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFDocumentSettings.nib; sourceTree = "<group>"; };
 		FAE6553308F1A8F600FE2949 /* IFColorProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFColorProfile.h; sourceTree = "<group>"; };
 		FAE6553408F1A8F600FE2949 /* IFColorProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFColorProfile.m; sourceTree = "<group>"; };
-		FAE6A2FE0ACBA18B0059BA3B /* button_delete_active.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = button_delete_active.tiff; sourceTree = "<group>"; };
 		FAE6A41A0ACBD9050059BA3B /* IFGrabableViewMixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGrabableViewMixin.h; sourceTree = "<group>"; };
 		FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGrabableViewMixin.m; sourceTree = "<group>"; };
 		FAE8129808CF307C00B43274 /* IFImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageView.h; sourceTree = "<group>"; };
@@ -984,8 +990,11 @@
 		FA68E173092E04EF009D02CB /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				FAE6A2FE0ACBA18B0059BA3B /* button_delete_active.tiff */,
-				FA64C5A50AC9BA40001EB3B4 /* button_delete.tiff */,
+				FABF84480AFB324900EABEAB /* side_button_delete.png */,
+				FABF84490AFB324900EABEAB /* side_button_fold.png */,
+				FABF844A0AFB324900EABEAB /* side_button_menu.png */,
+				FABF844B0AFB324900EABEAB /* side_button_unfold.png */,
+				FA6609160AF7D6270049AD02 /* warning-sign.png */,
 				FA74F0780AB5EC5B00027606 /* duplicationTool.png */,
 				FA74F0790AB5EC5B00027606 /* eraserTool.png */,
 				FA74F0760AB5EBF200027606 /* brushTool.png */,
@@ -1394,10 +1403,8 @@
 				FA74F0770AB5EBF200027606 /* brushTool.png in Resources */,
 				FA74F07A0AB5EC5B00027606 /* duplicationTool.png in Resources */,
 				FA74F07B0AB5EC5B00027606 /* eraserTool.png in Resources */,
-				FA64C5A60AC9BA40001EB3B4 /* button_delete.tiff in Resources */,
 				FA0A53560ACB90800077A945 /* IFUnsharpMaskFilter.nib in Resources */,
 				FA0A53570ACB90810077A945 /* IFColorControlsFilter.nib in Resources */,
-				FAE6A2FF0ACBA18B0059BA3B /* button_delete_active.tiff in Resources */,
 				FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */,
 				FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */,
 				FA256A970AE379F600077863 /* channel-to-mask.cikernel.m4 in Resources */,
@@ -1409,6 +1416,11 @@
 				FA256AD40AE391D600077863 /* IFChannelToMask.nib in Resources */,
 				FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */,
 				FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */,
+				FA6609170AF7D6270049AD02 /* warning-sign.png in Resources */,
+				FABF844C0AFB324900EABEAB /* side_button_delete.png in Resources */,
+				FABF844D0AFB324900EABEAB /* side_button_fold.png in Resources */,
+				FABF844E0AFB324900EABEAB /* side_button_menu.png in Resources */,
+				FABF844F0AFB324900EABEAB /* side_button_unfold.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

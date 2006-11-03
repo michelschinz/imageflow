@@ -24,7 +24,7 @@
   [layoutManager release];
   
   sidePaneColor = [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] retain];
-  sidePaneSize = NSMakeSize(15,50);
+  sidePaneSize = NSMakeSize(15,41);
   
   connectorColor = [[NSColor colorWithCalibratedWhite:0.2 alpha:1.0] retain];
   connectorLabelColor = [[NSColor colorWithCalibratedWhite:0.6 alpha:1.0] retain];

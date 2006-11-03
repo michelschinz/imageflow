@@ -30,12 +30,30 @@
 
 - (void)drawForLocalRect:(NSRect)rect;
 {  
+  IFTreeLayoutStrategy* strategy = [containingView layoutStrategy];
+
   [[[containingView layoutParameters] sidePaneColor] set];
-  [[[containingView layoutStrategy] sidePanePath] fill];
+  [[strategy sidePanePath] fill];
   
-  NSButtonCell* deleteButtonCell = [[containingView layoutStrategy] deleteButtonCell];
+  const float buttonWidth = 11.0, buttonHeight = 11.0;
+  const float xMargin = 2.0, yMargin = 2.0, yGap = 2.0;
+  
+  NSPoint origin = [self bounds].origin;
+  menuButtonFrame = NSOffsetRect(NSMakeRect(xMargin, yMargin, buttonWidth, buttonHeight),origin.x,origin.y);
+  NSButtonCell* menuButtonCell = [strategy menuButtonCell];
+  [menuButtonCell drawWithFrame:menuButtonFrame inView:containingView];
+  [menuButtonCell setRepresentedObject:[base node]];
+  
+  foldButtonFrame = NSOffsetRect(menuButtonFrame,0,buttonHeight + yGap);
+  NSButtonCell* foldButtonCell = [strategy foldButtonCell];
+  [foldButtonCell setState:[[base node] isFolded]];
+  [foldButtonCell drawWithFrame:foldButtonFrame inView:containingView];
+  [foldButtonCell setRepresentedObject:[base node]];
+
+  deleteButtonFrame = NSOffsetRect(foldButtonFrame,0,buttonHeight + yGap);
+  NSButtonCell* deleteButtonCell = [strategy deleteButtonCell];
+  [deleteButtonCell drawWithFrame:deleteButtonFrame inView:containingView];
   [deleteButtonCell setRepresentedObject:[base node]];
-  [deleteButtonCell drawWithFrame:[self deleteButtonFrame] inView:containingView];
 }
 
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)thePoint;
@@ -47,11 +65,24 @@
 
 - (void)activateWithMouseDown:(NSEvent*)event;
 {
-  NSButtonCell* deleteButtonCell = [[containingView layoutStrategy] deleteButtonCell];
-  [deleteButtonCell highlight:YES withFrame:[self deleteButtonFrame] inView:containingView];
+  NSPoint viewLoc = [containingView convertPoint:[event locationInWindow] fromView:nil];
+  NSPoint selfLoc = NSMakePoint(viewLoc.x - [self translation].x, viewLoc.y - [self translation].y);
+
+  NSButtonCell* clickedCell = nil;
+  if (NSPointInRect(selfLoc, deleteButtonFrame))
+    clickedCell = [[containingView layoutStrategy] deleteButtonCell];
+  else if (NSPointInRect(selfLoc, foldButtonFrame))
+    clickedCell = [[containingView layoutStrategy] foldButtonCell];
+  else if (NSPointInRect(selfLoc, menuButtonFrame))
+    clickedCell = [[containingView layoutStrategy] menuButtonCell];
+
+  if (clickedCell == nil)
+    return;
+  
+  [clickedCell setHighlighted:YES];
   [self setNeedsDisplay];
-  [deleteButtonCell trackMouse:event inRect:[self frame] ofView:containingView untilMouseUp:NO];
-  [deleteButtonCell highlight:NO withFrame:[self deleteButtonFrame] inView:containingView];
+  [clickedCell trackMouse:event inRect:[self frame] ofView:containingView untilMouseUp:NO];
+  [clickedCell setHighlighted:NO];
   [self setNeedsDisplay];
 }
 

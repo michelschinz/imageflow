@@ -11,6 +11,7 @@
 #import "IFTreeLayoutOrnament.h"
 
 @interface IFTreeLayoutSidePane : IFTreeLayoutOrnament {
+  NSRect deleteButtonFrame, foldButtonFrame, menuButtonFrame;
 }
 
 + (id)layoutSidePaneWithBase:(IFTreeLayoutSingle*)theBase;

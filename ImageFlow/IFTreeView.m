@@ -196,6 +196,13 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   [self invalidateLayout];
 }
 
+- (void)foldNodeUnderMouse:(id)sender;
+{
+  IFTreeNode* designatedNode = [[layoutStrategy foldButtonCell] representedObject];
+  [designatedNode setIsFolded:![designatedNode isFolded]];
+  [self invalidateLayout];
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem*)item;
 {
   const SEL action = [item action];
@@ -445,8 +452,8 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
 - (void)deleteNodeUnderMouse:(id)sender;
 {
-  NSLog(@"delete sender: %@",sender);
-  //[document deleteNode:[sender representedObject]];
+  IFTreeNode* designatedNode = [[layoutStrategy deleteButtonCell] representedObject];
+  [document deleteNode:designatedNode];
 }
 
 - (void)insertNewline:(id)sender
