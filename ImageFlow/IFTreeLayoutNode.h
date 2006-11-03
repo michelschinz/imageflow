@@ -14,12 +14,13 @@
   // Internal layout state
   NSRect foldingFrame;
   NSRect labelFrame;
+  BOOL showsErrorSign;
   float thumbnailAspectRatio;
   NSRect thumbnailFrame;
   NSRect nameFrame;
 
   IFExpressionEvaluator* evaluator;
-  IFImageConstantExpression* evaluatedExpression;
+  IFConstantExpression* evaluatedExpression;
   NSRect expressionExtent;
 }
 

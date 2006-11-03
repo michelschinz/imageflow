@@ -8,10 +8,11 @@
 
 #import "IFTreeLayoutNode.h"
 #import "IFTreeView.h"
+#import "IFErrorConstantExpression.h"
 
 @interface IFTreeLayoutNode (Private)
 - (void)updateInternalLayout;
-- (void)setEvaluatedExpression:(IFImageConstantExpression*)newExpression;
+- (void)setEvaluatedExpression:(IFConstantExpression*)newExpression;
 - (void)updateExpression;
 - (void)setThumbnailAspectRatio:(float)newThumbnailAspectRatio;
 @end
@@ -23,6 +24,15 @@ static const NSString* kLayoutChangeContext = @"layout change";
 
 static const int foldsCount = 3;
 static const float foldHeight = 2.0;
+
+static NSImage* errorImage = nil;
+
++ (void)initialize;
+{
+  if (self != [IFTreeLayoutNode class])
+    return; // avoid repeated initialisation
+  errorImage = [NSImage imageNamed:@"warning-sign"];
+}
 
 + (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
 {
@@ -107,8 +117,10 @@ int countAncestors(IFTreeNode* node) {
   [label drawWithRect:NSOffsetRect(labelFrame,0,-[labelFont descender]) options:0];
   
   // Draw thumbnail, if any
-  if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
-    CIImage* image = [evaluatedExpression imageValueCI];
+  if (showsErrorSign)
+    [errorImage compositeToPoint:thumbnailFrame.origin operation:NSCompositeSourceOver];
+  else if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
+    CIImage* image = [(IFImageConstantExpression*)evaluatedExpression imageValueCI];
     CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                              options:[NSDictionary dictionary]]; // TODO working color space
     NSRect targetRect = thumbnailFrame;
@@ -165,7 +177,12 @@ int countAncestors(IFTreeNode* node) {
   } else
     nameFrame = NSZeroRect;
 
-  if (thumbnailAspectRatio != 0.0) {
+  if (showsErrorSign) {
+    NSSize imageSize = [errorImage size];
+    thumbnailFrame = NSMakeRect(x + (internalWidth - imageSize.width) / 2.0,y,imageSize.width,imageSize.height);
+    internalFrame = NSUnionRect(internalFrame,thumbnailFrame);
+    y += NSHeight(thumbnailFrame) + margin;
+  } else if (thumbnailAspectRatio != 0.0) {
     thumbnailFrame = (thumbnailAspectRatio <= 1.0)
     ? NSMakeRect(x + round(internalWidth * (1 - thumbnailAspectRatio) / 2.0),y,floor(internalWidth * thumbnailAspectRatio),internalWidth)
     : NSMakeRect(x,y,internalWidth,floor(internalWidth / thumbnailAspectRatio));
@@ -219,7 +236,7 @@ int countAncestors(IFTreeNode* node) {
   [self setOutlinePath:outline];
 }
 
-- (void)setEvaluatedExpression:(IFImageConstantExpression*)newExpression;
+- (void)setEvaluatedExpression:(IFConstantExpression*)newExpression;
 {
   if (newExpression == evaluatedExpression)
     return;
@@ -231,9 +248,8 @@ int countAncestors(IFTreeNode* node) {
 {
   const float margin = [[containingView layoutParameters] nodeInternalMargin];
 
-  if (evaluatedExpression != nil) {
+  if (evaluatedExpression != nil)
     OBJC_RELEASE(evaluatedExpression);
-  }
   
   IFExpression* nodeExpression = [node expression];
   if (nodeExpression == nil)
@@ -250,11 +266,17 @@ int countAncestors(IFTreeNode* node) {
       ? imageExpression
       : [IFOperatorExpression crop:imageExpression along:canvasBounds];
     IFExpression* scaledCroppedExpression = [IFOperatorExpression resample:croppedExpression by:scaling];
-    [self setEvaluatedExpression:(IFImageConstantExpression*)[evaluator evaluateExpression:scaledCroppedExpression]];
+    [self setEvaluatedExpression:[evaluator evaluateExpression:scaledCroppedExpression]];
     expressionExtent = NSRectScale(croppedExtent, scaling);
+    showsErrorSign = NO;
     [self setThumbnailAspectRatio:NSIsEmptyRect(croppedExtent) ? 0.0 : NSWidth(croppedExtent) / NSHeight(croppedExtent)];
-  } else
+  } else {
+    IFErrorConstantExpression* errorExpr = (IFErrorConstantExpression*)[evaluator evaluateExpression:nodeExpression];
+    NSAssert1([errorExpr isError], @"error expected, got %@",errorExpr);
+    [self setEvaluatedExpression:errorExpr];
+    showsErrorSign = ([errorExpr message] != nil);
     [self setThumbnailAspectRatio:0.0];
+  }
 }
 
 - (void)setThumbnailAspectRatio:(float)newThumbnailAspectRatio;
