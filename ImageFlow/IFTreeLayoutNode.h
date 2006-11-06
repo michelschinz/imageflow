@@ -20,6 +20,7 @@
   NSRect nameFrame;
 
   IFExpressionEvaluator* evaluator;
+  BOOL isMask;
   IFConstantExpression* evaluatedExpression;
   NSRect expressionExtent;
 }

@@ -11,9 +11,9 @@
 
 @implementation IFImageCGLayer
 
-- (id)initWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
+- (id)initWithCGLayer:(CGLayerRef)theLayer kind:(IFImageKind)theKind origin:(CGPoint)theOrigin;
 {
-  if (![super init])
+  if (![super initWithKind:theKind])
     return nil;
   layer = CGLayerRetain(theLayer);
   image = nil;

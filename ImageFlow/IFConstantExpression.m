@@ -197,6 +197,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
   CAMLlocal1(contents);
   IFExpressionTag tag = Tag_val(camlValue);
   switch (tag) {
+    case IFExpressionTag_Mask:
     case IFExpressionTag_Image: {
       static value* imageToIFImageClosure = NULL;
       if (imageToIFImageClosure == NULL)
@@ -247,8 +248,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:msg];
       } break;
     default:
-      abort();
-      //NSAssert1(NO, @"unknown tag: %d",tag);
+      NSCAssert1(NO, @"unknown tag: %d", tag);
   }
   CAMLreturn0;
 }

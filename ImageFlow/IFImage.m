@@ -28,17 +28,35 @@ static IFImage* emptyImage = nil;
 
 + (id)imageWithCGImage:(CGImageRef)theImage;
 {
-  return [[[IFImageCGImage alloc] initWithCGImage:theImage] autorelease];
+  return [[[IFImageCGImage alloc] initWithCGImage:theImage kind:IFImageKindRGBImage] autorelease];
 }
 
 + (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
 {
-  return [[[IFImageCGLayer alloc] initWithCGLayer:theLayer origin:theOrigin] autorelease];
+  return [[[IFImageCGLayer alloc] initWithCGLayer:theLayer kind:IFImageKindRGBImage origin:theOrigin] autorelease];
 }
 
 + (id)imageWithCIImage:(CIImage*)theImage;
 {
-  return [[[IFImageCIImage alloc] initWithCIImage:theImage] autorelease];
+  return [[[IFImageCIImage alloc] initWithCIImage:theImage kind:IFImageKindRGBImage] autorelease];
+}
+
++ (id)maskWithCIImage:(CIImage*)theMask;
+{
+  return [[[IFImageCIImage alloc] initWithCIImage:theMask kind:IFImageKindMask] autorelease];
+}
+
+- (id)initWithKind:(IFImageKind)theKind;
+{
+  if (![super init])
+    return nil;
+  kind = theKind;
+  return self;
+}
+
+- (IFImageKind)kind;
+{
+  return kind;
 }
 
 - (BOOL)isLocked;

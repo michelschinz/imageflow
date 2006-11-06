@@ -15,6 +15,6 @@
   CIImage* ciImage;
 }
 
-- (id)initWithCGImage:(CGImageRef)theImage;
+- (id)initWithCGImage:(CGImageRef)theImage kind:(IFImageKind)theKind;
 
 @end

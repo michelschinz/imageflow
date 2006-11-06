@@ -18,6 +18,6 @@
   unsigned usagesBeforeCache;
 }
 
-- (id)initWithCIImage:(CIImage*)theImage;
+- (id)initWithCIImage:(CIImage*)theImage kind:(IFImageKind)theKind;
 
 @end

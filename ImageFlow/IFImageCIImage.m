@@ -14,9 +14,9 @@
 
 @implementation IFImageCIImage
 
-- (id)initWithCIImage:(CIImage*)theImage;
+- (id)initWithCIImage:(CIImage*)theImage kind:(IFImageKind)theKind;
 {
-  if (![super init])
+  if (![super initWithKind:theKind])
     return nil;
   image = [theImage retain];
   isInfinite = CGRectIsInfinite([image extent]);

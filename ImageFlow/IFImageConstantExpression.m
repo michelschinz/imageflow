@@ -59,7 +59,7 @@
   if (imageOfCIImageClosure == NULL)
     imageOfCIImageClosure = caml_named_value("Image.of_ifimage");
   contents = caml_callback(*imageOfCIImageClosure, objc_wrap(object));
-  block = caml_alloc(1, IFExpressionTag_Image);
+  block = caml_alloc(1, [(IFImage*)object kind] == IFImageKindMask ? IFExpressionTag_Mask : IFExpressionTag_Image);
   Store_field(block, 0, contents);
   CAMLreturn(block);
 }  

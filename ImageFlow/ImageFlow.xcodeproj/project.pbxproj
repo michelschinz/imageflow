@@ -58,6 +58,7 @@
 		FA2D394F094D74110068F20A /* IFThresholdFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D394D094D74110068F20A /* IFThresholdFilterDelegate.m */; };
 		FA2D3955094D74740068F20A /* IFMaskFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D3953094D74740068F20A /* IFMaskFilterDelegate.m */; };
 		FA2D39E0094D776C0068F20A /* IFGaussianBlurFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D39DE094D776C0068F20A /* IFGaussianBlurFilterDelegate.m */; };
+		FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2E97370AFFB591006AE6E8 /* mask_tag.png */; };
 		FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FA2F6BAC095AFEEE00CB2780 /* IFTreeNodeAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */; };
 		FA34AD950AA3152E00C8A63A /* IFTransparentPopupButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AD930AA3152E00C8A63A /* IFTransparentPopupButton.m */; };
@@ -309,6 +310,7 @@
 		FA2D3953094D74740068F20A /* IFMaskFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskFilterDelegate.m; sourceTree = "<group>"; };
 		FA2D39DD094D776C0068F20A /* IFGaussianBlurFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGaussianBlurFilterDelegate.h; sourceTree = "<group>"; };
 		FA2D39DE094D776C0068F20A /* IFGaussianBlurFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGaussianBlurFilterDelegate.m; sourceTree = "<group>"; };
+		FA2E97370AFFB591006AE6E8 /* mask_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask_tag.png; sourceTree = "<group>"; };
 		FA2F19E40ADD3F420049C88D /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeAlias.h; sourceTree = "<group>"; };
 		FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeAlias.m; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 		FA68E173092E04EF009D02CB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FA2E97370AFFB591006AE6E8 /* mask_tag.png */,
 				FABF84480AFB324900EABEAB /* side_button_delete.png */,
 				FABF84490AFB324900EABEAB /* side_button_fold.png */,
 				FABF844A0AFB324900EABEAB /* side_button_menu.png */,
@@ -1421,6 +1424,7 @@
 				FABF844D0AFB324900EABEAB /* side_button_fold.png in Resources */,
 				FABF844E0AFB324900EABEAB /* side_button_menu.png in Resources */,
 				FABF844F0AFB324900EABEAB /* side_button_unfold.png in Resources */,
+				FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,6 +15,9 @@ let of_cgimage cgimage =
 let of_ciimage ciimage =
   Ifimage.imageWithCIImage ciimage
 
+let mask_of_ciimage ciimage =
+  Ifimage.maskWithCIImage ciimage
+
 let to_ifimage i =
   i
 

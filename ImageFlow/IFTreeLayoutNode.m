@@ -26,12 +26,14 @@ static const int foldsCount = 3;
 static const float foldHeight = 2.0;
 
 static NSImage* errorImage = nil;
+static NSImage* maskImage = nil;
 
 + (void)initialize;
 {
   if (self != [IFTreeLayoutNode class])
     return; // avoid repeated initialisation
   errorImage = [NSImage imageNamed:@"warning-sign"];
+  maskImage = [NSImage imageNamed:@"mask_tag"];
 }
 
 + (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
@@ -129,6 +131,12 @@ int countAncestors(IFTreeNode* node) {
     sourceRect.size.width = floor(NSWidth(targetRect) / resizing);
     sourceRect.size.height = floor(NSHeight(targetRect) / resizing);
     [ctx drawImage:image inRect:CGRectFromNSRect(targetRect) fromRect:CGRectFromNSRect(sourceRect)];
+
+    // Draw tag, if needed
+    if (isMask) {
+      NSPoint maskOrigin = NSMakePoint(NSMinX(thumbnailFrame) + NSWidth(thumbnailFrame) - [maskImage size].width, NSMinY(thumbnailFrame));
+      [maskImage compositeToPoint:maskOrigin operation:NSCompositeSourceOver];
+    }    
   }
 
   // Draw name, if any
@@ -261,7 +269,9 @@ int countAncestors(IFTreeNode* node) {
     NSRect croppedExtent = NSIntersectionRect(extent, canvasBounds);
     float maxSide = [[containingView layoutParameters] columnWidth] - 2.0 * margin;
     float scaling = maxSide / fmax(NSWidth(croppedExtent), NSHeight(croppedExtent));
-    IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:nodeExpression];
+    IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
+    isMask = ![basicExpression isError] && ([[(IFImageConstantExpression*)basicExpression image] kind] == IFImageKindMask);
+    IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:basicExpression];
     IFExpression* croppedExpression = NSContainsRect(canvasBounds, extent)
       ? imageExpression
       : [IFOperatorExpression crop:imageExpression along:canvasBounds];

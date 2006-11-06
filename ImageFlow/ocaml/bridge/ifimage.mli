@@ -10,6 +10,9 @@ external imageWithCGImage: [ `CGImage ] cftyperef -> [ `IFImage ] objc
 external imageWithCIImage: [ `CIImage ] objc -> [ `IFImage ] objc
     = "IFImage__imageWithCIImage"
 
+external maskWithCIImage: [ `CIImage ] objc -> [ `IFImage ] objc
+    = "IFImage__maskWithCIImage"
+
 external extent: [ `IFImage ] objc -> float array
     = "IFImage_extent"
 

@@ -8,8 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum {
+  IFImageKindRGBImage,
+  IFImageKindMask
+} IFImageKind;
 
 @interface IFImage : NSObject {
+  IFImageKind kind;
 }
 
 + (id)emptyImage;
@@ -17,6 +22,12 @@
 + (id)imageWithCGImage:(CGImageRef)theImage;
 + (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
 + (id)imageWithCIImage:(CIImage*)theImage;
+
++ (id)maskWithCIImage:(CIImage*)theMask;
+
+- (id)initWithKind:(IFImageKind)theKind;
+
+- (IFImageKind)kind;
 
 - (BOOL)isLocked;
 

@@ -13,7 +13,7 @@ let eval expr =
   let out_image filter =
     Image (Image.of_ciimage (Coreimage.output_image filter))
   and out_mask filter =
-    Mask (Image.of_ciimage (Coreimage.output_image filter))
+    Mask (Image.mask_of_ciimage (Coreimage.output_image filter))
   in match expr with
     (* Rectangle operators *)
     Op("rect-intersection", [|Rect r1; Rect r2|]) ->

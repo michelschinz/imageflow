@@ -11,9 +11,9 @@
 
 @implementation IFImageCGImage
 
-- (id)initWithCGImage:(CGImageRef)theImage;
+- (id)initWithCGImage:(CGImageRef)theImage kind:(IFImageKind)theKind;
 {
-  if (![super init])
+  if (![super initWithKind:theKind])
     return nil;
   image = theImage;
   CGImageRetain(image);

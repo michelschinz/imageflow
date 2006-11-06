@@ -22,6 +22,11 @@ CAMLprim value IFImage__imageWithCIImage(value ciimage) {
   CAMLreturn(objc_wrap([IFImage imageWithCIImage:objc_unwrap(ciimage)]));
 }
 
+CAMLprim value IFImage__maskWithCIImage(value ciimage) {
+  CAMLparam1(ciimage);
+  CAMLreturn(objc_wrap([IFImage maskWithCIImage:objc_unwrap(ciimage)]));
+}
+
 CAMLprim value IFImage_extent(value self) {
   CAMLparam1(self);
   CAMLlocal1(camlExtent);

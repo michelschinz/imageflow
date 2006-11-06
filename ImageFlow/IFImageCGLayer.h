@@ -8,13 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFImage.h"
 
-@interface IFImageCGLayer : NSObject {
+@interface IFImageCGLayer : IFImage {
   CGLayerRef layer;
   CGPoint origin;
   CIImage* image;
 }
 
-- (id)initWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
+- (id)initWithCGLayer:(CGLayerRef)theLayer kind:(IFImageKind)theKind origin:(CGPoint)theOrigin;
 
 @end
