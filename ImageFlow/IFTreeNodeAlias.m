@@ -22,7 +22,10 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 {
   if (![super initWithFilter:[theOriginal filter]])
     return nil;
-  original = [theOriginal retain];
+  IFTreeNode* realOriginal = theOriginal;
+  while ([realOriginal isAlias])
+    realOriginal = [(IFTreeNodeAlias*)realOriginal original];
+  original = [realOriginal retain];
   [original addObserver:self forKeyPath:@"expression" options:0 context:IFOriginalExpressionChangedContext];
   return self;
 }
