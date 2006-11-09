@@ -33,12 +33,12 @@
 
 - (NSArray*)variantNamesForEditing;
 {
-  return [NSArray arrayWithObject:@"Image+Mask"];
+  return [NSArray arrayWithObject:@"overlay"];
 }
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
-  NSAssert1([variantName isEqualToString:@"Image+Mask"], @"invalid variant name: %@", variantName);
+  NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: %@", variantName);
   
   if ([originalExpression isKindOfClass:[IFOperatorExpression class]]) {
     IFOperatorExpression* originalOpExpression = (IFOperatorExpression*)originalExpression;

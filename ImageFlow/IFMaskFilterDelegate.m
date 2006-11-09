@@ -25,7 +25,7 @@ static IFConstantExpression* maskColor = nil;
     return; // avoid repeated initialisation
 
   parentNames = [[NSArray arrayWithObjects:@"image",@"mask",nil] retain];
-  variantNames = [[NSArray arrayWithObjects:@"",@"Mask overlay",nil] retain];
+  variantNames = [[NSArray arrayWithObjects:@"",@"overlay",nil] retain];
   maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];
 }
 
@@ -56,7 +56,7 @@ static IFConstantExpression* maskColor = nil;
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
-  NSAssert1([variantName isEqualToString:@"Mask overlay"], @"invalid variant name: <%@>", variantName);
+  NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: <%@>", variantName);
   
   if ([originalExpression isKindOfClass:[IFOperatorExpression class]]) {
     IFOperatorExpression* originalOpExpression = (IFOperatorExpression*)originalExpression;
