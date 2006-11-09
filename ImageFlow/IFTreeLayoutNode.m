@@ -14,7 +14,9 @@
 - (void)updateInternalLayout;
 - (void)setEvaluatedExpression:(IFConstantExpression*)newExpression;
 - (void)updateExpression;
+- (void)updateImageForContext:(CGContextRef)cgContext;
 - (void)setThumbnailAspectRatio:(float)newThumbnailAspectRatio;
+- (void)setImageLayer:(CGLayerRef)newImageLayer;
 @end
 
 @implementation IFTreeLayoutNode
@@ -62,6 +64,7 @@ static NSImage* maskImage = nil;
   [node removeObserver:self forKeyPath:@"expression"];
   node = nil;
   [self setEvaluatedExpression:nil];
+  [self setImageLayer:NULL];
   [super dealloc];
 }
 
@@ -91,72 +94,10 @@ int countAncestors(IFTreeNode* node) {
 
 - (void)drawForLocalRect:(NSRect)rect;
 {
-  // Draw background rectangle
-  NSBezierPath* backgroundPath = [self outlinePath];
-  [[NSColor whiteColor] set];
-  [backgroundPath fill];
-
-  // Draw folds, if any
-  if (!NSIsEmptyRect(foldingFrame)) {
-    [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
-    for (int i = 0; i < foldsCount; ++i)
-      NSRectFill(NSMakeRect(0,NSMinY(foldingFrame) + 2*i*foldHeight,NSWidth([self bounds]),foldHeight));
-  }
-  
-  // Draw label
-  NSFont* labelFont = [[containingView layoutParameters] labelFont];
-  NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
-  [parStyle setAlignment:NSCenterTextAlignment];
-  NSString* labelStr = [node isFolded]
-    ? [NSString stringWithFormat:@"(%d nodes)",1 + countAncestors(node)]
-    : [[node filter] label];
-  NSAttributedString* label = [[[NSAttributedString alloc] initWithString:labelStr
-                                                               attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                 parStyle, NSParagraphStyleAttributeName,
-                                                                 labelFont, NSFontAttributeName,
-                                                                 [NSColor blackColor], NSForegroundColorAttributeName,
-                                                                 nil]] autorelease];
-  [label drawWithRect:NSOffsetRect(labelFrame,0,-[labelFont descender]) options:0];
-  
-  // Draw thumbnail, if any
-  if (showsErrorSign)
-    [errorImage compositeToPoint:thumbnailFrame.origin operation:NSCompositeSourceOver];
-  else if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
-    CIImage* image = [(IFImageConstantExpression*)evaluatedExpression imageValueCI];
-    CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
-                                             options:[NSDictionary dictionary]]; // TODO working color space
-    NSRect targetRect = thumbnailFrame;
-    NSRect sourceRect = expressionExtent;
-    float resizing = fmax(NSWidth(targetRect) / NSWidth(sourceRect), NSHeight(targetRect) / NSHeight(sourceRect));
-    sourceRect.size.width = floor(NSWidth(targetRect) / resizing);
-    sourceRect.size.height = floor(NSHeight(targetRect) / resizing);
-    [ctx drawImage:image inRect:CGRectFromNSRect(targetRect) fromRect:CGRectFromNSRect(sourceRect)];
-
-    // Draw tag, if needed
-    if (isMask) {
-      NSPoint maskOrigin = NSMakePoint(NSMinX(thumbnailFrame) + NSWidth(thumbnailFrame) - [maskImage size].width, NSMinY(thumbnailFrame));
-      [maskImage compositeToPoint:maskOrigin operation:NSCompositeSourceOver];
-    }    
-  }
-
-  // Draw name, if any
-  if (!NSIsEmptyRect(nameFrame)) {
-    NSAttributedString* name = [[[NSAttributedString alloc] initWithString:@"name" // TODO
-                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                  parStyle, NSParagraphStyleAttributeName,
-                                                                  labelFont, NSFontAttributeName,
-                                                                  [NSColor blackColor], NSForegroundColorAttributeName,
-                                                                  nil]] autorelease];
-    [[NSColor yellowColor] set];
-    [[NSBezierPath bezierPathWithRect:nameFrame] fill];
-    [name drawWithRect:NSOffsetRect(nameFrame,0,-[labelFont descender]) options:0];
-  }
-  
-  // Draw alias arrow, if necessary
-  if ([node isAlias]) {
-    NSImage* aliasArrow = [NSImage imageNamed:@"alias_arrow"];
-    [aliasArrow compositeToPoint:NSZeroPoint operation:NSCompositeSourceOver];
-  }
+  CGContextRef currCtx = [[NSGraphicsContext currentContext] graphicsPort];
+  if (imageLayer == NULL)
+    [self updateImageForContext:currCtx];
+  CGContextDrawLayerInRect(currCtx, CGRectFromNSRect([self bounds]), imageLayer);
 }
 
 - (void)setBounds:(NSRect)newBounds;
@@ -242,6 +183,84 @@ int countAncestors(IFTreeNode* node) {
   }
   [outline closePath];
   [self setOutlinePath:outline];
+  [self setImageLayer:NULL];
+}
+
+- (void)updateImageForContext:(CGContextRef)cgContext;
+{
+  NSSize size = [self bounds].size;
+  [self setImageLayer:CGLayerCreateWithContext(cgContext,CGSizeMake(size.width,size.height),NULL)];
+  [NSGraphicsContext saveGraphicsState];
+  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:CGLayerGetContext(imageLayer) flipped:NO]];
+  
+  // Draw background rectangle
+  NSBezierPath* backgroundPath = [self outlinePath];
+  [[NSColor whiteColor] set];
+  [backgroundPath fill];
+
+  // Draw folds, if any
+  if (!NSIsEmptyRect(foldingFrame)) {
+    [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
+    for (int i = 0; i < foldsCount; ++i)
+      NSRectFill(NSMakeRect(0,NSMinY(foldingFrame) + 2*i*foldHeight,NSWidth([self bounds]),foldHeight));
+  }
+  
+  // Draw label
+  NSFont* labelFont = [[containingView layoutParameters] labelFont];
+  NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
+  [parStyle setAlignment:NSCenterTextAlignment];
+  NSString* labelStr = [node isFolded]
+    ? [NSString stringWithFormat:@"(%d nodes)",1 + countAncestors(node)]
+    : [[node filter] label];
+  NSAttributedString* label = [[[NSAttributedString alloc] initWithString:labelStr
+                                                               attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                 parStyle, NSParagraphStyleAttributeName,
+                                                                 labelFont, NSFontAttributeName,
+                                                                 [NSColor blackColor], NSForegroundColorAttributeName,
+                                                                 nil]] autorelease];
+  [label drawWithRect:NSOffsetRect(labelFrame,0,-[labelFont descender]) options:0];
+  
+  // Draw thumbnail, if any
+  if (showsErrorSign)
+    [errorImage compositeToPoint:thumbnailFrame.origin operation:NSCompositeSourceOver];
+  else if (!NSIsEmptyRect(thumbnailFrame) && ![evaluatedExpression isError]) {
+    CIImage* image = [(IFImageConstantExpression*)evaluatedExpression imageValueCI];
+    CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
+                                             options:[NSDictionary dictionary]]; // TODO working color space
+    NSRect targetRect = thumbnailFrame;
+    NSRect sourceRect = expressionExtent;
+    float resizing = fmax(NSWidth(targetRect) / NSWidth(sourceRect), NSHeight(targetRect) / NSHeight(sourceRect));
+    sourceRect.size.width = floor(NSWidth(targetRect) / resizing);
+    sourceRect.size.height = floor(NSHeight(targetRect) / resizing);
+    [ctx drawImage:image inRect:CGRectFromNSRect(targetRect) fromRect:CGRectFromNSRect(sourceRect)];
+
+    // Draw tag, if needed
+    if (isMask) {
+      NSPoint maskOrigin = NSMakePoint(NSMinX(thumbnailFrame) + NSWidth(thumbnailFrame) - [maskImage size].width, NSMinY(thumbnailFrame));
+      [maskImage compositeToPoint:maskOrigin operation:NSCompositeSourceOver];
+    }    
+  }
+
+  // Draw name, if any
+  if (!NSIsEmptyRect(nameFrame)) {
+    NSAttributedString* name = [[[NSAttributedString alloc] initWithString:@"name" // TODO
+                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                  parStyle, NSParagraphStyleAttributeName,
+                                                                  labelFont, NSFontAttributeName,
+                                                                  [NSColor blackColor], NSForegroundColorAttributeName,
+                                                                  nil]] autorelease];
+    [[NSColor yellowColor] set];
+    [[NSBezierPath bezierPathWithRect:nameFrame] fill];
+    [name drawWithRect:NSOffsetRect(nameFrame,0,-[labelFont descender]) options:0];
+  }
+  
+  // Draw alias arrow, if necessary
+  if ([node isAlias]) {
+    NSImage* aliasArrow = [NSImage imageNamed:@"alias_arrow"];
+    [aliasArrow compositeToPoint:NSZeroPoint operation:NSCompositeSourceOver];
+  }
+  
+  [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)setEvaluatedExpression:(IFConstantExpression*)newExpression;
@@ -297,6 +316,14 @@ int countAncestors(IFTreeNode* node) {
     return;
   [self updateInternalLayout];
   [containingView invalidateLayout];
+}
+
+- (void)setImageLayer:(CGLayerRef)newImageLayer;
+{
+  if (newImageLayer == imageLayer)
+    return;
+  CGLayerRelease(imageLayer);
+  imageLayer = CGLayerRetain(newImageLayer);
 }
 
 @end

@@ -19,6 +19,8 @@
   NSRect thumbnailFrame;
   NSRect nameFrame;
 
+  CGLayerRef imageLayer;
+  
   IFExpressionEvaluator* evaluator;
   BOOL isMask;
   IFConstantExpression* evaluatedExpression;
