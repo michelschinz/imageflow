@@ -21,14 +21,18 @@
 
 @implementation IFTreeLayoutNode
 
-static const NSString* kExpressionChangeContext = @"expression change";
-static const NSString* kLayoutChangeContext = @"layout change";
+static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
+static NSString* IFLayoutChangedContext = @"IFLayoutChangedContext";
+static NSString* IFViewLockedNodeChangedContext = @"IFViewLockedNodeChangedContext";
+static NSString* IFReachableNodesChangedContext = @"IFReachableNodesChangedContext";
 
 static const int foldsCount = 3;
 static const float foldHeight = 2.0;
 
 static NSImage* errorImage = nil;
 static NSImage* maskImage = nil;
+static NSImage* aliasImage = nil;
+static NSImage* lockedViewImage = nil;
 
 + (void)initialize;
 {
@@ -36,6 +40,8 @@ static NSImage* maskImage = nil;
     return; // avoid repeated initialisation
   errorImage = [NSImage imageNamed:@"warning-sign"];
   maskImage = [NSImage imageNamed:@"mask_tag"];
+  aliasImage = [NSImage imageNamed:@"alias_arrow"];
+  lockedViewImage = [NSImage imageNamed:@"locked_view"];
 }
 
 + (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
@@ -50,14 +56,17 @@ static NSImage* maskImage = nil;
   [self updateExpression];
   [self updateInternalLayout];
 
-  [node addObserver:self forKeyPath:@"expression" options:0 context:(id)kExpressionChangeContext];
-  [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:(id)kExpressionChangeContext];
-  [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:(id)kLayoutChangeContext];
-  [node addObserver:self forKeyPath:@"isFolded" options:0 context:(id)kLayoutChangeContext];
+  [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
+  [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:IFExpressionChangedContext];
+  [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:IFLayoutChangedContext];
+  [containingView addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedNodeChangedContext];
+  [containingView addObserver:self forKeyPath:@"unreachableNodes" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFReachableNodesChangedContext];
+  [node addObserver:self forKeyPath:@"isFolded" options:0 context:IFLayoutChangedContext];
   return self;
 }
 
-- (void)dealloc {
+- (void)dealloc;
+{
   [node removeObserver:self forKeyPath:@"isFolded"];
   [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
   [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
@@ -70,11 +79,27 @@ static NSImage* maskImage = nil;
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if (context == kLayoutChangeContext)
+  if (context == IFLayoutChangedContext)
     [self updateInternalLayout];
-  else if (context == kExpressionChangeContext) {
+  else if (context == IFExpressionChangedContext) {
     [self updateExpression];
     [self setNeedsDisplay];
+  } else if (context == IFViewLockedNodeChangedContext) {
+    if ([change objectForKey:NSKeyValueChangeOldKey] == node || [change objectForKey:NSKeyValueChangeNewKey] == node) {
+      [self setImageLayer:NULL];
+      [self setNeedsDisplay];
+    }
+  } else if (context == IFReachableNodesChangedContext) {
+    NSSet* oldR = [change objectForKey:NSKeyValueChangeOldKey];
+    NSSet* newR = [change objectForKey:NSKeyValueChangeNewKey];
+
+    if ((id)oldR == [NSNull null] || (id)newR == [NSNull null])
+      return;
+
+    BOOL wasUnreachable = [oldR containsObject:node];
+    BOOL isUnreachable = [newR containsObject:node];
+    if ((wasUnreachable && !isUnreachable) || (!wasUnreachable && isUnreachable))
+      [self setNeedsDisplay];
   } else
     NSAssert(NO, @"unexpected context");
 }
@@ -97,7 +122,16 @@ int countAncestors(IFTreeNode* node) {
   CGContextRef currCtx = [[NSGraphicsContext currentContext] graphicsPort];
   if (imageLayer == NULL)
     [self updateImageForContext:currCtx];
+
+  NSSet* unreachableNodes = [containingView unreachableNodes];
+  BOOL isDimmed = [unreachableNodes containsObject:node];
+  if (isDimmed) {
+    CGContextSaveGState(currCtx);
+    CGContextSetAlpha(currCtx, 0.2);
+  }
   CGContextDrawLayerInRect(currCtx, CGRectFromNSRect([self bounds]), imageLayer);
+  if (isDimmed)
+    CGContextRestoreGState(currCtx);
 }
 
 - (void)setBounds:(NSRect)newBounds;
@@ -205,6 +239,20 @@ int countAncestors(IFTreeNode* node) {
       NSRectFill(NSMakeRect(0,NSMinY(foldingFrame) + 2*i*foldHeight,NSWidth([self bounds]),foldHeight));
   }
   
+  // Draw view locking icon, if needed
+  NSRect labelTextFrame;
+  if ([containingView viewLockedNode] == node) {
+    NSSize imageSize = [lockedViewImage size];
+    NSPoint p = NSMakePoint(NSMinX(labelFrame),
+                            floor(NSMinY(labelFrame) + (NSHeight(labelFrame) - imageSize.height) / 2.0));
+    [lockedViewImage compositeToPoint:p operation:NSCompositeSourceOver];
+    labelTextFrame = NSMakeRect(NSMinX(labelFrame) + (imageSize.width + 1.0),
+                                NSMinY(labelFrame),
+                                NSWidth(labelFrame) - (imageSize.width + 1.0),
+                                NSHeight(labelFrame));
+  } else
+    labelTextFrame = labelFrame;
+  
   // Draw label
   NSFont* labelFont = [[containingView layoutParameters] labelFont];
   NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
@@ -218,7 +266,7 @@ int countAncestors(IFTreeNode* node) {
                                                                  labelFont, NSFontAttributeName,
                                                                  [NSColor blackColor], NSForegroundColorAttributeName,
                                                                  nil]] autorelease];
-  [label drawWithRect:NSOffsetRect(labelFrame,0,-[labelFont descender]) options:0];
+  [label drawWithRect:NSOffsetRect(labelTextFrame,0,-[labelFont descender]) options:0];
   
   // Draw thumbnail, if any
   if (showsErrorSign)
@@ -236,10 +284,14 @@ int countAncestors(IFTreeNode* node) {
 
     // Draw tag, if needed
     if (isMask) {
-      NSPoint maskOrigin = NSMakePoint(NSMinX(thumbnailFrame) + NSWidth(thumbnailFrame) - [maskImage size].width, NSMinY(thumbnailFrame));
+      NSPoint maskOrigin = NSMakePoint(NSMaxX(thumbnailFrame) - [maskImage size].width, NSMinY(thumbnailFrame));
       [maskImage compositeToPoint:maskOrigin operation:NSCompositeSourceOver];
     }    
   }
+
+  // Draw alias arrow, if necessary
+  if ([node isAlias])
+    [aliasImage compositeToPoint:thumbnailFrame.origin operation:NSCompositeSourceOver];
 
   // Draw name, if any
   if (!NSIsEmptyRect(nameFrame)) {
@@ -252,12 +304,6 @@ int countAncestors(IFTreeNode* node) {
     [[NSColor yellowColor] set];
     [[NSBezierPath bezierPathWithRect:nameFrame] fill];
     [name drawWithRect:NSOffsetRect(nameFrame,0,-[labelFont descender]) options:0];
-  }
-  
-  // Draw alias arrow, if necessary
-  if ([node isAlias]) {
-    NSImage* aliasArrow = [NSImage imageNamed:@"alias_arrow"];
-    [aliasArrow compositeToPoint:NSZeroPoint operation:NSCompositeSourceOver];
   }
   
   [NSGraphicsContext restoreGraphicsState];
@@ -277,6 +323,7 @@ int countAncestors(IFTreeNode* node) {
 
   if (evaluatedExpression != nil)
     OBJC_RELEASE(evaluatedExpression);
+  [self setImageLayer:NULL];
   
   IFExpression* nodeExpression = [node expression];
   if (nodeExpression == nil)

@@ -485,6 +485,13 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   [[marks do] setNode:bodyRootClone ifCurrentNodeIs:macroNode];
 }
 
+- (NSSet*)allNodes;
+{
+  NSMutableSet* allNodes = [NSMutableSet setWithSet:[fakeRoot ancestors]];
+  [allNodes removeObject:fakeRoot];
+  return allNodes;
+}
+
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 {
   return [node ancestors];

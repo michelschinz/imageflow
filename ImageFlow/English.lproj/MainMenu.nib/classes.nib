@@ -6,6 +6,7 @@
                 exportAllFiles = id; 
                 exportAllPrints = id; 
                 goToBookmark = id; 
+                lockViewOnCurrentNode = id; 
                 makeNodeAlias = id; 
                 newCacheInspector = id; 
                 newDocumentSettingsInspector = id; 

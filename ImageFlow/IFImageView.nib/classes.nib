@@ -16,8 +16,6 @@
                 filterSettingsTabView = NSTabView; 
                 imageOrErrorTabView = NSTabView; 
                 imageView = IFImageView; 
-                mainVariantButton = NSPopUpButton; 
-                mainVariantWindow = NSWindow; 
                 thumbnailView = IFImageView; 
                 thumbnailWindow = NSWindow; 
             }; 

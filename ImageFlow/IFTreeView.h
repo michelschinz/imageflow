@@ -28,6 +28,9 @@ extern NSString* IFMarkPboardType;
   NSMutableSet* selectedNodes;
   IFTreeNode* copiedNode;
 
+  IFTreeNode* viewLockedNode;
+  NSSet* unreachableNodes;
+  
   unsigned int upToDateLayers;
   NSMutableArray* layoutLayers;
   NSMutableArray* trackingRectTags;
@@ -47,6 +50,11 @@ extern NSString* IFMarkPboardType;
 
 - (IBAction)makeNodeAlias:(id)sender;
 - (IBAction)toggleNodeFoldingState:(id)sender;
+
+- (IBAction)lockViewOnCurrentNode:(id)sender;
+- (void)setViewLockedNode:(IFTreeNode*)newViewLockedNode;
+- (IFTreeNode*)viewLockedNode;
+- (NSSet*)unreachableNodes;
 
 - (IBAction)setBookmark:(id)sender;
 - (IBAction)removeBookmark:(id)sender;

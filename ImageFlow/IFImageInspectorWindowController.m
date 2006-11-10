@@ -46,8 +46,9 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 static NSString* IFSecondaryExpressionChangedContext = @"IFSecondaryExpressionChangedContext";
 
 static NSString* IFToolbarModeItemIdentifier = @"IFToolbarModeItemIdentifier";
+static NSString* IFToolbarVariantItemIdentifier = @"IFToolbarVariantItemIdentifier";
 static NSString* IFToolbarZoomItemIdentifier = @"IFToolbarZoomItemIdentifier";
-static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier";
+static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier";
 
 - (id)init;
 {
@@ -57,7 +58,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   tabIndices = [NSMutableDictionary new];
   panelSizes = [NSMutableDictionary new];
   mode = IFImageInspectorModeView;
-  layout = IFImageInspectorLayoutSingle;
+  locked = NO;
   evaluator = nil;
   mainExpression = nil;
   thumbnailExpression = nil;
@@ -77,14 +78,6 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   // Configure thumbnail window
   [thumbnailWindow setBackgroundColor:[NSColor whiteColor]];
   [thumbnailWindow setDisplaysWhenScreenProfileChanges:YES];
-
-  // Configure main variant window
-  [mainVariantWindow setOpaque:NO];
-  [mainVariantWindow setBackgroundColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.7]];
-  NSSize mainVariantButtonSize = [mainVariantButton frame].size;
-  [mainVariantWindow setContentSize:NSMakeSize(mainVariantButtonSize.width+4,mainVariantButtonSize.height)];
-  [mainVariantButton setFrameOrigin:NSZeroPoint];
-  [mainVariantButton setFrameSize:mainVariantButtonSize];
 
   // Configure main window
   [[self window] setFrameAutosaveName:@"IFImageInspector"];
@@ -178,7 +171,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
       [self updateEditViewTransform];
     }
 
-    if (layout != IFImageInspectorLayoutDual)
+    if (!locked)
       [self updateMainImageViewExpression];
     else
       [self updateAuxiliaryImageViewExpression];
@@ -250,7 +243,8 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 {
   return [NSArray arrayWithObjects:
     IFToolbarModeItemIdentifier,
-    IFToolbarLayoutItemIdentifier,
+    IFToolbarVariantItemIdentifier,
+    IFToolbarLockedItemIdentifier,
     IFToolbarZoomItemIdentifier,
     NSToolbarCustomizeToolbarItemIdentifier,
     NSToolbarFlexibleSpaceItemIdentifier,
@@ -263,7 +257,8 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 {
   return [NSArray arrayWithObjects:
     IFToolbarModeItemIdentifier,
-    IFToolbarLayoutItemIdentifier,
+    IFToolbarVariantItemIdentifier,
+    IFToolbarLockedItemIdentifier,
     IFToolbarZoomItemIdentifier,
     NSToolbarFlexibleSpaceItemIdentifier,
     NSToolbarCustomizeToolbarItemIdentifier,
@@ -284,26 +279,36 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
       [modeItemView release];
     }
     return modeToolbarItem;
-  } else if ([itemIdentifier isEqualToString:IFToolbarLayoutItemIdentifier]) {
-    if (layoutToolbarItem == nil) {
-      layoutToolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:IFToolbarLayoutItemIdentifier];
-      [layoutToolbarItem setLabel:@"Layout"];
-      [layoutToolbarItem setPaletteLabel:@"Layout"];
-      NSSegmentedControl* layoutItemView = [[toolbarItems viewWithTag:1] retain];
-      for (int i = 0; i < [layoutItemView segmentCount]; ++i)
-        [layoutItemView setLabel:nil forSegment:i];
-      [layoutItemView removeFromSuperview];
-      [layoutToolbarItem setView:layoutItemView];
-      [layoutToolbarItem setMinSize:[layoutItemView bounds].size];
-      [layoutItemView release];
+  } else if ([itemIdentifier isEqualToString:IFToolbarVariantItemIdentifier]) {
+    if (variantToolbarItem == nil) {
+      variantToolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:IFToolbarVariantItemIdentifier];
+      [variantToolbarItem setLabel:@"Variant"];
+      [variantToolbarItem setPaletteLabel:@"Variant"];
+      NSView* variantItemView = [[toolbarItems viewWithTag:1] retain];
+      [variantItemView removeFromSuperview];
+      [variantToolbarItem setView:variantItemView];
+      [variantToolbarItem setMinSize:[variantItemView bounds].size];
+      [variantItemView release];
     }
-    return layoutToolbarItem;
+    return variantToolbarItem;    
+  } else if ([itemIdentifier isEqualToString:IFToolbarLockedItemIdentifier]) {
+    if (lockedToolbarItem == nil) {
+      lockedToolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:IFToolbarLockedItemIdentifier];
+      [lockedToolbarItem setLabel:@"Locked"];
+      [lockedToolbarItem setPaletteLabel:@"Locked"];
+      NSView* lockedItemView = [[toolbarItems viewWithTag:2] retain];
+      [lockedItemView removeFromSuperview];
+      [lockedToolbarItem setView:lockedItemView];
+      [lockedToolbarItem setMinSize:[lockedItemView bounds].size];
+      [lockedItemView release];
+    }
+    return lockedToolbarItem;
   } else if ([itemIdentifier isEqualToString:IFToolbarZoomItemIdentifier]) {
     if (zoomToolbarItem == nil) {
       zoomToolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:IFToolbarZoomItemIdentifier];
       [zoomToolbarItem setLabel:@"Zoom"];
       [zoomToolbarItem setPaletteLabel:@"Zoom"];
-      NSView* zoomItemView = [[toolbarItems viewWithTag:2] retain];
+      NSView* zoomItemView = [[toolbarItems viewWithTag:3] retain];
       [zoomItemView removeFromSuperview];
       [zoomToolbarItem setView:zoomItemView];
       [zoomToolbarItem setMinSize:[zoomItemView bounds].size];
@@ -321,11 +326,6 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
 
   mode = newMode;
 
-  NSSegmentedControl* layoutControl = (NSSegmentedControl*)[layoutToolbarItem view];
-  [layoutControl setEnabled:(mode == IFImageInspectorModeEdit) forSegment:IFImageInspectorLayoutDual];
-  if (mode == IFImageInspectorModeView && layout == IFImageInspectorLayoutDual)
-    [self setLayout:IFImageInspectorLayoutSingle];
-  
   [self updateVariantsAndAnnotations];
   [self updateSettingsView];
 }
@@ -335,15 +335,15 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   return mode;
 }
 
-- (void)setLayout:(IFImageInspectorLayout)newLayout;
+- (void)setLocked:(BOOL)newLocked;
 {
-  if (newLayout == layout)
+  if (newLocked == locked)
     return;
 
-  layout = newLayout;
+  locked = newLocked;
 
   [self updateVariantsAndAnnotations];
-  if (layout == IFImageInspectorLayoutDual) {
+  if (locked) {
     NSAssert(![thumbnailWindow isVisible], @"thumbnail window already visible");
     [self updateFloatingWindows];
     [[self window] addChildWindow:thumbnailWindow ordered:NSWindowAbove];
@@ -367,9 +367,9 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   }
 }
 
-- (IFImageInspectorLayout)layout;
+- (BOOL)locked;
 {
-  return layout;
+  return locked;
 }
 
 #pragma mark Event handling
@@ -536,7 +536,7 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   if (mode == IFImageInspectorModeView) {
     [self setVariants:[self variantsForMark:[probe mark]]];
     [imageView setAnnotations:nil];
-  } else if (layout == IFImageInspectorLayoutDual) {
+  } else if (locked) {
     NSMutableArray* allVariants = [NSMutableArray arrayWithArray:[self variantsForMark:[probe mark]]];
 
     for (int i = 1; i < [marks count]; ++i) {
@@ -554,18 +554,6 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
     [self setVariants:[self variantsForMark:[probe mark]]];
     [imageView setAnnotations:[filter editingAnnotationsForNode:node view:imageView]];
   }
-
-  if ([[self variants] count] > 1) {
-    if (![mainVariantWindow isVisible]) {
-      [[self window] addChildWindow:mainVariantWindow ordered:NSWindowAbove];
-      [mainVariantWindow orderFront:self];
-    }
-  } else {
-    if ([mainVariantWindow isVisible]) {
-      [[self window] removeChildWindow:mainVariantWindow];
-      [mainVariantWindow orderOut:self];
-    }
-  }
 }
 
 - (void)mainImageViewDidScroll:(NSNotification*)notification;
@@ -579,8 +567,6 @@ static NSString* IFToolbarLayoutItemIdentifier = @"IFToolbarLayoutItemIdentifier
   NSRect visibleImageView = [imageView visibleRect];
   NSPoint visibleOrigin = visibleImageView.origin;
   NSPoint screenVisibleOrigin = [[self window] convertBaseToScreen:[imageView convertPoint:visibleOrigin toView:nil]];
-
-  [mainVariantWindow setFrameOrigin:NSMakePoint(screenVisibleOrigin.x + 1,screenVisibleOrigin.y + 1)];
 
   NSSize visibleSize = visibleImageView.size;
   NSSize thumbnailSize = NSMakeSize(floor(visibleSize.width / thumbnailFactor), floor(visibleSize.height / thumbnailFactor));

@@ -88,6 +88,9 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   selectedNodes = [NSMutableSet new];
   copiedNode = nil;
 
+  viewLockedNode = nil;
+  unreachableNodes = [[NSSet set] retain];
+  
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
   [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
@@ -105,6 +108,9 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   [self removeAllTrackingRects];
   [self setDocument:nil];
 
+  OBJC_RELEASE(unreachableNodes);
+  OBJC_RELEASE(viewLockedNode);
+  
   OBJC_RELEASE(copiedNode);
   OBJC_RELEASE(selectedNodes);
   OBJC_RELEASE(trackingRectTags);
@@ -116,7 +122,8 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   [super dealloc];
 }
 
--(BOOL)acceptsFirstResponder {
+-(BOOL)acceptsFirstResponder;
+{
   return YES;
 }
 
@@ -212,6 +219,43 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
     return [[[document marks] objectAtIndex:[item tag]] isSet];
   else
     return YES;
+}
+
+#pragma mark View locking
+
+- (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
+{
+  if (newUnreachableNodes == unreachableNodes)
+    return;
+  [unreachableNodes release];
+  unreachableNodes = [newUnreachableNodes retain];
+}
+
+- (IBAction)lockViewOnCurrentNode:(id)sender;
+{
+  [self setViewLockedNode:[self cursorNode]];
+}
+
+- (void)setViewLockedNode:(IFTreeNode*)newViewLockedNode;
+{
+  if (newViewLockedNode == viewLockedNode)
+    return;
+  [viewLockedNode release];
+  viewLockedNode = [newViewLockedNode retain];
+  
+  NSMutableSet* unreachable = [NSMutableSet setWithSet:[document allNodes]];
+  [unreachable minusSet:[document ancestorsOfNode:viewLockedNode]];
+  [self setUnreachableNodes:unreachable];
+}
+
+- (IFTreeNode*)viewLockedNode;
+{
+  return viewLockedNode;
+}
+
+- (NSSet*)unreachableNodes;
+{
+  return unreachableNodes;
 }
 
 #pragma mark Bookmarks
@@ -1056,12 +1100,13 @@ static enum {
 
 - (void)moveToNodeRepresentedBy:(IFTreeLayoutElement*)layoutElem extendingSelection:(BOOL)extendSelection;
 {
-  NSAssert(layoutElem != nil, @"nil layout element");
-  if (!extendSelection || [self canExtendSelectionTo:[layoutElem node]]) {
+  IFTreeNode* node = [layoutElem node];
+  
+  if (![unreachableNodes containsObject:node] && (!extendSelection || [self canExtendSelectionTo:node])) {
     if (extendSelection)
-      [self extendSelectionTo:[layoutElem node]];
+      [self extendSelectionTo:node];
     else
-      [self setCursorNode:[layoutElem node]];
+      [self setCursorNode:node];
   } else
     NSBeep();
 }
@@ -1152,6 +1197,11 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
   NSRect searchRect = { searchRectCorner, NSMakeSize(searchDistance,searchDistance) };
   
   NSSet* candidates = [treeLayout layoutElementsIntersectingRect:searchRect kind:IFTreeLayoutElementKindNode];
+  if ([unreachableNodes count] > 0) {
+    NSMutableSet* reachableCandidates = [NSMutableSet setWithSet:candidates];
+    [reachableCandidates minusSet:unreachableNodes];
+    candidates = reachableCandidates;
+  }
   
   if ([candidates count] > 0) {
     IFDirection perDirection = IFPerpendicularDirection(direction);

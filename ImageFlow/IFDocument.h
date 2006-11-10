@@ -71,6 +71,7 @@ extern NSString* IFTreeChangedNotification;
 - (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
 - (void)inlineMacroNode:(IFTreeNodeMacro*)node;
 
+- (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;

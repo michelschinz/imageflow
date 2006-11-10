@@ -18,13 +18,6 @@ typedef enum {
   IFImageInspectorModeEdit,
 } IFImageInspectorMode;
 
-typedef enum {
-  IFImageInspectorLayoutSingle,
-  IFImageInspectorLayoutDual,
-  IFImageInspectorLayoutSplitH,
-  IFImageInspectorLayoutSplitV,
-} IFImageInspectorLayout;
-
 @interface IFImageInspectorWindowController : IFProbeWindowController<IFImageViewDelegate> {
   IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
@@ -35,11 +28,8 @@ typedef enum {
   IBOutlet NSWindow* thumbnailWindow;
   IBOutlet IFImageView* thumbnailView;
   
-  IBOutlet NSWindow* mainVariantWindow;
-  IBOutlet NSPopUpButton* mainVariantButton;
-
   IFImageInspectorMode mode;
-  IFImageInspectorLayout layout;
+  BOOL locked;
 
   IFExpressionEvaluator* evaluator;
   IFExpression* mainExpression;
@@ -62,15 +52,16 @@ typedef enum {
   NSValue* proxy;
   NSView* toolbarItems;
   NSToolbarItem* modeToolbarItem;
-  NSToolbarItem* layoutToolbarItem;
+  NSToolbarItem* variantToolbarItem;
+  NSToolbarItem* lockedToolbarItem;
   NSToolbarItem* zoomToolbarItem;
 }
 
 - (void)setMode:(IFImageInspectorMode)newMode;
 - (IFImageInspectorMode)mode;
 
-- (void)setLayout:(IFImageInspectorLayout)newLayout;
-- (IFImageInspectorLayout)layout;
+- (void)setLocked:(BOOL)newLocked;
+- (BOOL)locked;
 
 - (NSArray*)variants;
 - (void)setVariants:(NSArray*)newVariants;
