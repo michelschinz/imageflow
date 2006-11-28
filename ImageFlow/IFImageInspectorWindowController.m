@@ -40,16 +40,22 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   proxy = [[NSValue valueWithNonretainedObject:self] retain];
   
   [imageViewController addObserver:self forKeyPath:@"mode" options:0 context:IFImageViewModeDidChange];
+  [imageViewController addObserver:self forKeyPath:@"activeView" options:0 context:IFActiveViewDidChange];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(documentDidChange:)
                                                name:IFCurrentDocumentDidChangeNotification
                                              object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(hudWindowDidResize:)
+                                               name:NSWindowDidResizeNotification
+                                             object:[hudWindowController window]];
   return self;
 }
 
 - (void)dealloc;
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [imageViewController removeObserver:self forKeyPath:@"activeView"];
   [imageViewController removeObserver:self forKeyPath:@"mode"];
   
   OBJC_RELEASE(modeToolbarItem);
@@ -72,7 +78,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   [[self window] setContentView:[imageViewController topLevelView]];
   [hudWindowController setUnderlyingWindow:[self window]];
   [hudWindowController setUnderlyingView:[imageViewController activeView]];
-  [imageViewController addObserver:self forKeyPath:@"activeView" options:0 context:IFActiveViewDidChange];
 
   [self setCurrentDocument:(IFDocument*)[[NSDocumentController sharedDocumentController] currentDocument]];
   
@@ -120,6 +125,12 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   IFDocument* newDocument = [[notification userInfo] objectForKey:IFNewDocumentKey];
   if (newDocument == (id)[NSNull null]) newDocument = nil;
   [self setCurrentDocument:newDocument];
+}
+
+- (void)hudWindowDidResize:(NSNotification*)notification;
+{
+  NSWindow* window = [notification object];
+  [[imageViewController imageView] setMarginSize:NSHeight([window frame])]; // TODO use width when necessary
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;

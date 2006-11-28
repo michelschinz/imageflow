@@ -79,6 +79,11 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   [self setActiveView:imageOrErrorTabView];
 }
 
+- (IFImageView*)imageView;
+{
+  return imageView;
+}
+
 - (NSView*)activeView;
 {
   return activeView;

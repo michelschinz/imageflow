@@ -19,8 +19,7 @@
 #import "IFDocumentTemplate.h"
 #import "IFDocumentTemplateManager.h"
 #import "IFTreeNodeProxy.h"
-
-typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
+#import "IFUtilities.h"
 
 @interface IFTreeView (Private)
 - (NSRect)paddedBounds;

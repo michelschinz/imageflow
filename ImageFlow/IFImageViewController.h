@@ -41,6 +41,7 @@ typedef enum {
   unsigned filterDelegateCapabilities;
 }
 
+- (IFImageView*)imageView;
 - (NSView*)activeView;
 
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;

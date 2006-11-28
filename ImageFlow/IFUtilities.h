@@ -10,6 +10,8 @@
 
 #define OBJC_RELEASE(o) { [o release]; o = nil; }
 
+typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
+
 NSMutableDictionary* createMutableDictionaryWithRetainedKeys();
 
 CGSize CGSizeFromNSSize(NSSize s);

@@ -11,12 +11,18 @@
 #import "IFOperatorExpression.h"
 #import "IFAnnotation.h"
 #import "IFCursorRect.h"
+#import "IFUtilities.h"
 
 typedef enum {
   IFImageViewDelegateHasHandleMouseDown    = (1<<0),
   IFImageViewDelegateHasHandleMouseDragged = (1<<1),
   IFImageViewDelegateHasHandleMouseUp      = (1<<2)
 } IFImageViewDelegateCapabilities;
+
+@interface IFImageView (Private)
+- (NSRect)marginRect;
+- (void)updateBounds;
+@end
 
 @implementation IFImageView
 
@@ -29,12 +35,18 @@ typedef enum {
 
   image = nil;
   annotations = nil;
+  
+  marginDirection = IFDown;
+  desiredMarginSize = actualMarginSize = 0.0;
+  marginColor = [[NSColor blackColor] retain];
+  
   delegate = nil;
   return self;
 }
 
 - (void) dealloc;
 {
+  OBJC_RELEASE(marginColor);
   [self setAnnotations:nil];
   [self setImage:nil dirtyRect:NSZeroRect];
   
@@ -49,17 +61,8 @@ typedef enum {
     return;
 
   canvasBounds = newCanvasBounds;
-  
-  NSPoint visibleOrigin = [self visibleRect].origin;
-  [self setBoundsOrigin:canvasBounds.origin];
-  NSScrollView* scrollView = [self enclosingScrollView];
-  if (scrollView != nil) {    
-    [[scrollView horizontalRulerView] setOriginOffset:-NSMinX(canvasBounds)];
-    [[scrollView verticalRulerView] setOriginOffset:-NSMinY(canvasBounds)];
-  }
-  [self setFrameSize:canvasBounds.size];
-  [self scrollPoint:visibleOrigin];
-  [self setNeedsDisplay:YES];
+  [self updateBounds];
+  [self setNeedsDisplay:YES]; // TODO refine
 }
 
 - (void)setImage:(IFImage*)newImage dirtyRect:(NSRect)dirtyRect;
@@ -91,6 +94,59 @@ typedef enum {
     | ([delegate respondsToSelector:@selector(handleMouseUp:)] ? IFImageViewDelegateHasHandleMouseUp : 0);
 }
 
+- (void)setMarginDirection:(IFDirection)newMarginDirection;
+{
+  if (newMarginDirection == marginDirection)
+    return;
+
+  [self setNeedsDisplayInRect:[self marginRect]];
+  marginDirection = newMarginDirection;
+  [self updateBounds];
+  [self setNeedsDisplayInRect:[self marginRect]];
+}
+
+- (IFDirection)marginDirection;
+{
+  return marginDirection;
+}
+
+- (void)setMarginSize:(float)newMarginSize;
+{
+  if (newMarginSize == desiredMarginSize)
+    return;
+
+  NSRect visibleMarginRect = NSIntersectionRect([self visibleRect],[self marginRect]);
+  float visibleMarginSize = (marginDirection == IFUp || marginDirection == IFDown)
+    ? NSHeight(visibleMarginRect)
+    : NSWidth(visibleMarginRect);
+
+  [self setNeedsDisplayInRect:[self marginRect]];
+  desiredMarginSize = newMarginSize;
+  actualMarginSize = fmax(desiredMarginSize, visibleMarginSize);
+  [self updateBounds];
+  [self setNeedsDisplayInRect:[self marginRect]];
+}
+
+- (float)marginSize;
+{
+  return desiredMarginSize;
+}
+
+- (void)setMarginColor:(NSColor*)newMarginColor;
+{
+  if (newMarginColor == marginColor)
+    return;
+  [marginColor release];
+  marginColor = [newMarginColor retain];
+
+  [self setNeedsDisplayInRect:[self marginRect]];
+}
+
+- (NSColor*)marginColor;
+{
+  return marginColor;
+}
+
 - (void)drawRect:(NSRect)dirtyRect;
 {
   if (image == nil) {
@@ -108,6 +164,13 @@ typedef enum {
   const int annotationsCount = [annotations count];
   for (int i = 0; i < annotationsCount; ++i)
     [[annotations objectAtIndex:i] drawForRect:dirtyRect];
+  
+  // Draw margin
+  NSRect marginRect = [self marginRect];
+  if (!NSEqualRects(marginRect,NSZeroRect) && NSIntersectsRect(dirtyRect,marginRect)) {
+    [marginColor set];
+    [NSBezierPath fillRect:marginRect];
+  }
 }
 
 - (void)resetCursorRects;
@@ -185,6 +248,45 @@ typedef enum {
 {
   if (![grabableViewMixin handlesKeyUp:event])
     [super keyUp:event];
+}
+
+@end
+
+@implementation IFImageView (Private)
+
+- (NSRect)marginRect;
+{
+  if (actualMarginSize == 0)
+    return NSZeroRect;
+  
+  switch (marginDirection) {
+    case IFUp:
+      return NSMakeRect(NSMinX(canvasBounds),NSMaxY(canvasBounds),NSWidth(canvasBounds),actualMarginSize);
+    case IFRight:
+      return NSMakeRect(NSMaxX(canvasBounds),NSMinY(canvasBounds),actualMarginSize,NSHeight(canvasBounds));
+    case IFDown:
+      return NSMakeRect(NSMinX(canvasBounds),NSMinY(canvasBounds) - actualMarginSize,NSWidth(canvasBounds),actualMarginSize);
+    case IFLeft:
+      return NSMakeRect(NSMinX(canvasBounds) - actualMarginSize,NSMinY(canvasBounds),actualMarginSize,NSHeight(canvasBounds));
+    default:
+      NSAssert(NO, @"internal error");
+      return NSZeroRect;
+  }
+}
+
+- (void)updateBounds;
+{
+  NSRect bounds = NSUnionRect(canvasBounds,[self marginRect]);
+
+  NSPoint visibleOrigin = [self visibleRect].origin;
+  [self setBoundsOrigin:bounds.origin];
+  NSScrollView* scrollView = [self enclosingScrollView];
+  if (scrollView != nil) {    
+    [[scrollView horizontalRulerView] setOriginOffset:-NSMinX(bounds)];
+    [[scrollView verticalRulerView] setOriginOffset:-NSMinY(bounds)];
+  }
+  [self setFrameSize:bounds.size];
+  [self scrollPoint:visibleOrigin];
 }
 
 @end
