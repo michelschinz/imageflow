@@ -11,6 +11,14 @@
 
 @implementation IFTreeCursorPair
 
++ (void)initialize;
+{
+  if (self != [IFTreeCursorPair class])
+    return; // avoid repeated initialisation
+  
+  [self setKeys:[NSArray arrayWithObject:@"isViewLocked"] triggerChangeNotificationsForDependentKey:@"viewLockedNode"];
+}
+
 + (id)treeCursorPairWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
 {
   return [[[self alloc] initWithEditMark:theEditMark viewMark:theViewMark] autorelease];
@@ -52,11 +60,18 @@
 - (void)setIsViewLocked:(BOOL)newValue;
 {
   isViewLocked = newValue;
+  if (!isViewLocked)
+    [viewMark setLikeMark:editMark];
 }
 
 - (BOOL)isViewLocked;
 {
   return isViewLocked;
+}
+
+- (IFTreeNode*)viewLockedNode;
+{
+  return isViewLocked ? [viewMark node] : nil;
 }
 
 @end

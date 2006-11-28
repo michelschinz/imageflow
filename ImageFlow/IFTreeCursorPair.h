@@ -27,4 +27,6 @@
 - (void)setIsViewLocked:(BOOL)newValue;
 - (BOOL)isViewLocked;
 
+- (IFTreeNode*)viewLockedNode;
+
 @end

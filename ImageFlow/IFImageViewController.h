@@ -45,7 +45,9 @@ typedef enum {
 - (NSView*)activeView;
 
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
+
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
+- (IFTreeCursorPair*)cursorPair;
 
 - (void)setMode:(IFImageViewMode)newMode;
 - (IFImageViewMode)mode;

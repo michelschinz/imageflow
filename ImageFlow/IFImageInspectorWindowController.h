@@ -14,6 +14,7 @@
 
 @interface IFImageInspectorWindowController : NSWindowController {
   IFDocument* currentDocument;
+  IFTreeCursorPair* cursorPair;
   IFImageViewController* imageViewController;
   IFHUDWindowController* hudWindowController;
 

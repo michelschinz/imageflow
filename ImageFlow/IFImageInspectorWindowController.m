@@ -17,6 +17,7 @@
 
 @interface IFImageInspectorWindowController (Private)
 - (void)setCurrentDocument:(IFDocument*)newDocument;
+- (void)setCursorPair:(IFTreeCursorPair*)newCursorPair;
 @end
 
 @implementation IFImageInspectorWindowController
@@ -34,6 +35,7 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   if (![super initWithWindowNibName:@"IFImageWindow"])
     return nil;
   currentDocument = nil;
+  cursorPair = nil;
   imageViewController = [IFImageViewController new];
   hudWindowController = [IFHUDWindowController new];
   
@@ -64,6 +66,7 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   OBJC_RELEASE(proxy);
   OBJC_RELEASE(hudWindowController);
   OBJC_RELEASE(imageViewController);
+  OBJC_RELEASE(cursorPair);
   [self setCurrentDocument:nil];
   [super dealloc];
 }
@@ -236,18 +239,26 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
 
     NSArray* controllers = [newDocument windowControllers];
     NSAssert([controllers count] == 1, @"unexpected number of controllers");
-    IFTreeCursorPair* cursors = [(IFTreeViewWindowController*)[controllers objectAtIndex:0] cursorPair];
-    [hudWindowController setCursorPair:cursors];
-    [imageViewController setCursorPair:cursors];
+    [self setCursorPair:[(IFTreeViewWindowController*)[controllers objectAtIndex:0] cursorPair]];
     
     [imageViewController setCanvasBounds:[newDocument canvasBounds]];
   } else {
     [hudWindowController setEvaluator:nil];
     [imageViewController setEvaluator:nil];
-    [hudWindowController setCursorPair:nil];
-    [imageViewController setCursorPair:nil];
+    [self setCursorPair:nil];
   }
   currentDocument = newDocument;
+}
+
+- (void)setCursorPair:(IFTreeCursorPair*)newCursorPair;
+{
+  if (newCursorPair == cursorPair)
+    return;
+  [cursorPair release];
+  cursorPair = [newCursorPair retain];
+
+  [hudWindowController setCursorPair:cursorPair];
+  [imageViewController setCursorPair:cursorPair];
 }
 
 @end

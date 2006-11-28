@@ -28,6 +28,8 @@
 - (void)clearHighlighting;
 - (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
 - (IFTreeNode*)copiedNode;
+- (void)updateUnreachableNodes;
+- (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
 - (void)clearSelectedNodes;
 - (void)setSelectedNodes:(NSSet*)newSelectedNodes;
 - (NSSet*)selectedNodes;
@@ -64,9 +66,10 @@ typedef enum {
 
 static NSString* IFTreeViewNeedsLayout = @"IFTreeViewNeedsLayout";
 
-static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
-static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
+//static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
+//static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
 static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
+static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (id)initWithFrame:(NSRect)frame;
 {
@@ -106,6 +109,7 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
+  [cursors addObserver:self forKeyPath:@"isViewLocked" options:0 context:IFViewLockedChangedContext];
   [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
@@ -113,9 +117,11 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   return self;
 }
 
-- (void) dealloc {
+- (void)dealloc;
+{
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
+  [cursors removeObserver:self forKeyPath:@"isViewLocked"];
 
   [self unregisterDraggedTypes];
 
@@ -264,13 +270,15 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
                         change:(NSDictionary *)change
                        context:(void *)context;
 {
-  if (context == IFCursorMovedContext) {
-    [self invalidateLayoutLayer:IFLayoutLayerSelection];
-    [self scrollRectToVisible:[[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] frame]];
-  } else if (context == IFMarkChangedContext)
-    [self invalidateLayoutLayer:IFLayoutLayerMarks];
-  else if (context == IFColumnWidthChangedContext)
+//  if (context == IFCursorMovedContext) {
+//    [self invalidateLayoutLayer:IFLayoutLayerSelection];
+//    [self scrollRectToVisible:[[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] frame]];
+//  } else if (context == IFMarkChangedContext)
+//    [self invalidateLayoutLayer:IFLayoutLayerMarks];
+  if (context == IFColumnWidthChangedContext)
     [self invalidateLayout];
+  else if (context == IFViewLockedChangedContext)
+    [self updateUnreachableNodes];
   else
     NSAssert1(NO, @"unexpected context: %@", context);
 }  

@@ -115,6 +115,11 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   cursors = newCursors;
 }
 
+- (IFTreeCursorPair*)cursorPair;
+{
+  return cursors;
+}
+
 - (void)setMode:(IFImageViewMode)newMode;
 {
   if (newMode == mode)

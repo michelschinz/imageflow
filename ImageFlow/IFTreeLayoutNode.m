@@ -59,7 +59,7 @@ static NSImage* lockedViewImage = nil;
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
   [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:IFExpressionChangedContext];
   [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:IFLayoutChangedContext];
-  [containingView addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedNodeChangedContext];
+  [[containingView cursors] addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedNodeChangedContext];
   [containingView addObserver:self forKeyPath:@"unreachableNodes" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFReachableNodesChangedContext];
   [node addObserver:self forKeyPath:@"isFolded" options:0 context:IFLayoutChangedContext];
   return self;
@@ -68,6 +68,8 @@ static NSImage* lockedViewImage = nil;
 - (void)dealloc;
 {
   [node removeObserver:self forKeyPath:@"isFolded"];
+  [containingView removeObserver:self forKeyPath:@"unreachableNodes"];
+  [[containingView cursors] removeObserver:self forKeyPath:@"viewMark.node"];
   [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
   [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
   [node removeObserver:self forKeyPath:@"expression"];
