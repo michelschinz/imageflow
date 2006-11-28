@@ -7,31 +7,23 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = SampleCIScrollableView; 
         }, 
-        {
-            CLASS = IFImageInspectorWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                filterNameTextField = NSTextField; 
-                filterSettingsSubView = RBSplitSubview; 
-                filterSettingsTabView = NSTabView; 
-                imageOrErrorTabView = NSTabView; 
-                imageView = IFImageView; 
-                thumbnailView = IFImageView; 
-                thumbnailWindow = NSWindow; 
-            }; 
-            SUPERCLASS = IFProbeWindowController; 
-        }, 
         {CLASS = IFImageView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {stickToBookmark = id; }; 
-            CLASS = IFProbeWindowController; 
+            CLASS = IFImageViewController; 
             LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
+            OUTLETS = {imageOrErrorTabView = NSTabView; imageView = IFImageView; }; 
+            SUPERCLASS = IFViewController; 
         }, 
         {
             CLASS = IFTransparentPopupButton; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSPopUpButton; 
+        }, 
+        {
+            CLASS = IFViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {topLevelView = NSView; }; 
+            SUPERCLASS = NSObject; 
         }, 
         {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = SampleCIScrollableView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }

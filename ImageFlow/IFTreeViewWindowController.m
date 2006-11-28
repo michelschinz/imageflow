@@ -8,24 +8,41 @@
 
 #import "IFTreeViewWindowController.h"
 #import "IFDocument.h"
-#import "IFCenteringClipView.h"
 
 @implementation IFTreeViewWindowController
 
 - (id)init;
 {
-  return [super initWithWindowNibName:@"IFTreeView"];
+  if (![super initWithWindowNibName:@"IFTreeWindow"])
+    return nil;
+  treeViewController = [IFTreeViewController new];
+  return self;
+}
+
+- (void)dealloc;
+{
+  OBJC_RELEASE(treeViewController);
+  [super dealloc];
 }
 
 - (void)awakeFromNib;
 {
-  [treeView setDocument:[self document]];
-  [[self window] setDisplaysWhenScreenProfileChanges:YES];
-  [[self window] setFrameAutosaveName:@"IFTreeView"];
+  NSWindow* window = [self window];
+  [window setDisplaysWhenScreenProfileChanges:YES];
+  [window setFrameAutosaveName:@"IFTreeView"];
+  [window setContentView:[treeViewController topLevelView]];
+  
+  [[treeViewController treeView] setDocument:[self document]];
+}
+
+- (IFTreeCursorPair*)cursorPair;
+{
+  return [[treeViewController treeView] cursors];
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow*)window defaultFrame:(NSRect)defaultFrame;
 {
+  IFTreeView* treeView = [treeViewController treeView];
   NSRect windowFrame = [window frame];
   NSSize visibleViewSize = [treeView visibleRect].size;
   NSSize idealViewSize = [treeView idealSize];
@@ -38,16 +55,6 @@
   windowFrame.size.height += deltaH;
   windowFrame.origin.y -= deltaH;
   return windowFrame;
-}
-
-- (void)windowDidLoad;
-{
-  NSView* docView = [[[scrollView documentView] retain] autorelease];
-  IFCenteringClipView* newClipView = [[[IFCenteringClipView alloc] initWithFrame:[[scrollView contentView] frame]] autorelease];
-  [newClipView setBackgroundColor:[[treeView layoutParameters] backgroundColor]];
-  [newClipView setCenterVertically:NO];
-  [scrollView setContentView:newClipView];
-  [scrollView setDocumentView:docView];
 }
 
 @end

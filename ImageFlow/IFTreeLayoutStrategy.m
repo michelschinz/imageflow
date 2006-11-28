@@ -166,8 +166,7 @@
 {
   NSCountedSet* markedNodes = [NSCountedSet set];
   NSMutableSet* elems = [NSMutableSet set];
-  unsigned int i, count = [marks count];
-  for (i = 1; i < count; i++) {
+  for (unsigned i = 0, count = [marks count]; i < count; i++) {
     IFTreeMark *mark = [marks objectAtIndex:i];
     if (![mark isSet])
       continue;

@@ -241,7 +241,8 @@ int countAncestors(IFTreeNode* node) {
   
   // Draw view locking icon, if needed
   NSRect labelTextFrame;
-  if ([containingView viewLockedNode] == node) {
+  IFTreeCursorPair* cursors = [containingView cursors];
+  if ([cursors isViewLocked] && [[cursors viewMark] node] == node) {
     NSSize imageSize = [lockedViewImage size];
     NSPoint p = NSMakePoint(NSMinX(labelFrame),
                             floor(NSMinY(labelFrame) + (NSHeight(labelFrame) - imageSize.height) / 2.0));

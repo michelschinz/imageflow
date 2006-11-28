@@ -16,6 +16,7 @@
 #import "IFGrabableViewMixin.h"
 #import "IFTreeLayoutStrategy.h"
 #import "IFTreeLayoutParameters.h"
+#import "IFTreeCursorPair.h"
 
 extern NSString* IFMarkPboardType;
 
@@ -25,12 +26,13 @@ extern NSString* IFMarkPboardType;
   IFTreeLayoutParameters* layoutParameters;
 
   IFDocument* document;
+  NSArray* marks;
+  NSArray* allMarks;
+  IFTreeCursorPair* cursors;
+  NSSet* unreachableNodes;
   NSMutableSet* selectedNodes;
   IFTreeNode* copiedNode;
 
-  IFTreeNode* viewLockedNode;
-  NSSet* unreachableNodes;
-  
   unsigned int upToDateLayers;
   NSMutableArray* layoutLayers;
   NSMutableArray* trackingRectTags;
@@ -51,9 +53,7 @@ extern NSString* IFMarkPboardType;
 - (IBAction)makeNodeAlias:(id)sender;
 - (IBAction)toggleNodeFoldingState:(id)sender;
 
-- (IBAction)lockViewOnCurrentNode:(id)sender;
-- (void)setViewLockedNode:(IFTreeNode*)newViewLockedNode;
-- (IFTreeNode*)viewLockedNode;
+- (IFTreeCursorPair*)cursors;
 - (NSSet*)unreachableNodes;
 
 - (IBAction)setBookmark:(id)sender;

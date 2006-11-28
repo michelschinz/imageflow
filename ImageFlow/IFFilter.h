@@ -28,7 +28,7 @@
 - (NSArray*)variantNamesForEditing; // optional (defaults to only one variant: the filter's output)
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env; // mandatory, except for sources and sinks
+- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env; // optional (default to identity)
 
 - (void)mouseDown:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)transform withEnvironment:(IFEnvironment*)env; // optional
 - (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)transform withEnvironment:(IFEnvironment*)env; // optional

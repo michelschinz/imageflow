@@ -30,6 +30,7 @@
 		FA164C9E0AD1132A0007C9EA /* IFExpressionEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */; };
 		FA1774A40AEC8EE70013D98B /* IFBitmapUIConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1774A20AEC8EE70013D98B /* IFBitmapUIConfigurator.m */; };
 		FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */ = {isa = PBXBuildFile; fileRef = FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */; };
+		FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B62800B11DE2700852BC9 /* IFStackingView.m */; };
 		FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */; };
 		FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */; };
 		FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF70C091946FE00E288BB /* IFThresholdCIFilter.m */; };
@@ -77,7 +78,6 @@
 		FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A80AD2B5560097C977 /* IFImageCIImage.m */; };
 		FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
-		FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
 		FA6609170AF7D6270049AD02 /* warning-sign.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6609160AF7D6270049AD02 /* warning-sign.png */; };
@@ -181,9 +181,22 @@
 		FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */; };
 		FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */; };
 		FAF4D62F0ABAEC55000F98B0 /* IFCursorRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */; };
+		FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */; };
+		FAF7F1160B088E0700BF6B7A /* IFTreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */; };
+		FAF7F1200B089AC200BF6B7A /* IFTreeWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F11F0B089AC200BF6B7A /* IFTreeWindow.nib */; };
+		FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */; };
+		FAF7F2AB0B08B0D000BF6B7A /* IFImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2A90B08B0D000BF6B7A /* IFImageViewController.m */; };
+		FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */; };
+		FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */; };
+		FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */; };
+		FAF7F3770B08DA2300BF6B7A /* IFImageWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F3760B08DA2300BF6B7A /* IFImageWindow.nib */; };
 		FAF864CB0949CA7200CC2035 /* IFBlendFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF864C90949CA7200CC2035 /* IFBlendFilterDelegate.m */; };
 		FAF8821E0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF8821D0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
+		FAF90B710B09958400AC8472 /* IFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF90B6F0B09958400AC8472 /* IFViewController.m */; };
+		FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */; };
+		FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */; };
+		FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */; };
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
 		FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */; };
@@ -264,6 +277,8 @@
 		FA1774A20AEC8EE70013D98B /* IFBitmapUIConfigurator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBitmapUIConfigurator.m; sourceTree = "<group>"; };
 		FA1776490AED3DCA0013D98B /* IFTreeNodeReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeReference.h; sourceTree = "<group>"; };
 		FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeReference.m; sourceTree = "<group>"; };
+		FA1B627F0B11DE2700852BC9 /* IFStackingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFStackingView.h; sourceTree = "<group>"; };
+		FA1B62800B11DE2700852BC9 /* IFStackingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFStackingView.m; sourceTree = "<group>"; };
 		FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
 		FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBlendFilter.nib; sourceTree = "<group>"; };
@@ -341,8 +356,6 @@
 		FA4501A70AD2B5560097C977 /* IFImageCIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageCIImage.h; sourceTree = "<group>"; };
 		FA4501A80AD2B5560097C977 /* IFImageCIImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCIImage.m; sourceTree = "<group>"; };
 		FA47F50308F6587800C906A8 /* MPWFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MPWFoundation.framework; path = Frameworks/MPWFoundation.framework; sourceTree = "third-party-cocoa-libraries"; };
-		FA4ABF990AB096EA008E71B6 /* IFImageVariant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageVariant.h; sourceTree = "<group>"; };
-		FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageVariant.m; sourceTree = "<group>"; };
 		FA57F9D50924CFA8002AAA68 /* IFFNVHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFNVHash.h; sourceTree = "<group>"; };
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
 		FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFErrorConstantExpression.h; sourceTree = "<group>"; };
@@ -514,11 +527,32 @@
 		FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCursorRect.m; sourceTree = "<group>"; };
 		FAF4D62C0ABAEC55000F98B0 /* IFCursorRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCursorRepository.h; sourceTree = "<group>"; };
 		FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCursorRepository.m; sourceTree = "<group>"; };
+		FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeCursorPair.h; sourceTree = "<group>"; };
+		FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeCursorPair.m; sourceTree = "<group>"; };
+		FAF7F1130B088E0700BF6B7A /* IFTreeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeViewController.h; sourceTree = "<group>"; };
+		FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeViewController.m; sourceTree = "<group>"; };
+		FAF7F11F0B089AC200BF6B7A /* IFTreeWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFTreeWindow.nib; sourceTree = "<group>"; };
+		FAF7F2500B08A93D00BF6B7A /* IFHUDWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHUDWindowController.h; sourceTree = "<group>"; };
+		FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHUDWindowController.m; sourceTree = "<group>"; };
+		FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHUDWindow.nib; sourceTree = "<group>"; };
+		FAF7F2A80B08B0D000BF6B7A /* IFImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageViewController.h; sourceTree = "<group>"; };
+		FAF7F2A90B08B0D000BF6B7A /* IFImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageViewController.m; sourceTree = "<group>"; };
+		FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFilterSettingsViewController.h; sourceTree = "<group>"; };
+		FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFilterSettingsViewController.m; sourceTree = "<group>"; };
+		FAF7F2D00B08C2DD00BF6B7A /* IFThumbnailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFThumbnailViewController.h; sourceTree = "<group>"; };
+		FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFThumbnailViewController.m; sourceTree = "<group>"; };
+		FAF7F36C0B08D97700BF6B7A /* IFImageInspectorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageInspectorWindow.h; sourceTree = "<group>"; };
+		FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageInspectorWindow.m; sourceTree = "<group>"; };
+		FAF7F3760B08DA2300BF6B7A /* IFImageWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFImageWindow.nib; sourceTree = "<group>"; };
 		FAF864C80949CA7200CC2035 /* IFBlendFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBlendFilterDelegate.h; sourceTree = "<group>"; };
 		FAF864C90949CA7200CC2035 /* IFBlendFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBlendFilterDelegate.m; sourceTree = "<group>"; };
 		FAF8821D0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFImageViewToolbarItems.nib; sourceTree = "<group>"; };
 		FAF8AA2F08FCD76500557C4D /* IFXMLCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFXMLCoder.h; sourceTree = "<group>"; };
 		FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFXMLCoder.m; sourceTree = "<group>"; };
+		FAF90B6E0B09958400AC8472 /* IFViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFViewController.h; sourceTree = "<group>"; };
+		FAF90B6F0B09958400AC8472 /* IFViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFViewController.m; sourceTree = "<group>"; };
+		FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFilterSettingsView.nib; sourceTree = "<group>"; };
+		FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFThumbnailView.nib; sourceTree = "<group>"; };
 		FAF934FB0908094E00558366 /* IFConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConstantExpression.h; sourceTree = "<group>"; };
 		FAF934FC0908094E00558366 /* IFConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConstantExpression.m; sourceTree = "<group>"; };
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
@@ -640,12 +674,13 @@
 				FAE54A89090CAAC5000DC147 /* Filters */,
 				FAE8749F0908C2B800E856B9 /* Templates */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				8D15AC360486D014006FF6A4 /* Info.plist */,
+				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */,
 				FA11DD2608F245E500A3AF61 /* IFPreferences.nib */,
-				2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */,
-				8D15AC360486D014006FF6A4 /* Info.plist */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
+				FAF90B900B099C0700AC8472 /* Windows */,
+				FAF90B810B099BE000AC8472 /* Views */,
 				FAD718A208B5E2AF00CF732B /* Inspectors */,
 				FAB2CDCE08A8DC2600558619 /* Settings panels */,
 			);
@@ -789,6 +824,8 @@
 		FA1EB202086AAF1C007FD6AF /* Tree */ = {
 			isa = PBXGroup;
 			children = (
+				FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */,
+				FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */,
 				FAFDC5A00860484700DABA6F /* IFTreeView.h */,
 				FAFDC5A10860484700DABA6F /* IFTreeView.m */,
 				FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */,
@@ -859,27 +896,6 @@
 				FA2D39DE094D776C0068F20A /* IFGaussianBlurFilterDelegate.m */,
 			);
 			name = "Gaussian blur";
-			sourceTree = "<group>";
-		};
-		FA33FAE308B5E6780013AA0E /* Inspectors */ = {
-			isa = PBXGroup;
-			children = (
-				FAE59D2108F3CABE00EF20ED /* IFInspectorWindowController.h */,
-				FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */,
-				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
-				FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */,
-				FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */,
-				FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */,
-				FAE59F4008F3D26B00EF20ED /* IFImageInspectorWindowController.h */,
-				FAE59F4108F3D26B00EF20ED /* IFImageInspectorWindowController.m */,
-				FA4ABF990AB096EA008E71B6 /* IFImageVariant.h */,
-				FA4ABF9A0AB096EA008E71B6 /* IFImageVariant.m */,
-				FAE59F3D08F3D24B00EF20ED /* IFHistogramInspectorWindowController.h */,
-				FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */,
-				FAE54C5D090CCCAE000DC147 /* IFFilterController.h */,
-				FAE54C5E090CCCAE000DC147 /* IFFilterController.m */,
-			);
-			name = Inspectors;
 			sourceTree = "<group>";
 		};
 		FA33FB0D08B60B290013AA0E /* File */ = {
@@ -1080,7 +1096,6 @@
 			isa = PBXGroup;
 			children = (
 				FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */,
-				FAF882170A9DA717007DAB5B /* Image view */,
 				FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */,
 			);
 			name = Inspectors;
@@ -1141,6 +1156,8 @@
 				FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */,
 				FADD9A8F0AA727A300547F53 /* IFBorderlessWindow.h */,
 				FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */,
+				FAF7F36C0B08D97700BF6B7A /* IFImageInspectorWindow.h */,
+				FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */,
 			);
 			name = Image;
 			sourceTree = "<group>";
@@ -1175,13 +1192,85 @@
 			name = Plugins;
 			sourceTree = "<group>";
 		};
-		FAF882170A9DA717007DAB5B /* Image view */ = {
+		FAF7F1100B088D8F00BF6B7A /* Window controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FA92E81708B3448000E57EF7 /* IFImageView.nib */,
-				FAF8821D0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib */,
+				FA11DDA408F24EF800A3AF61 /* IFPreferencesWindowController.h */,
+				FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */,
+				FAF7F2500B08A93D00BF6B7A /* IFHUDWindowController.h */,
+				FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */,
+				FAE59D2108F3CABE00EF20ED /* IFInspectorWindowController.h */,
+				FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */,
+				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
+				FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */,
+				FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */,
+				FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */,
+				FAF7F1170B08930500BF6B7A /* Dual window layout */,
+				FAE59F3D08F3D24B00EF20ED /* IFHistogramInspectorWindowController.h */,
+				FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */,
 			);
-			name = "Image view";
+			name = "Window controllers";
+			sourceTree = "<group>";
+		};
+		FAF7F1110B088DBB00BF6B7A /* Value transformers */ = {
+			isa = PBXGroup;
+			children = (
+				FA68DE9C092DBC14009D02CB /* IFPercentValueTransformer.h */,
+				FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */,
+				FAEE959C0935AF8100583BDB /* IFProfileNamePathValueTransformer.h */,
+				FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */,
+			);
+			name = "Value transformers";
+			sourceTree = "<group>";
+		};
+		FAF7F1120B088DD500BF6B7A /* View controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FAF90B6E0B09958400AC8472 /* IFViewController.h */,
+				FAF90B6F0B09958400AC8472 /* IFViewController.m */,
+				FAF7F1130B088E0700BF6B7A /* IFTreeViewController.h */,
+				FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */,
+				FAF7F2A80B08B0D000BF6B7A /* IFImageViewController.h */,
+				FAF7F2A90B08B0D000BF6B7A /* IFImageViewController.m */,
+				FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */,
+				FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */,
+				FAF7F2D00B08C2DD00BF6B7A /* IFThumbnailViewController.h */,
+				FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */,
+			);
+			name = "View controllers";
+			sourceTree = "<group>";
+		};
+		FAF7F1170B08930500BF6B7A /* Dual window layout */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDC62008605A1300DABA6F /* IFTreeViewWindowController.h */,
+				FAFDC62108605A1300DABA6F /* IFTreeViewWindowController.m */,
+				FAE59F4008F3D26B00EF20ED /* IFImageInspectorWindowController.h */,
+				FAE59F4108F3D26B00EF20ED /* IFImageInspectorWindowController.m */,
+			);
+			name = "Dual window layout";
+			sourceTree = "<group>";
+		};
+		FAF90B810B099BE000AC8472 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */,
+				FA92E81708B3448000E57EF7 /* IFImageView.nib */,
+				FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */,
+				FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		FAF90B900B099C0700AC8472 /* Windows */ = {
+			isa = PBXGroup;
+			children = (
+				FAF7F11F0B089AC200BF6B7A /* IFTreeWindow.nib */,
+				FAF7F3760B08DA2300BF6B7A /* IFImageWindow.nib */,
+				FAF8821D0A9DA9AE007DAB5B /* IFImageViewToolbarItems.nib */,
+				FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */,
+			);
+			name = Windows;
 			sourceTree = "<group>";
 		};
 		FAF97C2D08EBF27200FC2B61 /* Filters */ = {
@@ -1280,6 +1369,8 @@
 			children = (
 				FAE110550ADFC1CC007EEFFD /* IFCenteringClipView.h */,
 				FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */,
+				FA1B627F0B11DE2700852BC9 /* IFStackingView.h */,
+				FA1B62800B11DE2700852BC9 /* IFStackingView.m */,
 				FAE6A41A0ACBD9050059BA3B /* IFGrabableViewMixin.h */,
 				FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */,
 				FA34AD920AA3152E00C8A63A /* IFTransparentPopupButton.h */,
@@ -1301,15 +1392,11 @@
 				FA21BC2008683CA70019D1B7 /* IFAppController.m */,
 				FAA2AF2A08FFA1750055AFDD /* IFSavePanelController.h */,
 				FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */,
-				FA11DDA408F24EF800A3AF61 /* IFPreferencesWindowController.h */,
-				FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */,
-				FAFDC62008605A1300DABA6F /* IFTreeViewWindowController.h */,
-				FAFDC62108605A1300DABA6F /* IFTreeViewWindowController.m */,
-				FA33FAE308B5E6780013AA0E /* Inspectors */,
-				FA68DE9C092DBC14009D02CB /* IFPercentValueTransformer.h */,
-				FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */,
-				FAEE959C0935AF8100583BDB /* IFProfileNamePathValueTransformer.h */,
-				FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */,
+				FAE54C5D090CCCAE000DC147 /* IFFilterController.h */,
+				FAE54C5E090CCCAE000DC147 /* IFFilterController.m */,
+				FAF7F1120B088DD500BF6B7A /* View controllers */,
+				FAF7F1100B088D8F00BF6B7A /* Window controllers */,
+				FAF7F1110B088DBB00BF6B7A /* Value transformers */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1429,6 +1516,11 @@
 				FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */,
 				FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */,
 				FA9E24590B03B10F001EC346 /* locked_view.png in Resources */,
+				FAF7F1200B089AC200BF6B7A /* IFTreeWindow.nib in Resources */,
+				FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */,
+				FAF7F3770B08DA2300BF6B7A /* IFImageWindow.nib in Resources */,
+				FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */,
+				FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1531,7 +1623,6 @@
 				FAD4A5110AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m in Sources */,
 				FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */,
 				FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */,
-				FA4ABF9C0AB096EA008E71B6 /* IFImageVariant.m in Sources */,
 				FAE63B5A0AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m in Sources */,
 				FAF4D62F0ABAEC55000F98B0 /* IFCursorRepository.m in Sources */,
 				FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */,
@@ -1558,6 +1649,15 @@
 				FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */,
 				FA9649760AEF81B700EC46A5 /* IFTreeLayoutStrategy.m in Sources */,
 				FA9649870AEF892B00EC46A5 /* IFTreeLayoutParameters.m in Sources */,
+				FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */,
+				FAF7F1160B088E0700BF6B7A /* IFTreeViewController.m in Sources */,
+				FAF7F2AB0B08B0D000BF6B7A /* IFImageViewController.m in Sources */,
+				FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */,
+				FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */,
+				FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */,
+				FAF90B710B09958400AC8472 /* IFViewController.m in Sources */,
+				FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */,
+				FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

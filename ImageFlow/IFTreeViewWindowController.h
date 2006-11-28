@@ -8,11 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFTreeView.h"
+#import "IFTreeViewController.h"
+#import "IFTreeCursorPair.h"
 
 @interface IFTreeViewWindowController : NSWindowController {
-  IBOutlet IFTreeView* treeView;
-  IBOutlet NSScrollView* scrollView;
+  IFTreeViewController* treeViewController;
 }
+
+- (IFTreeCursorPair*)cursorPair;
 
 @end

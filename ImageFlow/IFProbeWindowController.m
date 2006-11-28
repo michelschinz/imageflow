@@ -61,7 +61,6 @@ static NSDictionary* stringToInt;
 - (void)documentDidChange:(IFDocument*)newDocument;
 {
   if (newDocument != nil) {
-    marks = [newDocument marks];
     [self stickToBookmarkIndex:markIndex];
   } else {
     [probe setMark:nil];

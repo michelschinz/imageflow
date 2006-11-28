@@ -28,7 +28,6 @@ extern NSString* IFTreeChangedNotification;
   float resolutionX, resolutionY; // in DPI
   
   IFTreeNode* fakeRoot;
-  NSArray* marks;
 }
 
 + (IFDocumentTemplateManager*)documentTemplateManager;
@@ -36,9 +35,6 @@ extern NSString* IFTreeChangedNotification;
 - (IFExpressionEvaluator*)evaluator;
 
 - (NSArray*)roots;
-
-- (NSArray*)marks;
-- (IFTreeMark*)cursorMark;
 
 - (NSString*)title;
 - (void)setTitle:(NSString*)newTitle;
@@ -63,13 +59,13 @@ extern NSString* IFTreeChangedNotification;
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (BOOL)canReplaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
-- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
-- (void)deleteNode:(IFTreeNode*)node;
-- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
+- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+- (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
+- (void)deleteContiguousNodes:(NSSet*)contiguousNodes transformingMarks:(NSArray*)marks;
 
 - (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes inlineOnInsertion:(BOOL)inlineOnInsertion;
 - (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
-- (void)inlineMacroNode:(IFTreeNodeMacro*)node;
+- (void)inlineMacroNode:(IFTreeNodeMacro*)macroNode transformingMarks:(NSArray*)marks;
 
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;

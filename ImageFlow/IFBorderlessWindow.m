@@ -19,4 +19,9 @@
   return [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:bufferingType defer:deferCreation];
 }
 
+- (BOOL)canBecomeKeyWindow;
+{
+  return YES;
+}
+
 @end

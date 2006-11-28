@@ -11,6 +11,8 @@
 
 @interface NSAffineTransform (NSAffineTransformIFAdditions)
 
+- (void)setToIdentity;
+
 - (NSRect)transformRect:(NSRect)rect;
 
 @end

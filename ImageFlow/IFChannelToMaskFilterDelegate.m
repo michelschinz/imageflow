@@ -17,11 +17,6 @@
   return [NSString stringWithFormat:@"%c to mask", channelInitials[[[env valueForKey:@"channel"] intValue]]];
 }
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
-{
-  return [NSAffineTransform transform];
-}
-
 - (NSArray*)channels;
 {
   return [NSArray arrayWithObjects:

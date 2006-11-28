@@ -28,7 +28,15 @@
 #import "IFMaskInvertCIFilter.h"
 #import "IFMaskThresholdCIFilter.h"
 
+@interface IFAppController (Private)
+- (void)mainWindowDidChange:(NSNotification*)notification;
+- (void)mainWindowDidResign:(NSNotification*)notification;
+@end
+
 @implementation IFAppController
+
+NSString* IFCurrentDocumentDidChangeNotification = @"IFCurrentDocumentDidChangeNotification";
+NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 
 - (id)init;
 {
@@ -36,10 +44,23 @@
     return nil;
   inspectorControllers = [NSMutableSet new];
   sharedPreferencesController = nil;
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(mainWindowDidChange:)
+                                               name:NSWindowDidBecomeMainNotification
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(mainWindowDidResign:)
+                                               name:NSWindowDidResignMainNotification
+                                             object:nil];
   return self;
 }
 
-- (void) dealloc {
+- (void) dealloc;
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+  OBJC_RELEASE(sharedPreferencesController);
   OBJC_RELEASE(inspectorControllers);
   [super dealloc];
 }
@@ -143,6 +164,25 @@
 - (IBAction)newHistogramInspector:(id)sender;
 {
   [self newInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
+}
+
+@end
+
+@implementation IFAppController (Private)
+
+- (void)mainWindowDidChange:(NSNotification*)notification;
+{
+  NSDocument* doc = [[[notification object] windowController] document];
+  [[NSNotificationCenter defaultCenter] postNotificationName:IFCurrentDocumentDidChangeNotification
+                                                      object:nil
+                                                    userInfo:[NSDictionary dictionaryWithObject:doc forKey:IFNewDocumentKey]];
+}
+
+- (void)mainWindowDidResign:(NSNotification*)notification;
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:IFCurrentDocumentDidChangeNotification
+                                                      object:nil
+                                                    userInfo:[NSDictionary dictionaryWithObject:[NSNull null] forKey:IFNewDocumentKey]];
 }
 
 @end

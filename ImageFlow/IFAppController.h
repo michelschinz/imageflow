@@ -11,6 +11,9 @@
 #import "IFPreferencesWindowController.h"
 #import "IFInspectorWindowController.h"
 
+extern NSString* IFCurrentDocumentDidChangeNotification;
+extern NSString* IFNewDocumentKey;
+
 @interface IFAppController : NSObject {
   IBOutlet NSMenu* templatesMenu;
   

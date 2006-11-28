@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IFImageView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = IFThumbnailViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imageView = IFImageView; }; 
+            SUPERCLASS = IFViewController; 
+        }, 
+        {
+            CLASS = IFViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {topLevelView = NSView; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

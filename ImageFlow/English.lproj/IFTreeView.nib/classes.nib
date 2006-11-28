@@ -8,10 +8,16 @@
             SUPERCLASS = NSView; 
         }, 
         {
-            CLASS = IFTreeViewWindowController; 
+            CLASS = IFTreeViewController; 
             LANGUAGE = ObjC; 
             OUTLETS = {scrollView = NSScrollView; treeView = IFTreeView; }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = IFViewController; 
+        }, 
+        {
+            CLASS = IFViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {topLevelView = NSView; }; 
+            SUPERCLASS = NSObject; 
         }, 
         {CLASS = MyDocument; LANGUAGE = ObjC; SUPERCLASS = NSPersistentDocument; }, 
         {CLASS = NSPersistentDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }

@@ -14,7 +14,6 @@
 #import "IFTreeLayoutInputConnector.h"
 #import "IFTreeLayoutOutputConnector.h"
 #import "IFTreeLayoutComposite.h"
-#import "IFAppController.h"
 #import "IFImageInspectorWindowController.h"
 #import "IFHistogramInspectorWindowController.h"
 #import "IFDocumentTemplate.h"
@@ -78,6 +77,26 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   layoutParameters = [IFTreeLayoutParameters new];
   layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
   
+  marks = [[NSArray arrayWithObjects:
+    [IFTreeMark markWithTag:@"0"],
+    [IFTreeMark markWithTag:@"1"],
+    [IFTreeMark markWithTag:@"2"],
+    [IFTreeMark markWithTag:@"3"],
+    [IFTreeMark markWithTag:@"4"],
+    [IFTreeMark markWithTag:@"5"],
+    [IFTreeMark markWithTag:@"6"],
+    [IFTreeMark markWithTag:@"7"],
+    [IFTreeMark markWithTag:@"8"],
+    [IFTreeMark markWithTag:@"9"],
+    nil] retain];
+  IFTreeMark* cursorMark = [IFTreeMark markWithTag:@"<cursor>"];
+  IFTreeMark* viewMark = [IFTreeMark markWithTag:@"<view>"];
+  allMarks = [[marks arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:cursorMark,viewMark,nil]] retain];
+  cursors = [[IFTreeCursorPair treeCursorPairWithEditMark:cursorMark viewMark:viewMark] retain];
+  unreachableNodes = [[NSSet set] retain];
+  selectedNodes = [NSMutableSet new];
+  copiedNode = nil;
+  
   layoutLayers = [[NSMutableArray alloc] initWithObjects:
     [NSNull null],
     [NSNull null],
@@ -85,16 +104,13 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
     [NSNull null],
     nil];
   trackingRectTags = [NSMutableArray new];
-  selectedNodes = [NSMutableSet new];
-  copiedNode = nil;
 
-  viewLockedNode = nil;
-  unreachableNodes = [[NSSet set] retain];
-  
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
   [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
+  
   return self;
 }
 
@@ -108,16 +124,18 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   [self removeAllTrackingRects];
   [self setDocument:nil];
 
-  OBJC_RELEASE(unreachableNodes);
-  OBJC_RELEASE(viewLockedNode);
-  
-  OBJC_RELEASE(copiedNode);
-  OBJC_RELEASE(selectedNodes);
   OBJC_RELEASE(trackingRectTags);
   OBJC_RELEASE(layoutLayers);
-  
-  OBJC_RELEASE(layoutParameters);
+
+  OBJC_RELEASE(copiedNode);
+  OBJC_RELEASE(selectedNodes);
+  OBJC_RELEASE(unreachableNodes);
+  OBJC_RELEASE(cursors);
+  OBJC_RELEASE(allMarks);
+  OBJC_RELEASE(marks);
+    
   OBJC_RELEASE(layoutStrategy);
+  OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
 }
@@ -138,29 +156,8 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 }
 
 - (void)setDocument:(IFDocument*)newDocument {
-  if (document != nil) {
-    NSArray* marks = [document marks];
-    NSEnumerator* marksEnum = [marks objectEnumerator];
-    IFTreeMark* mark;
-    while (mark = [marksEnum nextObject])
-      [mark removeObserver:self forKeyPath:@"node"];
-    [document removeObserver:self forKeyPath:@"cursorMark.node"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:IFTreeChangedNotification object:document];
-  }
+  NSAssert(document == nil, @"document already set");
   document = newDocument;  // don't retain, to avoid cycles.
-  if (document != nil) {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(documentTreeChanged:)
-                                                 name:IFTreeChangedNotification
-                                               object:document];
-    [document addObserver:self forKeyPath:@"cursorMark.node" options:0 context:IFCursorMovedContext];
-    NSArray* marks = [document marks];
-    NSEnumerator* marksEnum = [marks objectEnumerator];
-    IFTreeMark* mark;
-    while (mark = [marksEnum nextObject])
-      [mark addObserver:self forKeyPath:@"node" options:0 context:IFMarkChangedContext];
-  }
-  [self invalidateLayout];
 }
 
 - (IFDocument*)document;
@@ -216,41 +213,16 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   if (action == @selector(toggleNodeFoldingState:))
     return [[[self cursorNode] parents] count] > 0;
   else if (action == @selector(removeBookmark:) || action == @selector(goToBookmark:))
-    return [[[document marks] objectAtIndex:[item tag]] isSet];
+    return [[marks objectAtIndex:[item tag]] isSet];
   else
     return YES;
 }
 
 #pragma mark View locking
 
-- (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
+- (IFTreeCursorPair*)cursors;
 {
-  if (newUnreachableNodes == unreachableNodes)
-    return;
-  [unreachableNodes release];
-  unreachableNodes = [newUnreachableNodes retain];
-}
-
-- (IBAction)lockViewOnCurrentNode:(id)sender;
-{
-  [self setViewLockedNode:[self cursorNode]];
-}
-
-- (void)setViewLockedNode:(IFTreeNode*)newViewLockedNode;
-{
-  if (newViewLockedNode == viewLockedNode)
-    return;
-  [viewLockedNode release];
-  viewLockedNode = [newViewLockedNode retain];
-  
-  NSMutableSet* unreachable = [NSMutableSet setWithSet:[document allNodes]];
-  [unreachable minusSet:[document ancestorsOfNode:viewLockedNode]];
-  [self setUnreachableNodes:unreachable];
-}
-
-- (IFTreeNode*)viewLockedNode;
-{
-  return viewLockedNode;
+  return cursors;
 }
 
 - (NSSet*)unreachableNodes;
@@ -263,13 +235,13 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 - (IBAction)setBookmark:(id)sender;
 {
   NSMenuItem* item = sender;
-  [[[document marks] objectAtIndex:[item tag]] setLikeMark:[document cursorMark]];
+  [[marks objectAtIndex:[item tag]] setLikeMark:[cursors editMark]];
 }
 
 - (IBAction)removeBookmark:(id)sender;
 {
   NSMenuItem* item = sender;
-  IFTreeMark* mark = [[document marks] objectAtIndex:[item tag]];
+  IFTreeMark* mark = [marks objectAtIndex:[item tag]];
   if ([mark isSet])
     [mark unset];
   else
@@ -279,9 +251,9 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 - (IBAction)goToBookmark:(id)sender;
 {
   NSMenuItem* item = sender;
-  IFTreeMark* mark = [[document marks] objectAtIndex:[item tag]];
+  IFTreeMark* mark = [marks objectAtIndex:[item tag]];
   if ([mark isSet])
-    [[document cursorMark] setLikeMark:mark];
+    [self moveToNode:[mark node] extendingSelection:NO];
   else
     NSBeep();
 }
@@ -480,13 +452,13 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
 - (void)cancelOperation:(id)sender;
 {
-  if ([[document cursorMark] isSet])
+  if ([[cursors editMark] isSet])
     [[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] activate];
 }
 
 - (void)delete:(id)sender;
 {
-  [document deleteContiguousNodes:[self selectedNodes]];
+  [document deleteContiguousNodes:[self selectedNodes] transformingMarks:allMarks];
 }
 
 - (void)deleteBackward:(id)sender;
@@ -497,55 +469,13 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 - (void)deleteNodeUnderMouse:(id)sender;
 {
   IFTreeNode* designatedNode = [[layoutStrategy deleteButtonCell] representedObject];
-  [document deleteNode:designatedNode];
+  [document deleteNode:designatedNode transformingMarks:allMarks];
 }
 
 - (void)insertNewline:(id)sender
 {
   [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
-}
-
-- (NSMenu*)menuForEvent:(NSEvent*)event;
-{
-  NSPoint localPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-  IFTreeLayoutElement* designatedElement = [self layoutElementAtPoint:localPoint];
-
-  if ([designatedElement isKindOfClass:[IFTreeLayoutMark class]]) {
-    IFTreeLayoutMark* markElement = (IFTreeLayoutMark*)designatedElement;
-    NSMenu* menu = [[[NSMenu alloc] initWithTitle:@"---"] autorelease];
-    NSMenuItem* removeMarkItem = [menu addItemWithTitle:@"Remove Mark" action:@selector(removeBookmark:) keyEquivalent:@""];
-    NSMenuItem* openInspectorItem = [menu addItemWithTitle:@"Attach New Inspector" action:nil keyEquivalent:@""];
-    
-    NSMenu* inspectorSubmenu = [[[NSMenu alloc] initWithTitle:@"---"] autorelease];
-    NSMenuItem* item2 = [inspectorSubmenu addItemWithTitle:@"Image" action:@selector(newAttachedImageInspector:) keyEquivalent:@""];
-    [item2 setTag:[markElement markIndex]];
-    NSMenuItem* item3 = [inspectorSubmenu addItemWithTitle:@"Histogram" action:@selector(newAttachedHistogramInspector:) keyEquivalent:@""];
-    [item3 setTag:[markElement markIndex]];
-
-    [menu setSubmenu:inspectorSubmenu forItem:openInspectorItem];
-    
-    [removeMarkItem setTag:[markElement markIndex]];
-    return menu;
-  }
-  
-  return [super menuForEvent:event];
-}
-
-// TODO keep this ?
-- (void)newAttachedImageInspector:(id)sender;
-{
-  IFAppController* appController = [[NSApplication sharedApplication] delegate];
-  IFProbeWindowController* inspectorController = (IFProbeWindowController*)[appController newInspectorOfClass:[IFImageInspectorWindowController class] sender:sender];
-  [inspectorController stickToBookmarkIndex:[(NSMenuItem*)sender tag]];
-}
-
-// TODO keep this ?
-- (void)newAttachedHistogramInspector:(id)sender;
-{
-  IFAppController* appController = [[NSApplication sharedApplication] delegate];
-  IFProbeWindowController* inspectorController = (IFProbeWindowController*)[appController newInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
-  [inspectorController stickToBookmarkIndex:[(NSMenuItem*)sender tag]];
 }
 
 #pragma mark Copy and paste
@@ -592,7 +522,7 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
   }
   IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
 
-  [document replaceNode:[self cursorNode] usingNode:[[proxy node] cloneNode]];
+  [document replaceNode:[self cursorNode] usingNode:[[proxy node] cloneNode] transformingMarks:allMarks];
 }
 
 #pragma mark Drag and drop
@@ -614,10 +544,10 @@ static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
   if ([types containsObject:IFMarkPboardType]) {
     int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-    [(IFTreeMark*)[[document marks] objectAtIndex:markIndex] unset];
+    [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
   } else if ([types containsObject:IFTreeNodeArrayPboardType]) {
     NSArray* nodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
-    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]];
+    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]] transformingMarks:allMarks];
   }
 }
 
@@ -632,7 +562,7 @@ static enum {
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
 {
-  if ([[document cursorMark] isSet])
+  if ([[cursors editMark] isSet])
     [[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] deactivate];
 
   NSArray* types = [[sender draggingPasteboard] types];
@@ -725,17 +655,17 @@ static enum {
         } else {
           NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
           if ([document canReplaceNode:targetNode usingNode:draggedMacro])
-            [document replaceNode:targetNode usingNode:draggedMacro];
+            [document replaceNode:targetNode usingNode:draggedMacro transformingMarks:allMarks];
           else
             return NO;
         }
         if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
-          [document deleteContiguousNodes:draggedNodes];
+          [document deleteContiguousNodes:draggedNodes transformingMarks:allMarks];
         return YES;        
       } else if ((operation & NSDragOperationLink) != 0) {
         // Link: create node alias
         if ([draggedNodes count] == 1 && [[targetNode parents] count] == 0) {
-          [document replaceNode:targetNode usingNode:[IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]]];
+          [document replaceNode:targetNode usingNode:[IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]] transformingMarks:allMarks];
           return YES;
         } else
           return NO;
@@ -760,7 +690,7 @@ static enum {
         IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
-        [document replaceNode:targetNode usingNode:[loadNode cloneNode]];
+        [document replaceNode:targetNode usingNode:[loadNode cloneNode] transformingMarks:allMarks];
         return YES;
       } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
         // Change "fileName" entry in environment to the dropped file name.
@@ -774,7 +704,7 @@ static enum {
       if (targetElement == nil)
         return NO;
       int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-      [(IFTreeMark*)[[document marks] objectAtIndex:markIndex] setNode:[targetElement node]];
+      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:[targetElement node]];
       return YES;
     }
 
@@ -877,6 +807,26 @@ static enum {
   return copiedNode;
 }
 
+#pragma mark View locking
+
+- (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
+{
+  if (newUnreachableNodes == unreachableNodes)
+    return;
+  [unreachableNodes release];
+  unreachableNodes = [newUnreachableNodes retain];
+}
+
+- (void)updateUnreachableNodes;
+{
+  if ([cursors isViewLocked]) {
+    NSMutableSet* unreachable = [NSMutableSet setWithSet:[document allNodes]];
+    [unreachable minusSet:[document ancestorsOfNode:[[cursors viewMark] node]]];
+    [self setUnreachableNodes:unreachable];
+  } else
+    [self setUnreachableNodes:[NSSet set]];
+}
+
 #pragma mark Selection
 
 - (void)clearSelectedNodes;
@@ -923,12 +873,12 @@ static enum {
     return;
 
   [self clearSelectedNodes];
-  [[document cursorMark] setNode:newCursorNode];  
+  [cursors moveToNode:newCursorNode];
 }
 
 - (IFTreeNode*)cursorNode;
 {
-  return [[document cursorMark] node];
+  return [[cursors editMark] node];
 }
 
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
@@ -1001,7 +951,7 @@ static enum {
     case IFLayoutLayerSelection:
       return [layoutStrategy layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     case IFLayoutLayerMarks:
-      return [layoutStrategy layoutMarks:[document marks] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
+      return [layoutStrategy layoutMarks:marks forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
     default:
       NSAssert(NO, @"unexpected layer");
       return nil;

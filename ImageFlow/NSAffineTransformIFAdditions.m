@@ -10,6 +10,12 @@
 
 @implementation NSAffineTransform (NSAffineTransformIFAdditions)
 
+- (void)setToIdentity;
+{
+  NSAffineTransformStruct ts = { 1, 0, 1, 0, 0, 0 };
+  [self setTransformStruct:ts];
+}
+
 - (NSRect)transformRect:(NSRect)rect;
 {
   NSAffineTransformStruct m = [self transformStruct];

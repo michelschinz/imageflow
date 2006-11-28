@@ -17,9 +17,4 @@
   return [NSString stringWithFormat:@"blur (%.1f gaussian)", [(NSNumber*)[env valueForKey:@"radius"] floatValue]];
 }
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
-{
-  return [NSAffineTransform transform];
-}
-
 @end

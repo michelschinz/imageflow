@@ -132,6 +132,11 @@ typedef enum {
   return YES;
 }
 
+- (BOOL)acceptsFirstMouse:(NSEvent*)event;
+{
+  return YES;
+}
+
 #pragma mark event handling
 
 - (void)mouseDown:(NSEvent*)event;

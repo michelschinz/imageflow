@@ -49,9 +49,4 @@
     return originalExpression;
 }
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
-{
-  return [NSAffineTransform transform];
-}
-
 @end

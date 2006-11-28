@@ -42,6 +42,14 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 static IFDocumentTemplateManager* templateManager;
 
++ (void)initialize;
+{
+  if (self != [IFDocument class])
+    return; // avoid repeated initialisation
+
+  [self setKeys:[NSArray arrayWithObjects:@"canvasMinX",@"canvasMinY",@"canvasWidth",@"canvasHeight",nil] triggerChangeNotificationsForDependentKey:@"canvasBounds"];
+}
+
 + (IFDocumentTemplateManager*)documentTemplateManager;
 {
   if (templateManager == nil)
@@ -52,21 +60,7 @@ static IFDocumentTemplateManager* templateManager;
 - (id)init 
 {
   if (![super init]) return nil;
-//  evaluator = [IFExpressionEvaluatorCI new];
   evaluator = [IFExpressionEvaluator new];
-
-  marks = [[NSArray alloc] initWithObjects:
-    [IFTreeMark markWithTag:@"c"],
-    [IFTreeMark markWithTag:@"1"],
-    [IFTreeMark markWithTag:@"2"],
-    [IFTreeMark markWithTag:@"3"],
-    [IFTreeMark markWithTag:@"4"],
-    [IFTreeMark markWithTag:@"5"],
-    [IFTreeMark markWithTag:@"6"],
-    [IFTreeMark markWithTag:@"7"],
-    [IFTreeMark markWithTag:@"8"],
-    [IFTreeMark markWithTag:@"9"],
-    nil];
 
   fakeRoot = [[IFTreeNode nodeWithFilter:nil] retain];
   [self ensureGhostNodes];
@@ -85,27 +79,21 @@ static IFDocumentTemplateManager* templateManager;
 {
   [self stopObservingTree:fakeRoot];
   OBJC_RELEASE(fakeRoot);
-  OBJC_RELEASE(marks);
 
   OBJC_RELEASE(workingSpaceProfile);
   
-  if (documentDescription != nil) {
-    OBJC_RELEASE(documentDescription);
-  }
-  if (authorName != nil) {
-    OBJC_RELEASE(authorName);
-  }
-  if (title != nil) {
-    OBJC_RELEASE(title);
-  }
+  OBJC_RELEASE(documentDescription);
+  OBJC_RELEASE(authorName);
+  OBJC_RELEASE(title);
   
   OBJC_RELEASE(evaluator);
   
   [super dealloc];
 }
 
--(void)makeWindowControllers {
-  [self addWindowController:[IFTreeViewWindowController new]];
+- (void)makeWindowControllers;
+{
+  [self addWindowController:[[[IFTreeViewWindowController alloc] init] autorelease]];
 }
 
 - (IFExpressionEvaluator*)evaluator;
@@ -116,16 +104,6 @@ static IFDocumentTemplateManager* templateManager;
 - (NSArray*)roots;
 {
   return [fakeRoot parents];
-}
-
-- (NSArray*)marks;
-{
-  return marks;
-}
-
-- (IFTreeMark*)cursorMark;
-{
-  return [[self marks] objectAtIndex:0];
 }
 
 #pragma mark meta-data
@@ -322,7 +300,7 @@ static IFDocumentTemplateManager* templateManager;
   return [replacement acceptsParents:parentsCount+ghostsToAdd] && [replacement acceptsChildren:([node child] == fakeRoot ? 0 : 1)];    
 }
 
-- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
+- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 {
   if (![self canReplaceNode:node usingNode:replacement]) {
     NSBeep();
@@ -339,13 +317,13 @@ static IFDocumentTemplateManager* templateManager;
   if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
     IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
     if ([macroReplacement inlineOnInsertion])
-      [self inlineMacroNode:macroReplacement];
+      [self inlineMacroNode:macroReplacement transformingMarks:marks];
   }
   [self ensureGhostNodes];
 }
 
 // private
-- (void)deleteSingleNode:(IFTreeNode*)node;
+- (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
   NSArray* parents = [node parents];
   IFTreeNode* child = [node child];
@@ -360,8 +338,7 @@ static IFDocumentTemplateManager* templateManager;
     } break;
     case 1: {
       IFTreeNode* singleParent = [parents objectAtIndex:0];
-      [[self cursorMark] setNode:singleParent ifCurrentNodeIs:node];
-      [[marks do] setNode:nil ifCurrentNodeIs:node];
+      [[marks do] setNode:singleParent ifCurrentNodeIs:node];
       [node replaceObjectInParentsAtIndex:0 withObject:ghost];
       [child replaceObjectInParentsAtIndex:nodeIndex withObject:singleParent];
     } break;
@@ -372,17 +349,17 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
-- (void)deleteNode:(IFTreeNode*)node;
+- (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
-  [self deleteContiguousNodes:[NSSet setWithObject:node]];
+  [self deleteContiguousNodes:[NSSet setWithObject:node] transformingMarks:marks];
 }
 
-- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
+- (void)deleteContiguousNodes:(NSSet*)contiguousNodes transformingMarks:(NSArray*)marks;
 {
   // Delete aliases of nodes we're about to delete
   NSMutableSet* aliases = [NSMutableSet setWithSet:[self aliasesForNodes:contiguousNodes]];
   [aliases minusSet:contiguousNodes];
-  [[self do] deleteSingleNode:[aliases each]];
+  [[self do] deleteSingleNode:[aliases each] transformingMarks:marks];
 
   // Delete the nodes themselves
   IFTreeNode* nodeToDelete;
@@ -392,7 +369,7 @@ static IFDocumentTemplateManager* templateManager;
     nodeToDelete = macroNode;
   } else
     nodeToDelete = [contiguousNodes anyObject];
-  [self deleteSingleNode:nodeToDelete];
+  [self deleteSingleNode:nodeToDelete transformingMarks:marks];
 }
 
 static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* paramsCounter)
@@ -437,6 +414,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
   }
 }
 
+// TODO handle marks
 - (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
 {
   IFTreeNode* root = rootOf(nodes);
@@ -464,7 +442,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   }
 }
 
-- (void)inlineMacroNode:(IFTreeNodeMacro*)macroNode;
+- (void)inlineMacroNode:(IFTreeNodeMacro*)macroNode transformingMarks:(NSArray*)marks;
 {
   // Detach all parents of macro node
   NSMutableArray* detachedMacroParents = [NSMutableArray array];
@@ -632,8 +610,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   // Destroy all current contents
   while ([[fakeRoot parents] count] > 0)
     [fakeRoot removeObjectFromParentsAtIndex:0];
-  for (int i = 0; i < [marks count]; ++i)
-    [[marks objectAtIndex:i] unset];
 
   // Copy everything from other document
   [self setAuthorName:[other authorName]];

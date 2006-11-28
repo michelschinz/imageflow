@@ -14,12 +14,13 @@
 @implementation IFFilter
 
 typedef enum {
-  IFDelegateHasLabelWithEnvironment   = (1 << 0),
-  IFDelegateHasToolTipWithEnvironment = (1 << 1),
-  IFDelegateSupportsExportation       = (1 << 2),
-  IFDelegateHasEditingAnnotations     = (1 << 3),
-  IFDelegateHasVariantNamesForViewing = (1 << 4),
-  IFDelegateHasVariantNamesForEditing = (1 << 5),
+  IFDelegateHasLabelWithEnvironment      = (1 << 0),
+  IFDelegateHasToolTipWithEnvironment    = (1 << 1),
+  IFDelegateSupportsExportation          = (1 << 2),
+  IFDelegateHasEditingAnnotations        = (1 << 3),
+  IFDelegateHasVariantNamesForViewing    = (1 << 4),
+  IFDelegateHasVariantNamesForEditing    = (1 << 5),
+  IFDelegateHasTransformForParentAtIndex = (1 << 6),
 } IFFilterDelegateCapabilities;
 
 static NSArray* allFilters = nil;
@@ -77,7 +78,8 @@ static NSDictionary* allFiltersByName;
     | ([delegate respondsToSelector:@selector(exporterKind:)] ? IFDelegateSupportsExportation : 0)
     | ([delegate respondsToSelector:@selector(editingAnnotationsForNode:view:)] ? IFDelegateHasEditingAnnotations : 0)
     | ([delegate respondsToSelector:@selector(variantNamesForViewing)] ? IFDelegateHasVariantNamesForViewing : 0)
-    | ([delegate respondsToSelector:@selector(variantNamesForEditing)] ? IFDelegateHasVariantNamesForEditing : 0);
+    | ([delegate respondsToSelector:@selector(variantNamesForEditing)] ? IFDelegateHasVariantNamesForEditing : 0)
+    | ([delegate respondsToSelector:@selector(transformForParentAtIndex:withEnvironment:)] ? IFDelegateHasTransformForParentAtIndex : 0);    
 
   return self;
 }
@@ -183,7 +185,9 @@ static NSDictionary* allFiltersByName;
 
 - (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
 {
-  return [delegate transformForParentAtIndex:index withEnvironment:env];
+  return (delegateCapabilities & IFDelegateHasTransformForParentAtIndex)
+  ? [delegate transformForParentAtIndex:index withEnvironment:env]
+  : [NSAffineTransform transform];
 }
 
 - (NSString*)exporterKind;

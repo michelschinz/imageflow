@@ -17,9 +17,4 @@
   return [NSString stringWithFormat:@"threshold %.2f", [(NSNumber*)[env valueForKey:@"threshold"] floatValue]];
 }
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
-{
-  return [NSAffineTransform transform];
-}
-
 @end
