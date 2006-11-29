@@ -58,7 +58,7 @@ static CIKernel *circleGeneratorKernel = nil;
   float r = [inputRadius floatValue];
   CIFilterShape* dod = [CIFilterShape shapeWithRect:CGRectMake(cx - r, cy - r, 2.*r, 2.*r)];
   return [self apply:circleGeneratorKernel
-           arguments:[NSArray arrayWithObjects:inputCenter,inputRadius,inputColor,nil]
+           arguments:[NSArray arrayWithObjects:inputCenter,[NSNumber numberWithFloat:r*r],inputColor,nil]
              options:[NSDictionary dictionaryWithObjectsAndKeys:
                dod, kCIApplyOptionDefinition,
                nil]];
