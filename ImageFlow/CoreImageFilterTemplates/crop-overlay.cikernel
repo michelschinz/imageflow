@@ -4,7 +4,7 @@ kernel vec4 crop_overlay(sampler image, vec4 r)
 {
   vec2 pos = destCoord();
   vec4 pix = sample(image, samplerCoord(image));
-  return all(bvec4(pos.x > r.x, pos.x < r.x+r.z, pos.y > r.y, pos.y < r.y+r.w))
+  return all(bvec4(pos.x > r.x, pos.x < r.z, pos.y > r.y, pos.y < r.w))
     ? pix
     : vec4(pix.r*0.1,pix.g*0.1,pix.b*0.1,pix.a);
 }

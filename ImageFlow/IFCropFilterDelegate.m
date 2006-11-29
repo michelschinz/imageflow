@@ -40,12 +40,11 @@
 {
   NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: %@", variantName);
   
-  if ([originalExpression isKindOfClass:[IFOperatorExpression class]]) {
-    IFOperatorExpression* originalOpExpression = (IFOperatorExpression*)originalExpression;
-    NSAssert([originalOpExpression operator]  == [IFOperator operatorForName:@"crop"], @"unexpected operator");
+  if ([originalExpression isKindOfClass:[IFOperatorExpression class]]
+      && [(IFOperatorExpression*)originalExpression operator]  == [IFOperator operatorForName:@"crop"])
     return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"crop-overlay"]
-                                               operands:[originalOpExpression operands]];
-  } else
+                                               operands:[(IFOperatorExpression*)originalExpression operands]];
+  else
     return originalExpression;
 }
 

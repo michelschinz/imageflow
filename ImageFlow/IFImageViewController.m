@@ -291,7 +291,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   IFFilter* filter = [[node filter] filter];
   IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
-    expr = [filter variantNamed:[self activeVariant] ofExpression:expression];
+    expr = [filter variantNamed:[self activeVariant] ofExpression:expr];
   [self setExpression:expr];
 }
 

@@ -48,13 +48,18 @@ static CIKernel *cropImagePlusMaskKernel = nil;
 - (CIImage*)outputImage;
 {
   CISampler* src = [CISampler samplerWithImage:inputImage];
-  return [self apply:cropImagePlusMaskKernel,src,inputRectangle,kCIApplyOptionDefinition,[src definition],nil];
+  CIVector* inputRectangleBounds = [CIVector vectorWithX:[inputRectangle X]
+                                                       Y:[inputRectangle Y]
+                                                       Z:[inputRectangle Z] + [inputRectangle X]
+                                                       W:[inputRectangle W] + [inputRectangle Y]];
+  return [self apply:cropImagePlusMaskKernel
+           arguments:[NSArray arrayWithObjects:src,inputRectangleBounds,nil]
+             options:[NSDictionary dictionaryWithObject:[src definition] forKey:kCIApplyOptionDefinition]];
 }
 
 + (CIFilter*)filterWithName:(NSString*)name;
 {
   return [[[self alloc] init] autorelease];
 }
-
 
 @end
