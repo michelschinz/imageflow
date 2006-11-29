@@ -8,7 +8,6 @@
 
 #import "IFImageInspectorWindowController.h"
 #import "IFDocument.h"
-#import "IFFilterController.h"
 #import "IFAnnotation.h"
 #import "IFErrorConstantExpression.h"
 #import "IFAppController.h"

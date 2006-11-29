@@ -8,10 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilterController.h"
-
 @interface IFFileSinkController : NSObject {
-  IBOutlet IFFilterController* filterController;
+  IBOutlet NSObjectController* filterController;
   IBOutlet NSArrayController* fileTypesController;
   int fileTypeIndex;
   int optionTabIndex;

@@ -8,10 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilterController.h"
-
 @interface IFGhostFilterController : NSObject {
-  IBOutlet IFFilterController* filterController;
+  IBOutlet NSObjectController* filterController;
   NSArrayController* arrayController;
 }
 

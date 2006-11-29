@@ -8,10 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilterController.h"
-
 @interface IFFileSourceController : NSObject {
-  IBOutlet IFFilterController* filterController;
+  IBOutlet NSObjectController* filterController;
   IBOutlet NSArrayController* profilesController;
   NSString* selectedProfileName;
   int resolutionTag;

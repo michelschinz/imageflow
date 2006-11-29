@@ -17,20 +17,20 @@
 
 - (void)awakeFromNib;
 {
-  [filterController addObserver:self forKeyPath:@"configuredFilter" options:0 context:nil];
-  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController configuredFilter]]];
+  [filterController addObserver:self forKeyPath:@"content" options:0 context:nil];
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController content]]];
 }
 
 - (void) dealloc;
 {
   OBJC_RELEASE(arrayController);
-  [filterController removeObserver:self forKeyPath:@"configuredFilter"];
+  [filterController removeObserver:self forKeyPath:@"content"];
   [super dealloc];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 {
-  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController configuredFilter]]];
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController content]]];
 }
 
 - (NSArrayController*)arrayController;

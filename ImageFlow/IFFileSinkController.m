@@ -7,7 +7,7 @@
 //
 
 #import "IFFileSinkController.h"
-
+#import "IFConfiguredFilter.h"
 
 @implementation IFFileSinkController
 
@@ -44,18 +44,18 @@ static NSDictionary* fileTypesOptions = nil;
 - (void)awakeFromNib;
 {
   [fileTypesController setContent:fileTypesNames];
-  [filterController addObserver:self forKeyPath:@"configuredFilter.environment.fileType" options:0 context:nil];
+  [filterController addObserver:self forKeyPath:@"content.environment.fileType" options:0 context:nil];
 }
 
 - (void) dealloc;
 {
-  [filterController removeObserver:self forKeyPath:@"configuredFilter.environment.fileType"];
+  [filterController removeObserver:self forKeyPath:@"content.environment.fileType"];
   [super dealloc];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  IFEnvironment* env = [[filterController configuredFilter] environment];
+  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"fileTypeIndex"];
   fileTypeIndex = [fileTypes indexOfObject:fileType];
@@ -75,7 +75,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)setFileTypeIndex:(int)newIndex;
 {
-  [[[filterController configuredFilter] environment] setValue:[fileTypes objectAtIndex:newIndex] forKey:@"fileType"];
+  [[[filterController content] environment] setValue:[fileTypes objectAtIndex:newIndex] forKey:@"fileType"];
 }
 
 - (int)optionTabIndex;
@@ -85,7 +85,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)updateOptionTabIndex;
 {
-  IFEnvironment* env = [[filterController configuredFilter] environment];
+  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"optionTabIndex"];
   NSNumber* boxedOptionTabIndex = [fileTypesOptions objectForKey:fileType];
@@ -95,7 +95,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (IBAction)browseFile:(id)sender;
 {
-  IFEnvironment* env = [[filterController configuredFilter] environment];
+  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
 
   NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
   NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];

@@ -8,10 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilterController.h"
-
 @interface IFPrintSinkController : NSObject {
-  IBOutlet IFFilterController* filterController;
+  IBOutlet NSObjectController* filterController;
   IBOutlet NSArrayController* printersArrayController;
   IBOutlet NSArrayController* paperSizeArrayController;
 }

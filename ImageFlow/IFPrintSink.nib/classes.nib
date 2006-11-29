@@ -12,7 +12,7 @@
             CLASS = IFPrintSinkController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                filterController = IFFilterController; 
+                filterController = NSObjectController; 
                 paperSizeArrayController = NSArrayController; 
                 printersArrayController = NSArrayController; 
             }; 

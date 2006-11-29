@@ -12,7 +12,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 fileTypesController = NSArrayController; 
-                filterController = IFFilterController; 
+                filterController = NSObjectController; 
             }; 
             SUPERCLASS = NSObject; 
         }, 

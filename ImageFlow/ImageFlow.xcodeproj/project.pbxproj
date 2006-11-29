@@ -143,7 +143,6 @@
 		FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */; };
 		FAE4C335092DAF71003A2555 /* IFSetAlphaCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */; };
 		FAE54A93090CAAC5000DC147 /* Filters in Resources */ = {isa = PBXBuildFile; fileRef = FAE54A89090CAAC5000DC147 /* Filters */; };
-		FAE54C60090CCCAE000DC147 /* IFFilterController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE54C5E090CCCAE000DC147 /* IFFilterController.m */; };
 		FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE54C76090CD7B1000DC147 /* IFFileSourceController.m */; };
 		FAE54F74090D1400000DC147 /* IFGhostFilterController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE54F72090D1400000DC147 /* IFGhostFilterController.m */; };
 		FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A705508DE995F00397488 /* IFHistogramData.m */; };
@@ -462,8 +461,6 @@
 		FAE4C332092DAF71003A2555 /* IFSetAlphaCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSetAlphaCIFilter.h; sourceTree = "<group>"; };
 		FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSetAlphaCIFilter.m; sourceTree = "<group>"; };
 		FAE54A89090CAAC5000DC147 /* Filters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Filters; sourceTree = "<group>"; };
-		FAE54C5D090CCCAE000DC147 /* IFFilterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFilterController.h; sourceTree = "<group>"; };
-		FAE54C5E090CCCAE000DC147 /* IFFilterController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFilterController.m; sourceTree = "<group>"; };
 		FAE54C75090CD7B1000DC147 /* IFFileSourceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileSourceController.h; sourceTree = "<group>"; };
 		FAE54C76090CD7B1000DC147 /* IFFileSourceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileSourceController.m; sourceTree = "<group>"; };
 		FAE54F71090D1400000DC147 /* IFGhostFilterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGhostFilterController.h; sourceTree = "<group>"; };
@@ -1392,8 +1389,6 @@
 				FA21BC2008683CA70019D1B7 /* IFAppController.m */,
 				FAA2AF2A08FFA1750055AFDD /* IFSavePanelController.h */,
 				FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */,
-				FAE54C5D090CCCAE000DC147 /* IFFilterController.h */,
-				FAE54C5E090CCCAE000DC147 /* IFFilterController.m */,
 				FAF7F1120B088DD500BF6B7A /* View controllers */,
 				FAF7F1100B088D8F00BF6B7A /* Window controllers */,
 				FAF7F1110B088DBB00BF6B7A /* Value transformers */,
@@ -1570,7 +1565,6 @@
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
 				FAAF1034090A5ADD00479538 /* IFFilter.m in Sources */,
 				FAAF1040090A7A5900479538 /* IFConfiguredFilter.m in Sources */,
-				FAE54C60090CCCAE000DC147 /* IFFilterController.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
 				FAE54F74090D1400000DC147 /* IFGhostFilterController.m in Sources */,
 				FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */,

@@ -7,11 +7,10 @@
 //
 
 #import "IFFilterSettingsViewController.h"
-#import "IFFilterController.h"
 
 @interface IFFilterSettingsViewController (Private)
 - (void)updateSettingsView;
-- (IFFilterController*)filterControllerForName:(NSString*)filterName;
+- (NSObjectController*)filterControllerForName:(NSString*)filterName;
 @end
 
 @implementation IFFilterSettingsViewController
@@ -93,8 +92,8 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   IFFilter* filter = [confFilter filter];
   [self setFilterName:[filter name]];
   
-  IFFilterController* filterController = [self filterControllerForName:[filter name]];
-  [filterController setConfiguredFilter:confFilter];
+  NSObjectController* filterController = [self filterControllerForName:[filter name]];
+  [filterController setContent:confFilter];
   
   // Select appropriate tab
   NSNumber* tabIndex = [tabIndices objectForKey:[filter name]];
@@ -124,11 +123,11 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   }
 }
 
-- (IFFilterController*)filterControllerForName:(NSString*)name;
+- (NSObjectController*)filterControllerForName:(NSString*)name;
 {
-  IFFilterController* controller = [filterControllers objectForKey:name];
+  NSObjectController* controller = [filterControllers objectForKey:name];
   if (controller == nil) {
-    controller = [IFFilterController new];
+    controller = [NSObjectController new];
     [filterControllers setObject:controller forKey:name];
     [controller release];
   }
