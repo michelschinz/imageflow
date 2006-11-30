@@ -9,6 +9,7 @@
 #import "IFExpressionEvaluator.h"
 
 #import <caml/memory.h>
+#import <caml/alloc.h>
 #import <caml/callback.h>
 
 @interface IFExpressionEvaluator (Private)
@@ -98,6 +99,39 @@ static void camlEval(value* closurePtr, value cache, IFExpression* expression, I
     closurePtr = caml_named_value("Optevaluator.eval_as_image");
   IFConstantExpression* result = nil;
   camlEval(closurePtr, cache, expression, &result);
+  return result;
+}
+
+static value camlRect(NSRect r) {
+  CAMLparam0();
+  CAMLlocalN(args, 4);
+  static value* rectMakeClosure = NULL;
+  if (rectMakeClosure == NULL)
+    rectMakeClosure = caml_named_value("Rect.make");
+  args[0] = caml_copy_double(NSMinX(r));
+  args[1] = caml_copy_double(NSMinY(r));
+  args[2] = caml_copy_double(NSWidth(r));
+  args[3] = caml_copy_double(NSHeight(r));
+  CAMLreturn(caml_callbackN(*rectMakeClosure, 4, args));
+}  
+
+static void camlEvalAsMaskedImage(value cache, IFExpression* expression, NSRect cutoutRect, IFConstantExpression** result) {
+  CAMLparam1(cache);
+  CAMLlocal3(camlExpr, camlCutoutRect, camlRes);
+  static value* evalClosure = NULL;
+  if (evalClosure == NULL)
+    evalClosure = caml_named_value("Optevaluator.eval_as_masked_image");
+  camlExpr = [expression asCaml];
+  camlCutoutRect = camlRect(cutoutRect);
+  camlRes = caml_callback3(*evalClosure, cache, camlExpr, camlCutoutRect);
+  *result = [IFConstantExpression expressionWithCamlValue:camlRes];
+  CAMLreturn0;
+}
+
+- (IFConstantExpression*)evaluateExpressionAsMaskedImage:(IFExpression*)expression cutout:(NSRect)cutoutRect;
+{
+  IFConstantExpression* result = nil;
+  camlEvalAsMaskedImage(cache, expression, cutoutRect, &result);
   return result;
 }
 

@@ -27,6 +27,7 @@
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 - (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
+- (IFConstantExpression*)evaluateExpressionAsMaskedImage:(IFExpression*)expression cutout:(NSRect)cutoutRect;
 - (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
 
 @end

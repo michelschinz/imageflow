@@ -27,6 +27,7 @@
 #import "IFMaskToImageCIFilter.h"
 #import "IFMaskInvertCIFilter.h"
 #import "IFMaskThresholdCIFilter.h"
+#import "IFRectangularWindowCIFilter.h"
 
 @interface IFAppController (Private)
 - (void)mainWindowDidChange:(NSNotification*)notification;
@@ -83,7 +84,8 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
   [IFMaskToImageCIFilter class];
   [IFMaskInvertCIFilter class];
   [IFMaskThresholdCIFilter class];
-  
+  [IFRectangularWindowCIFilter class];
+
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFDirectoryManager* dirMgr = [IFDirectoryManager sharedDirectoryManager];
   

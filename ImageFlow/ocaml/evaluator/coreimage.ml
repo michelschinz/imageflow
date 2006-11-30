@@ -134,6 +134,12 @@ let mask_to_image =
 let opacity =
   filter !@"IFSetAlpha" (image !@"inputImage" @@@ number !@"inputAlpha")
 
+let rectangular_window =
+  filter !@"IFRectangularWindow" (image !@"inputImage"
+                                  @@@ color !@"inputMaskColor"
+                                  @@@ rectangle !@"inputCutoutRectangle"
+                                  @@@ number !@"inputCutoutMargin")
+
 let single_color =
   filter !@"IFSingleColor" (image !@ "inputImage" @@@ color !@"inputColor")
 

@@ -1,0 +1,25 @@
+// -*- C -*-
+
+// Alpha is a function with the following shape:
+//
+// 1      ______
+//       /      \
+// 0 ___/        \____
+//      a b    c d
+
+float alpha(float x, float a, float b, float c, float d) {
+  return (x < a) ? 0.0
+    : (x < b) ? (x-a)/(b-a)
+    : (x < c) ? 1.0
+    : (x < d) ? 1.0 - (x-c)/(d-c)
+    : 0.0;
+}
+
+kernel vec4 rectWindow(sampler image, __color maskColor, vec4 rOut, vec4 rIn)
+{
+  vec2 p = destCoord();
+  float ax = alpha(p.x, rOut.x, rIn.x, rIn.z, rOut.z);
+  float ay = alpha(p.y, rOut.y, rIn.y, rIn.w, rOut.w);
+  float a = ax*ay;
+  return (1.0 - a) * maskColor + a * sample(image, samplerCoord(image));
+}

@@ -35,6 +35,7 @@ val mask : Image.t -> Image.t -> [ `CIFilter ] objc
 val mask_overlay : Image.t -> Image.t -> Color.t -> [ `CIFilter ] objc
 val mask_to_image : Image.t -> [ `CIFilter ] objc
 val opacity : Image.t -> float -> [ `CIFilter ] objc
+val rectangular_window : Image.t -> Color.t -> Rect.t -> float -> [ `CIFilter ] objc
 val single_color : Image.t -> Color.t -> [ `CIFilter ] objc
 val threshold : Image.t -> float -> [ `CIFilter ] objc
 val threshold_mask : Image.t -> float -> [ `CIFilter ] objc

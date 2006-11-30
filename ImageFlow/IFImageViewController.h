@@ -37,6 +37,10 @@ typedef enum {
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
 
+  NSRect canvasBounds;
+  float marginSize;
+  IFDirection marginDirection;
+  
   NSObject<IFFilterDelegate>* filterDelegate;
   unsigned filterDelegateCapabilities;
 }
@@ -53,6 +57,10 @@ typedef enum {
 - (IFImageViewMode)mode;
 
 - (void)setCanvasBounds:(NSRect)newCanvasBounds;
+- (void)setMarginSize:(float)newMarginSize;
+- (float)marginSize;
+- (void)setMarginDirection:(IFDirection)newDirection;
+- (IFDirection)marginDirection;
 
 - (NSString*)errorMessage;
 

@@ -51,6 +51,8 @@
 		FA256AD00AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256ACE0AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m */; };
 		FA256AD40AE391D600077863 /* IFChannelToMask.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA256AD30AE391D600077863 /* IFChannelToMask.nib */; };
 		FA256BF00AE3B85000077863 /* IFMaskOverlayCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA256BEE0AE3B85000077863 /* IFMaskOverlayCIFilter.m */; };
+		FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */; };
+		FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */; };
 		FA2C0ABD08FBCF11009FE5ED /* RBSplitView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
 		FA2C0AF608FBCF25009FE5ED /* RBSplitView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
 		FA2D38FD094D70AB0068F20A /* IFFileSourceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2D38FB094D70AB0068F20A /* IFFileSourceDelegate.m */; };
@@ -310,6 +312,9 @@
 		FA256AD30AE391D600077863 /* IFChannelToMask.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFChannelToMask.nib; sourceTree = "<group>"; };
 		FA256BED0AE3B85000077863 /* IFMaskOverlayCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskOverlayCIFilter.h; sourceTree = "<group>"; };
 		FA256BEE0AE3B85000077863 /* IFMaskOverlayCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskOverlayCIFilter.m; sourceTree = "<group>"; };
+		FA29D2EF0B1EB64C004AE43E /* IFRectangularWindowCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRectangularWindowCIFilter.h; sourceTree = "<group>"; };
+		FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRectangularWindowCIFilter.m; sourceTree = "<group>"; };
+		FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "rectangular-window.cikernel"; sourceTree = "<group>"; };
 		FA2A705508DE995F00397488 /* IFHistogramData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFHistogramData.m; sourceTree = "<group>"; };
 		FA2A705708DE997300397488 /* IFHistogramData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramData.h; sourceTree = "<group>"; };
 		FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RBSplitView.framework; path = Frameworks/RBSplitView.framework; sourceTree = "third-party-cocoa-libraries"; };
@@ -886,6 +891,15 @@
 			name = "Mask to image";
 			sourceTree = "<group>";
 		};
+		FA29D2EE0B1EB5FA004AE43E /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				FA29D2EF0B1EB64C004AE43E /* IFRectangularWindowCIFilter.h */,
+				FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */,
+			);
+			name = Window;
+			sourceTree = "<group>";
+		};
 		FA2D39E1094D777B0068F20A /* Gaussian blur */ = {
 			isa = PBXGroup;
 			children = (
@@ -1273,6 +1287,7 @@
 		FAF97C2D08EBF27200FC2B61 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				FA29D2EE0B1EB5FA004AE43E /* Window */,
 				FAE54F75090D1406000DC147 /* Ghost */,
 				FAF2532A090F4A15000AA819 /* Crop */,
 				FA2D39E1094D777B0068F20A /* Gaussian blur */,
@@ -1311,6 +1326,7 @@
 		FAFC168D092C67BB0032A19F /* Core Image Templates */ = {
 			isa = PBXGroup;
 			children = (
+				FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */,
 				FAEF26990AE7947100BD8954 /* mask-invert.cikernel */,
 				FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */,
 				FA256A8F0AE379F600077863 /* channel-to-mask.ci */,
@@ -1516,6 +1532,7 @@
 				FAF7F3770B08DA2300BF6B7A /* IFImageWindow.nib in Resources */,
 				FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */,
 				FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */,
+				FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1652,6 +1669,7 @@
 				FAF90B710B09958400AC8472 /* IFViewController.m in Sources */,
 				FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */,
 				FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */,
+				FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

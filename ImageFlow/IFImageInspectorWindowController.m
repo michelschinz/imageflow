@@ -46,10 +46,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
                                            selector:@selector(documentDidChange:)
                                                name:IFCurrentDocumentDidChangeNotification
                                              object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(hudWindowDidResize:)
-                                               name:NSWindowDidResizeNotification
-                                             object:[hudWindowController window]];
   return self;
 }
 
@@ -127,12 +123,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   IFDocument* newDocument = [[notification userInfo] objectForKey:IFNewDocumentKey];
   if (newDocument == (id)[NSNull null]) newDocument = nil;
   [self setCurrentDocument:newDocument];
-}
-
-- (void)hudWindowDidResize:(NSNotification*)notification;
-{
-  NSWindow* window = [notification object];
-  [[imageViewController imageView] setMarginSize:NSHeight([window frame])]; // TODO use width when necessary
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;

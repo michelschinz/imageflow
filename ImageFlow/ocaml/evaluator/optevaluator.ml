@@ -57,19 +57,44 @@ let eval_extent cache expr =
   | o ->
       failwith ("unexpected result from evaluator: "^(Printer.to_string(o)))
 
-let eval_as_image cache expr =
-  match eval cache expr with
-    Mask m ->
-      eval cache (Op("mask-to-image", [|Mask m|]))
-  | Image i ->
-      let bgd = Op("checkerboard", [| Point Point.zero;
-                                      Color (Color.make 1. 1. 1. 1.);
-                                      Color (Color.make 0.8 0.8 0.8 1.);
-                                      Num 40.0;
-                                      Num 1.0 |])
-      and m = Blendmode.to_int Blendmode.SourceOver in
-      eval cache (Op("blend", [| bgd; Image i; Int m |]))
-  | Error _ as error ->
-      error
-  | other ->
-      failwith ("non-image result from evaluator: "^(Printer.to_string(other)))
+let eval_as_image =
+  let background = Op("checkerboard", [| Point Point.zero;
+                                         Color (Color.make 1. 1. 1. 1.);
+                                         Color (Color.make 0.8 0.8 0.8 1.);
+                                         Num 40.0;
+                                         Num 1.0 |])
+  in fun cache expr ->
+    match eval cache expr with
+      Mask _ as mask ->
+        eval cache (Op("mask-to-image", [| mask |]))
+    | Image _ as image ->
+        eval
+          cache
+          (Op("blend", [| background;
+                          image;
+                          Int (Blendmode.to_int Blendmode.SourceOver) |]))
+    | Error _ as error ->
+        error
+    | other ->
+        failwith ("non-image result from evaluator: "
+                  ^ (Printer.to_string(other)))
+
+let eval_as_masked_image =
+  let mask_cutout_margin = 10.0
+  and mask_color = Color.make 0.5 0.5 0.5 1.0
+  in fun cache expr mask_cutout_bounds ->
+    match eval_as_image cache expr with
+      Image _ as image ->
+        eval
+          cache
+          (Op("rectangular-window",
+              [| image;
+                 Color mask_color;
+                 Rect mask_cutout_bounds;
+                 Num mask_cutout_margin |]))
+    | Error _ as error ->
+        error
+    | other ->
+        failwith ("non-image result from evaluator: "
+                  ^ (Printer.to_string(other)))
+        

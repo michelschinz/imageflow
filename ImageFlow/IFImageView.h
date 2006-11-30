@@ -27,10 +27,6 @@
   IFImage* image;
   NSArray* annotations;
 
-  IFDirection marginDirection;
-  float desiredMarginSize, actualMarginSize;
-  NSColor* marginColor;
-  
   NSObject<IFImageViewDelegate>* delegate;
   unsigned delegateCapabilities;
 }
@@ -40,12 +36,5 @@
 
 - (void)setAnnotations:(NSArray*)newAnnotations;
 - (void)setDelegate:(NSObject<IFImageViewDelegate>*)newDelegate;
-
-- (void)setMarginDirection:(IFDirection)newMarginDirection;
-- (IFDirection)marginDirection;
-- (void)setMarginSize:(float)newMarginSize;
-- (float)marginSize;
-- (void)setMarginColor:(NSColor*)newMarginColor;
-- (NSColor*)marginColor;
 
 @end

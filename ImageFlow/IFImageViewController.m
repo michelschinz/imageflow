@@ -22,6 +22,7 @@ typedef enum {
 - (void)setErrorMessage:(NSString*)newErrorMessage;
 - (void)setViewedNode:(IFTreeNode*)newViewedNode;
 - (void)setExpression:(IFExpression*)newExpression;
+- (void)updateImageViewCanvasBounds;
 - (void)updateExpression;
 - (void)updateAnnotations;
 - (void)updateVariants;
@@ -47,6 +48,9 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   activeVariant = nil;
   cursors = nil;
   viewedNode = nil;
+  canvasBounds = NSZeroRect;
+  marginSize = 200;
+  marginDirection = IFDown;
   return self;
 }
 
@@ -138,7 +142,36 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
 
 - (void)setCanvasBounds:(NSRect)newCanvasBounds;
 {
-  [imageView setCanvasBounds:newCanvasBounds];
+  if (NSEqualRects(newCanvasBounds,canvasBounds))
+    return;
+  canvasBounds = newCanvasBounds;
+  [self updateImageViewCanvasBounds];
+}
+
+- (void)setMarginSize:(float)newMarginSize;
+{
+  if (newMarginSize == marginSize)
+    return;
+  marginSize = newMarginSize;
+  [self updateImageViewCanvasBounds];
+}
+
+- (float)marginSize;
+{
+  return marginSize;
+}
+
+- (void)setMarginDirection:(IFDirection)newMarginDirection;
+{
+  if (newMarginDirection == marginDirection)
+    return;
+  marginDirection = newMarginDirection;
+  [self updateImageViewCanvasBounds];
+}
+
+- (IFDirection)marginDirection;
+{
+  return marginDirection;
 }
 
 - (NSString*)errorMessage;
@@ -269,7 +302,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   [expression release];
   expression = [newExpression retain];
 
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsImage:expression];
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression cutout:canvasBounds];
 
   if ([evaluatedExpr isError]) {
     [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
@@ -283,6 +316,33 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
     [imageOrErrorTabView selectTabViewItemAtIndex:0];
     [self setActiveView:imageView];
   }
+}
+
+- (void)updateImageViewCanvasBounds;
+{
+  NSRect realCanvasBounds = NSInsetRect(canvasBounds,-50,-20);
+  NSRect marginRect = NSZeroRect;
+  switch (marginDirection) {
+    case IFUp:
+      marginRect = NSMakeRect(NSMinX(realCanvasBounds),NSMaxY(realCanvasBounds),NSWidth(realCanvasBounds),marginSize);
+      break;
+    case IFRight:
+      marginRect = NSMakeRect(NSMaxX(realCanvasBounds),NSMinY(realCanvasBounds),marginSize,NSHeight(realCanvasBounds));
+      break;
+    case IFDown:
+      marginRect = NSMakeRect(NSMinX(realCanvasBounds),NSMinY(realCanvasBounds) - marginSize,NSWidth(realCanvasBounds),marginSize);
+      break;
+    case IFLeft:
+      marginRect = NSMakeRect(NSMinX(realCanvasBounds) - marginSize,NSMinY(realCanvasBounds),marginSize,NSHeight(realCanvasBounds));
+      break;
+    default:
+      NSAssert(NO, @"internal error");
+  }
+  [imageView setCanvasBounds:NSUnionRect(realCanvasBounds, marginRect)];
+  
+  // HACK should avoid this, to prevent redrawing of the whole image!
+  [self setExpression:[IFOperatorExpression nop]];
+  [self updateExpression];
 }
 
 - (void)updateExpression;

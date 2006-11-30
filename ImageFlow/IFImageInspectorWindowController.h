@@ -11,6 +11,7 @@
 #import "IFDocument.h"
 #import "IFImageViewController.h"
 #import "IFHUDWindowController.h"
+#import "IFUtilities.h"
 
 @interface IFImageInspectorWindowController : NSWindowController {
   IFDocument* currentDocument;

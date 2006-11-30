@@ -78,6 +78,8 @@ let eval expr =
       Image (Paint.eval_paint b ps)
   | Op("print", _) ->
       Action(Print, execute)
+  | Op("rectangular-window", [|Image i; Color c; Rect r; Num m|]) ->
+      out_image (Coreimage.rectangular_window i c r m)
   | Op("resample", [|Image i; Num f|]) ->
       out_image (Coreimage.affine_transform i (Affinetransform.scale f f))
   | Op("resample", [|Mask m; Num f|]) ->
