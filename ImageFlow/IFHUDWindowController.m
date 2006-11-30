@@ -164,6 +164,8 @@
     ? NSMakePoint(NSMinX([underlyingView visibleRect]),NSMaxY([underlyingView visibleRect]))
     : [underlyingView visibleRect].origin;
   NSPoint screenVisibleOrigin = [underlyingWindow convertBaseToScreen:[underlyingView convertPoint:referenceOrigin toView:nil]];
+  screenVisibleOrigin.x += 1;
+  screenVisibleOrigin.y += 1;
 
   NSRect newFrame = { screenVisibleOrigin, finalSize };
   [[self window] setFrame:newFrame display:YES];

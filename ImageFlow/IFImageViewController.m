@@ -320,7 +320,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
 
 - (void)updateImageViewCanvasBounds;
 {
-  NSRect realCanvasBounds = NSInsetRect(canvasBounds,-50,-20);
+  NSRect realCanvasBounds = NSInsetRect(canvasBounds,-20,-20);
   NSRect marginRect = NSZeroRect;
   switch (marginDirection) {
     case IFUp:

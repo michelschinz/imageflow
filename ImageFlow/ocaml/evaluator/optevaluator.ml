@@ -80,7 +80,7 @@ let eval_as_image =
                   ^ (Printer.to_string(other)))
 
 let eval_as_masked_image =
-  let mask_cutout_margin = 10.0
+  let mask_cutout_margin = 20.0
   and mask_color = Color.make 0.5 0.5 0.5 1.0
   in fun cache expr mask_cutout_bounds ->
     match eval_as_image cache expr with

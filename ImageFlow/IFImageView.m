@@ -29,23 +29,18 @@ typedef enum {
 {
   if (![super initWithFrame:frame])
     return nil;
-  
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
-
   image = nil;
   annotations = nil;
-  
   delegate = nil;
   return self;
 }
 
-- (void) dealloc;
+- (void)dealloc;
 {
   [self setAnnotations:nil];
   [self setImage:nil dirtyRect:NSZeroRect];
-  
   OBJC_RELEASE(grabableViewMixin);
-  
   [super dealloc];
 }
 
@@ -56,7 +51,16 @@ typedef enum {
 
   canvasBounds = newCanvasBounds;
   [self updateBounds];
-  [self setNeedsDisplay:YES]; // TODO refine
+}
+
+- (void)viewDidMoveToSuperview;
+{
+  [[self superview] setAutoresizesSubviews:YES];
+}
+
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
+{
+  [self updateBounds];
 }
 
 - (void)setImage:(IFImage*)newImage dirtyRect:(NSRect)dirtyRect;
@@ -190,15 +194,30 @@ typedef enum {
 
 - (void)updateBounds;
 {
+  NSSize minSize = [[self superview] frame].size;
+  NSSize finalSize = canvasBounds.size;
+  NSPoint finalOrigin = canvasBounds.origin;
+  
+  if (minSize.width > finalSize.width) {
+    finalOrigin.x -= floor((minSize.width - finalSize.width) / 2.0);
+    finalSize.width = minSize.width;
+  }
+  if (minSize.height > finalSize.height) {
+    finalOrigin.x -= floor((minSize.height - finalSize.height) / 2.0);
+    finalSize.height = minSize.height;
+  }
+  
   NSPoint visibleOrigin = [self visibleRect].origin;
-  [self setBoundsOrigin:canvasBounds.origin];
+  [self setBoundsOrigin:finalOrigin];
   NSScrollView* scrollView = [self enclosingScrollView];
   if (scrollView != nil) {    
-    [[scrollView horizontalRulerView] setOriginOffset:-NSMinX(canvasBounds)];
-    [[scrollView verticalRulerView] setOriginOffset:-NSMinY(canvasBounds)];
+    [[scrollView horizontalRulerView] setOriginOffset:-finalOrigin.x];
+    [[scrollView verticalRulerView] setOriginOffset:-finalOrigin.y];
   }
-  [self setFrameSize:canvasBounds.size];
+  [self setFrameSize:finalSize];
   [self scrollPoint:visibleOrigin];
+
+  [self setNeedsDisplay:YES]; // TODO refine
 }
 
 @end
