@@ -12,6 +12,8 @@
 #import "IFExpression.h"
 #import "IFExpressionEvaluator.h"
 #import "IFImage.h"
+#import "IFAnnotationRect.h"
+#import "IFVariable.h"
 #import "IFUtilities.h"
 
 @protocol IFImageViewDelegate
@@ -23,17 +25,18 @@
 @interface IFImageView : NSView {
   IFGrabableViewMixin* grabableViewMixin;
 
-  NSRect canvasBounds;
+  NSRect visibleBounds;
   IFImage* image;
+  IFAnnotationRect* canvasBoundsAnnotation;
   NSArray* annotations;
 
   NSObject<IFImageViewDelegate>* delegate;
   unsigned delegateCapabilities;
 }
 
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+- (void)setVisibleBounds:(NSRect)newVisibleBounds;
+- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
 - (void)setImage:(IFImage*)newImage dirtyRect:(NSRect)dirtyRect;
-
 - (void)setAnnotations:(NSArray*)newAnnotations;
 - (void)setDelegate:(NSObject<IFImageViewDelegate>*)newDelegate;
 

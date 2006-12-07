@@ -8,19 +8,20 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFAnnotationSource.h"
+#import "IFVariable.h"
 
 @interface IFAnnotation : NSObject {
   NSView* view; // not retained
-  IFAnnotationSource* source;
+  IFVariable* source;
   NSAffineTransform* transform;
   NSAffineTransform* inverseTransform;
 }
 
-- (id)initWithView:(NSView*)theView source:(IFAnnotationSource*)theSource;
++ (id)annotationWithView:(NSView*)theView source:(IFVariable*)theSource;
+- (id)initWithView:(NSView*)theView source:(IFVariable*)theSource;
 
 - (NSView*)view;
-- (IFAnnotationSource*)source;
+- (IFVariable*)source;
 
 - (void)setTransform:(NSAffineTransform*)newTransform;
 - (NSAffineTransform*)transform;

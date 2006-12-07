@@ -8,10 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFAnnotationSource.h"
+#import "IFVariable.h"
 #import "IFTreeNode.h"
 
-@interface IFBlendFilterAnnotationSource : IFAnnotationSource {
+@interface IFBlendFilterAnnotationSource : IFVariable {
   IFTreeNode* node;
 }
 

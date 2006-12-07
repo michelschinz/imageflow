@@ -9,7 +9,7 @@
 #import "IFImageView.h"
 #import "IFImageConstantExpression.h"
 #import "IFOperatorExpression.h"
-#import "IFAnnotation.h"
+#import "IFAnnotationRect.h"
 #import "IFCursorRect.h"
 #import "IFUtilities.h"
 
@@ -30,7 +30,9 @@ typedef enum {
   if (![super initWithFrame:frame])
     return nil;
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
+  visibleBounds = NSZeroRect;
   image = nil;
+  canvasBoundsAnnotation = nil;
   annotations = nil;
   delegate = nil;
   return self;
@@ -38,19 +40,31 @@ typedef enum {
 
 - (void)dealloc;
 {
+  delegate = nil;
   [self setAnnotations:nil];
+  OBJC_RELEASE(canvasBoundsAnnotation);
   [self setImage:nil dirtyRect:NSZeroRect];
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
 }
 
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+- (void)setVisibleBounds:(NSRect)newVisibleBounds;
 {
-  if (NSEqualRects(canvasBounds,newCanvasBounds))
+  if (NSEqualRects(newVisibleBounds,visibleBounds))
     return;
-
-  canvasBounds = newCanvasBounds;
+  visibleBounds = newVisibleBounds;
   [self updateBounds];
+}
+
+- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
+{
+  if (newCanvasBounds == [canvasBoundsAnnotation source])
+    return;
+  [canvasBoundsAnnotation release];
+  canvasBoundsAnnotation = [[IFAnnotationRect annotationRectWithView:self source:newCanvasBounds] retain];
+  [canvasBoundsAnnotation setCanBeDragged:NO];
+  [canvasBoundsAnnotation setLineColor:[NSColor redColor]];
+  [canvasBoundsAnnotation setLineWidth:2.0];
 }
 
 - (void)viewDidMoveToSuperview;
@@ -74,10 +88,11 @@ typedef enum {
 
 - (void)setAnnotations:(NSArray*)newAnnotations;
 {
-  if (newAnnotations == annotations)
-    return;
+  if (newAnnotations == nil)
+    newAnnotations = [NSArray array];
+
   [annotations release];
-  annotations = [newAnnotations copy];
+  annotations = [[newAnnotations arrayByAddingObject:canvasBoundsAnnotation] retain];
   
   [self setNeedsDisplay:YES];
   [[self window] invalidateCursorRectsForView:self];
@@ -195,8 +210,8 @@ typedef enum {
 - (void)updateBounds;
 {
   NSSize minSize = [[self superview] frame].size;
-  NSSize finalSize = canvasBounds.size;
-  NSPoint finalOrigin = canvasBounds.origin;
+  NSSize finalSize = visibleBounds.size;
+  NSPoint finalOrigin = visibleBounds.origin;
   
   if (minSize.width > finalSize.width) {
     finalOrigin.x -= floor((minSize.width - finalSize.width) / 2.0);

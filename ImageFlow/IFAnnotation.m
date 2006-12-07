@@ -10,7 +10,12 @@
 
 @implementation IFAnnotation
 
-- (id)initWithView:(NSView*)theView source:(IFAnnotationSource*)theSource;
++ (id)annotationWithView:(NSView*)theView source:(IFVariable*)theSource;
+{
+  return [[[self alloc] initWithView:theView source:theSource] autorelease];
+}
+
+- (id)initWithView:(NSView*)theView source:(IFVariable*)theSource;
 {
   if (![super init])
     return nil;
@@ -37,7 +42,7 @@
   return view;
 }
 
-- (IFAnnotationSource*)source;
+- (IFVariable*)source;
 {
   return source;
 }

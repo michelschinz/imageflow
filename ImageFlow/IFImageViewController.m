@@ -22,7 +22,7 @@ typedef enum {
 - (void)setErrorMessage:(NSString*)newErrorMessage;
 - (void)setViewedNode:(IFTreeNode*)newViewedNode;
 - (void)setExpression:(IFExpression*)newExpression;
-- (void)updateImageViewCanvasBounds;
+- (void)updateImageViewVisibleBounds;
 - (void)updateExpression;
 - (void)updateAnnotations;
 - (void)updateVariants;
@@ -33,6 +33,7 @@ typedef enum {
 
 static NSString* IFViewedExpressionDidChange = @"IFViewedExpressionDidChange";
 static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
+static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (id)init;
 {
@@ -48,7 +49,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   activeVariant = nil;
   cursors = nil;
   viewedNode = nil;
-  canvasBounds = NSZeroRect;
+  canvasBounds = nil;
   marginSize = 200;
   marginDirection = IFDown;
   return self;
@@ -57,6 +58,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
 - (void)dealloc;
 {
   OBJC_RELEASE(viewedNode);
+  [self setCanvasBounds:nil];
   [self setCursorPair:nil];
   OBJC_RELEASE(activeVariant);
   OBJC_RELEASE(variants);
@@ -140,12 +142,23 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   return mode;
 }
 
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
 {
-  if (NSEqualRects(newCanvasBounds,canvasBounds))
+  if (newCanvasBounds == canvasBounds)
     return;
+  
+  if (canvasBounds != nil) {
+    [canvasBounds removeObserver:self forKeyPath:@"value"];
+    [canvasBounds release];
+  }
   canvasBounds = newCanvasBounds;
-  [self updateImageViewCanvasBounds];
+  if (canvasBounds != nil) {
+    [canvasBounds addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
+    [canvasBounds retain];
+  }
+  
+  [imageView setCanvasBounds:canvasBounds];
+  [self updateImageViewVisibleBounds];
 }
 
 - (void)setMarginSize:(float)newMarginSize;
@@ -153,7 +166,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   if (newMarginSize == marginSize)
     return;
   marginSize = newMarginSize;
-  [self updateImageViewCanvasBounds];
+  [self updateImageViewVisibleBounds];
 }
 
 - (float)marginSize;
@@ -166,7 +179,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   if (newMarginDirection == marginDirection)
     return;
   marginDirection = newMarginDirection;
-  [self updateImageViewCanvasBounds];
+  [self updateImageViewVisibleBounds];
 }
 
 - (IFDirection)marginDirection;
@@ -265,6 +278,8 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
          ? IFFilterDelegateHasMouseDragged : 0)
       | ([filterDelegate respondsToSelector:@selector(mouseUp:inView:viewFilterTransform:withEnvironment:)]
          ? IFFilterDelegateHasMouseUp : 0);
+  } else if (context == IFCanvasBoundsDidChange) {
+    [self updateImageViewVisibleBounds];
   } else
     NSAssert1(NO, @"unexpected context %@", context);
 }
@@ -302,7 +317,8 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   [expression release];
   expression = [newExpression retain];
 
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression cutout:canvasBounds];
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression
+                                                                            cutout:[[canvasBounds value] rectValue]];
 
   if ([evaluatedExpr isError]) {
     [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
@@ -318,9 +334,9 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
   }
 }
 
-- (void)updateImageViewCanvasBounds;
+- (void)updateImageViewVisibleBounds;
 {
-  NSRect realCanvasBounds = NSInsetRect(canvasBounds,-20,-20);
+  NSRect realCanvasBounds = NSInsetRect([[canvasBounds value] rectValue],-20,-20);
   NSRect marginRect = NSZeroRect;
   switch (marginDirection) {
     case IFUp:
@@ -338,7 +354,7 @@ static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
     default:
       NSAssert(NO, @"internal error");
   }
-  [imageView setCanvasBounds:NSUnionRect(realCanvasBounds, marginRect)];
+  [imageView setVisibleBounds:NSUnionRect(realCanvasBounds, marginRect)];
   
   // HACK should avoid this, to prevent redrawing of the whole image!
   [self setExpression:[IFOperatorExpression nop]];

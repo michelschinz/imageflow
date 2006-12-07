@@ -37,7 +37,7 @@ typedef enum {
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
 
-  NSRect canvasBounds;
+  IFVariable* canvasBounds;
   float marginSize;
   IFDirection marginDirection;
   
@@ -56,7 +56,7 @@ typedef enum {
 - (void)setMode:(IFImageViewMode)newMode;
 - (IFImageViewMode)mode;
 
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
 - (void)setMarginSize:(float)newMarginSize;
 - (float)marginSize;
 - (void)setMarginDirection:(IFDirection)newDirection;

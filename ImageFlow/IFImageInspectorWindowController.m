@@ -13,6 +13,7 @@
 #import "IFAppController.h"
 #import "NSAffineTransformIFAdditions.h"
 #import "IFTreeViewWindowController.h"
+#import "IFVariableKVO.h"
 
 @interface IFImageInspectorWindowController (Private)
 - (void)setCurrentDocument:(IFDocument*)newDocument;
@@ -22,7 +23,6 @@
 @implementation IFImageInspectorWindowController
 
 static NSString* IFImageViewModeDidChange = @"IFImageViewModeDidChange";
-static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
 
 static NSString* IFToolbarModeItemIdentifier = @"IFToolbarModeItemIdentifier";
@@ -131,8 +131,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     [hudWindowController setUnderlyingView:[imageViewController activeView]];
   } else if (context == IFImageViewModeDidChange) {
     [hudWindowController setVisible:([imageViewController mode] == IFImageViewModeEdit)];
-  } else if (context == IFCanvasBoundsDidChange) {
-    [imageViewController setCanvasBounds:[currentDocument canvasBounds]];
   } else
     NSAssert1(NO, @"unexpected context %@", context);
 }
@@ -214,12 +212,9 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   if (newDocument == currentDocument)
     return;
 
-  if (currentDocument != nil) {
-    [currentDocument removeObserver:self forKeyPath:@"canvasBounds"];
+  if (currentDocument != nil)
     [currentDocument release];
-  }
   if (newDocument != nil) {
-    [newDocument addObserver:self forKeyPath:@"canvasBounds" options:0 context:IFCanvasBoundsDidChange];
     [newDocument retain];
     
     IFExpressionEvaluator* evaluator = [newDocument evaluator];
@@ -230,7 +225,7 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     NSAssert([controllers count] == 1, @"unexpected number of controllers");
     [self setCursorPair:[(IFTreeViewWindowController*)[controllers objectAtIndex:0] cursorPair]];
     
-    [imageViewController setCanvasBounds:[newDocument canvasBounds]];
+    [imageViewController setCanvasBounds:[IFVariableKVO variableWithKVOCompliantObject:newDocument key:@"canvasBounds"]];
   } else {
     [hudWindowController setEvaluator:nil];
     [imageViewController setEvaluator:nil];

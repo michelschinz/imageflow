@@ -6,6 +6,7 @@
             CLASS = IFDocumentInspectorWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                canvasController = IFRectIVarController; 
                 documentController = NSObjectController; 
                 rgbProfilesController = NSArrayController; 
             }; 
@@ -15,7 +16,8 @@
             CLASS = IFInspectorWindowController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {CLASS = IFRectIVarController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
     IBVersion = 1; 
 }

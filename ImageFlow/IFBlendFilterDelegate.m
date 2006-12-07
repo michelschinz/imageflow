@@ -48,7 +48,7 @@ static NSArray* parentNames = nil;
 
 - (NSArray*)editingAnnotationsForNode:(IFTreeNode*)node view:(NSView*)view;
 {
-  IFAnnotationSource* source = [IFBlendFilterAnnotationSource blendAnnotationSourceForNode:node];
+  IFVariable* source = [IFBlendFilterAnnotationSource blendAnnotationSourceForNode:node];
   return [NSArray arrayWithObject:[IFAnnotationRect annotationRectWithView:view source:source]];
 }
 

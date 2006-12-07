@@ -42,7 +42,9 @@ extern NSString* IFTreeChangedNotification;
 - (void)setAuthorName:(NSString*)newAuthorName;
 - (NSString*)documentDescription;
 - (void)setDocumentDescription:(NSString*)newDocumentDescription;
+
 - (NSRect)canvasBounds;
+- (void)setCanvasBounds:(NSRect)newCanvasBounds;
 
 - (IFColorProfile*)workingSpaceProfile;
 - (void)setWorkingSpaceProfile:(IFColorProfile*)newProfile;

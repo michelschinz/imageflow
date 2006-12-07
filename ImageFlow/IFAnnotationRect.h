@@ -11,8 +11,23 @@
 #import "IFAnnotation.h"
 
 @interface IFAnnotationRect : IFAnnotation {
+  NSColor* lineColor;
+  float lineWidth;
+  BOOL canBeDragged, canBeResized;
 }
 
-+ (id)annotationRectWithView:(NSView*)theView source:(IFAnnotationSource*)theSource;
++ (id)annotationRectWithView:(NSView*)theView source:(IFVariable*)theSource;
+
+- (float)lineWidth;
+- (void)setLineWidth:(float)newLineWidth;
+
+- (NSColor*)lineColor;
+- (void)setLineColor:(NSColor*)newLineColor;
+
+- (BOOL)canBeDragged;
+- (void)setCanBeDragged:(BOOL)newCanBeDragged;
+
+- (BOOL)canBeResized;
+- (void)setCanBeResized:(BOOL)newCanBeResized;
 
 @end

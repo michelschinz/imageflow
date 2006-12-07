@@ -129,8 +129,6 @@
 		FACF8B6F08668C5800985FA3 /* IFTreeLayoutNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8B6E08668C5800985FA3 /* IFTreeLayoutNode.m */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FACF8C1B0866B57D00985FA3 /* IFTreeLayoutComposite.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C1A0866B57D00985FA3 /* IFTreeLayoutComposite.m */; };
-		FAD4A5090AA60F2500C3EBD1 /* IFAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4A5070AA60F2500C3EBD1 /* IFAnnotationSource.m */; };
-		FAD4A5110AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4A50F0AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
 		FAD6A40A08879CE200D07873 /* IFTreeLayoutSingle.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6A40908879CE200D07873 /* IFTreeLayoutSingle.m */; };
 		FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */; };
@@ -163,6 +161,9 @@
 		FAE874DB0908C4E300E856B9 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = FAE8749F0908C2B800E856B9 /* Templates */; };
 		FAE874E70908C5AC00E856B9 /* Operators in Resources */ = {isa = PBXBuildFile; fileRef = FAE874DE0908C5AC00E856B9 /* Operators */; };
 		FAEC284F0916137200AB4196 /* IFHistogramConstantExpressionCI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */; };
+		FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F5C0B2821A100D5DC62 /* IFVariable.m */; };
+		FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F650B28220700D5DC62 /* IFVariableKVO.m */; };
+		FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */; };
 		FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */; };
 		FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */; };
 		FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */; };
@@ -438,10 +439,6 @@
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
 		FACF8C190866B57D00985FA3 /* IFTreeLayoutComposite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutComposite.h; sourceTree = "<group>"; };
 		FACF8C1A0866B57D00985FA3 /* IFTreeLayoutComposite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutComposite.m; sourceTree = "<group>"; };
-		FAD4A5060AA60F2500C3EBD1 /* IFAnnotationSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAnnotationSource.h; sourceTree = "<group>"; };
-		FAD4A5070AA60F2500C3EBD1 /* IFAnnotationSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAnnotationSource.m; sourceTree = "<group>"; };
-		FAD4A50E0AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAnnotationSourceEnvironment.h; sourceTree = "<group>"; };
-		FAD4A50F0AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAnnotationSourceEnvironment.m; sourceTree = "<group>"; };
 		FAD4DF6E08D075C1004EA3A0 /* IFUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUtilities.h; sourceTree = "<group>"; };
 		FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUtilities.m; sourceTree = "<group>"; };
 		FAD6A40808879CE200D07873 /* IFTreeLayoutSingle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutSingle.h; sourceTree = "<group>"; };
@@ -493,6 +490,12 @@
 		FAE874DE0908C5AC00E856B9 /* Operators */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Operators; sourceTree = "<group>"; };
 		FAEC284C0916137200AB4196 /* IFHistogramConstantExpressionCI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpressionCI.h; sourceTree = "<group>"; };
 		FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpressionCI.m; sourceTree = "<group>"; };
+		FAED0F5B0B2821A100D5DC62 /* IFVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariable.h; sourceTree = "<group>"; };
+		FAED0F5C0B2821A100D5DC62 /* IFVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariable.m; sourceTree = "<group>"; };
+		FAED0F640B28220700D5DC62 /* IFVariableKVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariableKVO.h; sourceTree = "<group>"; };
+		FAED0F650B28220700D5DC62 /* IFVariableKVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariableKVO.m; sourceTree = "<group>"; };
+		FAED107C0B285E9D00D5DC62 /* IFRectIVarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRectIVarController.h; sourceTree = "<group>"; };
+		FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRectIVarController.m; sourceTree = "<group>"; };
 		FAEE959C0935AF8100583BDB /* IFProfileNamePathValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProfileNamePathValueTransformer.h; sourceTree = "<group>"; };
 		FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProfileNamePathValueTransformer.m; sourceTree = "<group>"; };
 		FAEE95CD0935B5AB00583BDB /* IFObjectNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFObjectNamer.h; sourceTree = "<group>"; };
@@ -650,6 +653,7 @@
 		2A37F4AFFDCFA73011CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				FAED0F5F0B2821AA00D5DC62 /* Variables */,
 				FA6E98960AE69F8A0074184E /* IFBlendMode.h */,
 				FA6E98B00AE6A0DC0074184E /* IFBlendMode.m */,
 				FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */,
@@ -1159,10 +1163,6 @@
 				FA34AE320AA34DE300C8A63A /* IFAnnotation.m */,
 				FA34AE3D0AA3673800C8A63A /* IFAnnotationRect.h */,
 				FA34AE3E0AA3673900C8A63A /* IFAnnotationRect.m */,
-				FAD4A5060AA60F2500C3EBD1 /* IFAnnotationSource.h */,
-				FAD4A5070AA60F2500C3EBD1 /* IFAnnotationSource.m */,
-				FAD4A50E0AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.h */,
-				FAD4A50F0AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m */,
 				FAF470B90AA6C81B005F5617 /* IFCursorRect.h */,
 				FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */,
 				FADD9A8F0AA727A300547F53 /* IFBorderlessWindow.h */,
@@ -1171,6 +1171,17 @@
 				FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */,
 			);
 			name = Image;
+			sourceTree = "<group>";
+		};
+		FAED0F5F0B2821AA00D5DC62 /* Variables */ = {
+			isa = PBXGroup;
+			children = (
+				FAED0F5B0B2821A100D5DC62 /* IFVariable.h */,
+				FAED0F5C0B2821A100D5DC62 /* IFVariable.m */,
+				FAED0F640B28220700D5DC62 /* IFVariableKVO.h */,
+				FAED0F650B28220700D5DC62 /* IFVariableKVO.m */,
+			);
+			name = Variables;
 			sourceTree = "<group>";
 		};
 		FAEF26940AE792A600BD8954 /* Invert mask */ = {
@@ -1405,6 +1416,8 @@
 				FA21BC2008683CA70019D1B7 /* IFAppController.m */,
 				FAA2AF2A08FFA1750055AFDD /* IFSavePanelController.h */,
 				FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */,
+				FAED107C0B285E9D00D5DC62 /* IFRectIVarController.h */,
+				FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */,
 				FAF7F1120B088DD500BF6B7A /* View controllers */,
 				FAF7F1100B088D8F00BF6B7A /* Window controllers */,
 				FAF7F1110B088DBB00BF6B7A /* Value transformers */,
@@ -1630,8 +1643,6 @@
 				FA34AE340AA34DE300C8A63A /* IFAnnotation.m in Sources */,
 				FA34AE400AA3673900C8A63A /* IFAnnotationRect.m in Sources */,
 				FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */,
-				FAD4A5090AA60F2500C3EBD1 /* IFAnnotationSource.m in Sources */,
-				FAD4A5110AA60F4100C3EBD1 /* IFAnnotationSourceEnvironment.m in Sources */,
 				FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */,
 				FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */,
 				FAE63B5A0AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m in Sources */,
@@ -1670,6 +1681,9 @@
 				FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */,
 				FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */,
 				FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */,
+				FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */,
+				FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */,
+				FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

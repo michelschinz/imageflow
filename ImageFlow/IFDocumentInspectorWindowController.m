@@ -11,13 +11,15 @@
 
 @implementation IFDocumentInspectorWindowController
 
--(id)init {
+-(id)init;
+{
   if (![super initWithWindowNibName:@"IFDocumentSettings"])
     return nil;
   return self;
 }
 
-- (void) dealloc {
+- (void)dealloc;
+{
   [super dealloc];
 }
 
@@ -31,6 +33,7 @@
 {
   [super documentDidChange:newDocument];
   [documentController setContent:newDocument];
+  [canvasController setObject:newDocument andKey:@"canvasBounds"];
 }
 
 - (IBAction)applySettings:(id)sender;

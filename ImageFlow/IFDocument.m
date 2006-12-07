@@ -42,14 +42,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 static IFDocumentTemplateManager* templateManager;
 
-+ (void)initialize;
-{
-  if (self != [IFDocument class])
-    return; // avoid repeated initialisation
-
-  [self setKeys:[NSArray arrayWithObjects:@"canvasMinX",@"canvasMinY",@"canvasWidth",@"canvasHeight",nil] triggerChangeNotificationsForDependentKey:@"canvasBounds"];
-}
-
 + (IFDocumentTemplateManager*)documentTemplateManager;
 {
   if (templateManager == nil)
@@ -149,49 +141,14 @@ static IFDocumentTemplateManager* templateManager;
 
 #pragma mask canvas
 
-- (float)canvasMinX;
-{
-  return NSMinX(canvasBounds);
-}
-
-- (void)setCanvasMinX:(float)newMinX;
-{
-  canvasBounds.origin.x = newMinX;
-}
-
-- (float)canvasMinY;
-{
-  return NSMinY(canvasBounds);
-}
-
-- (void)setCanvasMinY:(float)newMinY;
-{
-  canvasBounds.origin.y = newMinY;
-}
-
-- (float)canvasWidth;
-{
-  return NSWidth(canvasBounds);
-}
-
-- (void)setCanvasWidth:(float)newWidth;
-{
-  canvasBounds.size.width = newWidth;
-}
-
-- (float)canvasHeight;
-{
-  return NSHeight(canvasBounds);
-}
-
-- (void)setCanvasHeight:(float)newHeight;
-{
-  canvasBounds.size.height = newHeight;
-}
-
 - (NSRect)canvasBounds;
 {
   return canvasBounds;
+}
+
+- (void)setCanvasBounds:(NSRect)newCanvasBounds;
+{
+  canvasBounds = newCanvasBounds;
 }
 
 #pragma mark color

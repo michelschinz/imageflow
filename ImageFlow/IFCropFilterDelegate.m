@@ -11,7 +11,7 @@
 #import "IFOperatorExpression.h"
 #import "IFEnvironment.h"
 #import "IFAnnotationRect.h"
-#import "IFAnnotationSourceEnvironment.h"
+#import "IFVariableKVO.h"
 #import "IFTreeNode.h"
 
 @implementation IFCropFilterDelegate
@@ -26,8 +26,7 @@
 - (NSArray*)editingAnnotationsForNode:(IFTreeNode*)node view:(NSView*)view;
 {
   IFEnvironment* env = [[node filter] environment];
-  IFAnnotationSource* src = [IFAnnotationSourceEnvironment annotationSourceWithEnvironment:env
-                                                                              variableName:@"rectangle"];
+  IFVariable* src = [IFVariableKVO variableWithKVOCompliantObject:env key:@"rectangle"];
   return [NSArray arrayWithObject:[IFAnnotationRect annotationRectWithView:view source:src]];
 }
 

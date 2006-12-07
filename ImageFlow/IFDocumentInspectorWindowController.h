@@ -9,9 +9,11 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFInspectorWindowController.h"
+#import "IFRectIVarController.h"
 
 @interface IFDocumentInspectorWindowController : IFInspectorWindowController {
   IBOutlet NSObjectController* documentController;
+  IBOutlet IFRectIVarController* canvasController;
   IBOutlet NSArrayController* rgbProfilesController;
 }
 

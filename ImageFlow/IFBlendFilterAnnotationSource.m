@@ -41,7 +41,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   [super dealloc];
 }
 
-- (void)updateValue:(id)newValue;
+- (void)setValue:(id)newValue;
 {
   NSPoint newOrigin = [(NSValue*)newValue rectValue].origin;
   NSPoint fgOrigin = [self foregroundExtent].origin;
@@ -52,7 +52,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   NSAssert(context == IFExpressionChangedContext, @"unexpected context");
-  [self setValue:[NSValue valueWithRect:[self rect]]];
+  [super setValue:[NSValue valueWithRect:[self rect]]];
 }
 
 @end
