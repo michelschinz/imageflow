@@ -73,10 +73,9 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (id)initWithFrame:(NSRect)frame;
 {
-  if (![super initWithFrame:frame]) return nil;
+  if (![super initWithFrame:frame])
+    return nil;
 
-  grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
-  
   marks = [[NSArray arrayWithObjects:
     [IFTreeMark markWithTag:@"0"],
     [IFTreeMark markWithTag:@"1"],
@@ -135,8 +134,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   OBJC_RELEASE(cursors);
   OBJC_RELEASE(allMarks);
   OBJC_RELEASE(marks);
-    
-  OBJC_RELEASE(grabableViewMixin);
+
   [super dealloc];
 }
 
@@ -163,26 +161,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   return YES;
 }
 
-- (void)setDocument:(IFDocument*)newDocument {
-  NSAssert(document == nil, @"document already set");
-  document = newDocument;  // don't retain, to avoid cycles.
-}
-
-- (IFDocument*)document;
-{
-  return document;
-}
-
 #pragma mark Layout parameters
 
 - (IFTreeLayoutStrategy*)layoutStrategy;
 {
   return layoutStrategy;
-}
-
-- (IFTreeLayoutParameters*)layoutParameters;
-{
-  return layoutParameters;
 }
 
 - (NSSize)idealSize;

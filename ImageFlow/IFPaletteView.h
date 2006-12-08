@@ -8,12 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFNodesView.h"
 #import "IFTreeLayoutParameters.h"
 
-@interface IFPaletteView : NSView {
-  IBOutlet IFTreeLayoutParameters* layoutParameters;
-
-  NSArray* candidates;
+@interface IFPaletteView : IFNodesView {
+  NSArray* templates;
+  NSArray* laidOutTemplates;
 }
+
+- (IFTreeLayoutParameters*)layoutParameters;
 
 @end

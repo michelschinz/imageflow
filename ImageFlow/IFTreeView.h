@@ -8,25 +8,21 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFNodesView.h"
 #import "IFDocument.h"
 #import "IFTreeLayoutElement.h"
 #import "IFTreeLayoutSingle.h"
 #import "IFTreeNode.h"
 #import "IFTreeMark.h"
-#import "IFGrabableViewMixin.h"
 #import "IFTreeLayoutStrategy.h"
 #import "IFTreeLayoutParameters.h"
 #import "IFTreeCursorPair.h"
 
 extern NSString* IFMarkPboardType;
 
-@interface IFTreeView : NSControl {
-  IBOutlet IFTreeLayoutParameters* layoutParameters;
-
-  IFGrabableViewMixin* grabableViewMixin;
+@interface IFTreeView : IFNodesView {
   IFTreeLayoutStrategy* layoutStrategy;
 
-  IFDocument* document;
   NSArray* marks;
   NSArray* allMarks;
   IFTreeCursorPair* cursors;
@@ -41,11 +37,7 @@ extern NSString* IFMarkPboardType;
   NSBezierPath* highlightingPath;
 }
 
-- (void)setDocument:(IFDocument*)document;
-- (IFDocument*)document;
-
 - (IFTreeLayoutStrategy*)layoutStrategy;
-- (IFTreeLayoutParameters*)layoutParameters;
 
 - (NSSize)idealSize;
 

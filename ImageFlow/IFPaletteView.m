@@ -16,10 +16,15 @@
   return [super initWithFrame:frame];
 }
 
-- (void)drawRect:(NSRect)rect;
+- (IFTreeLayoutParameters*)layoutParameters;
+{
+  return layoutParameters;
+}
+
+- (void)drawRect:(NSRect)dirtyRect;
 {
   [[layoutParameters backgroundColor] set];
-  NSRectFill(rect);
+  [NSBezierPath fillRect:dirtyRect];
 }
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;

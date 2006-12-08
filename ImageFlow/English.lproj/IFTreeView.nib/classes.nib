@@ -2,11 +2,12 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            CLASS = IFPaletteView; 
+            CLASS = IFNodesView; 
             LANGUAGE = ObjC; 
             OUTLETS = {layoutParameters = IFTreeLayoutParameters; }; 
-            SUPERCLASS = NSView; 
+            SUPERCLASS = NSControl; 
         }, 
+        {CLASS = IFPaletteView; LANGUAGE = ObjC; SUPERCLASS = IFNodesView; }, 
         {CLASS = IFTreeLayoutParameters; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
@@ -18,8 +19,7 @@
             }; 
             CLASS = IFTreeView; 
             LANGUAGE = ObjC; 
-            OUTLETS = {layoutParameters = IFTreeLayoutParameters; }; 
-            SUPERCLASS = NSControl; 
+            SUPERCLASS = IFNodesView; 
         }, 
         {
             CLASS = IFTreeViewController; 

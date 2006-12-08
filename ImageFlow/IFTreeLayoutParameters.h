@@ -8,14 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface IFTreeLayoutParameters : NSObject {
-  float columnWidth;
   NSColor* backgroundColor;
-
+  float columnWidth;
+  
   NSFont* labelFont;
   float labelFontHeight;
-
+  
   NSColor* sidePaneColor;
   NSSize sidePaneSize;
 
