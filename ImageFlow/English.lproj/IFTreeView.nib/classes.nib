@@ -2,15 +2,33 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = IFPaletteView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {layoutParameters = IFTreeLayoutParameters; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = IFTreeLayoutParameters; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                goToBookmark = id; 
+                makeNodeAlias = id; 
+                removeBookmark = id; 
+                setBookmark = id; 
+                toggleNodeFoldingState = id; 
+            }; 
             CLASS = IFTreeView; 
             LANGUAGE = ObjC; 
-            OUTLETS = {document = IFDocument; }; 
-            SUPERCLASS = NSView; 
+            OUTLETS = {layoutParameters = IFTreeLayoutParameters; }; 
+            SUPERCLASS = NSControl; 
         }, 
         {
             CLASS = IFTreeViewController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {scrollView = NSScrollView; treeView = IFTreeView; }; 
+            OUTLETS = {
+                layoutParameters = IFTreeLayoutParameters; 
+                paletteView = IFPaletteView; 
+                treeView = IFTreeView; 
+            }; 
             SUPERCLASS = IFViewController; 
         }, 
         {

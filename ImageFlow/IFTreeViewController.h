@@ -10,10 +10,13 @@
 
 #import "IFViewController.h"
 #import "IFTreeView.h"
+#import "IFPaletteView.h"
+#import "IFTreeLayoutParameters.h"
 
 @interface IFTreeViewController : IFViewController {
+  IBOutlet IFTreeLayoutParameters* layoutParameters;
   IBOutlet IFTreeView* treeView;
-  IBOutlet NSScrollView* scrollView;
+  IBOutlet IFPaletteView* paletteView;
 }
 
 - (IFTreeView*)treeView;

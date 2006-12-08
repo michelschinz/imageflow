@@ -138,7 +138,6 @@
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
 		FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */; };
 		FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0DF2308C3876C00595ED4 /* Accelerate.framework */; };
-		FAE110580ADFC1CC007EEFFD /* IFCenteringClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */; };
 		FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */; };
 		FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */; };
 		FAE4C335092DAF71003A2555 /* IFSetAlphaCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */; };
@@ -202,6 +201,7 @@
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
 		FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */; };
+		FAFBEE8A0B2944010078CC17 /* IFPaletteView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFBEE880B2944010078CC17 /* IFPaletteView.m */; };
 		FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */; };
 		FAFC1B3C092C76E20032A19F /* IFMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */; };
 		FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAD1C091B91A700D83BBE /* IFFileSinkController.m */; };
@@ -456,8 +456,6 @@
 		FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramView.m; sourceTree = "<group>"; };
 		FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHistogramView.nib; sourceTree = "<group>"; };
 		FAE0DF2308C3876C00595ED4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
-		FAE110550ADFC1CC007EEFFD /* IFCenteringClipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCenteringClipView.h; sourceTree = "<group>"; };
-		FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCenteringClipView.m; sourceTree = "<group>"; };
 		FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFCropFilter.nib; sourceTree = "<group>"; };
 		FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "crop-overlay.cikernel"; sourceTree = "<group>"; };
 		FAE4C332092DAF71003A2555 /* IFSetAlphaCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSetAlphaCIFilter.h; sourceTree = "<group>"; };
@@ -563,6 +561,8 @@
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
 		FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSingleColorCIFilter.m; sourceTree = "<group>"; };
 		FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFDropShadowFilter.nib; sourceTree = "<group>"; };
+		FAFBEE870B2944010078CC17 /* IFPaletteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPaletteView.h; sourceTree = "<group>"; };
+		FAFBEE880B2944010078CC17 /* IFPaletteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPaletteView.m; sourceTree = "<group>"; };
 		FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = threshold.cikernel.m4; sourceTree = "<group>"; };
 		FAFC1B2D092C70ED0032A19F /* luminosity.ci */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = luminosity.ci; sourceTree = "<group>"; };
 		FAFC1B39092C76E20032A19F /* IFMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskCIFilter.h; sourceTree = "<group>"; };
@@ -834,8 +834,6 @@
 				FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */,
 				FAFDC5A00860484700DABA6F /* IFTreeView.h */,
 				FAFDC5A10860484700DABA6F /* IFTreeView.m */,
-				FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */,
-				FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */,
 				FA9649730AEF81B700EC46A5 /* IFTreeLayoutStrategy.h */,
 				FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */,
 				FABD2BDB0862E2A300D9A92D /* IFTreeLayoutElement.h */,
@@ -1334,6 +1332,26 @@
 			name = "Single Color";
 			sourceTree = "<group>";
 		};
+		FAFBEE8B0B29440B0078CC17 /* Palette */ = {
+			isa = PBXGroup;
+			children = (
+				FAFBEE870B2944010078CC17 /* IFPaletteView.h */,
+				FAFBEE880B2944010078CC17 /* IFPaletteView.m */,
+			);
+			name = Palette;
+			sourceTree = "<group>";
+		};
+		FAFBEEB10B2952380078CC17 /* Tree & palette */ = {
+			isa = PBXGroup;
+			children = (
+				FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */,
+				FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */,
+				FA1EB202086AAF1C007FD6AF /* Tree */,
+				FAFBEE8B0B29440B0078CC17 /* Palette */,
+			);
+			name = "Tree & palette";
+			sourceTree = "<group>";
+		};
 		FAFC168D092C67BB0032A19F /* Core Image Templates */ = {
 			isa = PBXGroup;
 			children = (
@@ -1391,8 +1409,6 @@
 		FAFDC5920860481E00DABA6F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FAE110550ADFC1CC007EEFFD /* IFCenteringClipView.h */,
-				FAE110560ADFC1CC007EEFFD /* IFCenteringClipView.m */,
 				FA1B627F0B11DE2700852BC9 /* IFStackingView.h */,
 				FA1B62800B11DE2700852BC9 /* IFStackingView.m */,
 				FAE6A41A0ACBD9050059BA3B /* IFGrabableViewMixin.h */,
@@ -1401,7 +1417,7 @@
 				FA34AD930AA3152E00C8A63A /* IFTransparentPopupButton.m */,
 				FAF4D62C0ABAEC55000F98B0 /* IFCursorRepository.h */,
 				FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */,
-				FA1EB202086AAF1C007FD6AF /* Tree */,
+				FAFBEEB10B2952380078CC17 /* Tree & palette */,
 				FAE5A51408A793E500BBBB16 /* Image */,
 				FAE0DE5108C361B300595ED4 /* Histogram */,
 				FA68E05B092DCEC7009D02CB /* Printing */,
@@ -1658,7 +1674,6 @@
 				FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */,
 				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
 				FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */,
-				FAE110580ADFC1CC007EEFFD /* IFCenteringClipView.m in Sources */,
 				FA256AB80AE37EDB00077863 /* IFChannelToMaskCIFilter.m in Sources */,
 				FA256ACA0AE38BF500077863 /* IFMaskToImageCIFilter.m in Sources */,
 				FA256AD00AE38E5C00077863 /* IFChannelToMaskFilterDelegate.m in Sources */,
@@ -1684,6 +1699,7 @@
 				FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */,
 				FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */,
 				FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */,
+				FAFBEE8A0B2944010078CC17 /* IFPaletteView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

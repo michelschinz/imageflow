@@ -21,9 +21,10 @@
 extern NSString* IFMarkPboardType;
 
 @interface IFTreeView : NSControl {
+  IBOutlet IFTreeLayoutParameters* layoutParameters;
+
   IFGrabableViewMixin* grabableViewMixin;
   IFTreeLayoutStrategy* layoutStrategy;
-  IFTreeLayoutParameters* layoutParameters;
 
   IFDocument* document;
   NSArray* marks;

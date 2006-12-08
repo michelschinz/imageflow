@@ -76,8 +76,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   if (![super initWithFrame:frame]) return nil;
 
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
-  layoutParameters = [IFTreeLayoutParameters new];
-  layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
   
   marks = [[NSArray arrayWithObjects:
     [IFTreeMark markWithTag:@"0"],
@@ -110,7 +108,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
   [cursors addObserver:self forKeyPath:@"isViewLocked" options:0 context:IFViewLockedChangedContext];
-  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
   
@@ -139,10 +136,16 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   OBJC_RELEASE(allMarks);
   OBJC_RELEASE(marks);
     
-  OBJC_RELEASE(layoutStrategy);
-  OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
+}
+
+- (void)awakeFromNib;
+{
+  NSAssert(layoutParameters != nil, @"internal error");
+
+  layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
+  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
 }
 
 -(BOOL)acceptsFirstResponder;
@@ -742,6 +745,11 @@ static enum {
   }
 }
 
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
+{
+  [self recomputeFrameSize];
+}
+
 @end
 
 @implementation IFTreeView (Private)
@@ -756,11 +764,19 @@ static enum {
   IFTreeLayoutElement* nodeLayer = [layoutLayers objectAtIndex:IFLayoutLayerTree];
   NSRect unpaddedBounds = (nodeLayer == (IFTreeLayoutElement*)[NSNull null]) ? NSZeroRect : [nodeLayer frame];
   return NSInsetRect(unpaddedBounds,-[layoutParameters gutterWidth],-3.0);
-}  
+}
 
 - (void)recomputeFrameSize;
 {
   NSRect newBounds = [self paddedBounds];
+  NSSize minSize = [[self superview] frame].size;
+
+  if (NSWidth(newBounds) < minSize.width) {
+    newBounds.origin.x -= floor((minSize.width - NSWidth(newBounds)) / 2.0);
+    newBounds.size.width = minSize.width;
+  }
+  if (NSHeight(newBounds) < minSize.height)
+    newBounds.size.height = minSize.height;
   
   if (NSEqualSizes([self frame].size, newBounds.size) && NSEqualPoints([self bounds].origin,newBounds.origin))
     return;
