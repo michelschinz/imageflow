@@ -43,7 +43,6 @@ extern NSString* IFMarkPboardType;
 - (IBAction)toggleNodeFoldingState:(id)sender;
 
 - (IFTreeCursorPair*)cursors;
-- (NSSet*)unreachableNodes;
 
 - (IBAction)setBookmark:(id)sender;
 - (IBAction)removeBookmark:(id)sender;

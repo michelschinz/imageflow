@@ -23,7 +23,7 @@
 
 @interface IFTreeView (Private)
 - (NSRect)paddedBounds;
-- (void)recomputeFrameSize;
+- (void)updateBounds;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
 - (void)clearHighlighting;
 - (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
@@ -52,12 +52,12 @@ NSString* IFMarkPboardType = @"IFMarkPboardType";
 NSString* IFTreeNodeArrayPboardType = @"IFTreeNodeArrayPboardType";
 NSString* IFTreeNodePboardType = @"IFTreeNodePboardType";
 
-typedef enum {
+enum IFLayoutLayer {
   IFLayoutLayerTree,
   IFLayoutLayerSidePane,
   IFLayoutLayerSelection,
   IFLayoutLayerMarks
-} IFLayoutLayer;
+};
 
 //static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
 //static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
@@ -85,7 +85,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   IFTreeMark* viewMark = [IFTreeMark markWithTag:@"<view>"];
   allMarks = [[marks arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:cursorMark,viewMark,nil]] retain];
   cursors = [[IFTreeCursorPair treeCursorPairWithEditMark:cursorMark viewMark:viewMark] retain];
-  unreachableNodes = [[NSSet set] retain];
+  unreachableNodes = [NSSet new];
   selectedNodes = [NSMutableSet new];
   copiedNode = nil;
   
@@ -93,7 +93,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
-  [cursors addObserver:self forKeyPath:@"isViewLocked" options:0 context:IFViewLockedChangedContext];
+  [cursors addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
   
   return self;
@@ -160,7 +160,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 {
-  [self recomputeFrameSize];
+  [self updateBounds];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)item;
@@ -185,19 +185,12 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   }
 }
 
-#pragma mark View locking
+#pragma mark Cursors and bookmarks
 
 - (IFTreeCursorPair*)cursors;
 {
   return cursors;
 }
-
-- (NSSet*)unreachableNodes;
-{
-  return unreachableNodes;
-}
-
-#pragma mark Bookmarks
 
 - (IBAction)setBookmark:(id)sender;
 {
@@ -239,9 +232,18 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 //    [self invalidateLayoutLayer:IFLayoutLayerMarks];
   if (context == IFColumnWidthChangedContext)
     [self invalidateLayout];
-  else if (context == IFViewLockedChangedContext)
+  else if (context == IFViewLockedChangedContext) {
+    id oldNode = [change objectForKey:NSKeyValueChangeOldKey];
+    id newNode = [change objectForKey:NSKeyValueChangeNewKey];
+    NSAssert((oldNode == [NSNull null] && newNode != [NSNull null]) || (oldNode != [NSNull null] && newNode == [NSNull null]),
+             @"internal error");
+    IFTreeNode* viewLockedNode = (oldNode != [NSNull null] ? oldNode : newNode);
+
+    IFTreeLayoutNode* layoutElem = (IFTreeLayoutNode*)
+      [[self layoutLayerAtIndex:IFLayoutLayerTree] layoutElementForNode:viewLockedNode kind:IFTreeLayoutElementKindNode];
+    [layoutElem toggleIsViewLocked];
     [self updateUnreachableNodes];
-  else
+  } else
     NSAssert1(NO, @"unexpected context: %@", context);
 }  
 
@@ -736,7 +738,7 @@ static enum {
 
 - (void)layoutDidChange;
 {
-  [self recomputeFrameSize];
+  [self updateBounds];
 }
 
 @end
@@ -754,7 +756,7 @@ static enum {
   return NSInsetRect(unpaddedBounds,-[layoutParameters gutterWidth],-3.0);
 }
 
-- (void)recomputeFrameSize;
+- (void)updateBounds;
 {
   NSRect newBounds = [self paddedBounds];
   NSSize minSize = [[self superview] frame].size;
@@ -822,20 +824,33 @@ static enum {
 
 - (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
 {
-  if (newUnreachableNodes == unreachableNodes)
-    return;
+  NSAssert(newUnreachableNodes != unreachableNodes, @"internal error");
+
+  // update nodes which are in (old union new) \ (old intersection new)
+  NSMutableSet* changedNodes = [NSMutableSet setWithSet:unreachableNodes];
+  [changedNodes unionSet:newUnreachableNodes];
+  NSMutableSet* newOldIntersection = [NSMutableSet setWithSet:unreachableNodes];
+  [newOldIntersection intersectSet:newUnreachableNodes];
+  [changedNodes minusSet:newOldIntersection];
+  
+  IFTreeLayoutElement* nodesLayer = [self layoutLayerAtIndex:IFLayoutLayerTree];
+  NSSet* changedNodesLayoutElems = [nodesLayer layoutElementsForNodes:changedNodes kind:IFTreeLayoutElementKindNode];
+  [[changedNodesLayoutElems do] toggleIsUnreachable];
+  
   [unreachableNodes release];
   unreachableNodes = [newUnreachableNodes retain];
 }
 
 - (void)updateUnreachableNodes;
 {
+  NSMutableSet* newUnreachableNodes = [NSMutableSet set];
   if ([cursors isViewLocked]) {
-    NSMutableSet* unreachable = [NSMutableSet setWithSet:[document allNodes]];
-    [unreachable minusSet:[document ancestorsOfNode:[[cursors viewMark] node]]];
-    [self setUnreachableNodes:unreachable];
-  } else
-    [self setUnreachableNodes:[NSSet set]];
+    [newUnreachableNodes unionSet:[document allNodes]];
+    [newUnreachableNodes minusSet:[document ancestorsOfNode:[[cursors viewMark] node]]];
+  }
+  [self setUnreachableNodes:newUnreachableNodes];
+
+  // TODO view locked node
 }
 
 #pragma mark Selection

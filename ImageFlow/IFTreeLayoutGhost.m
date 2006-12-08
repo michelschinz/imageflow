@@ -120,6 +120,11 @@ static NSMutableDictionary* filterArrayControllers = nil;
   activated = NO;
 }
 
+- (void)toggleIsUnreachable;
+{
+  NSLog(@"TODO toggleIsUnreachable for ghosts");
+}
+
 - (void)drawForRect:(NSRect)rect;
 {
   NSBezierPath* backgroundRect = [NSBezierPath bezierPathWithRect:[self frame]];

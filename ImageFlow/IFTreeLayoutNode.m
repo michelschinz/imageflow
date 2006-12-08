@@ -23,8 +23,6 @@
 
 static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 static NSString* IFLayoutChangedContext = @"IFLayoutChangedContext";
-static NSString* IFViewLockedNodeChangedContext = @"IFViewLockedNodeChangedContext";
-static NSString* IFReachableNodesChangedContext = @"IFReachableNodesChangedContext";
 
 static const int foldsCount = 3;
 static const float foldHeight = 2.0;
@@ -53,14 +51,13 @@ static NSImage* lockedViewImage = nil;
 {
   if (![super initWithNode:theNode containingView:theContainingView]) return nil;
   evaluator = [[theContainingView document] evaluator];
+  isViewLocked = isUnreachable = isMask = NO;
   [self updateExpression];
   [self updateInternalLayout];
 
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
   [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:IFExpressionChangedContext];
-  [containingView addObserver:self forKeyPath:@"layoutParameters.columnWidth" options:0 context:IFLayoutChangedContext];
-  [[containingView cursors] addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedNodeChangedContext];
-  [containingView addObserver:self forKeyPath:@"unreachableNodes" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFReachableNodesChangedContext];
+  [[containingView layoutParameters] addObserver:self forKeyPath:@"columnWidth" options:0 context:IFLayoutChangedContext];
   [node addObserver:self forKeyPath:@"isFolded" options:0 context:IFLayoutChangedContext];
   return self;
 }
@@ -68,15 +65,52 @@ static NSImage* lockedViewImage = nil;
 - (void)dealloc;
 {
   [node removeObserver:self forKeyPath:@"isFolded"];
-  [containingView removeObserver:self forKeyPath:@"unreachableNodes"];
-  [[containingView cursors] removeObserver:self forKeyPath:@"viewMark.node"];
-  [containingView removeObserver:self forKeyPath:@"layoutParameters.columnWidth"];
+  [[containingView layoutParameters] removeObserver:self forKeyPath:@"columnWidth"];
   [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
   [node removeObserver:self forKeyPath:@"expression"];
   node = nil;
   [self setEvaluatedExpression:nil];
   [self setImageLayer:NULL];
   [super dealloc];
+}
+
+- (void)setIsViewLocked:(BOOL)newValue;
+{
+  if (newValue == isViewLocked)
+    return;
+  isViewLocked = newValue;
+
+  [self setImageLayer:NULL];
+  [self setNeedsDisplay];
+}
+
+- (void)toggleIsViewLocked;
+{
+  [self setIsViewLocked:!isViewLocked];
+}
+
+- (BOOL)isViewLocked;
+{
+  return isViewLocked;
+}
+
+- (void)setIsUnreachable:(BOOL)newValue;
+{
+  if (newValue == isUnreachable)
+    return;
+  isUnreachable = newValue;
+
+  [self setNeedsDisplay];
+}
+
+- (void)toggleIsUnreachable;
+{
+  [self setIsUnreachable:!isUnreachable];
+}
+
+- (BOOL)isUnreachable;
+{
+  return isUnreachable;
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
@@ -86,22 +120,6 @@ static NSImage* lockedViewImage = nil;
   else if (context == IFExpressionChangedContext) {
     [self updateExpression];
     [self setNeedsDisplay];
-  } else if (context == IFViewLockedNodeChangedContext) {
-    if ([change objectForKey:NSKeyValueChangeOldKey] == node || [change objectForKey:NSKeyValueChangeNewKey] == node) {
-      [self setImageLayer:NULL];
-      [self setNeedsDisplay];
-    }
-  } else if (context == IFReachableNodesChangedContext) {
-    NSSet* oldR = [change objectForKey:NSKeyValueChangeOldKey];
-    NSSet* newR = [change objectForKey:NSKeyValueChangeNewKey];
-
-    if ((id)oldR == [NSNull null] || (id)newR == [NSNull null])
-      return;
-
-    BOOL wasUnreachable = [oldR containsObject:node];
-    BOOL isUnreachable = [newR containsObject:node];
-    if ((wasUnreachable && !isUnreachable) || (!wasUnreachable && isUnreachable))
-      [self setNeedsDisplay];
   } else
     NSAssert(NO, @"unexpected context");
 }
@@ -111,7 +129,7 @@ static NSImage* lockedViewImage = nil;
   return IFTreeLayoutElementKindNode;
 }
 
-int countAncestors(IFTreeNode* node) {
+static int countAncestors(IFTreeNode* node) {
   NSArray* parents = [node parents];
   int count = [parents count];
   for (int i = 0; i < [parents count]; ++i)
@@ -125,14 +143,12 @@ int countAncestors(IFTreeNode* node) {
   if (imageLayer == NULL)
     [self updateImageForContext:currCtx];
 
-  NSSet* unreachableNodes = [containingView unreachableNodes];
-  BOOL isDimmed = [unreachableNodes containsObject:node];
-  if (isDimmed) {
+  if (isUnreachable) {
     CGContextSaveGState(currCtx);
     CGContextSetAlpha(currCtx, 0.2);
   }
   CGContextDrawLayerInRect(currCtx, CGRectFromNSRect([self bounds]), imageLayer);
-  if (isDimmed)
+  if (isUnreachable)
     CGContextRestoreGState(currCtx);
 }
 
@@ -243,8 +259,7 @@ int countAncestors(IFTreeNode* node) {
   
   // Draw view locking icon, if needed
   NSRect labelTextFrame;
-  IFTreeCursorPair* cursors = [containingView cursors];
-  if ([cursors isViewLocked] && [[cursors viewMark] node] == node) {
+  if (isViewLocked) {
     NSSize imageSize = [lockedViewImage size];
     NSPoint p = NSMakePoint(NSMinX(labelFrame),
                             floor(NSMinY(labelFrame) + (NSHeight(labelFrame) - imageSize.height) / 2.0));

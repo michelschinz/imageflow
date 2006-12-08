@@ -36,7 +36,7 @@
   if (templates == nil) {
     NSArray* relFileNames = [[NSFileManager defaultManager] directoryContentsAtPath:directory];
     NSArray* absFileNames = (NSArray*)[[directory collect] stringByAppendingPathComponent:[relFileNames each]];
-    templates = [[IFDocumentTemplate collect] templateWithFileName:[absFileNames each]];
+    templates = [[[IFDocumentTemplate collect] templateWithFileName:[absFileNames each]] retain];
   }
   return templates;
 }

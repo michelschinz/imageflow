@@ -22,12 +22,20 @@
   CGLayerRef imageLayer;
   
   IFExpressionEvaluator* evaluator;
-  BOOL isMask;
+  BOOL isViewLocked, isUnreachable, isMask;
   IFConstantExpression* evaluatedExpression;
   NSRect expressionExtent;
 }
 
 + (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
 - (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+
+- (void)setIsViewLocked:(BOOL)newValue;
+- (void)toggleIsViewLocked;
+- (BOOL)isViewLocked;
+
+- (void)setIsUnreachable:(BOOL)newValue;
+- (void)toggleIsUnreachable;
+- (BOOL)isUnreachable;
 
 @end
