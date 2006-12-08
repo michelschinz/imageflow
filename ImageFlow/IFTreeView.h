@@ -30,8 +30,6 @@ extern NSString* IFMarkPboardType;
   NSMutableSet* selectedNodes;
   IFTreeNode* copiedNode;
 
-  unsigned int upToDateLayers;
-  NSMutableArray* layoutLayers;
   NSMutableArray* trackingRectTags;
   IFTreeLayoutElement* pointedElement;
   NSBezierPath* highlightingPath;
@@ -40,8 +38,6 @@ extern NSString* IFMarkPboardType;
 - (IFTreeLayoutStrategy*)layoutStrategy;
 
 - (NSSize)idealSize;
-
-- (void)invalidateLayout;
 
 - (IBAction)makeNodeAlias:(id)sender;
 - (IBAction)toggleNodeFoldingState:(id)sender;

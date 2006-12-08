@@ -7,13 +7,13 @@
 //
 
 #import "IFPaletteView.h"
-
+#import "IFTreeLayoutComposite.h"
 
 @implementation IFPaletteView
 
 - (id)initWithFrame:(NSRect)frame;
 {
-  return [super initWithFrame:frame];
+  return [super initWithFrame:frame layersCount:1];
 }
 
 - (IFTreeLayoutParameters*)layoutParameters;
@@ -21,16 +21,15 @@
   return layoutParameters;
 }
 
-- (void)drawRect:(NSRect)dirtyRect;
-{
-  [[layoutParameters backgroundColor] set];
-  [NSBezierPath fillRect:dirtyRect];
-}
-
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 {
   [self setFrameSize:[[self superview] frame].size];
   [self setNeedsDisplay:YES];
+}
+
+- (IFTreeLayoutElement*)layoutForLayer:(int)layer;
+{
+  return [IFTreeLayoutComposite layoutComposite];
 }
 
 @end

@@ -35,12 +35,7 @@
 - (NSSet*)selectedNodes;
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 - (IFTreeNode*)cursorNode;
-- (void)updateLayout:(NSNotification*)notification;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
-- (void)invalidateLayoutLayer:(int)layoutLayer;
-- (void)enqueueLayoutNotification;
-- (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
-- (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)layoutNodes;
 - (void)removeAllTrackingRects;
@@ -64,8 +59,6 @@ typedef enum {
   IFLayoutLayerMarks
 } IFLayoutLayer;
 
-static NSString* IFTreeViewNeedsLayout = @"IFTreeViewNeedsLayout";
-
 //static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
 //static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
 static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
@@ -73,7 +66,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (id)initWithFrame:(NSRect)frame;
 {
-  if (![super initWithFrame:frame])
+  if (![super initWithFrame:frame layersCount:4])
     return nil;
 
   marks = [[NSArray arrayWithObjects:
@@ -96,18 +89,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   selectedNodes = [NSMutableSet new];
   copiedNode = nil;
   
-  layoutLayers = [[NSMutableArray alloc] initWithObjects:
-    [NSNull null],
-    [NSNull null],
-    [NSNull null],
-    [NSNull null],
-    nil];
   trackingRectTags = [NSMutableArray new];
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
 
   [cursors addObserver:self forKeyPath:@"isViewLocked" options:0 context:IFViewLockedChangedContext];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLayout:) name:IFTreeViewNeedsLayout object:self];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
   
   return self;
@@ -126,7 +112,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   [self setDocument:nil];
 
   OBJC_RELEASE(trackingRectTags);
-  OBJC_RELEASE(layoutLayers);
 
   OBJC_RELEASE(copiedNode);
   OBJC_RELEASE(selectedNodes);
@@ -146,6 +131,18 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
 }
 
+- (IFTreeLayoutStrategy*)layoutStrategy;
+{
+  return layoutStrategy;
+}
+
+- (NSSize)idealSize;
+{
+  return [self paddedBounds].size;
+}
+
+#pragma mark NSView methods
+
 -(BOOL)acceptsFirstResponder;
 {
   return YES;
@@ -161,41 +158,9 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   return YES;
 }
 
-#pragma mark Layout parameters
-
-- (IFTreeLayoutStrategy*)layoutStrategy;
+- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 {
-  return layoutStrategy;
-}
-
-- (NSSize)idealSize;
-{
-  return [self paddedBounds].size;
-}
-
-- (void)invalidateLayout;
-{
-  upToDateLayers = 0;
-  [self enqueueLayoutNotification];  
-}
-
-- (IBAction)makeNodeAlias:(id)sender;
-{
-  [document addTree:[IFTreeNodeAlias nodeAliasWithOriginal:[self cursorNode]]];
-}
-
-- (IBAction)toggleNodeFoldingState:(id)sender;
-{
-  IFTreeNode* node = [self cursorNode];
-  [node setIsFolded:![node isFolded]];
-  [self invalidateLayout];
-}
-
-- (void)foldNodeUnderMouse:(id)sender;
-{
-  IFTreeNode* designatedNode = [[layoutStrategy foldButtonCell] representedObject];
-  [designatedNode setIsFolded:![designatedNode isFolded]];
-  [self invalidateLayout];
+  [self recomputeFrameSize];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)item;
@@ -207,6 +172,17 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     return [[marks objectAtIndex:[item tag]] isSet];
   else
     return YES;
+}
+
+- (void)drawRect:(NSRect)rect;
+{
+  [super drawRect:rect];
+  
+  if (highlightingPath != nil) {
+    [[layoutParameters highlightingColor] set];
+    [highlightingPath fill];
+    [highlightingPath stroke];
+  }
 }
 
 #pragma mark View locking
@@ -249,7 +225,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     NSBeep();
 }
 
-#pragma mark Event handling
+#pragma mark Actions / event handling
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object 
@@ -469,6 +445,25 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 {
   [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
+}
+
+- (IBAction)toggleNodeFoldingState:(id)sender;
+{
+  IFTreeNode* node = [self cursorNode];
+  [node setIsFolded:![node isFolded]];
+  [self invalidateLayout];
+}
+
+- (void)foldNodeUnderMouse:(id)sender;
+{
+  IFTreeNode* designatedNode = [[layoutStrategy foldButtonCell] representedObject];
+  [designatedNode setIsFolded:![designatedNode isFolded]];
+  [self invalidateLayout];
+}
+
+- (IBAction)makeNodeAlias:(id)sender;
+{
+  [document addTree:[IFTreeNodeAlias nodeAliasWithOriginal:[self cursorNode]]];
 }
 
 #pragma mark Copy and paste
@@ -707,28 +702,39 @@ static enum {
   }
 }
 
-#pragma mark Drawing
+#pragma mark Layout
 
-- (void)drawRect:(NSRect)rect;
+- (IFTreeLayoutElement*)layoutForLayer:(int)layer;
 {
-  [[layoutParameters backgroundColor] set];
-  [[NSBezierPath bezierPathWithRect:[self bounds]] fill];
-  
-  for (int i = 0; i < [layoutLayers count]; ++i) {
-    if (upToDateLayers & (1 << i))
-      [[layoutLayers objectAtIndex:i] drawForRect:rect];
-    else
-      [self enqueueLayoutNotification];
-  }
-  
-  if (highlightingPath != nil) {
-    [[layoutParameters highlightingColor] set];
-    [highlightingPath fill];
-    [highlightingPath stroke];
+  switch (layer) {
+    case IFLayoutLayerTree: {
+      [self removeAllTrackingRects];
+      [self removeAllToolTips];
+      
+      NSArray* roots = (NSArray*)[[layoutStrategy collect] layoutTree:[[document roots] each]];
+      for (int i = 1; i < [roots count]; ++i)
+        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + [layoutParameters gutterWidth],0)];
+      IFTreeLayoutElement* layer = [IFTreeLayoutComposite layoutCompositeWithElements:[NSSet setWithArray:roots] containingView:self];
+      
+      // Now that all elements are at their final position, establish tool tips and tracking rects
+      NSSet* leaves = [layer leavesOfKind:IFTreeLayoutElementKindNode];
+      [self addToolTipsForLayoutNodes:leaves];
+      [self addTrackingRectsForLayoutNodes:leaves];
+      return layer;
+    }
+    case IFLayoutLayerSidePane:
+      return [layoutStrategy layoutSidePaneForElement:(IFTreeLayoutSingle*)pointedElement];
+    case IFLayoutLayerSelection:
+      return [layoutStrategy layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[self layoutLayerAtIndex:IFLayoutLayerTree]];
+    case IFLayoutLayerMarks:
+      return [layoutStrategy layoutMarks:marks forTreeLayout:[self layoutLayerAtIndex:IFLayoutLayerTree]];
+    default:
+      NSAssert(NO, @"unexpected layer");
+      return nil;
   }
 }
 
-- (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
+- (void)layoutDidChange;
 {
   [self recomputeFrameSize];
 }
@@ -744,8 +750,7 @@ static enum {
 
 - (NSRect)paddedBounds;
 {
-  IFTreeLayoutElement* nodeLayer = [layoutLayers objectAtIndex:IFLayoutLayerTree];
-  NSRect unpaddedBounds = (nodeLayer == (IFTreeLayoutElement*)[NSNull null]) ? NSZeroRect : [nodeLayer frame];
+  NSRect unpaddedBounds = [[self layoutLayerAtIndex:IFLayoutLayerTree] frame];
   return NSInsetRect(unpaddedBounds,-[layoutParameters gutterWidth],-3.0);
 }
 
@@ -924,85 +929,6 @@ static enum {
   [self selectNodes:newSelection puttingCursorOn:node extendingSelection:YES];
 }
 
-#pragma mark Layout
-
-- (void)enqueueLayoutNotification;
-{
-  [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeViewNeedsLayout object:self]
-                                             postingStyle:NSPostASAP
-                                             coalesceMask:NSNotificationCoalescingOnName
-                                                 forModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode,NSEventTrackingRunLoopMode,nil]];
-}
-
-- (IFTreeLayoutElement*)layoutForLayer:(IFLayoutLayer)layer;
-{
-  switch (layer) {
-    case IFLayoutLayerTree: {
-      [self removeAllTrackingRects];
-      [self removeAllToolTips];
-      
-      NSArray* roots = (NSArray*)[[layoutStrategy collect] layoutTree:[[document roots] each]];
-      for (int i = 1; i < [roots count]; ++i)
-        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + [layoutParameters gutterWidth],0)];
-      IFTreeLayoutElement* layer = [IFTreeLayoutComposite layoutCompositeWithElements:[NSSet setWithArray:roots] containingView:self];
-      
-      // Now that all elements are at their final position, establish tool tips and tracking rects
-      NSSet* leaves = [layer leavesOfKind:IFTreeLayoutElementKindNode];
-      [self addToolTipsForLayoutNodes:leaves];
-      [self addTrackingRectsForLayoutNodes:leaves];
-      return layer;
-    }
-    case IFLayoutLayerSidePane:
-      return [layoutStrategy layoutSidePaneForElement:(IFTreeLayoutSingle*)pointedElement];
-    case IFLayoutLayerSelection:
-      return [layoutStrategy layoutSelectedNodes:[self selectedNodes] cursor:[self cursorNode] forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
-    case IFLayoutLayerMarks:
-      return [layoutStrategy layoutMarks:marks forTreeLayout:[layoutLayers objectAtIndex:IFLayoutLayerTree]];
-    default:
-      NSAssert(NO, @"unexpected layer");
-      return nil;
-  }
-}
-
-- (void)updateLayout:(NSNotification*)notification;
-{
-  for (int layer = IFLayoutLayerTree; layer <= IFLayoutLayerMarks; ++layer) {
-    if (upToDateLayers & (1 << layer))
-      continue;
-    IFTreeLayoutElement* old = [layoutLayers objectAtIndex:layer];
-    if (old != (IFTreeLayoutElement*)[NSNull null])
-      [self setNeedsDisplayInRect:[old frame]];
-    IFTreeLayoutElement* new = [self layoutForLayer:layer];
-    [layoutLayers replaceObjectAtIndex:layer withObject:new];
-    upToDateLayers |= (1 << layer);
-    [self setNeedsDisplayInRect:[[layoutLayers objectAtIndex:layer] frame]];
-  }
-  [self recomputeFrameSize];
-}
-
-- (void)invalidateLayoutLayer:(int)layoutLayer;
-{
-  upToDateLayers &= ~(1 << layoutLayer);
-  [self enqueueLayoutNotification];
-}
-
-- (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point inLayerAtIndex:(int)layerIndex;
-{
-  return [[layoutLayers objectAtIndex:layerIndex] layoutElementAtPoint:point];
-}
-
-- (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;
-{
-  NSEnumerator* layerEnum = [layoutLayers reverseObjectEnumerator];
-  IFTreeLayoutElement* layer;
-  while (layer = [layerEnum nextObject]) {
-    IFTreeLayoutElement* maybeElement = [layer layoutElementAtPoint:point];
-    if (maybeElement != nil)
-      return maybeElement;
-  }
-  return nil;
-}
-
 #pragma mark Tool tips
 
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
@@ -1026,7 +952,7 @@ static enum {
 {
   [super resetCursorRects];
   [self removeAllTrackingRects];
-  [self addTrackingRectsForLayoutNodes:[[layoutLayers objectAtIndex:IFLayoutLayerTree] leavesOfKind:IFTreeLayoutElementKindNode]];
+  [self addTrackingRectsForLayoutNodes:[[self layoutLayerAtIndex:IFLayoutLayerTree] leavesOfKind:IFTreeLayoutElementKindNode]];
 }
 
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)nodes;
@@ -1127,7 +1053,7 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
 {
   const float searchDistance = 1000;
 
-  IFTreeLayoutElement* treeLayout = [layoutLayers objectAtIndex:IFLayoutLayerTree];
+  IFTreeLayoutElement* treeLayout = [self layoutLayerAtIndex:IFLayoutLayerTree];
   IFTreeLayoutSingle* refLayoutElement = [treeLayout layoutElementForNode:[self cursorNode] kind:IFTreeLayoutElementKindNode];
   NSRect refRect = [refLayoutElement frame];
   
