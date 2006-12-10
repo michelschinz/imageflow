@@ -61,7 +61,6 @@ enum IFLayoutLayer {
 
 //static NSString* IFMarkChangedContext = @"IFMarkChangedContext";
 //static NSString* IFCursorMovedContext = @"IFCursorMovedContext";
-static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (id)initWithFrame:(NSRect)frame;
@@ -102,7 +101,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)dealloc;
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
   [cursors removeObserver:self forKeyPath:@"isViewLocked"];
 
   [self unregisterDraggedTypes];
@@ -127,8 +125,8 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 {
   NSAssert(layoutParameters != nil, @"internal error");
 
+  [super awakeFromNib];
   layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
-  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
 }
 
 - (IFTreeLayoutStrategy*)layoutStrategy;
@@ -230,9 +228,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 //    [self scrollRectToVisible:[[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] frame]];
 //  } else if (context == IFMarkChangedContext)
 //    [self invalidateLayoutLayer:IFLayoutLayerMarks];
-  if (context == IFColumnWidthChangedContext)
-    [self invalidateLayout];
-  else if (context == IFViewLockedChangedContext) {
+  if (context == IFViewLockedChangedContext) {
     id oldNode = [change objectForKey:NSKeyValueChangeOldKey];
     id newNode = [change objectForKey:NSKeyValueChangeNewKey];
     NSAssert((oldNode == [NSNull null] && newNode != [NSNull null]) || (oldNode != [NSNull null] && newNode == [NSNull null]),
@@ -244,7 +240,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     [layoutElem toggleIsViewLocked];
     [self updateUnreachableNodes];
   } else
-    NSAssert1(NO, @"unexpected context: %@", context);
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }  
 
 - (void)mouseEntered:(NSEvent*)event;

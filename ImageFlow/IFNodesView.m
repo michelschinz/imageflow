@@ -16,6 +16,7 @@
 
 @implementation IFNodesView
 
+static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 
 - (id)initWithFrame:(NSRect)frame layersCount:(int)layersCount;
@@ -35,10 +36,17 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 
 - (void)dealloc;
 {
+  [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+
   OBJC_RELEASE(layoutLayers);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
+}
+
+- (void)awakeFromNib;
+{
+  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
 }
 
 - (void)setDocument:(IFDocument*)newDocument {
@@ -114,6 +122,17 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
   // do nothing by default (meant to be overridden)
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object 
+                        change:(NSDictionary *)change
+                       context:(void *)context;
+{
+  if (context == IFColumnWidthChangedContext)
+    [self invalidateLayout];
+  else
+    NSAssert(NO, @"unexpected context");
+}
+
 @end
 
 @implementation IFNodesView (Private)
@@ -122,7 +141,7 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 {
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFNodesViewNeedsLayout object:self]
                                              postingStyle:NSPostASAP
-                                             coalesceMask:NSNotificationCoalescingOnName
+                                             coalesceMask:NSNotificationCoalescingOnName|NSNotificationCoalescingOnSender
                                                  forModes:[NSArray arrayWithObjects:NSDefaultRunLoopMode,NSEventTrackingRunLoopMode,nil]];
 }
 
