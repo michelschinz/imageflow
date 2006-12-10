@@ -54,18 +54,20 @@ let rec rewriteOp = function
       Op("unsharp-mask", [|Op("resample", [|i; Num f|]); y; Num (r *. f)|])
 
         (* Units *)
-  | Op("color-controls", [|i; Num 1.; Num 0.; Num 1.|]) -> i
+
+        (* Note: it is generally dangerous to remove operators, as *)
+        (* this might prevent error propagation from working correctly. *)
+        (* Therefore, unit rules should only be defined when the produced *)
+        (* expression cannot itself raise an error. *)
+
   | Op("gaussian-blur", [|Op("constant-color", _) as cc; _|]) -> cc
   | Op("resample", [|Op("constant-color", _) as cc; _|]) -> cc
   | Op("resample", [|Op("empty", _) as empty; _|]) -> empty
   | Op("resample", [|Op("nop", _) as nop; _|]) -> nop
 
         (* Zeroes *)
-  | Op("gaussian-blur", [|i; Num 0.|]) -> i
   | Op("opacity", [|_; Num 0.|]) -> Image (Image.empty)
   | Op("paint", [|_; Array [| |] |]) -> Image (Image.empty)
-  | Op("resample", [| i; Num 1. |]) -> i
-  | Op("translate", [|i; Point p|]) when p = Point.zero -> i
 
         (* Extent *)
   | Op("extent", [|Op("blend", [|i1; i2; _|])|]) ->
