@@ -17,6 +17,9 @@
 
 @implementation IFConfiguredFilter
 
+static NSString* IFEnvironmentKeySetDidChangeContext = @"IFEnvironmentKeySetDidChangeContext";
+static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidChangeContext";
+
 + (IFConfiguredFilter*)ghostFilter;
 {
   return [[[self alloc] initWithFilter:[IFFilter filterForName:@"nop"] environment:[IFEnvironment environment]] autorelease];
@@ -36,7 +39,7 @@
   expression = nil;
   
   [self startObservingEnvironmentKeys:[filterEnvironment keys]];
-  [filterEnvironment addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+  [filterEnvironment addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFEnvironmentKeySetDidChangeContext];
   
   return self;
 }
@@ -107,7 +110,7 @@
   NSEnumerator* keysEnum = [keys objectEnumerator];
   NSString* key;
   while (key = [keysEnum nextObject])
-    [filterEnvironment addObserver:self forKeyPath:key options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+    [filterEnvironment addObserver:self forKeyPath:key options:0 context:IFEnvironmentValueDidChangeContext];
 }
 
 - (void)stopObservingEnvironmentKeys:(NSSet*)keys;
@@ -120,7 +123,7 @@
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if ([keyPath isEqualToString:@"keys"]) {
+  if (context == IFEnvironmentKeySetDidChangeContext) {
     NSSet* oldKeys = [change objectForKey:NSKeyValueChangeOldKey];
     NSSet* newKeys = [change objectForKey:NSKeyValueChangeNewKey];
     int changeKind = [(NSNumber*)[change objectForKey:NSKeyValueChangeKindKey] intValue];
@@ -135,9 +138,10 @@
         NSAssert(NO, @"unexpected change kind");
         break;
     }
-  } else {
+  } else if (context == IFEnvironmentValueDidChangeContext) {
     [self updateExpression]; // TODO only if key is part of expression
-  }
+  } else
+    NSAssert(NO, @"unexpected context");
 }
 
 - (void)updateExpression;
