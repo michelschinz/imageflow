@@ -16,13 +16,13 @@
 }
 
 + (id)layoutConnectorWithNode:(IFTreeNode*)theNode
-               containingView:(IFTreeView*)theContainingView
+               containingView:(IFNodesView*)theContainingView
                           tag:(NSString*)theTag
                     leftReach:(float)theLeftReach
                    rightReach:(float)theRightReach;
 
 - (id)initWithNode:(IFTreeNode*)theNode
-    containingView:(IFTreeView*)theContainingView
+    containingView:(IFNodesView*)theContainingView
                tag:(NSString*)theTag
          leftReach:(float)theLeftReach
         rightReach:(float)theRightReach;

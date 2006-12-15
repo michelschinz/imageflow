@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeLayoutNode.h"
-#import "IFTreeView.h"
+#import "IFNodesView.h"
 #import "IFErrorConstantExpression.h"
 
 @interface IFTreeLayoutNode (Private)
@@ -42,12 +42,12 @@ static NSImage* lockedViewImage = nil;
   lockedViewImage = [NSImage imageNamed:@"locked_view"];
 }
 
-+ (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
++ (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   return [[[self alloc] initWithNode:theNode containingView:theContainingView] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithNode:theNode containingView:theContainingView]) return nil;
   evaluator = [[theContainingView document] evaluator];

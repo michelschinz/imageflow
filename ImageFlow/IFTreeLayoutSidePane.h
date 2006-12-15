@@ -9,8 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeLayoutOrnament.h"
+#import "IFTreeLayoutStrategy.h"
 
 @interface IFTreeLayoutSidePane : IFTreeLayoutOrnament {
+  IFTreeLayoutStrategy* layoutStrategy;
   NSRect deleteButtonFrame, foldButtonFrame, menuButtonFrame;
 }
 

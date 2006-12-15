@@ -8,6 +8,7 @@
 
 #import "IFTreeLayoutStrategy.h"
 
+#import "IFNodesView.h"
 #import "IFTreeLayoutInputConnector.h"
 #import "IFTreeLayoutOutputConnector.h"
 #import "IFTreeLayoutMark.h"
@@ -18,7 +19,7 @@
 
 @implementation IFTreeLayoutStrategy
 
-- (id)initWithView:(IFTreeView*)theView parameters:(IFTreeLayoutParameters*)theLayoutParams;
+- (id)initWithView:(IFNodesView*)theView parameters:(IFTreeLayoutParameters*)theLayoutParams;
 {
   if (![super init])
     return nil;

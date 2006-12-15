@@ -132,7 +132,7 @@ enum IFLayoutLayer {
 
 - (IFTreeLayoutElement*)layoutForNode:(IFTreeNode*)node;
 {
-  return [IFTreeLayoutNode layoutNodeWithNode:node containingView:(id)self]; // HACK
+  return [IFTreeLayoutNode layoutNodeWithNode:node containingView:self];
 }
 
 - (IFTreeLayoutElement*)layoutForNodes:(NSArray*)allNodes;
@@ -159,7 +159,7 @@ enum IFLayoutLayer {
 
     if ((i + 1) % (int)columns == 0 || i + 1 == count) {
       [[rows do] translateBy:NSMakePoint(0,maxHeight + yMargin)];
-      [rows addObject:[IFTreeLayoutComposite layoutCompositeWithElements:currentRow containingView:(id)self]]; // HACK
+      [rows addObject:[IFTreeLayoutComposite layoutCompositeWithElements:currentRow containingView:self]];
       currentRow = [NSMutableSet set];
   
       x = gutter;
@@ -170,7 +170,7 @@ enum IFLayoutLayer {
     }
   }
   
-  return [IFTreeLayoutComposite layoutCompositeWithElements:rows containingView:(id)self]; // HACK
+  return [IFTreeLayoutComposite layoutCompositeWithElements:rows containingView:self];
 }
 
 @end

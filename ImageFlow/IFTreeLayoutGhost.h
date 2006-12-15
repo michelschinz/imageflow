@@ -18,6 +18,6 @@
 
 + (NSArrayController*)arrayControllerForFilter:(IFConfiguredFilter*)filter;
 
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 
 @end

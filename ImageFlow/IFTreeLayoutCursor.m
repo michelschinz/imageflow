@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeLayoutCursor.h"
-#import "IFTreeView.h"
+#import "IFNodesView.h"
 
 @implementation IFTreeLayoutCursor
 

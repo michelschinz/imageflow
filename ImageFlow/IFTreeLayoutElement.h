@@ -18,16 +18,16 @@ typedef enum {
 } IFTreeLayoutElementKind;
 
 @class IFTreeLayoutSingle;
-@class IFTreeView;
+@class IFNodesView;
 @interface IFTreeLayoutElement : NSObject {
-  IFTreeView* containingView; // not retained
+  IFNodesView* containingView; // not retained
   NSPoint translation;
   NSRect bounds;
 }
 
-- (id)initWithContainingView:(IFTreeView*)theContainingView;
+- (id)initWithContainingView:(IFNodesView*)theContainingView;
 
-- (IFTreeView*)containingView;
+- (IFNodesView*)containingView;
 
 - (void)setBounds:(NSRect)newBounds;
 - (NSRect)bounds;

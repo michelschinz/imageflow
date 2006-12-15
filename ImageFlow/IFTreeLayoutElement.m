@@ -15,7 +15,7 @@
   return ![theKey isEqualToString:@"bounds"] && [super automaticallyNotifiesObserversForKey:theKey];
 }
 
-- (id)initWithContainingView:(IFTreeView*)theContainingView;
+- (id)initWithContainingView:(IFNodesView*)theContainingView;
 {
   if (![super init]) return nil;
   containingView = theContainingView;
@@ -24,7 +24,7 @@
   return self;
 }
 
-- (IFTreeView*)containingView;
+- (IFNodesView*)containingView;
 {
   return containingView;
 }

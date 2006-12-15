@@ -12,7 +12,7 @@
 
 @implementation IFTreeLayoutSingle
 
-+ (id)layoutSingleWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
++ (id)layoutSingleWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   IFTreeLayoutSingle* layoutElem = [theNode isGhost]
   ? [[IFTreeLayoutGhost alloc] initWithNode:theNode containingView:theContainingView]
@@ -20,7 +20,7 @@
   return [layoutElem autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithContainingView:theContainingView]) return nil;
   node = theNode;

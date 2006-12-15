@@ -15,8 +15,8 @@
   NSBezierPath* outlinePath;
 }
 
-+ (id)layoutSingleWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)containingView;
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)containingView;
++ (id)layoutSingleWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)containingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)containingView;
 
 - (void)setOutlinePath:(NSBezierPath*)newOutlinePath;
 - (NSBezierPath*)outlinePath;

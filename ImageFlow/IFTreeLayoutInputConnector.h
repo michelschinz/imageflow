@@ -14,6 +14,6 @@
 
 }
 
-+ (id)layoutConnectorWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
++ (id)layoutConnectorWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 
 @end

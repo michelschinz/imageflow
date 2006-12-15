@@ -24,34 +24,33 @@
 {
   if (![super initWithBase:theBase])
     return nil;
-  [self setBounds:[[[containingView layoutStrategy] sidePanePath] bounds]];
+  layoutStrategy = [(IFTreeView*)containingView layoutStrategy];
+  [self setBounds:[[layoutStrategy sidePanePath] bounds]];
   return self;
 }
 
 - (void)drawForLocalRect:(NSRect)rect;
 {  
-  IFTreeLayoutStrategy* strategy = [containingView layoutStrategy];
-
   [[[containingView layoutParameters] sidePaneColor] set];
-  [[strategy sidePanePath] fill];
+  [[layoutStrategy sidePanePath] fill];
   
   const float buttonWidth = 11.0, buttonHeight = 11.0;
   const float xMargin = 2.0, yMargin = 2.0, yGap = 2.0;
   
   NSPoint origin = [self bounds].origin;
   menuButtonFrame = NSOffsetRect(NSMakeRect(xMargin, yMargin, buttonWidth, buttonHeight),origin.x,origin.y);
-  NSButtonCell* menuButtonCell = [strategy menuButtonCell];
+  NSButtonCell* menuButtonCell = [layoutStrategy menuButtonCell];
   [menuButtonCell drawWithFrame:menuButtonFrame inView:containingView];
   [menuButtonCell setRepresentedObject:[base node]];
   
   foldButtonFrame = NSOffsetRect(menuButtonFrame,0,buttonHeight + yGap);
-  NSButtonCell* foldButtonCell = [strategy foldButtonCell];
+  NSButtonCell* foldButtonCell = [layoutStrategy foldButtonCell];
   [foldButtonCell setState:[[base node] isFolded]];
   [foldButtonCell drawWithFrame:foldButtonFrame inView:containingView];
   [foldButtonCell setRepresentedObject:[base node]];
 
   deleteButtonFrame = NSOffsetRect(foldButtonFrame,0,buttonHeight + yGap);
-  NSButtonCell* deleteButtonCell = [strategy deleteButtonCell];
+  NSButtonCell* deleteButtonCell = [layoutStrategy deleteButtonCell];
   [deleteButtonCell drawWithFrame:deleteButtonFrame inView:containingView];
   [deleteButtonCell setRepresentedObject:[base node]];
 }
@@ -60,7 +59,7 @@
 {
   NSPoint offset = [self translation];
   NSPoint localPoint = NSMakePoint(thePoint.x - offset.x, thePoint.y - offset.y);
-  return NSPointInRect(localPoint, [self bounds]) && [[[containingView layoutStrategy] sidePanePath] containsPoint:localPoint] ? self : nil;
+  return NSPointInRect(localPoint, [self bounds]) && [[layoutStrategy sidePanePath] containsPoint:localPoint] ? self : nil;
 }
 
 - (void)activateWithMouseDown:(NSEvent*)event;
@@ -70,11 +69,11 @@
 
   NSButtonCell* clickedCell = nil;
   if (NSPointInRect(selfLoc, deleteButtonFrame))
-    clickedCell = [[containingView layoutStrategy] deleteButtonCell];
+    clickedCell = [layoutStrategy deleteButtonCell];
   else if (NSPointInRect(selfLoc, foldButtonFrame))
-    clickedCell = [[containingView layoutStrategy] foldButtonCell];
+    clickedCell = [layoutStrategy foldButtonCell];
   else if (NSPointInRect(selfLoc, menuButtonFrame))
-    clickedCell = [[containingView layoutStrategy] menuButtonCell];
+    clickedCell = [layoutStrategy menuButtonCell];
 
   if (clickedCell == nil)
     return;
@@ -92,7 +91,7 @@
 
 - (NSRect)deleteButtonFrame;
 {
-  NSButtonCell* cell = [[containingView layoutStrategy] deleteButtonCell];
+  NSButtonCell* cell = [layoutStrategy deleteButtonCell];
   NSSize cellSize = [cell cellSize];
   float offsetX = floor((NSWidth([self bounds]) - cellSize.width) / 2.0);
   return NSMakeRect(NSMinX([self bounds]) + offsetX,NSMinY([self bounds]) + 2,cellSize.width,cellSize.height);

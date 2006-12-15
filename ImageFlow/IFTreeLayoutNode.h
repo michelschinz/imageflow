@@ -27,8 +27,8 @@
   NSRect expressionExtent;
 }
 
-+ (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
++ (id)layoutNodeWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 
 - (void)setIsViewLocked:(BOOL)newValue;
 - (void)toggleIsViewLocked;

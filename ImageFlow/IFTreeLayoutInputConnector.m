@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeLayoutInputConnector.h"
-#import "IFTreeView.h"
+#import "IFNodesView.h"
 
 @interface IFTreeLayoutInputConnector (Private)
 - (void)computeOutlinePath;
@@ -15,12 +15,12 @@
 
 @implementation IFTreeLayoutInputConnector
 
-+ (id)layoutConnectorWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
++ (id)layoutConnectorWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   return [[[self alloc] initWithNode:theNode containingView:theContainingView] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithNode:theNode containingView:theContainingView])
     return nil;

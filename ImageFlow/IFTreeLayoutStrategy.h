@@ -12,10 +12,10 @@
 #import "IFTreeLayoutNode.h"
 #import "IFTreeLayoutParameters.h"
 
-@class IFTreeView;
+@class IFNodesView;
 
 @interface IFTreeLayoutStrategy : NSObject {
-  IFTreeView* view; // not retained
+  IFNodesView* view; // not retained
   IFTreeLayoutParameters* layoutParams;
   NSMutableDictionary* layoutNodes;
   
@@ -25,7 +25,7 @@
   NSBezierPath* sidePanePath;
 }
 
-- (id)initWithView:(IFTreeView*)theView parameters:(IFTreeLayoutParameters*)theLayoutParams;
+- (id)initWithView:(IFNodesView*)theView parameters:(IFTreeLayoutParameters*)theLayoutParams;
 - (IFTreeLayoutElement*)layoutTree:(IFTreeNode*)root;
 - (IFTreeLayoutNode*)layoutNodeForTreeNode:(IFTreeNode*)theNode;
 - (IFTreeLayoutElement*)layoutInputConnectorForTreeNode:(IFTreeNode*)node;

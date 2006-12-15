@@ -15,8 +15,8 @@
 }
 
 + (IFTreeLayoutComposite*)layoutComposite;
-+ (IFTreeLayoutComposite*)layoutCompositeWithElements:(NSSet*)theElements containingView:(IFTreeView*)theContainingView;
++ (IFTreeLayoutComposite*)layoutCompositeWithElements:(NSSet*)theElements containingView:(IFNodesView*)theContainingView;
 
-- (id)initWithElements:(NSSet*)theElements containingView:(IFTreeView*)theContainingView;
+- (id)initWithElements:(NSSet*)theElements containingView:(IFNodesView*)theContainingView;
 
 @end

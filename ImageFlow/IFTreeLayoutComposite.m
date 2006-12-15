@@ -16,12 +16,12 @@
   return [self layoutCompositeWithElements:[NSSet set] containingView:nil];
 }
 
-+ (IFTreeLayoutComposite*)layoutCompositeWithElements:(NSSet*)theElements containingView:(IFTreeView*)theContainingView;
++ (IFTreeLayoutComposite*)layoutCompositeWithElements:(NSSet*)theElements containingView:(IFNodesView*)theContainingView;
 {
   return [[[self alloc] initWithElements:theElements containingView:theContainingView] autorelease];
 }
 
--(id)initWithElements:(NSSet*)theElements containingView:(IFTreeView*)theContainingView;
+-(id)initWithElements:(NSSet*)theElements containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithContainingView:theContainingView])
     return nil;

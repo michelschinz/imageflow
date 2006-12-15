@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeLayoutMark.h"
-#import "IFTreeView.h"
+#import "IFNodesView.h"
 
 @implementation IFTreeLayoutMark
 

@@ -40,7 +40,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
   return controller;
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFTreeView*)theContainingView;
+- (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithNode:theNode containingView:theContainingView]) return nil;
   
