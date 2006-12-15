@@ -19,6 +19,8 @@
   IBOutlet IFPaletteView* paletteView;
 }
 
-- (IFTreeView*)treeView;
+- (void)setDocument:(IFDocument*)document;
+
+- (IFTreeCursorPair*)cursors;
 
 @end

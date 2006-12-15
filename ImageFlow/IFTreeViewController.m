@@ -15,9 +15,15 @@
   return [super initWithViewNibName:@"IFTreeView"];
 }
 
-- (IFTreeView*)treeView;
+- (void)setDocument:(IFDocument*)document;
 {
-  return treeView;
+  [treeView setDocument:document];
+  [paletteView setDocument:document];
+}
+
+- (IFTreeCursorPair*)cursors;
+{
+  return [treeView cursors];
 }
 
 @end

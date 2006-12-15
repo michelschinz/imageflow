@@ -32,29 +32,12 @@
   [window setFrameAutosaveName:@"IFTreeView"];
   [window setContentView:[treeViewController topLevelView]];
   
-  [[treeViewController treeView] setDocument:[self document]];
+  [treeViewController setDocument:[self document]];
 }
 
 - (IFTreeCursorPair*)cursorPair;
 {
-  return [[treeViewController treeView] cursors];
-}
-
-- (NSRect)windowWillUseStandardFrame:(NSWindow*)window defaultFrame:(NSRect)defaultFrame;
-{
-  IFTreeView* treeView = [treeViewController treeView];
-  NSRect windowFrame = [window frame];
-  NSSize visibleViewSize = [treeView visibleRect].size;
-  NSSize idealViewSize = [treeView idealSize];
-  NSSize minSize = [window minSize];
-
-  float deltaW = fmax(idealViewSize.width - visibleViewSize.width,  minSize.width - NSWidth(windowFrame));
-  float deltaH = fmax(idealViewSize.height - visibleViewSize.height, minSize.height - NSHeight(windowFrame));
-
-  windowFrame.size.width += deltaW;
-  windowFrame.size.height += deltaH;
-  windowFrame.origin.y -= deltaH;
-  return windowFrame;
+  return [treeViewController cursors];
 }
 
 @end

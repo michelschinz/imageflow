@@ -18,6 +18,10 @@
 		FA0606240914B1FF002A2527 /* IFExpressionVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */; };
 		FA0607EF09151D30002A2527 /* IFWildcardExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0607ED09151D30002A2527 /* IFWildcardExpression.m */; };
 		FA0607F809151F8C002A2527 /* IFExpressionPlugger.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */; };
+		FA07FE130B3145FA00057249 /* surrogate_parent_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */; };
+		FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */; };
+		FA07FECD0B318D5800057249 /* surrogate_parent_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */; };
+		FA07FECE0B318D5800057249 /* surrogate_parent_4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FECB0B318D5800057249 /* surrogate_parent_4.jpg */; };
 		FA0A53540ACB906E0077A945 /* IFColorControlsFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 46457A3A09A88030009825E9 /* IFColorControlsFilterDelegate.m */; };
 		FA0A53550ACB90740077A945 /* IFUnsharpMaskFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5250C38409A87DBA0089B4FC /* IFUnsharpMaskFilterDelegate.m */; };
 		FA0A53560ACB90800077A945 /* IFUnsharpMaskFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = 5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */; };
@@ -267,6 +271,10 @@
 		FA0607ED09151D30002A2527 /* IFWildcardExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFWildcardExpression.m; sourceTree = "<group>"; };
 		FA0607F509151F8C002A2527 /* IFExpressionPlugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionPlugger.h; sourceTree = "<group>"; };
 		FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionPlugger.m; sourceTree = "<group>"; };
+		FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_1.jpg; sourceTree = "<group>"; };
+		FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_2.jpg; sourceTree = "<group>"; };
+		FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_3.jpg; sourceTree = "<group>"; };
+		FA07FECB0B318D5800057249 /* surrogate_parent_4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_4.jpg; sourceTree = "<group>"; };
 		FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFSavePanelAccessoryView.nib; sourceTree = "<group>"; };
 		FA0D6D9608EC351700F023E5 /* IFBitmapSource.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBitmapSource.nib; sourceTree = "<group>"; };
 		FA11DD2608F245E500A3AF61 /* IFPreferences.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFPreferences.nib; sourceTree = "<group>"; };
@@ -1026,6 +1034,10 @@
 		FA68E173092E04EF009D02CB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */,
+				FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */,
+				FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */,
+				FA07FECB0B318D5800057249 /* surrogate_parent_4.jpg */,
 				FA9E24580B03B10F001EC346 /* locked_view.png */,
 				FA9E241E0B03ADE3001EC346 /* alias_arrow.png */,
 				FA2E97370AFFB591006AE6E8 /* mask_tag.png */,
@@ -1567,6 +1579,10 @@
 				FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */,
 				FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */,
 				FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */,
+				FA07FE130B3145FA00057249 /* surrogate_parent_1.jpg in Resources */,
+				FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */,
+				FA07FECD0B318D5800057249 /* surrogate_parent_3.jpg in Resources */,
+				FA07FECE0B318D5800057249 /* surrogate_parent_4.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

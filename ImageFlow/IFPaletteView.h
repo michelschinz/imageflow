@@ -12,7 +12,8 @@
 #import "IFTreeLayoutParameters.h"
 
 @interface IFPaletteView : IFNodesView {
-
+  NSArray* surrogateParentFilters;
+  NSArray* templateNodes;
 }
 
 - (IFTreeLayoutParameters*)layoutParameters;
