@@ -272,29 +272,29 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     [pasteBoard setData:data forType:IFMarkPboardType];
 
     [self dragImage:[clickedElement dragImage] at:[clickedElement frame].origin offset:NSZeroSize event:theEvent pasteboard:pasteBoard source:self slideBack:YES];
-  } else {
+  } else if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
+    IFTreeNode* clickedNode = [clickedElement node];
+    if ([unreachableNodes containsObject:clickedNode]) {
+      NSBeep();
+      return;
+    }
     BOOL extendSelection = ([theEvent modifierFlags] & NSShiftKeyMask) != 0;
     switch ([theEvent clickCount]) {
       case 1:
-        if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]])
-          [self moveToNodeRepresentedBy:clickedElement extendingSelection:extendSelection];
+        [self moveToNodeRepresentedBy:clickedElement extendingSelection:extendSelection];
         [clickedElement activateWithMouseDown:theEvent];
         break;
       case 2:
-        if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
-          IFTreeNode* clickedNode = [clickedElement node];
-          [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
-        }
+        [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
         break;
       case 3:
-        if ([clickedElement isKindOfClass:[IFTreeLayoutSingle class]]) {
-          IFTreeNode* clickedNode = [clickedElement node];
-          [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
-        }
+        [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
         break;
       default:
         ; // ignore
     }
+  } else {
+    [clickedElement activateWithMouseDown:theEvent];
   }
 }
 
