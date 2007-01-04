@@ -9,7 +9,21 @@
 #import "IFChannelToMaskFilterDelegate.h"
 #import "IFEnvironment.h"
 #import "IFPair.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
+
 @implementation IFChannelToMaskFilterDelegate
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
+                               returnType:[IFBasicType maskType]]] retain];
+  }
+  return types;
+}
 
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;
 {

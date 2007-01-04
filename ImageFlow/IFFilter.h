@@ -17,6 +17,9 @@
 @class IFImageView;
 
 @protocol IFFilterDelegate
+// Typing
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env; // mandatory
+
 // Tree view support
 - (NSString*)nameOfParentAtIndex:(int)index;  // mandatory if more than one parents, ignored otherwise
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;  // optional
@@ -69,6 +72,7 @@
 - (NSObject<IFFilterDelegate>*)delegate;
 
 - (BOOL)isGhost;
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
 - (BOOL)acceptsParents:(int)parentsCount;
 - (BOOL)acceptsChildren:(int)childsCount;
 

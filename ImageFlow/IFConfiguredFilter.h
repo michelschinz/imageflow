@@ -27,6 +27,7 @@
 - (IFEnvironment*)environment;
 
 - (BOOL)isGhost;
+- (NSArray*)potentialTypes;
 - (BOOL)acceptsParents:(int)parentsCount;
 - (BOOL)acceptsChildren:(int)childsCount;
 - (IFExpression*)expression;

@@ -9,8 +9,21 @@
 #import "IFPrintSinkDelegate.h"
 #import "IFPrintView.h"
 #import "IFDocument.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFPrintSinkDelegate
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
+                               returnType:[IFBasicType actionType]]] retain];
+  }
+  return types;
+}
 
 - (NSString*)exporterKind;
 {

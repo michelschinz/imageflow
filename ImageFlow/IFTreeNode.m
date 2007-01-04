@@ -12,6 +12,10 @@
 #import "IFXMLCoder.h"
 #import "IFExpressionPlugger.h"
 
+@interface IFTreeNode (Private)
+- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
+@end
+
 @implementation IFTreeNode
 
 static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedContext";
@@ -116,22 +120,9 @@ const unsigned int ID_NONE = ~0;
   return filter;
 }
 
-- (void)updateExpression;
+- (NSArray*)potentialTypes;
 {
-  if (filter == nil)
-    return;
-  NSMutableDictionary* parentEnv = [NSMutableDictionary dictionary];
-  for (int i = 0; i < [parents count]; ++i)
-    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
-  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentEnv]];
-}
-
-- (void)setExpression:(IFExpression*)newExpression;
-{
-  if (newExpression == expression)
-    return;
-  [expression release];
-  expression = [newExpression retain];
+  return [filter potentialTypes];
 }
 
 - (IFExpression*)expression;
@@ -184,12 +175,6 @@ const unsigned int ID_NONE = ~0;
   return [filter acceptsChildren:outputCount];
 }
 
-- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
-{
-  [accumulator addObject:self];
-  [[parents do] collectAncestorsInSet:accumulator];
-}
-
 - (NSSet*)ancestors;
 {
   NSMutableSet* result = [NSMutableSet set];
@@ -228,6 +213,30 @@ const unsigned int ID_NONE = ~0;
   [self updateExpression];
 }
 
+#pragma mark -
+#pragma mark Protected
+
+- (void)updateExpression;
+{
+  if (filter == nil)
+    return;
+  NSMutableDictionary* parentEnv = [NSMutableDictionary dictionary];
+  for (int i = 0; i < [parents count]; ++i)
+    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
+  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentEnv]];
+}
+
+- (void)setExpression:(IFExpression*)newExpression;
+{
+  if (newExpression == expression)
+    return;
+  [expression release];
+  expression = [newExpression retain];
+}
+
+#pragma mark -
+#pragma mark Debugging
+
 - (void)debugCheckLinks;
 {
   NSArray* myParents = [self parents];
@@ -236,6 +245,16 @@ const unsigned int ID_NONE = ~0;
     [parent debugCheckLinks];
     NSAssert3([parent child] == self,@"invalid child for node %@: should be %@, is %@",parent,self,[parent child]);
   }
+}
+
+@end
+
+@implementation IFTreeNode (Private)
+
+- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
+{
+  [accumulator addObject:self];
+  [[parents do] collectAncestorsInSet:accumulator];
 }
 
 @end

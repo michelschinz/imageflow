@@ -14,6 +14,8 @@
 #import "IFAnnotationRect.h"
 #import "IFPair.h"
 #import "IFBlendMode.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFBlendFilterDelegate
 
@@ -25,6 +27,17 @@ static NSArray* parentNames = nil;
     return; // avoid repeated initialisation
 
   parentNames = [[NSArray arrayWithObjects:@"background",@"foreground",nil] retain];
+}
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFBasicType imageType],[IFBasicType imageType],nil]
+                               returnType:[IFBasicType imageType]]] retain];
+  }
+  return types;
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

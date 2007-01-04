@@ -74,6 +74,11 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
   return [filter isGhost];
 }
 
+- (NSArray*)potentialTypes;
+{
+  return [filter potentialTypesWithEnvironment:filterEnvironment];
+}
+
 - (BOOL)acceptsParents:(int)parentsCount;
 {
   return [filter acceptsParents:parentsCount];

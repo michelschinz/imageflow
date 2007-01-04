@@ -27,6 +27,14 @@
 		FA0A53560ACB90800077A945 /* IFUnsharpMaskFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = 5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */; };
 		FA0A53570ACB90810077A945 /* IFColorControlsFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = 46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */; };
 		FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */; };
+		FA0CF68E0B4CD8550070953C /* IFBasicType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF68C0B4CD8550070953C /* IFBasicType.m */; };
+		FA0CF68F0B4CD85D0070953C /* IFType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF67E0B4CD8180070953C /* IFType.m */; };
+		FA0CF69D0B4CD96F0070953C /* IFTypeVar.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF69B0B4CD96F0070953C /* IFTypeVar.m */; };
+		FA0CF6A30B4CD99B0070953C /* IFFunType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF6A10B4CD99B0070953C /* IFFunType.m */; };
+		FA0CF6AB0B4CD9D70070953C /* IFArrayType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF6A90B4CD9D70070953C /* IFArrayType.m */; };
+		FA0CF78F0B4CFDE20070953C /* IFInvertFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF78D0B4CFDE20070953C /* IFInvertFilterDelegate.m */; };
+		FA0CF8460B4D0DEE0070953C /* IFDropShadowFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF8440B4D0DEE0070953C /* IFDropShadowFilterDelegate.m */; };
+		FA0CF8590B4D0F100070953C /* IFGhostFilterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF8570B4D0F100070953C /* IFGhostFilterDelegate.m */; };
 		FA0D6D9708EC351700F023E5 /* IFBitmapSource.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA0D6D9608EC351700F023E5 /* IFBitmapSource.nib */; };
 		FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA11DD2608F245E500A3AF61 /* IFPreferences.nib */; };
 		FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */; };
@@ -276,6 +284,23 @@
 		FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_3.jpg; sourceTree = "<group>"; };
 		FA07FECB0B318D5800057249 /* surrogate_parent_4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_4.jpg; sourceTree = "<group>"; };
 		FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFSavePanelAccessoryView.nib; sourceTree = "<group>"; };
+		FA0CF67D0B4CD8180070953C /* IFType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFType.h; sourceTree = "<group>"; };
+		FA0CF67E0B4CD8180070953C /* IFType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFType.m; sourceTree = "<group>"; };
+		FA0CF68B0B4CD8550070953C /* IFBasicType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBasicType.h; sourceTree = "<group>"; };
+		FA0CF68C0B4CD8550070953C /* IFBasicType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBasicType.m; sourceTree = "<group>"; };
+		FA0CF6940B4CD8880070953C /* IFTypeTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTypeTags.h; sourceTree = "<group>"; };
+		FA0CF69A0B4CD96F0070953C /* IFTypeVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTypeVar.h; sourceTree = "<group>"; };
+		FA0CF69B0B4CD96F0070953C /* IFTypeVar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTypeVar.m; sourceTree = "<group>"; };
+		FA0CF6A00B4CD99B0070953C /* IFFunType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFunType.h; sourceTree = "<group>"; };
+		FA0CF6A10B4CD99B0070953C /* IFFunType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFunType.m; sourceTree = "<group>"; };
+		FA0CF6A80B4CD9D70070953C /* IFArrayType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFArrayType.h; sourceTree = "<group>"; };
+		FA0CF6A90B4CD9D70070953C /* IFArrayType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFArrayType.m; sourceTree = "<group>"; };
+		FA0CF78C0B4CFDE20070953C /* IFInvertFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFInvertFilterDelegate.h; sourceTree = "<group>"; };
+		FA0CF78D0B4CFDE20070953C /* IFInvertFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFInvertFilterDelegate.m; sourceTree = "<group>"; };
+		FA0CF8430B4D0DEE0070953C /* IFDropShadowFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDropShadowFilterDelegate.h; sourceTree = "<group>"; };
+		FA0CF8440B4D0DEE0070953C /* IFDropShadowFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDropShadowFilterDelegate.m; sourceTree = "<group>"; };
+		FA0CF8560B4D0F100070953C /* IFGhostFilterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGhostFilterDelegate.h; sourceTree = "<group>"; };
+		FA0CF8570B4D0F100070953C /* IFGhostFilterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGhostFilterDelegate.m; sourceTree = "<group>"; };
 		FA0D6D9608EC351700F023E5 /* IFBitmapSource.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBitmapSource.nib; sourceTree = "<group>"; };
 		FA11DD2608F245E500A3AF61 /* IFPreferences.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFPreferences.nib; sourceTree = "<group>"; };
 		FA11DDA408F24EF800A3AF61 /* IFPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPreferencesWindowController.h; sourceTree = "<group>"; };
@@ -778,6 +803,33 @@
 			name = Bitmap;
 			sourceTree = "<group>";
 		};
+		FA0CF6810B4CD81E0070953C /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				FA0CF6940B4CD8880070953C /* IFTypeTags.h */,
+				FA0CF67D0B4CD8180070953C /* IFType.h */,
+				FA0CF67E0B4CD8180070953C /* IFType.m */,
+				FA0CF68B0B4CD8550070953C /* IFBasicType.h */,
+				FA0CF68C0B4CD8550070953C /* IFBasicType.m */,
+				FA0CF69A0B4CD96F0070953C /* IFTypeVar.h */,
+				FA0CF69B0B4CD96F0070953C /* IFTypeVar.m */,
+				FA0CF6A00B4CD99B0070953C /* IFFunType.h */,
+				FA0CF6A10B4CD99B0070953C /* IFFunType.m */,
+				FA0CF6A80B4CD9D70070953C /* IFArrayType.h */,
+				FA0CF6A90B4CD9D70070953C /* IFArrayType.m */,
+			);
+			name = Types;
+			sourceTree = "<group>";
+		};
+		FA0CF8470B4D0DF80070953C /* Drop Shadow */ = {
+			isa = PBXGroup;
+			children = (
+				FA0CF8430B4D0DEE0070953C /* IFDropShadowFilterDelegate.h */,
+				FA0CF8440B4D0DEE0070953C /* IFDropShadowFilterDelegate.m */,
+			);
+			name = "Drop Shadow";
+			sourceTree = "<group>";
+		};
 		FA11DCCC08F23EB800A3AF61 /* Profiles */ = {
 			isa = PBXGroup;
 			children = (
@@ -1062,6 +1114,7 @@
 		FA690ACE090525750096B97D /* Language */ = {
 			isa = PBXGroup;
 			children = (
+				FA0CF6810B4CD81E0070953C /* Types */,
 				FA0607EB09151CBC002A2527 /* Expressions */,
 				FA22EC550980EE2200C79632 /* Environment */,
 				FAE5520A090D62BC000DC147 /* Evaluator */,
@@ -1152,6 +1205,8 @@
 			children = (
 				FAE54F71090D1400000DC147 /* IFGhostFilterController.h */,
 				FAE54F72090D1400000DC147 /* IFGhostFilterController.m */,
+				FA0CF8560B4D0F100070953C /* IFGhostFilterDelegate.h */,
+				FA0CF8570B4D0F100070953C /* IFGhostFilterDelegate.m */,
 			);
 			name = Ghost;
 			sourceTree = "<group>";
@@ -1197,13 +1252,15 @@
 			name = Variables;
 			sourceTree = "<group>";
 		};
-		FAEF26940AE792A600BD8954 /* Invert mask */ = {
+		FAEF26940AE792A600BD8954 /* Invert */ = {
 			isa = PBXGroup;
 			children = (
 				FAEF26900AE7929B00BD8954 /* IFMaskInvertCIFilter.h */,
 				FAEF26910AE7929B00BD8954 /* IFMaskInvertCIFilter.m */,
+				FA0CF78C0B4CFDE20070953C /* IFInvertFilterDelegate.h */,
+				FA0CF78D0B4CFDE20070953C /* IFInvertFilterDelegate.m */,
 			);
-			name = "Invert mask";
+			name = Invert;
 			sourceTree = "<group>";
 		};
 		FAF2532A090F4A15000AA819 /* Crop */ = {
@@ -1311,19 +1368,20 @@
 		FAF97C2D08EBF27200FC2B61 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
-				FA29D2EE0B1EB5FA004AE43E /* Window */,
-				FAE54F75090D1406000DC147 /* Ghost */,
-				FAF2532A090F4A15000AA819 /* Crop */,
-				FA2D39E1094D777B0068F20A /* Gaussian blur */,
 				FA1BF2380918E67F00E288BB /* Blend */,
-				FA1BF71309194AAA00E288BB /* Threshold */,
-				5250C38709A87DE50089B4FC /* Unsharp mask */,
 				FA256ABB0AE37EEC00077863 /* Channel to mask */,
-				FAEF26940AE792A600BD8954 /* Invert mask */,
+				46457A3D09A88038009825E9 /* Color Controls */,
+				FAF2532A090F4A15000AA819 /* Crop */,
+				FA0CF8470B4D0DF80070953C /* Drop Shadow */,
+				FA2D39E1094D777B0068F20A /* Gaussian blur */,
+				FAE54F75090D1406000DC147 /* Ghost */,
+				FAEF26940AE792A600BD8954 /* Invert */,
 				FAFC1B3D092C76E60032A19F /* Mask */,
 				FA256AC60AE38BC000077863 /* Mask to image */,
 				FAF9F68E093248C700FB2B0B /* Single Color */,
-				46457A3D09A88038009825E9 /* Color Controls */,
+				FA1BF71309194AAA00E288BB /* Threshold */,
+				5250C38709A87DE50089B4FC /* Unsharp mask */,
+				FA29D2EE0B1EB5FA004AE43E /* Window */,
 			);
 			name = Filters;
 			sourceTree = "<group>";
@@ -1331,9 +1389,9 @@
 		FAF97C2E08EBF27B00FC2B61 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				FA0AA6CD091F8208005F5DD9 /* Bitmap */,
 				FA43286E0ADA8D4300109D58 /* Circle */,
 				FA33FB0D08B60B290013AA0E /* File */,
-				FA0AA6CD091F8208005F5DD9 /* Bitmap */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -1722,6 +1780,14 @@
 				FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */,
 				FAFBEE8A0B2944010078CC17 /* IFPaletteView.m in Sources */,
 				FAFBF04D0B29A85E0078CC17 /* IFNodesView.m in Sources */,
+				FA0CF68E0B4CD8550070953C /* IFBasicType.m in Sources */,
+				FA0CF68F0B4CD85D0070953C /* IFType.m in Sources */,
+				FA0CF69D0B4CD96F0070953C /* IFTypeVar.m in Sources */,
+				FA0CF6A30B4CD99B0070953C /* IFFunType.m in Sources */,
+				FA0CF6AB0B4CD9D70070953C /* IFArrayType.m in Sources */,
+				FA0CF78F0B4CFDE20070953C /* IFInvertFilterDelegate.m in Sources */,
+				FA0CF8460B4D0DEE0070953C /* IFDropShadowFilterDelegate.m in Sources */,
+				FA0CF8590B4D0F100070953C /* IFGhostFilterDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

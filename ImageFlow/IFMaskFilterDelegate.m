@@ -12,6 +12,8 @@
 #import "IFOperatorExpression.h"
 #import "IFEnvironment.h"
 #import "IFConstantExpression.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFMaskFilterDelegate
 
@@ -27,6 +29,17 @@ static IFConstantExpression* maskColor = nil;
   parentNames = [[NSArray arrayWithObjects:@"image",@"mask",nil] retain];
   variantNames = [[NSArray arrayWithObjects:@"",@"overlay",nil] retain];
   maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];
+}
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFBasicType imageType],[IFBasicType maskType],nil]
+                               returnType:[IFBasicType imageType]]] retain];
+  }
+  return types;
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

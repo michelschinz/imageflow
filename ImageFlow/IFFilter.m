@@ -72,6 +72,10 @@ static NSDictionary* allFiltersByName;
   settingsNibName = [theSettingsNibName copy];
   
   delegate = theDelegate; // do not retain
+  if (![delegate respondsToSelector:@selector(potentialTypesWithEnvironment:)])
+    NSLog(@"invalid delegate %@ for filter %@ (no potentialTypesWithEnvironment: method)", delegate, name);
+//  NSAssert2([delegate respondsToSelector:@selector(potentialTypesWithEnvironment:)],
+//            @"invalid delegate %@ for filter %@ (no potentialTypesWithEnvironment: method)", delegate, name);
   delegateCapabilities = 0
     | ([delegate respondsToSelector:@selector(labelWithEnvironment:)] ? IFDelegateHasLabelWithEnvironment : 0)
     | ([delegate respondsToSelector:@selector(toolTipWithEnvironment:)] ? IFDelegateHasToolTipWithEnvironment : 0)
@@ -107,6 +111,11 @@ static NSDictionary* allFiltersByName;
 - (BOOL)isGhost;
 {
   return [expression isKindOfClass:[IFOperatorExpression class]] && ([expression operator] == [IFOperator operatorForName:@"nop"]);
+}
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
+{
+  return [delegate potentialTypesWithEnvironment:environment];
 }
 
 - (BOOL)acceptsParents:(int)parentsCount;

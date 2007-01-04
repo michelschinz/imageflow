@@ -12,8 +12,22 @@
 #import "IFConfiguredFilter.h"
 #import "IFPair.h"
 #import "IFBlendMode.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFBitmapDrawingSourceDelegate
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    // TODO add Mask
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray array]
+                               returnType:[IFBasicType imageType]]] retain];
+  }
+  return types;
+}
 
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;
 {

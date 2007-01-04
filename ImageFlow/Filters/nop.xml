@@ -9,4 +9,5 @@
   <min_children>0</min_children>
   <max_children>1</max_children>
   <settings_nib>IFGhostFilter</settings_nib>
+  <delegate_class>IFGhostFilterDelegate</delegate_class>
 </filter>

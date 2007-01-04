@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFConfiguredFilter.h"
+#import "IFType.h"
 
 extern const unsigned int ID_NONE;
 
@@ -34,6 +35,7 @@ extern const unsigned int ID_NONE;
 - (IFTreeNode*)child;
 
 - (IFConfiguredFilter*)filter;
+- (NSArray*)potentialTypes;
 - (IFExpression*)expression;
 
 - (void)setName:(NSString*)newName;

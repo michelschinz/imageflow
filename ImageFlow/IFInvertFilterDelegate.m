@@ -1,18 +1,18 @@
 //
-//  IFThresholdFilterDelegate.m
+//  IFInvertFilterDelegate.m
 //  ImageFlow
 //
-//  Created by Michel Schinz on 12.12.05.
-//  Copyright 2005 Michel Schinz. All rights reserved.
+//  Created by Michel Schinz on 04.01.07.
+//  Copyright 2007 Michel Schinz. All rights reserved.
 //
 
-#import "IFThresholdFilterDelegate.h"
+#import "IFInvertFilterDelegate.h"
 
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
 
-@implementation IFThresholdFilterDelegate
+@implementation IFInvertFilterDelegate
 
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
 {
@@ -24,11 +24,6 @@
                                returnType:[IFBasicType imageType]]] retain];
   }
   return types;
-}
-
-- (NSString*)labelWithEnvironment:(IFEnvironment*)env;
-{
-  return [NSString stringWithFormat:@"threshold %.2f", [(NSNumber*)[env valueForKey:@"threshold"] floatValue]];
 }
 
 @end

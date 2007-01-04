@@ -9,8 +9,21 @@
 #import "IFFileSourceDelegate.h"
 
 #import "IFEnvironment.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFFileSourceDelegate
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray array]
+                               returnType:[IFBasicType imageType]]] retain];
+  }
+  return types;
+}
 
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;
 {

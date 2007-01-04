@@ -9,8 +9,21 @@
 #import "IFGaussianBlurFilterDelegate.h"
 
 #import "IFEnvironment.h"
+#import "IFFunType.h"
+#import "IFBasicType.h"
 
 @implementation IFGaussianBlurFilterDelegate
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
+{
+  static NSArray* types = nil;
+  if (types == nil) {
+    types = [[NSArray arrayWithObject:
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
+                               returnType:[IFBasicType imageType]]] retain];
+  }
+  return types;
+}
 
 - (NSString*)labelWithEnvironment:(IFEnvironment*)env;
 {
