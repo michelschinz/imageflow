@@ -1,7 +1,66 @@
 open Expr
 open Type
 
-(* Type checker *)
+(* Type checking *)
+
+let arg_types = function
+    TFun (arg_types, _) -> arg_types
+  | _ -> [||]
+
+let ret_type = function
+    TFun (_, ret_type) -> ret_type
+  | basic_type -> basic_type
+
+let types_match ts1 ts2 =
+  let rec loop i =
+    i < 0 || (ts1.(i) = ts2.(i)) && (loop (pred i))
+  and len = Array.length ts1 in
+  (Array.length ts2) = len && (loop (pred len))
+
+let valid_configurations constraints possible_types =
+  let node_type conf node = ret_type (List.assoc node conf) in
+  let rec loop n prev_configs constraints possible_types =
+    match (constraints, possible_types) with
+      [], [] ->
+        prev_configs
+    | c :: cs, ts :: tss ->
+        let new_configs = ref [] in
+        List.iter
+          (fun t ->
+            List.iter
+              (fun v ->
+                let expected_types = arg_types t
+                and actual_types = Array.of_list (List.map (node_type v) c) in
+                if types_match expected_types actual_types then
+                  new_configs := ((n, t) :: v) :: !new_configs)
+              prev_configs)
+          ts;
+        loop (succ n) !new_configs cs tss
+  in loop 0 [[]] constraints possible_types
+
+let check constraints possible_types =
+  match valid_configurations constraints possible_types with
+    [] -> false
+  | _ -> true
+
+let verbose_check constraints possible_types =
+  let string_of_int_list l =
+    "[" ^ (String.concat ";" (List.map string_of_int l)) ^ "]" in
+  print_string "constraints:\n";
+  List.iter (fun c ->
+    print_string (string_of_int_list c);
+    print_newline()) constraints;
+  print_string "possible types:\n";
+  List.iter (fun ts ->
+    List.iter (fun t ->
+      print_string (Type.to_string t);
+      print_newline()) ts)
+    possible_types;
+  let r = check constraints possible_types in
+  print_endline ("res: " ^ (string_of_bool r));
+  r
+
+(* Type inference *)
 
 let op_type fresh_var = function
     "blend" -> TFun([|TImage; TImage; TInt|], TImage)
@@ -44,7 +103,7 @@ let rec occurs i = function
     TVar j -> i = j
   | TFun (ta, tr) -> (occurs i tr) || (Marray.exists (occurs i) ta)
   | TArray t -> occurs i t
-  | basic_type -> false
+  | _ -> false
 
 let unify cs =
   let rec unify' = function
@@ -91,7 +150,7 @@ let constraints_for expr =
       and (args_t, args_c) = List.split (List.map constr (Array.to_list args))
       and ret_t = fresh_var() in
       (ret_t, (TFun(Array.of_list args_t, ret_t), op_t) :: (List.concat args_c))
-  | Var name ->
+  | Var _ ->
       (fresh_var(), [])
   | Parent index ->
       (TVar index, [])

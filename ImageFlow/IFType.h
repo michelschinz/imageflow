@@ -15,6 +15,8 @@
   value camlRepresentation;
 }
 
+- (int)arity;
+
 - (value)asCaml;
 
 // protected

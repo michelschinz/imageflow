@@ -15,8 +15,6 @@
       <variable name="mode"/>
     </operation>
   </expression>
-  <min_parents>2</min_parents>
-  <max_parents>2</max_parents>
   <settings_nib>IFBlendFilter</settings_nib>
   <delegate_class>IFBlendFilterDelegate</delegate_class>
 </filter>

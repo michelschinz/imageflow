@@ -20,12 +20,9 @@
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
 {
   static NSArray* types = nil;
-  if (types == nil) {
+  if (types == nil)
     // TODO add Mask
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray array]
-                               returnType:[IFBasicType imageType]]] retain];
-  }
+    types = [[NSArray arrayWithObject:[IFBasicType imageType]] retain];
   return types;
 }
 

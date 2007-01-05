@@ -15,3 +15,5 @@ type t =
   | TAction
   | TError
 
+val print : t -> unit
+val to_string : t -> string

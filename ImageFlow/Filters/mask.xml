@@ -8,7 +8,5 @@
       <parent index="1"/>
     </operation>
   </expression>
-  <min_parents>2</min_parents>
-  <max_parents>2</max_parents>
   <delegate_class>IFMaskFilterDelegate</delegate_class>
 </filter>

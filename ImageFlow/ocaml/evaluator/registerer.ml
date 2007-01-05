@@ -1,11 +1,10 @@
 (* Register public functions for use from Objective-C *)
 
+open Callback
+
 let _ =
-  let register name f =
-    print_string (" " ^ name);
-    Callback.register name f in
-  print_string "Registering OCaml callbacks:";
   register "Cache.make" Cache.make;
+  register "Typechecker.check" Typechecker.verbose_check;
   register "Optevaluator.eval" Optevaluator.eval;
   register "Optevaluator.eval_as_image" Optevaluator.eval_as_image;
   register "Optevaluator.eval_as_masked_image" Optevaluator.eval_as_masked_image;
@@ -20,4 +19,3 @@ let _ =
   register "Color.make" Color.make;
   register "Image.of_ifimage" Image.of_ifimage;
   register "Image.to_ifimage" Image.to_ifimage;
-  print_endline ""

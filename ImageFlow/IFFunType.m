@@ -35,6 +35,11 @@
   [super dealloc];
 }
 
+- (NSString*)description;
+{
+  return [NSString stringWithFormat:@"(%@)=>%@",[argumentTypes componentsJoinedByString:@","],returnType];
+}
+
 - (NSArray*)argumentTypes;
 {
   return argumentTypes;
@@ -43,6 +48,11 @@
 - (IFType*)returnType;
 {
   return returnType;
+}
+
+- (int)arity;
+{
+  return [argumentTypes count];
 }
 
 static value elemAsCaml(const char* elem) {

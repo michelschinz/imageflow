@@ -27,6 +27,16 @@
   return self;
 }
 
+- (NSString*)description;
+{
+  return [[contentType description] stringByAppendingString:@"[]"];
+}
+
+- (int)arity;
+{
+  return 0;
+}
+
 - (value)camlRepresentation;
 {
   CAMLparam0();

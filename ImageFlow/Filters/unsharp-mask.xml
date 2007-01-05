@@ -9,8 +9,6 @@
       <variable name="radius"/>
     </operation>
   </expression>
-  <min_parents>1</min_parents>
-  <max_parents>1</max_parents>
   <settings_nib>IFUnsharpMaskFilter</settings_nib>
   <delegate_class>IFUnsharpMaskFilterDelegate</delegate_class>
 </filter>

@@ -27,6 +27,16 @@
   return self;
 }
 
+- (NSString*)description;
+{
+  return [NSString stringWithFormat:@"'t%d",index];
+}
+
+- (int)arity;
+{
+  return 0;
+}
+
 - (value)camlRepresentation;
 {
   CAMLparam0();

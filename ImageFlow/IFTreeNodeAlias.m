@@ -67,9 +67,9 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return original;
 }
 
-- (BOOL)acceptsParents:(int)inputCount;
+- (int)inputArity
 {
-  return (inputCount == 0);
+  return 0;
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;

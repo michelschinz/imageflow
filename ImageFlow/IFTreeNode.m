@@ -13,7 +13,7 @@
 #import "IFExpressionPlugger.h"
 
 @interface IFTreeNode (Private)
-- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
+- (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
 @end
 
 @implementation IFTreeNode
@@ -165,20 +165,20 @@ const unsigned int ID_NONE = ~0;
   return NO;
 }
 
-- (BOOL)acceptsParents:(int)inputCount;
+- (int)inputArity;
 {
-  return [filter acceptsParents:inputCount];
+  return [filter inputArity];
 }
 
-- (BOOL)acceptsChildren:(int)outputCount;
+- (int)outputArity;
 {
-  return [filter acceptsChildren:outputCount];
+  return [filter outputArity];
 }
 
-- (NSSet*)ancestors;
+- (NSArray*)dfsAncestors;
 {
-  NSMutableSet* result = [NSMutableSet set];
-  [self collectAncestorsInSet:result];
+  NSMutableArray* result = [NSMutableArray array];
+  [self dfsCollectAncestorsInArray:result];
   return result;
 }
 
@@ -251,10 +251,10 @@ const unsigned int ID_NONE = ~0;
 
 @implementation IFTreeNode (Private)
 
-- (void)collectAncestorsInSet:(NSMutableSet*)accumulator;
+- (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
 {
+  [[parents do] dfsCollectAncestorsInArray:accumulator];
   [accumulator addObject:self];
-  [[parents do] collectAncestorsInSet:accumulator];
 }
 
 @end

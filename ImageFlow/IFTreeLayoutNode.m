@@ -196,7 +196,7 @@ static int countAncestors(IFTreeNode* node) {
   y += NSHeight(labelFrame);
   internalFrame = NSUnionRect(internalFrame,labelFrame);
   
-  BOOL isFolded = [node isFolded], isSource = isFolded || ([[node parents] count] == 0), isSink = ![node acceptsChildren:1];
+  BOOL isFolded = [node isFolded], isSource = isFolded || ([node inputArity] == 0), isSink = ([node outputArity] == 0);
   if (isFolded) {
     foldingFrame = NSMakeRect(x,y + margin,internalWidth,2 * foldsCount * foldHeight - margin);
     internalFrame = NSUnionRect(internalFrame,foldingFrame);

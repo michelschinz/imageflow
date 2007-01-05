@@ -7,6 +7,7 @@
 //
 
 #import "IFConfiguredFilter.h"
+#import "IFType.h"
 
 @interface IFConfiguredFilter (Private)
 - (void)startObservingEnvironmentKeys:(NSSet*)keys;
@@ -79,14 +80,15 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
   return [filter potentialTypesWithEnvironment:filterEnvironment];
 }
 
-- (BOOL)acceptsParents:(int)parentsCount;
+- (int)inputArity;
 {
-  return [filter acceptsParents:parentsCount];
+  return [[[self potentialTypes] objectAtIndex:0] arity];
 }
 
-- (BOOL)acceptsChildren:(int)childsCount;
+- (int)outputArity;
 {
-  return [filter acceptsChildren:childsCount];
+  NSLog(@"TODO outputArity");
+  return 1;
 }
 
 - (IFExpression*)expression;

@@ -28,8 +28,8 @@
 
 - (BOOL)isGhost;
 - (NSArray*)potentialTypes;
-- (BOOL)acceptsParents:(int)parentsCount;
-- (BOOL)acceptsChildren:(int)childsCount;
+- (int)inputArity;
+- (int)outputArity;
 - (IFExpression*)expression;
 
 - (NSString*)label;

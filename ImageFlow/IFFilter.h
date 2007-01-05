@@ -45,7 +45,6 @@
 @interface IFFilter : NSObject {
   NSString* name;
   IFOperatorExpression* expression;
-  NSRange parentsRange, childRange;
   NSString* settingsNibName;
   NSNib* settingsNib;
   
@@ -57,14 +56,10 @@
 
 + (id)filterWithName:(NSString*)theName
           expression:(IFExpression*)theExpression
-        parentsArity:(NSRange)theParentsRange
-          childArity:(NSRange)theChildRange
      settingsNibName:(NSString*)theSettingsNibName
             delegate:(NSObject<IFFilterDelegate>*)theDelegate;
 - (id)initWithName:(NSString*)theName
         expression:(IFExpression*)theExpression
-      parentsArity:(NSRange)theParentsRange
-        childArity:(NSRange)theChildRange
    settingsNibName:(NSString*)theSettingsNibName
           delegate:(NSObject<IFFilterDelegate>*)theDelegate;
 
@@ -73,8 +68,6 @@
 
 - (BOOL)isGhost;
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
-- (BOOL)acceptsParents:(int)parentsCount;
-- (BOOL)acceptsChildren:(int)childsCount;
 
 - (BOOL)hasSettingsNib;
 - (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;

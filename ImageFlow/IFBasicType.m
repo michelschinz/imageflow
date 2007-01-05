@@ -112,6 +112,44 @@ static NSArray* types = nil;
   return tag;
 }
 
+- (NSString*)description;
+{
+  switch (tag) {
+    case IFTypeTag_TImage:
+      return @"Image";
+    case IFTypeTag_TMask:
+      return @"Mask";
+    case IFTypeTag_TColor:
+      return @"Color";
+    case IFTypeTag_TRect:
+      return @"Rect";
+    case IFTypeTag_TSize:
+      return @"Size";
+    case IFTypeTag_TPoint:
+      return @"Point";
+    case IFTypeTag_TString:
+      return @"String";
+    case IFTypeTag_TNum:
+      return @"Num";
+    case IFTypeTag_TInt:
+      return @"Int";
+    case IFTypeTag_TBool:
+      return @"Bool";
+    case IFTypeTag_TAction:
+      return @"Action";
+    case IFTypeTag_TError:
+      return @"Error";
+    default:
+      NSAssert(NO, @"invalid tag");
+      return nil;
+  }
+}
+
+- (int)arity;
+{
+  return 0;
+}
+
 - (value)camlRepresentation;
 {
   return Val_int(tag);

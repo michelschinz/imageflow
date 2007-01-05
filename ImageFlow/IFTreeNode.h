@@ -46,10 +46,10 @@ extern const unsigned int ID_NONE;
 
 - (BOOL)isGhost;
 - (BOOL)isAlias;
-- (BOOL)acceptsParents:(int)inputCount;
-- (BOOL)acceptsChildren:(int)outputCount;
+- (int)inputArity;
+- (int)outputArity;
 
-- (NSSet*)ancestors;
+- (NSArray*)dfsAncestors;
 - (BOOL)isParentOf:(IFTreeNode*)other;
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;

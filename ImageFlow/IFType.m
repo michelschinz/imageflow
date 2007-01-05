@@ -22,6 +22,12 @@
   [super dealloc];
 }
 
+- (int)arity;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
+}
+
 - (value)asCaml;
 {
   if (!camlRepresentationIsValid) {

@@ -48,18 +48,14 @@ static NSDictionary* allFiltersByName;
 
 + (id)filterWithName:(NSString*)theName
           expression:(IFExpression*)theExpression
-        parentsArity:(NSRange)theParentsRange
-          childArity:(NSRange)theChildRange
      settingsNibName:(NSString*)theSettingsNibName
             delegate:(NSObject<IFFilterDelegate>*)theDelegate;
 {
-  return [[[self alloc] initWithName:theName expression:theExpression parentsArity:theParentsRange childArity:theChildRange settingsNibName:theSettingsNibName delegate:theDelegate] autorelease];
+  return [[[self alloc] initWithName:theName expression:theExpression settingsNibName:theSettingsNibName delegate:theDelegate] autorelease];
 }  
 
 - (id)initWithName:(NSString*)theName
         expression:(IFExpression*)theExpression
-      parentsArity:(NSRange)theParentsRange
-        childArity:(NSRange)theChildRange
    settingsNibName:(NSString*)theSettingsNibName
           delegate:(NSObject<IFFilterDelegate>*)theDelegate;
 {
@@ -67,8 +63,6 @@ static NSDictionary* allFiltersByName;
     return nil;
   name = [theName copy];
   expression = [theExpression retain];
-  parentsRange = theParentsRange;
-  childRange = theChildRange;
   settingsNibName = [theSettingsNibName copy];
   
   delegate = theDelegate; // do not retain
@@ -116,16 +110,6 @@ static NSDictionary* allFiltersByName;
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
 {
   return [delegate potentialTypesWithEnvironment:environment];
-}
-
-- (BOOL)acceptsParents:(int)parentsCount;
-{
-  return NSLocationInRange(parentsCount,parentsRange);
-}
-
-- (BOOL)acceptsChildren:(int)childrenCount;
-{
-  return NSLocationInRange(childrenCount,childRange);
 }
 
 - (BOOL)hasSettingsNib;

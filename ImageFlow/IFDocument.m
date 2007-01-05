@@ -18,7 +18,12 @@
 #import "IFTreeNodeParameter.h"
 #import "IFTreeNodeAlias.h"
 
+#import <caml/memory.h>
+#import <caml/alloc.h>
+#import <caml/callback.h>
+
 @interface IFDocument (Private)
+- (NSArray*)topologicallySortedNodes;
 - (void)overwriteWith:(IFDocument*)other;
 - (void)ensureGhostNodes;
 - (void)insertNodes:(NSArray*)parents intoParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
@@ -208,23 +213,22 @@ static IFDocumentTemplateManager* templateManager;
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  return [parent acceptsParents:[[child parents] count]]
-  && [parent acceptsChildren:1]
-  && [child acceptsParents:1];
+  // TODO check types instead of arity only
+  return [parent inputArity] >= [[child parents] count]
+  && [parent outputArity] == 1
+  && [child inputArity] >= 1;
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  if (![self canInsertNode:parent asParentOf:child]) {
-    NSBeep();
-    return;
-  }
+  NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
+
+  // TODO add ghost nodes when needed
   int parentsCount = [[child parents] count];
   for (int i = 0; i < parentsCount; ++i) {
-    IFTreeNode* p = [[[child parents] objectAtIndex:0] retain];
+    IFTreeNode* p = [[[[child parents] objectAtIndex:0] retain] autorelease];
     [child removeObjectFromParentsAtIndex:0];
     [parent insertObject:p inParentsAtIndex:i];
-    [p release];
   }
   [child insertObject:parent inParentsAtIndex:0];
   [self ensureGhostNodes];
@@ -232,7 +236,8 @@ static IFDocumentTemplateManager* templateManager;
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  return [parent acceptsChildren:1] && [child acceptsParents:1];
+  // TODO check types instead of arity only
+  return [parent outputArity] == 1 && [child inputArity] >= 1;
 }
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
@@ -245,28 +250,82 @@ static IFDocumentTemplateManager* templateManager;
   int parentIndex = [[originalChild parents] indexOfObject:parent];
   [originalChild replaceObjectInParentsAtIndex:parentIndex withObject:child];
   [child insertObject:parent inParentsAtIndex:0];
+  // TODO add ghost parents if needed
   [self ensureGhostNodes];
 }
 
-- (BOOL)canReplaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
+static value camlCons(value h, value t) {
+  CAMLparam2(h,t);
+  CAMLlocal1(cell);
+  cell = caml_alloc(2, 0);
+  Store_field(cell, 0, h);
+  Store_field(cell, 1, t);
+  CAMLreturn(cell);
+}
+
+static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* potentialTypes) {
+  CAMLparam0();
+  CAMLlocal4(camlConstraints, camlConstraint, camlPotentialTypes, camlTypes);
+
+  // Transform constraints to lists (of lists of ints)
+  camlConstraints = Val_int(0);
+  for (int i = [constraints count] - 1; i >= 0; --i) {
+    NSArray* constraint = [constraints objectAtIndex:i];
+    camlConstraint = Val_int(0);
+    for (int j = [constraint count] - 1; j >= 0; --j) {
+      int c = [[constraint objectAtIndex:j] intValue];
+      camlConstraint = camlCons(Val_int(c), camlConstraint);
+    }
+    camlConstraints = camlCons(camlConstraint, camlConstraints);
+  }
+  
+  // Transform potential types to their Caml equivalent
+  camlPotentialTypes = Val_int(0);
+  for (int i = [potentialTypes count] - 1; i >= 0; --i) {
+    NSArray* types = [potentialTypes objectAtIndex:i];
+    camlTypes = Val_int(0);
+    for (int j = [types count] - 1; j >= 0; --j) {
+      IFType* type = [types objectAtIndex:j];
+      camlTypes = camlCons([type asCaml], camlTypes);
+    }
+    camlPotentialTypes = camlCons(camlTypes,camlPotentialTypes);
+  }
+
+  static value* validConfigurationExistsClosure = NULL;
+  if (validConfigurationExistsClosure == NULL)
+    validConfigurationExistsClosure = caml_named_value("Typechecker.check");
+
+  CAMLreturn(caml_callback2(*validConfigurationExistsClosure, camlConstraints, camlPotentialTypes));
+}
+
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
 {
-  const int parentsCount = [[node parents] count];
-  int ghostsToAdd;
-  for (ghostsToAdd = 0; ![replacement acceptsParents:parentsCount+ghostsToAdd] && ghostsToAdd < 10; ++ghostsToAdd) // HACK
-    ;
-  return [replacement acceptsParents:parentsCount+ghostsToAdd] && [replacement acceptsChildren:([node child] == fakeRoot ? 0 : 1)];    
+  NSArray* sortedNodes = [self topologicallySortedNodes];
+  int nodesCount = [sortedNodes count];
+
+  NSMutableArray* constraints = [NSMutableArray arrayWithCapacity:nodesCount];
+  for (int i = 0; i < nodesCount; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    NSArray* parents = [node parents];
+    NSMutableArray* constraint = [NSMutableArray arrayWithCapacity:[parents count]];
+    for (int j = 0, pCount = [parents count]; j < pCount; ++j)
+      [constraint addObject:[NSNumber numberWithInt:[sortedNodes indexOfObject:[parents objectAtIndex:j]]]];
+    [constraints addObject:constraint];
+  }
+  
+  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
+  for (int i = 0; i < nodesCount; ++i)
+    [potentialTypes addObject:[[sortedNodes objectAtIndex:i] potentialTypes]];
+
+  return Bool_val(camlCanReplaceGhostNodeUsingNode(constraints, potentialTypes));
 }
 
 - (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 {
-  if (![self canReplaceNode:node usingNode:replacement]) {
-    NSBeep();
-    return;
-  }
+  // TODO assert that replacement is possible.
+
   const int parentsCount = [[node parents] count];
-  int ghostsToAdd;
-  for (ghostsToAdd = 0; ![replacement acceptsParents:parentsCount+ghostsToAdd]; ++ghostsToAdd) // HACK
-    ;
+  const int ghostsToAdd = [replacement inputArity] - parentsCount;
   [node replaceByNode:replacement transformingMarks:marks];
   for (int i = 0; i < ghostsToAdd; ++i)
     [replacement insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]
@@ -282,27 +341,9 @@ static IFDocumentTemplateManager* templateManager;
 // private
 - (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
-  NSArray* parents = [node parents];
-  IFTreeNode* child = [node child];
-  int nodeIndex = [[child parents] indexOfObject:node];
   IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]];
-  switch ([parents count]) {
-    case 0: {
-      if ([child acceptsParents:([[child parents] count] - 1)])
-        [child removeObjectFromParentsAtIndex:nodeIndex];
-      else
-        [node replaceByNode:ghost transformingMarks:marks];
-    } break;
-    case 1: {
-      IFTreeNode* singleParent = [parents objectAtIndex:0];
-      [[marks do] setNode:singleParent ifCurrentNodeIs:node];
-      [node replaceObjectInParentsAtIndex:0 withObject:ghost];
-      [child replaceObjectInParentsAtIndex:nodeIndex withObject:singleParent];
-    } break;
-    default: {
-      [node replaceByNode:ghost transformingMarks:marks];
-    }
-  }
+  // TODO avoid inserting ghost when possible (i.e. the tree is well-typed even without it).
+  [node replaceByNode:ghost transformingMarks:marks];
   [self ensureGhostNodes];
 }
 
@@ -422,19 +463,19 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 - (NSSet*)allNodes;
 {
-  NSMutableSet* allNodes = [NSMutableSet setWithSet:[fakeRoot ancestors]];
+  NSMutableSet* allNodes = [NSMutableSet setWithArray:[fakeRoot dfsAncestors]];
   [allNodes removeObject:fakeRoot];
   return allNodes;
 }
 
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 {
-  return [node ancestors];
+  return [NSSet setWithArray:[node dfsAncestors]];
 }
 
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 {
-  return [[self rootOfTreeContainingNode:node] ancestors];
+  return [NSSet setWithArray:[[self rootOfTreeContainingNode:node] dfsAncestors]];
 }
 
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
@@ -562,6 +603,25 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 @implementation IFDocument (Private)
 
+- (NSArray*)topologicallySortedNodes;
+{
+  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot dfsAncestors]];
+  NSAssert([nodes lastObject] == fakeRoot, @"internal error");
+  [nodes removeLastObject];
+  
+  NSMutableArray* sortedNodes = [NSMutableArray arrayWithCapacity:[nodes count]];
+  NSMutableSet* seenNodes = [NSMutableSet setWithCapacity:[nodes count]];
+  for (int i = 0, count = [nodes count]; [sortedNodes count] < count; i = (i + 1) % count) {
+    IFTreeNode* node = [nodes objectAtIndex:i];
+    NSSet* parentsSet = [NSSet setWithArray:[node parents]];
+    if (![seenNodes containsObject:node] && [parentsSet isSubsetOfSet:seenNodes]) {
+      [sortedNodes addObject:node];
+      [seenNodes addObject:node];
+    }
+  }
+  return sortedNodes;
+}
+
 - (void)overwriteWith:(IFDocument*)other;
 {
   // Destroy all current contents
@@ -597,7 +657,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
     IFTreeNode* root = [roots objectAtIndex:i];
     if ([root isGhost])
       hasGhostColumn |= ([[root parents] count] == 0);
-    else if ([root acceptsChildren:1]) {
+    else if ([root outputArity] == 1) {
       [[root retain] autorelease];
       IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]];
       [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];

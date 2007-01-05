@@ -18,8 +18,6 @@
       <constant type="integer">0</constant>
     </operation>
   </expression>
-  <min_parents>1</min_parents>
-  <max_parents>1</max_parents>
   <settings_nib>IFDropShadowFilter</settings_nib>
   <delegate_class>IFDropShadowFilterDelegate</delegate_class>
 </filter>

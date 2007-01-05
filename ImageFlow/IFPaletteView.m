@@ -81,8 +81,6 @@ enum IFLayoutLayer {
     
     IFFilter* filter = [IFFilter filterWithName:@"<surrogate>"
                                      expression:[IFVariableExpression expressionWithName:@"expression"]
-                                   parentsArity:NSMakeRange(1,1)
-                                     childArity:NSMakeRange(1,1)
                                 settingsNibName:nil
                                        delegate:nil];
     IFEnvironment* env = [IFEnvironment environment];
@@ -108,11 +106,9 @@ enum IFLayoutLayer {
 {
   NSMutableArray* nodes = [NSMutableArray array];
   NSArray* templates = [[IFDocument documentTemplateManager] templates];
-  for (int i = 0, count = 3/*[templates count]*/; i < count; ++i) {
+  for (int i = 0, count = 3/*TODO [templates count]*/; i < count; ++i) {
     IFTreeNode* clonedNode = [[[templates objectAtIndex:i] node] cloneNode];
-    int parentsCount = 0;
-    while (![clonedNode acceptsParents:parentsCount])
-      ++parentsCount;
+    int parentsCount = [clonedNode inputArity];
     for (int p = 0; p < parentsCount; ++p)
       [clonedNode insertObject:[IFTreeNode nodeWithFilter:[surrogateFilters objectAtIndex:p]]
               inParentsAtIndex:p];

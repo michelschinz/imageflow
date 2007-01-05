@@ -13,18 +13,6 @@
 
 static NSString* IFRootExpressionChangedContext = @"IFRootExpressionChangedContext";
 
-static int parametersCount(IFTreeNode* root) {
-  if ([root isKindOfClass:[IFTreeNodeParameter class]])
-    return 1;
-  else {
-    NSArray* parents = [root parents];
-    int count = 0;
-    for (int i = 0; i < [parents count]; ++i)
-      count += parametersCount([parents objectAtIndex:i]);
-    return count;
-  }
-}
-
 + (id)filterWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 {
   return [[[self alloc] initWithMacroRootReference:theMacroRootRef] autorelease];
@@ -32,11 +20,8 @@ static int parametersCount(IFTreeNode* root) {
 
 - (id)initWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 {
-  int parentsCount = parametersCount([theMacroRootRef treeNode]);
   if (![super initWithName:@"<macro>"
                 expression:[[theMacroRootRef treeNode] expression]
-              parentsArity:NSMakeRange(parentsCount,1)
-                childArity:NSMakeRange(0, [[theMacroRootRef treeNode] acceptsChildren:1] ? 2 : 1)
            settingsNibName:nil
                   delegate:nil])
     return nil;
@@ -56,6 +41,12 @@ static int parametersCount(IFTreeNode* root) {
 {
   NSAssert(context == IFRootExpressionChangedContext, @"invalid context");
   NSLog(@"TODO");
+}
+
+- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
+{
+  // HACK the following is incorrect as soon as the macro node contains more than one node!
+  return [[macroRootRef treeNode] potentialTypes];
 }
 
 @end

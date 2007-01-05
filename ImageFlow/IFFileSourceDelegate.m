@@ -17,11 +17,8 @@
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
 {
   static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray array]
-                               returnType:[IFBasicType imageType]]] retain];
-  }
+  if (types == nil)
+    types = [[NSArray arrayWithObject:[IFBasicType imageType]] retain];
   return types;
 }
 

@@ -11,8 +11,6 @@
       <constant type="integer">0</constant>
     </operation>
   </expression>
-  <min_parents>0</min_parents>
-  <max_parents>0</max_parents>
   <settings_nib>IFBitmapSource</settings_nib>
   <delegate_class>IFBitmapDrawingSourceDelegate</delegate_class>
 </filter>

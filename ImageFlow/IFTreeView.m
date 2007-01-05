@@ -508,7 +508,10 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   }
   IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
 
-  [document replaceNode:[self cursorNode] usingNode:[[proxy node] cloneNode] transformingMarks:allMarks];
+  IFTreeNode* node = [[proxy node] cloneNode];
+  BOOL ok = [document canReplaceGhostNode:[self cursorNode] usingNode:node];
+  NSLog(@"ok? %@",ok ? @"true" : @"false");
+  [document replaceNode:[self cursorNode] usingNode:node transformingMarks:allMarks];
 }
 
 #pragma mark Drag and drop
@@ -640,7 +643,8 @@ static enum {
             return NO;
         } else {
           NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
-          if ([document canReplaceNode:targetNode usingNode:draggedMacro])
+          // TODO check that it is a ghost, and that replacement is legal
+          if (NO) //[document canReplaceNode:targetNode usingNode:draggedMacro])
             [document replaceNode:targetNode usingNode:draggedMacro transformingMarks:allMarks];
           else
             return NO;
