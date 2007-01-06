@@ -61,7 +61,7 @@ extern NSString* IFTreeChangedNotification;
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
-- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 - (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 - (void)deleteContiguousNodes:(NSSet*)contiguousNodes transformingMarks:(NSArray*)marks;
 

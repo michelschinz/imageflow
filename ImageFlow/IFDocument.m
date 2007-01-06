@@ -312,23 +312,32 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
       [constraint addObject:[NSNumber numberWithInt:[sortedNodes indexOfObject:[parents objectAtIndex:j]]]];
     [constraints addObject:constraint];
   }
-  
+
   NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
-  for (int i = 0; i < nodesCount; ++i)
-    [potentialTypes addObject:[[sortedNodes objectAtIndex:i] potentialTypes]];
+  for (int i = 0; i < nodesCount; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    if (node == ghost) {
+      NSArray* replacementPotentialTypes = [replacement potentialTypes];
+      NSMutableArray* limitedReplacementTypes = [NSMutableArray arrayWithCapacity:[replacementPotentialTypes count]];
+      for (int i = 0; i < [replacementPotentialTypes count]; ++i)
+        [limitedReplacementTypes addObject:[[replacementPotentialTypes objectAtIndex:i] typeByLimitingArityTo:[ghost inputArity]]];
+      [potentialTypes addObject:limitedReplacementTypes];
+    } else
+      [potentialTypes addObject:[node potentialTypes]];
+  }
 
   return Bool_val(camlCanReplaceGhostNodeUsingNode(constraints, potentialTypes));
 }
 
-- (void)replaceNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 {
-  // TODO assert that replacement is possible.
+  NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
 
   const int parentsCount = [[node parents] count];
   const int ghostsToAdd = [replacement inputArity] - parentsCount;
   [node replaceByNode:replacement transformingMarks:marks];
   for (int i = 0; i < ghostsToAdd; ++i)
-    [replacement insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]
+    [replacement insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]
              inParentsAtIndex:parentsCount + i];
   if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
     IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
@@ -341,7 +350,7 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
 // private
 - (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
-  IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]];
+  IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:[node inputArity]]];
   // TODO avoid inserting ghost when possible (i.e. the tree is well-typed even without it).
   [node replaceByNode:ghost transformingMarks:marks];
   [self ensureGhostNodes];
@@ -407,7 +416,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
       collectBoundary(parent, nodes, boundary);
     else {
       [boundary addObject:parent];
-      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
+      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
     }
   }
 }
@@ -423,7 +432,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
     [macroNode insertObject:[actualParameters objectAtIndex:i] inParentsAtIndex:i];
   // detach old root and attach new one (the macro node)
   int rootIndex = [[[root child] parents] indexOfObject:root];
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
   [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
 }
 
@@ -448,7 +457,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   for (int i = 0; i < [macroParents count]; ++i) {
     IFTreeNode* parent = [macroParents objectAtIndex:i];
     [detachedMacroParents addObject:parent];
-    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]];
+    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
   }
 
   // Clone macro node body, and replace parameter nodes by parent nodes, introducing aliases when necessary
@@ -659,13 +668,13 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
       hasGhostColumn |= ([[root parents] count] == 0);
     else if ([root outputArity] == 1) {
       [[root retain] autorelease];
-      IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]];
+      IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:1]];
       [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
       [newRoot insertObject:root inParentsAtIndex:0];
     }
   }
   if (!hasGhostColumn)
-    [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]]
+    [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]
           inParentsAtIndex:[[fakeRoot parents] count]];
   [self debugCheckTree:self];
 }

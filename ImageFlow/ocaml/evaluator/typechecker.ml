@@ -12,12 +12,49 @@ let ret_type = function
   | basic_type -> basic_type
 
 let types_match ts1 ts2 =
-  let rec loop i =
-    i < 0 || (ts1.(i) = ts2.(i)) && (loop (pred i))
+  let type_match t1 t2 = match t1, t2 with
+    TVar _, _
+  | _, TVar _ -> true
+  | _, _ -> t1 = t2
+  in let rec loop i =
+    i < 0 || (type_match ts1.(i) ts2.(i)) && (loop (pred i))
   and len = Array.length ts1 in
   (Array.length ts2) = len && (loop (pred len))
 
+(* Make sure that all types use a different set of type variables *)
+let alpha_rename_tvars types =
+  let next_free_var =
+    let counter = ref (-1) in
+    fun () ->
+      incr counter;
+      !counter in
+  let rec alpha_rename subst = function
+      TVar i ->
+        begin try
+          (subst, TVar (List.assoc i subst))
+        with Not_found ->
+          let new_i = next_free_var() in
+          ((i, new_i) :: subst, TVar new_i)
+        end
+    | TFun (tas, tr) ->
+        let (subst', tas') = Array.fold_right
+            (fun t (subst, acc) ->
+              let (subst', t') = alpha_rename subst t in
+              (subst', t' :: acc))
+            tas
+            (subst, []) in
+        let (subst'', tr') = alpha_rename subst' tr in
+        (subst'', TFun(Array.of_list tas', tr'))
+    | TArray t ->
+        let (subst', t') = alpha_rename subst t in
+        (subst', TArray t')
+    | basic_type ->
+        (subst, basic_type)
+  in 
+  List.map (fun t -> snd (alpha_rename [] t)) types
+
 let valid_configurations constraints possible_types =
+  (* TODO handle substitutions when matching types *)
   let node_type conf node = ret_type (List.assoc node conf) in
   let rec loop n prev_configs constraints possible_types =
     match (constraints, possible_types) with
@@ -36,7 +73,7 @@ let valid_configurations constraints possible_types =
               prev_configs)
           ts;
         loop (succ n) !new_configs cs tss
-  in loop 0 [[]] constraints possible_types
+  in loop 0 [[]] constraints (List.map alpha_rename_tvars possible_types)
 
 let check constraints possible_types =
   match valid_configurations constraints possible_types with

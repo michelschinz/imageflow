@@ -193,7 +193,7 @@ const unsigned int ID_NONE = ~0;
   
   NSArray* parentsCopy = [[self parents] copy];
   for (int i = 0; i < [parentsCopy count]; i++) {
-    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]];
+    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]];
     [self replaceObjectInParentsAtIndex:i withObject:ghost];
     IFTreeNode* parent = [parentsCopy objectAtIndex:i];
     [replacement insertObject:parent inParentsAtIndex:i];

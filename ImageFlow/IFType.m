@@ -28,6 +28,12 @@
   return 0;
 }
 
+- (IFType*)typeByLimitingArityTo:(int)maxArity;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 - (value)asCaml;
 {
   if (!camlRepresentationIsValid) {

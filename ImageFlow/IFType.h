@@ -16,6 +16,7 @@
 }
 
 - (int)arity;
+- (IFType*)typeByLimitingArityTo:(int)maxArity;
 
 - (value)asCaml;
 

@@ -17,7 +17,8 @@
   IFExpression* expression;
 }
 
-+ (IFConfiguredFilter*)ghostFilter;
++ (IFConfiguredFilter*)ghostFilterWithInputArity:(int)inputArity;
+
 + (id)configuredFilterWithFilter:(IFFilter*)theFilter environment:(IFEnvironment*)theEnvironment;
 - (id)initWithFilter:(IFFilter*)theFilter environment:(IFEnvironment*)theEnvironment;
 

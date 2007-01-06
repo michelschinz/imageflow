@@ -178,9 +178,12 @@ static NSMutableDictionary* filterArrayControllers = nil;
       IFDocument* doc = [containingView document];
       IFDocumentTemplate* template = [selected objectAtIndex:0];
       IFTreeNode* clonedTemplateNode = [[template node] cloneNode];
-      [doc replaceNode:node usingNode:clonedTemplateNode transformingMarks:[NSArray array]]; // TODO marks
-      if ([template nodeRequiresInlining])
-        [doc inlineMacroNode:(IFTreeNodeMacro*)clonedTemplateNode transformingMarks:[NSArray array]];
+      if ([doc canReplaceGhostNode:node usingNode:clonedTemplateNode]) {
+        [doc replaceGhostNode:node usingNode:clonedTemplateNode transformingMarks:[NSArray array]]; // TODO marks
+        if ([template nodeRequiresInlining])
+          [doc inlineMacroNode:(IFTreeNodeMacro*)clonedTemplateNode transformingMarks:[NSArray array]];
+      } else
+        NSBeep();
     }
   }
   return true;

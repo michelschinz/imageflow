@@ -16,14 +16,11 @@
 
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)env;
 {
-  // TODO handle arity
-  static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFTypeVar typeVarWithIndex:0]]
-                               returnType:[IFTypeVar typeVarWithIndex:1]]] retain];
-  }
-  return types;
+  int inputArity = [[env valueForKey:@"inputArity"] intValue];
+  NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:inputArity];
+  for (int i = 1; i <= inputArity; ++i)
+    [argTypes addObject:[IFTypeVar typeVarWithIndex:i]];
+  return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:[IFTypeVar typeVarWithIndex:0]]];
 }
 
 @end

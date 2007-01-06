@@ -441,7 +441,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)insertNewline:(id)sender
 {
-  [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilter]] asChildOf:[self cursorNode]];
+  [document insertNode:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:1]] asChildOf:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
 }
 
@@ -507,11 +507,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     return;
   }
   IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
-
   IFTreeNode* node = [[proxy node] cloneNode];
-  BOOL ok = [document canReplaceGhostNode:[self cursorNode] usingNode:node];
-  NSLog(@"ok? %@",ok ? @"true" : @"false");
-  [document replaceNode:[self cursorNode] usingNode:node transformingMarks:allMarks];
+  if ([document canReplaceGhostNode:[self cursorNode] usingNode:node])
+    [document replaceGhostNode:[self cursorNode] usingNode:node transformingMarks:allMarks];
+  else
+    NSBeep();
 }
 
 #pragma mark Drag and drop
@@ -643,9 +643,8 @@ static enum {
             return NO;
         } else {
           NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
-          // TODO check that it is a ghost, and that replacement is legal
-          if (NO) //[document canReplaceNode:targetNode usingNode:draggedMacro])
-            [document replaceNode:targetNode usingNode:draggedMacro transformingMarks:allMarks];
+          if ([targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:draggedMacro])
+            [document replaceGhostNode:targetNode usingNode:draggedMacro transformingMarks:allMarks];
           else
             return NO;
         }
@@ -654,8 +653,9 @@ static enum {
         return YES;        
       } else if ((operation & NSDragOperationLink) != 0) {
         // Link: create node alias
-        if ([draggedNodes count] == 1 && [[targetNode parents] count] == 0) {
-          [document replaceNode:targetNode usingNode:[IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]] transformingMarks:allMarks];
+        IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]];
+        if ([draggedNodes count] == 1 && [targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:alias]) {
+          [document replaceGhostNode:targetNode usingNode:alias transformingMarks:allMarks];
           return YES;
         } else
           return NO;
@@ -680,8 +680,11 @@ static enum {
         IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
-        [document replaceNode:targetNode usingNode:[loadNode cloneNode] transformingMarks:allMarks];
-        return YES;
+        if ([document canReplaceGhostNode:targetNode usingNode:loadNode]) {
+          [document replaceGhostNode:targetNode usingNode:[loadNode cloneNode] transformingMarks:allMarks];
+          return YES;
+        } else
+          return NO;
       } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
         // Change "fileName" entry in environment to the dropped file name.
         [[[targetNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];

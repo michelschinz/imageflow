@@ -21,9 +21,11 @@
 static NSString* IFEnvironmentKeySetDidChangeContext = @"IFEnvironmentKeySetDidChangeContext";
 static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidChangeContext";
 
-+ (IFConfiguredFilter*)ghostFilter;
++ (IFConfiguredFilter*)ghostFilterWithInputArity:(int)inputArity;
 {
-  return [[[self alloc] initWithFilter:[IFFilter filterForName:@"nop"] environment:[IFEnvironment environment]] autorelease];
+  IFEnvironment* env = [IFEnvironment environment];
+  [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
+  return [[[self alloc] initWithFilter:[IFFilter filterForName:@"nop"] environment:env] autorelease];
 }
 
 + (id)configuredFilterWithFilter:(IFFilter*)theFilter environment:(IFEnvironment*)theEnvironment;
