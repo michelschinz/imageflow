@@ -68,6 +68,8 @@ const unsigned int ID_NONE = ~0;
   return clone;
 }
 
+#pragma mark Parents and child
+
 - (NSArray*)parents;
 {
   return parents;
@@ -115,22 +117,19 @@ const unsigned int ID_NONE = ~0;
   return child;
 }
 
-- (IFConfiguredFilter*)filter;
+- (NSArray*)dfsAncestors;
 {
-  return filter;
+  NSMutableArray* result = [NSMutableArray array];
+  [self dfsCollectAncestorsInArray:result];
+  return result;
 }
 
-- (NSArray*)potentialTypes;
+- (BOOL)isParentOf:(IFTreeNode*)other;
 {
-  return [filter potentialTypes];
+  return (other != nil) && (self == other || [[self child] isParentOf:other]);
 }
 
-- (IFExpression*)expression;
-{
-  if (expression == nil)
-    [self updateExpression];
-  return expression;
-}
+#pragma mark Attributes
 
 - (void)setName:(NSString*)newName;
 {
@@ -165,6 +164,28 @@ const unsigned int ID_NONE = ~0;
   return NO;
 }
 
+- (IFTreeNode*)original;
+{
+  return self;
+}
+
+- (IFConfiguredFilter*)filter;
+{
+  return filter;
+}
+
+- (IFExpression*)expression;
+{
+  if (expression == nil)
+    [self updateExpression];
+  return expression;
+}
+
+- (NSArray*)potentialTypes;
+{
+  return [filter potentialTypes];
+}
+
 - (int)inputArity;
 {
   return [filter inputArity];
@@ -173,18 +194,6 @@ const unsigned int ID_NONE = ~0;
 - (int)outputArity;
 {
   return [filter outputArity];
-}
-
-- (NSArray*)dfsAncestors;
-{
-  NSMutableArray* result = [NSMutableArray array];
-  [self dfsCollectAncestorsInArray:result];
-  return result;
-}
-
-- (BOOL)isParentOf:(IFTreeNode*)other;
-{
-  return (other != nil) && (self == other || [[self child] isParentOf:other]);
 }
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;

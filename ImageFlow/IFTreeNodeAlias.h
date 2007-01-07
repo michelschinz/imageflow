@@ -17,6 +17,4 @@
 + (id)nodeAliasWithOriginal:(IFTreeNode*)theOriginal;
 - (id)initWithOriginal:(IFTreeNode*)theOriginal;
 
-- (IFTreeNode*)original;
-
 @end

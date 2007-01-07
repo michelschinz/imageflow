@@ -28,29 +28,30 @@ extern const unsigned int ID_NONE;
 - (IFTreeNode*)cloneNode;
 - (IFTreeNode*)cloneNodeAndAncestors;
 
+// hierarchy
 - (NSArray*)parents;
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
 - (void)removeObjectFromParentsAtIndex:(unsigned int)index;
 - (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
 - (IFTreeNode*)child;
-
-- (IFConfiguredFilter*)filter;
-- (NSArray*)potentialTypes;
-- (IFExpression*)expression;
-
-- (void)setName:(NSString*)newName;
-- (NSString*)name;
-
-- (void)setIsFolded:(BOOL)newIsFolded;
-- (BOOL)isFolded;
-
-- (BOOL)isGhost;
-- (BOOL)isAlias;
-- (int)inputArity;
-- (int)outputArity;
-
 - (NSArray*)dfsAncestors;
 - (BOOL)isParentOf:(IFTreeNode*)other;
+
+// attributes
+- (void)setName:(NSString*)newName;
+- (NSString*)name;
+- (void)setIsFolded:(BOOL)newIsFolded;
+- (BOOL)isFolded;
+- (BOOL)isGhost;
+- (BOOL)isAlias;
+- (IFTreeNode*)original;
+- (IFConfiguredFilter*)filter;
+- (IFExpression*)expression;
+
+- (int)inputArity;
+- (int)outputArity;
+- (NSArray*)potentialTypes;
+
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 

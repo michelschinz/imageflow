@@ -72,6 +72,18 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return 0;
 }
 
+- (NSArray*)potentialTypes;
+{
+  NSArray* originalPTs = [original potentialTypes];
+  NSMutableArray* potentialTypes = [NSMutableArray array];
+  for (int i = 0, count = [originalPTs count]; i < count; ++i) {
+    IFType* limitedType = [[originalPTs objectAtIndex:i] typeByLimitingArityTo:0];
+    if (![potentialTypes containsObject:limitedType])
+      [potentialTypes addObject:limitedType];
+  }
+  return potentialTypes;
+}
+
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFOriginalExpressionChangedContext)
