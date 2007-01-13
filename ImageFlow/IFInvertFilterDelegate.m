@@ -11,6 +11,7 @@
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFInvertFilterDelegate
 
@@ -20,8 +21,8 @@
   if (types == nil) {
     // TODO add Mask=>Mask
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
-                               returnType:[IFBasicType imageType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
+                               returnType:[IFImageType imageRGBAType]]] retain];
   }
   return types;
 }

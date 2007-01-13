@@ -19,14 +19,12 @@ static NSArray* types = nil;
     return; // avoid repeated initialisation
 
   types = [[NSArray arrayWithObjects:
-    [self basicTypeWithTag:IFTypeTag_TImage],
-    [self basicTypeWithTag:IFTypeTag_TMask],
-    [self basicTypeWithTag:IFTypeTag_TColor],
+    [self basicTypeWithTag:IFTypeTag_TColor_RGBA],
     [self basicTypeWithTag:IFTypeTag_TRect],
     [self basicTypeWithTag:IFTypeTag_TSize],
     [self basicTypeWithTag:IFTypeTag_TPoint],
     [self basicTypeWithTag:IFTypeTag_TString],
-    [self basicTypeWithTag:IFTypeTag_TNum],
+    [self basicTypeWithTag:IFTypeTag_TFloat],
     [self basicTypeWithTag:IFTypeTag_TInt],
     [self basicTypeWithTag:IFTypeTag_TBool],
     [self basicTypeWithTag:IFTypeTag_TAction],
@@ -47,19 +45,9 @@ static NSArray* types = nil;
   return self;
 }
 
-+ (IFBasicType*)imageType;
++ (IFBasicType*)colorRGBAType;
 {
-  return [types objectAtIndex:IFTypeTag_TImage];
-}
-
-+ (IFBasicType*)maskType;
-{
-  return [types objectAtIndex:IFTypeTag_TMask];
-}
-
-+ (IFBasicType*)colorType;
-{
-  return [types objectAtIndex:IFTypeTag_TColor];
+  return [types objectAtIndex:IFTypeTag_TColor_RGBA];
 }
 
 + (IFBasicType*)rectType;
@@ -82,9 +70,9 @@ static NSArray* types = nil;
   return [types objectAtIndex:IFTypeTag_TString];
 }
 
-+ (IFBasicType*)numType;
++ (IFBasicType*)floatType;
 {
-  return [types objectAtIndex:IFTypeTag_TNum];
+  return [types objectAtIndex:IFTypeTag_TFloat];
 }
 
 + (IFBasicType*)intType;
@@ -115,12 +103,8 @@ static NSArray* types = nil;
 - (NSString*)description;
 {
   switch (tag) {
-    case IFTypeTag_TImage:
-      return @"Image";
-    case IFTypeTag_TMask:
-      return @"Mask";
-    case IFTypeTag_TColor:
-      return @"Color";
+    case IFTypeTag_TColor_RGBA:
+      return @"Color_RGBA";
     case IFTypeTag_TRect:
       return @"Rect";
     case IFTypeTag_TSize:
@@ -129,8 +113,8 @@ static NSArray* types = nil;
       return @"Point";
     case IFTypeTag_TString:
       return @"String";
-    case IFTypeTag_TNum:
-      return @"Num";
+    case IFTypeTag_TFloat:
+      return @"Float";
     case IFTypeTag_TInt:
       return @"Int";
     case IFTypeTag_TBool:

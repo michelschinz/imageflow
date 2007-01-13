@@ -14,6 +14,7 @@
 #import "IFBlendMode.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFBitmapDrawingSourceDelegate
 
@@ -22,7 +23,7 @@
   static NSArray* types = nil;
   if (types == nil)
     // TODO add Mask
-    types = [[NSArray arrayWithObject:[IFBasicType imageType]] retain];
+    types = [[NSArray arrayWithObject:[IFImageType imageRGBAType]] retain];
   return types;
 }
 

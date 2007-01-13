@@ -10,6 +10,7 @@
 #import "IFDocument.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFFileSinkDelegate
 
@@ -18,7 +19,7 @@
   static NSArray* types = nil;
   if (types == nil) {
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
                                returnType:[IFBasicType actionType]]] retain];
   }
   return types;

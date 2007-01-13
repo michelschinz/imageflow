@@ -15,14 +15,12 @@
   IFParameterlessTypeTag tag;
 }
 
-+ (IFBasicType*)imageType;
-+ (IFBasicType*)maskType;
-+ (IFBasicType*)colorType;
++ (IFBasicType*)colorRGBAType;
 + (IFBasicType*)rectType;
 + (IFBasicType*)sizeType;
 + (IFBasicType*)pointType;
 + (IFBasicType*)stringType;
-+ (IFBasicType*)numType;
++ (IFBasicType*)floatType;
 + (IFBasicType*)intType;
 + (IFBasicType*)boolType;
 + (IFBasicType*)actionType;

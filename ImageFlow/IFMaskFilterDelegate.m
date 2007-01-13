@@ -14,6 +14,7 @@
 #import "IFConstantExpression.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFMaskFilterDelegate
 
@@ -36,8 +37,8 @@ static IFConstantExpression* maskColor = nil;
   static NSArray* types = nil;
   if (types == nil) {
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFBasicType imageType],[IFBasicType maskType],nil]
-                               returnType:[IFBasicType imageType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil]
+                               returnType:[IFImageType imageRGBAType]]] retain];
   }
   return types;
 }

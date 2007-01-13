@@ -16,6 +16,7 @@
 #import "IFBlendMode.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFBlendFilterDelegate
 
@@ -34,8 +35,8 @@ static NSArray* parentNames = nil;
   static NSArray* types = nil;
   if (types == nil) {
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFBasicType imageType],[IFBasicType imageType],nil]
-                               returnType:[IFBasicType imageType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType imageRGBAType],nil]
+                               returnType:[IFImageType imageRGBAType]]] retain];
   }
   return types;
 }

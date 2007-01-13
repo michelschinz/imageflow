@@ -2,14 +2,13 @@ type t =
     TVar of int
   | TFun of (t array) * t
   | TArray of t
-  | TImage
-  | TMask
-  | TColor
+  | TImage of t
+  | TColor_RGBA
   | TRect
   | TSize
   | TPoint
   | TString
-  | TNum
+  | TFloat
   | TInt
   | TBool
   | TAction

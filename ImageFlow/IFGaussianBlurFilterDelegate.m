@@ -11,6 +11,8 @@
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
+#import "IFTypeVar.h"
 
 @implementation IFGaussianBlurFilterDelegate
 
@@ -18,9 +20,10 @@
 {
   static NSArray* types = nil;
   if (types == nil) {
+    IFTypeVar* var = [IFTypeVar typeVarWithIndex:0];
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
-                               returnType:[IFBasicType imageType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:var]
+                               returnType:var]] retain];
   }
   return types;
 }

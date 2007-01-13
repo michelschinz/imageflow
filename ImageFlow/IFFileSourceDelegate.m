@@ -11,6 +11,7 @@
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFFileSourceDelegate
 
@@ -18,7 +19,7 @@
 {
   static NSArray* types = nil;
   if (types == nil)
-    types = [[NSArray arrayWithObject:[IFBasicType imageType]] retain];
+    types = [[NSArray arrayWithObject:[IFImageType imageRGBAType]] retain];
   return types;
 }
 

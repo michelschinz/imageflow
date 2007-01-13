@@ -2,14 +2,13 @@ type t =
     TVar of int
   | TFun of (t array) * t
   | TArray of t
-  | TImage
-  | TMask
-  | TColor
+  | TImage of t
+  | TColor_RGBA
   | TRect
   | TSize
   | TPoint
   | TString
-  | TNum
+  | TFloat
   | TInt
   | TBool
   | TAction
@@ -23,12 +22,10 @@ let rec to_string = function
       "(" ^ (String.concat "," (List.map to_string tsl)) ^ ")=>" ^ (to_string t)
   | TArray t ->
       (to_string t) ^ "[]"
-  | TImage ->
-      "Image"
-  | TMask ->
-      "Mask"
-  | TColor ->
-      "Color"
+  | TImage t ->
+      "Image[" ^ (to_string t) ^ "]"
+  | TColor_RGBA ->
+      "Color_RGBA"
   | TRect ->
       "Rect"
   | TSize ->
@@ -37,8 +34,8 @@ let rec to_string = function
       "Point"
   | TString ->
       "String"
-  | TNum ->
-      "Num"
+  | TFloat ->
+      "Float"
   | TInt ->
       "Int"
   | TBool ->

@@ -9,3 +9,12 @@ let rec union l1 l2 = match l1, l2 with
 | h1 :: t1, l2 ->
     if List.mem h1 l2 then union t1 l2 else union t1 (h1 :: l2)
 
+let rec concat_map f = function
+    [] -> []
+  | h :: t -> (f h) @ (concat_map f t)
+
+let rec cartesian_product = function
+    [] -> [[]]
+  | l :: ls ->
+      let pls = cartesian_product ls in
+      concat_map (fun e -> List.map (fun ll -> e :: ll) pls) l

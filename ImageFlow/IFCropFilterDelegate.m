@@ -15,6 +15,7 @@
 #import "IFTreeNode.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFCropFilterDelegate
 
@@ -23,8 +24,8 @@
   static NSArray* types = nil;
   if (types == nil) {
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
-                               returnType:[IFBasicType imageType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
+                               returnType:[IFImageType imageRGBAType]]] retain];
   }
   return types;
 }

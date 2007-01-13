@@ -13,14 +13,12 @@
 //   separately
 
 typedef enum {
-  IFTypeTag_TImage,
-  IFTypeTag_TMask,
-  IFTypeTag_TColor,
+  IFTypeTag_TColor_RGBA,
   IFTypeTag_TRect,
   IFTypeTag_TSize,
   IFTypeTag_TPoint,
   IFTypeTag_TString,
-  IFTypeTag_TNum,
+  IFTypeTag_TFloat,
   IFTypeTag_TInt,
   IFTypeTag_TBool,
   IFTypeTag_TAction,
@@ -30,5 +28,6 @@ typedef enum {
 typedef enum {
   IFTypeTag_TVar,
   IFTypeTag_TFun,
-  IFTypeTag_TArray
+  IFTypeTag_TArray,
+  IFTypeTag_TImage
 } IFParametrisedTypeTag;

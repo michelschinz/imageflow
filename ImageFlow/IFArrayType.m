@@ -27,6 +27,12 @@
   return self;
 }
 
+- (void)dealloc;
+{
+  OBJC_RELEASE(contentType);
+  [super dealloc];
+}
+
 - (NSString*)description;
 {
   return [[contentType description] stringByAppendingString:@"[]"];

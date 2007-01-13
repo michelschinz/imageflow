@@ -11,6 +11,7 @@
 #import "IFPair.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
+#import "IFImageType.h"
 
 @implementation IFChannelToMaskFilterDelegate
 
@@ -19,8 +20,8 @@
   static NSArray* types = nil;
   if (types == nil) {
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFBasicType imageType]]
-                               returnType:[IFBasicType maskType]]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
+                               returnType:[IFImageType maskType]]] retain];
   }
   return types;
 }
