@@ -40,6 +40,29 @@
   return [NSString stringWithFormat:@"(%@)=>%@",[argumentTypes componentsJoinedByString:@","],returnType];
 }
 
+- (BOOL)isEqual:(id)other;
+{
+  if ([other isKindOfClass:[self class]]) {
+    NSArray* otherArgTypes = [other argumentTypes];
+    if ([otherArgTypes count] != [argumentTypes count])
+      return false;
+    for (int i = 0, count = [argumentTypes count]; i < count; ++i)
+      if (![[argumentTypes objectAtIndex:i] isEqual:[otherArgTypes objectAtIndex:i]])
+        return false;
+    return [returnType isEqual:[other returnType]];
+  } else
+    return false;
+}
+
+- (unsigned)hash;
+{
+  unsigned hash = 7;
+  for (int i = 0, count = [argumentTypes count]; i < count; ++i)
+    hash = hash * 1973 + [[argumentTypes objectAtIndex:i] hash];
+  hash ^= [returnType hash];
+  return hash;
+}
+
 - (NSArray*)argumentTypes;
 {
   return argumentTypes;

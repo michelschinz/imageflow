@@ -29,8 +29,8 @@
 
 - (BOOL)isGhost;
 - (NSArray*)potentialTypes;
-- (int)inputArity;
-- (int)outputArity;
+//- (int)inputArity;
+//- (int)outputArity;
 - (IFExpression*)expression;
 
 - (NSString*)label;

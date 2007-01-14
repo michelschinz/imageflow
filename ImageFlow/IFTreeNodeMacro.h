@@ -15,6 +15,7 @@
   BOOL inlineOnInsertion;
   IFTreeNodeReference* rootRef;
   NSMutableArray* parameterNames;
+  NSArray* potentialTypes;
 }
 
 + (id)nodeMacroWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;

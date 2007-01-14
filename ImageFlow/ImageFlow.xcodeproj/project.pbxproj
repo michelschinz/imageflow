@@ -83,6 +83,7 @@
 		FA3D6A98097BCBEB0082E70D /* IFFilterXMLDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D6A96097BCBEB0082E70D /* IFFilterXMLDecoder.m */; };
 		FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA402732091A35E6001626A2 /* IFFileSink.nib */; };
 		FA402870091A4280001626A2 /* IFFileSinkDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40286E091A4280001626A2 /* IFFileSinkDelegate.m */; };
+		FA40702A0B5A8B1900BDE37F /* IFTypeChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */; };
 		FA40F2660912438100C8B8DD /* IFHistogramConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */; };
 		FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
 		FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */; };
@@ -382,6 +383,8 @@
 		FA402732091A35E6001626A2 /* IFFileSink.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFileSink.nib; sourceTree = "<group>"; };
 		FA40286D091A4280001626A2 /* IFFileSinkDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileSinkDelegate.h; sourceTree = "<group>"; };
 		FA40286E091A4280001626A2 /* IFFileSinkDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileSinkDelegate.m; sourceTree = "<group>"; };
+		FA4070270B5A8B1900BDE37F /* IFTypeChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTypeChecker.h; sourceTree = "<group>"; };
+		FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTypeChecker.m; sourceTree = "<group>"; };
 		FA40F2630912438100C8B8DD /* IFHistogramConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpression.h; sourceTree = "<group>"; };
 		FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpression.m; sourceTree = "<group>"; };
 		FA4327AB0ADA7B1900109D58 /* libbigarray.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbigarray.a; path = lib/ocaml/libbigarray.a; sourceTree = ocaml; };
@@ -1044,6 +1047,15 @@
 			name = File;
 			sourceTree = "<group>";
 		};
+		FA406FAF0B5A8AFC00BDE37F /* Type checker */ = {
+			isa = PBXGroup;
+			children = (
+				FA4070270B5A8B1900BDE37F /* IFTypeChecker.h */,
+				FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */,
+			);
+			name = "Type checker";
+			sourceTree = "<group>";
+		};
 		FA43286E0ADA8D4300109D58 /* Circle */ = {
 			isa = PBXGroup;
 			children = (
@@ -1119,6 +1131,7 @@
 		FA690ACE090525750096B97D /* Language */ = {
 			isa = PBXGroup;
 			children = (
+				FA406FAF0B5A8AFC00BDE37F /* Type checker */,
 				FA0CF6810B4CD81E0070953C /* Types */,
 				FA0607EB09151CBC002A2527 /* Expressions */,
 				FA22EC550980EE2200C79632 /* Environment */,
@@ -1794,6 +1807,7 @@
 				FA0CF8460B4D0DEE0070953C /* IFDropShadowFilterDelegate.m in Sources */,
 				FA0CF8590B4D0F100070953C /* IFGhostFilterDelegate.m in Sources */,
 				FA6101BF0B592BEA00841DCE /* IFImageType.m in Sources */,
+				FA40702A0B5A8B1900BDE37F /* IFTypeChecker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

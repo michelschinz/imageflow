@@ -17,4 +17,6 @@
 + (id)arrayTypeWithContentType:(IFType*)theContentType;
 - (id)initWithContentType:(IFType*)theContentType;
 
+- (IFType*)contentType;
+
 @end

@@ -45,8 +45,8 @@ static NSString* IFRootExpressionChangedContext = @"IFRootExpressionChangedConte
 
 - (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
 {
-  // HACK the following is incorrect as soon as the macro node contains more than one node!
-  return [[macroRootRef treeNode] potentialTypes];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 @end

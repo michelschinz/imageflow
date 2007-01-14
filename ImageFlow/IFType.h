@@ -15,6 +15,8 @@
   value camlRepresentation;
 }
 
++ (id)typeWithCamlType:(value)camlType;
+
 - (int)arity;
 - (IFType*)typeByLimitingArityTo:(int)maxArity;
 

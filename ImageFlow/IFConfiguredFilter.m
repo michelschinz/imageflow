@@ -82,17 +82,6 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
   return [filter potentialTypesWithEnvironment:filterEnvironment];
 }
 
-- (int)inputArity;
-{
-  return [[[self potentialTypes] objectAtIndex:0] arity];
-}
-
-- (int)outputArity;
-{
-  NSLog(@"TODO outputArity");
-  return 1;
-}
-
 - (IFExpression*)expression;
 {
   if (expression == nil)

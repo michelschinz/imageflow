@@ -27,7 +27,6 @@
 + (IFBasicType*)errorType;
 
 + (IFBasicType*)basicTypeWithTag:(int)theTag;
-- (IFBasicType*)initWithTag:(int)theTag;
 
 - (int)tag;
 

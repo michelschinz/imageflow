@@ -35,6 +35,7 @@ extern const unsigned int ID_NONE;
 - (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
 - (IFTreeNode*)child;
 - (NSArray*)dfsAncestors;
+- (NSArray*)topologicallySortedAncestorsWithoutAliases;
 - (BOOL)isParentOf:(IFTreeNode*)other;
 
 // attributes

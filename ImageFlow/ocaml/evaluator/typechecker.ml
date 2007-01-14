@@ -2,9 +2,9 @@ open Expr
 open Type
 
 (* Make sure that all types use a different set of type variables *)
+let next_free_var =
+  let counter = ref (-1) in fun () -> incr counter; !counter
 let alpha_rename_tvars types =
-  let next_free_var =
-    let counter = ref (-1) in fun () -> incr counter; !counter in
   let rec alpha_rename subst = function
       TVar i ->
         begin try
@@ -27,8 +27,7 @@ let alpha_rename_tvars types =
         (subst', TArray t')
     | basic_type ->
         (subst, basic_type)
-  in 
-  List.map (fun t -> snd (alpha_rename [] t)) types
+  in List.map (fun t -> snd (alpha_rename [] t)) types
 
 let rec apply_subst s = function
     TVar i as var ->
@@ -104,6 +103,18 @@ let check preds types =
   match valid_configurations preds types with
     [] -> false
   | _ -> true
+
+let infer paramsCount preds types =
+  let res_type = function
+      TFun(_, res_type) -> res_type
+    | other -> other
+  in
+  List.map (fun conf ->
+    TFun(Array.of_list (Mlist.take paramsCount conf),
+         res_type (Mlist.last conf)))
+    (valid_configurations preds types)
+
+(* Debugging *)
 
 let verbose_check constraints possible_types =
   let string_of_int_list l =

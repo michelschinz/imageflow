@@ -13,36 +13,43 @@
 
 static NSArray* types = nil;
 
-+ (void)initialize;
-{
-  if (self != [IFBasicType class])
-    return; // avoid repeated initialisation
-
-  types = [[NSArray arrayWithObjects:
-    [self basicTypeWithTag:IFTypeTag_TColor_RGBA],
-    [self basicTypeWithTag:IFTypeTag_TRect],
-    [self basicTypeWithTag:IFTypeTag_TSize],
-    [self basicTypeWithTag:IFTypeTag_TPoint],
-    [self basicTypeWithTag:IFTypeTag_TString],
-    [self basicTypeWithTag:IFTypeTag_TFloat],
-    [self basicTypeWithTag:IFTypeTag_TInt],
-    [self basicTypeWithTag:IFTypeTag_TBool],
-    [self basicTypeWithTag:IFTypeTag_TAction],
-    [self basicTypeWithTag:IFTypeTag_TError],
-    nil] retain];
-}
-
-+ (IFBasicType*)basicTypeWithTag:(int)theTag;
-{
-  return [[[self alloc] initWithTag:theTag] autorelease];
-}
-
+// private
 - (IFBasicType*)initWithTag:(int)theTag;
 {
   if (![super init])
     return nil;
   tag = theTag;
   return self;
+}
+
+// private
++ (IFBasicType*)freshBasicTypeWithTag:(int)theTag;
+{
+  return [[[self alloc] initWithTag:theTag] autorelease];
+}
+
++ (void)initialize;
+{
+  if (self != [IFBasicType class])
+    return; // avoid repeated initialisation
+
+  types = [[NSArray arrayWithObjects:
+    [self freshBasicTypeWithTag:IFTypeTag_TColor_RGBA],
+    [self freshBasicTypeWithTag:IFTypeTag_TRect],
+    [self freshBasicTypeWithTag:IFTypeTag_TSize],
+    [self freshBasicTypeWithTag:IFTypeTag_TPoint],
+    [self freshBasicTypeWithTag:IFTypeTag_TString],
+    [self freshBasicTypeWithTag:IFTypeTag_TFloat],
+    [self freshBasicTypeWithTag:IFTypeTag_TInt],
+    [self freshBasicTypeWithTag:IFTypeTag_TBool],
+    [self freshBasicTypeWithTag:IFTypeTag_TAction],
+    [self freshBasicTypeWithTag:IFTypeTag_TError],
+    nil] retain];
+}
+
++ (IFBasicType*)basicTypeWithTag:(int)theTag;
+{
+  return [types objectAtIndex:theTag];
 }
 
 + (IFBasicType*)colorRGBAType;

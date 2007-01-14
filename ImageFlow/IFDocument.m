@@ -300,13 +300,7 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
 
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
 {
-  NSMutableArray* sortedNodes = [NSMutableArray arrayWithArray:[self topologicallySortedNodes]];
-  for (int i = 0; i < [sortedNodes count]; /*nothing*/) {
-    if ([[sortedNodes objectAtIndex:i] isAlias])
-      [sortedNodes removeObjectAtIndex:i];
-    else
-      ++i;
-  }
+  NSArray* sortedNodes = [self topologicallySortedNodes];
   int nodesCount = [sortedNodes count];
 
   NSMutableArray* constraints = [NSMutableArray arrayWithCapacity:nodesCount];
@@ -620,21 +614,10 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 - (NSArray*)topologicallySortedNodes;
 {
-  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot dfsAncestors]];
+  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot topologicallySortedAncestorsWithoutAliases]];
   NSAssert([nodes lastObject] == fakeRoot, @"internal error");
   [nodes removeLastObject];
-  
-  NSMutableArray* sortedNodes = [NSMutableArray arrayWithCapacity:[nodes count]];
-  NSMutableSet* seenNodes = [NSMutableSet setWithCapacity:[nodes count]];
-  for (int i = 0, count = [nodes count]; [sortedNodes count] < count; i = (i + 1) % count) {
-    IFTreeNode* node = [nodes objectAtIndex:i];
-    NSSet* parentsSet = [NSSet setWithArray:[[node original] parents]];
-    if (![seenNodes containsObject:node] && [parentsSet isSubsetOfSet:seenNodes]) {
-      [sortedNodes addObject:node];
-      [seenNodes addObject:node];
-    }
-  }
-  return sortedNodes;
+  return nodes;
 }
 
 - (void)overwriteWith:(IFDocument*)other;

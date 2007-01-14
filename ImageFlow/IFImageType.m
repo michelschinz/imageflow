@@ -55,6 +55,21 @@
   return [NSString stringWithFormat:@"Image[%@]",pixelType];
 }
 
+- (BOOL)isEqual:(id)other;
+{
+  return [other isKindOfClass:[self class]] && [pixelType isEqual:[other pixelType]];
+}
+
+- (unsigned)hash;
+{
+  return [pixelType hash] * 2503;
+}
+
+- (IFType*)pixelType;
+{
+  return pixelType;
+}
+
 - (int)arity;
 {
   return 0;

@@ -18,3 +18,24 @@ let rec cartesian_product = function
   | l :: ls ->
       let pls = cartesian_product ls in
       concat_map (fun e -> List.map (fun ll -> e :: ll) pls) l
+
+let rec drop n l =
+  if n = 0 then
+    l
+  else match l with
+    _ :: tl -> drop (pred n) tl
+  | _ -> failwith "drop"
+
+let rec take n l =
+  if n = 0 then
+    []
+  else match l with
+    hd :: tl -> hd :: (take (pred n) tl)
+  | _ -> failwith "take"
+
+let first = List.hd
+
+let rec last = function
+    l :: [] -> l
+  | _ :: tl -> last tl
+  | _ -> failwith "last"

@@ -20,4 +20,6 @@
 + (id)imageTypeWithPixelType:(IFType*)thePixelType;
 - (id)initWithPixelType:(IFType*)thePixelType;
 
+- (IFType*)pixelType;
+
 @end

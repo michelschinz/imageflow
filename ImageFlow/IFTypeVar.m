@@ -32,6 +32,16 @@
   return [NSString stringWithFormat:@"'t%d",index];
 }
 
+- (BOOL)isEqual:(id)other;
+{
+  return [other isKindOfClass:[IFTypeVar class]] && index == ((IFTypeVar*)other)->index;
+}
+
+- (unsigned)hash;
+{
+  return index;
+}
+
 - (int)arity;
 {
   return 0;

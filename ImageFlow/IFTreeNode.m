@@ -124,6 +124,23 @@ const unsigned int ID_NONE = ~0;
   return result;
 }
 
+- (NSArray*)topologicallySortedAncestorsWithoutAliases;
+{
+  NSArray* nodes = [self dfsAncestors];
+  NSMutableArray* sortedNodes = [NSMutableArray arrayWithCapacity:[nodes count]];
+  NSMutableSet* seenNodes = [NSMutableSet setWithCapacity:[nodes count]];
+  for (int i = 0, count = [nodes count]; [sortedNodes count] < count; i = (i + 1) % count) {
+    IFTreeNode* node = [nodes objectAtIndex:i];
+    NSSet* parentsSet = [NSSet setWithArray:[[node original] parents]];
+    if (![seenNodes containsObject:node] && [parentsSet isSubsetOfSet:seenNodes]) {
+      if (![node isAlias])
+        [sortedNodes addObject:node];
+      [seenNodes addObject:node];
+    }
+  }
+  return sortedNodes;
+}
+
 - (BOOL)isParentOf:(IFTreeNode*)other;
 {
   return (other != nil) && (self == other || [[self child] isParentOf:other]);
@@ -188,12 +205,13 @@ const unsigned int ID_NONE = ~0;
 
 - (int)inputArity;
 {
-  return [filter inputArity];
+  return [[[self potentialTypes] objectAtIndex:0] arity];
 }
 
 - (int)outputArity;
 {
-  return [filter outputArity];
+  NSLog(@"TODO outputArity");
+  return 1;
 }
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;

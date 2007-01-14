@@ -4,7 +4,8 @@ open Callback
 
 let _ =
   register "Cache.make" Cache.make;
-  register "Typechecker.check" Typechecker.check;
+  register "Typechecker.check" Typechecker.verbose_check;
+  register "Typechecker.infer" Typechecker.infer;
   register "Optevaluator.eval" Optevaluator.eval;
   register "Optevaluator.eval_as_image" Optevaluator.eval_as_image;
   register "Optevaluator.eval_as_masked_image" Optevaluator.eval_as_masked_image;

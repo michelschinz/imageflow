@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeNodeParameter.h"
-
+#import "IFTypeVar.h"
 #import "IFParentExpression.h"
 
 @implementation IFTreeNodeParameter
@@ -28,6 +28,14 @@
 - (IFTreeNode*)cloneNode;
 {
   return [IFTreeNodeParameter nodeParameterWithIndex:index];
+}
+
+- (NSArray*)potentialTypes;
+{
+  static NSArray* types = nil;
+  if (types == nil)
+    types = [[NSArray arrayWithObject:[IFTypeVar typeVarWithIndex:0]] retain];
+  return types;
 }
 
 - (void)setIndex:(int)newIndex;

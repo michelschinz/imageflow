@@ -38,6 +38,21 @@
   return [[contentType description] stringByAppendingString:@"[]"];
 }
 
+- (BOOL)isEqual:(id)other;
+{
+  return [other isKindOfClass:[self class]] && [contentType isEqual:[other contentType]];
+}
+
+- (unsigned)hash;
+{
+  return [contentType hash] * 5101;
+}
+
+- (IFType*)contentType;
+{
+  return contentType;
+}
+
 - (int)arity;
 {
   return 0;
