@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFConfiguredFilter.h"
+#import "IFFilter.h"
 #import "IFType.h"
 
 extern const unsigned int ID_NONE;
@@ -16,15 +16,15 @@ extern const unsigned int ID_NONE;
 @interface IFTreeNode : NSObject {
   NSString* name;
   BOOL isFolded;
-  IFConfiguredFilter* filter;
+  IFFilter* filter;
   IFExpression* expression;
 
   NSMutableArray* parents;
   IFTreeNode* child; // not retained, to avoid cycles
 }
 
-+ (id)nodeWithFilter:(IFConfiguredFilter*)theFilter;
-- (id)initWithFilter:(IFConfiguredFilter*)theFilter;
++ (id)nodeWithFilter:(IFFilter*)theFilter;
+- (id)initWithFilter:(IFFilter*)theFilter;
 - (IFTreeNode*)cloneNode;
 - (IFTreeNode*)cloneNodeAndAncestors;
 
@@ -46,7 +46,7 @@ extern const unsigned int ID_NONE;
 - (BOOL)isGhost;
 - (BOOL)isAlias;
 - (IFTreeNode*)original;
-- (IFConfiguredFilter*)filter;
+- (IFFilter*)filter;
 - (IFExpression*)expression;
 
 - (int)inputArity;

@@ -16,7 +16,7 @@
   NSTextFieldCell* textCell;
 }
 
-+ (NSArrayController*)arrayControllerForFilter:(IFConfiguredFilter*)filter;
++ (NSArrayController*)arrayControllerForFilter:(IFFilter*)filter;
 
 - (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 

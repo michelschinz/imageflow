@@ -88,12 +88,11 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   if (nodeToEdit == nil)
     return;
   
-  IFConfiguredFilter* confFilter = [nodeToEdit filter];
-  IFFilter* filter = [confFilter filter];
+  IFFilter* filter = [nodeToEdit filter];
   [self setFilterName:[filter name]];
   
   NSObjectController* filterController = [self filterControllerForName:[filter name]];
-  [filterController setContent:confFilter];
+  [filterController setContent:filter];
   
   // Select appropriate tab
   NSNumber* tabIndex = [tabIndices objectForKey:[filter name]];

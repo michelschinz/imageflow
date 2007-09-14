@@ -4,7 +4,7 @@
   <description>Blur input image</description>
   <tree id="1">
     <filter>
-      <name>gaussian</name>
+      <name>IFGaussianBlurFilter</name>
       <env>
         <key>radius</key>
         <number>5</number>
@@ -12,7 +12,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

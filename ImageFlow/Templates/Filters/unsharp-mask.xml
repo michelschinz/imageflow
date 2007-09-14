@@ -4,7 +4,7 @@
   <description>Increases the contrast of the edges between pixels of different colors in an image.</description>
   <tree id="1">
     <filter>
-      <name>unsharp-mask</name>
+      <name>IFUnsharpMaskFilter</name>
       <env>
       	<key>intensity</key>
         <number>0.5</number>
@@ -14,7 +14,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

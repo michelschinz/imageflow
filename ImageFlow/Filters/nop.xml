@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<filter>
-  <name>nop</name>
-  <expression>
-    <operation name="nop"/>
-  </expression>
-  <settings_nib>IFGhostFilter</settings_nib>
-  <delegate_class>IFGhostFilterDelegate</delegate_class>
-</filter>

@@ -4,7 +4,7 @@
   <description>Blend images</description>
   <tree id="1">
     <filter>
-      <name>blend</name>
+      <name>IFBlendFilter</name>
       <env>
         <key>mode</key>
         <integer>0</integer>
@@ -15,10 +15,10 @@
       </env>
     </filter>
     <tree id="2">
-      <filter><name>nop</name><env/></filter>
+      <filter><name>IFGhostFilter</name><env/></filter>
     </tree>
     <tree id="3">
-      <filter><name>nop</name><env/></filter>
+      <filter><name>IFGhostFilter</name><env/></filter>
     </tree>
   </tree>
 </imageflow>

@@ -4,7 +4,7 @@
   <description>Control contrast, brightness and saturation</description>
   <tree id="1">
     <filter>
-      <name>color-controls</name>
+      <name>IFColorControlsFilter</name>
       <env>
         <key>contrast</key>
         <number>1</number>
@@ -16,7 +16,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

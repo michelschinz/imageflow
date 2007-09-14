@@ -19,60 +19,57 @@
 
 + (id)nop;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"nop"] operands:[NSArray array]];
+  return [self expressionWithOperatorNamed:@"nop" operands:nil];
 }
 
 + (id)extentOf:(IFExpression*)imageExpr;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"extent"] operands:[NSArray arrayWithObject:imageExpr]];
+  return [self expressionWithOperatorNamed:@"extent" operands:imageExpr,nil];
 }
 
 + (id)resample:(IFExpression*)imageExpr by:(float)scale;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"resample"]
-                             operands:[NSArray arrayWithObjects:
-                               imageExpr,
-                               [IFConstantExpression expressionWithFloat:scale],
-                               nil]];
+  return [self expressionWithOperatorNamed:@"resample" operands:imageExpr,[IFConstantExpression expressionWithFloat:scale],nil];
 }
 
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
 {
-  static IFOperator* op = nil;
-  if (op == nil) op = [IFOperator operatorForName:@"translate"];
-  return [self expressionWithOperator:op operands:[NSArray arrayWithObjects:
-    expression,
-    [IFConstantExpression expressionWithPointNS:NSMakePoint(x,y)],
-    nil]];
+  return [self expressionWithOperatorNamed:@"translate" operands:expression,[IFConstantExpression expressionWithPointNS:NSMakePoint(x,y)],nil];
 }
 
 + (id)crop:(IFExpression*)expression along:(NSRect)rectangle;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"crop"]
-                             operands:[NSArray arrayWithObjects:
-                               expression,
-                               [IFConstantExpression expressionWithRectNS:rectangle],
-                               nil]];
+  return [self expressionWithOperatorNamed:@"crop" operands:expression,[IFConstantExpression expressionWithRectNS:rectangle],nil];
 }
 
 + (id)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(IFConstantExpression*)mode;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"blend"]
-                             operands:[NSArray arrayWithObjects:
-                               background,
-                               foreground,
-                               mode,
-                               nil]];
+  return [self expressionWithOperatorNamed:@"blend" operands:background,foreground,mode,nil];
 }
 
 + (id)histogramOf:(IFExpression*)imageExpr;
 {
-  return [self expressionWithOperator:[IFOperator operatorForName:@"histogram-rgb"] operands:[NSArray arrayWithObject:imageExpr]];
+  return [self expressionWithOperatorNamed:@"histogram-rgb" operands:imageExpr,nil];
 }
 
 + (id)expressionWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
 {
   return [[[self alloc] initWithOperator:theOperator operands:theOperands] autorelease];
+}
+
++ (id)expressionWithOperatorNamed:(NSString*)theOperatorName operands:(IFExpression*)firstOperand, ...;
+{
+  NSMutableArray* operandsArray = [NSMutableArray array];
+  if (firstOperand != nil) {
+    va_list argList;
+    IFExpression* nextOperand;
+    [operandsArray addObject:firstOperand];
+    va_start(argList, firstOperand);
+    while ((nextOperand = va_arg(argList, IFExpression*)) != nil)
+      [operandsArray addObject:nextOperand];
+    va_end(argList);
+  }
+  return [self expressionWithOperator:[IFOperator operatorForName:theOperatorName] operands:operandsArray];
 }
 
 - (id)initWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;

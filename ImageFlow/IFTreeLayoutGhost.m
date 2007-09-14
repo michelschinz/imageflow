@@ -29,7 +29,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
   filterArrayControllers = [NSMutableDictionary new];
 }
 
-+ (NSArrayController*)arrayControllerForFilter:(IFConfiguredFilter*)filter;
++ (NSArrayController*)arrayControllerForFilter:(IFFilter*)filter;
 {
   NSArrayController* controller = [filterArrayControllers objectForKey:[NSValue valueWithNonretainedObject:filter]];
   if (controller == nil) {

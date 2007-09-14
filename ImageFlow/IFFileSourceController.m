@@ -9,7 +9,7 @@
 #import "IFFileSourceController.h"
 #import "IFColorProfile.h"
 #import "IFColorProfileNamer.h"
-#import "IFConfiguredFilter.h"
+#import "IFFilter.h"
 
 @interface IFFileSourceController (Private)
 - (NSString*)profileFileNameKey;
@@ -103,7 +103,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   NSString* key = [self profileFileNameKey];
   if (key == nil)
     return;
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   [env setValue:[[IFColorProfileNamer sharedNamer] pathForProfileWithUniqueName:newSelectedProfileName] forKey:key];
 }
 
@@ -151,7 +151,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
 
 - (void)setResolutionTag:(int)newTag;
 {
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
 
   switch (newTag) {
     case 0:
@@ -181,7 +181,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   NSOpenPanel* panel = [NSOpenPanel openPanel];
   [panel setCanChooseDirectories:NO];
   [panel setAllowsMultipleSelection:NO];
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   if ([panel runModalForDirectory:nil file:[env valueForKey:@"fileName"]] != NSOKButton)
     return;
 
@@ -219,7 +219,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   if (key == nil)
     path = nil;
   else {
-    IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+    IFEnvironment* env = [(IFFilter*)[filterController content] environment];
     path = [env valueForKey:key];
   }
 
@@ -233,7 +233,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
 
 - (void)updateResolutionTag;
 {
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   if ([[env valueForKey:@"useEmbeddedResolution"] boolValue])
     [self reallySetResolutionTag:2];
   else if ([[env valueForKey:@"useDocumentResolutionAsDefault"] boolValue])
@@ -256,7 +256,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   if (fileProperties != nil)
     return;
   
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   NSString* fileName = [env valueForKey:@"fileName"];
 
   NSURL* url = [NSURL fileURLWithPath:(fileName == nil ? @"" : fileName)];

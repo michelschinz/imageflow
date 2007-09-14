@@ -79,25 +79,9 @@ enum IFLayoutLayer {
     if (maybeSurrogatePath == nil)
       break;
     
-    IFFilter* filter = [IFFilter filterWithName:@"<surrogate>"
-                                     expression:[IFVariableExpression expressionWithName:@"expression"]
-                                settingsNibName:nil
-                                       delegate:nil];
-    IFEnvironment* env = [IFEnvironment environment];
-    [env setValue:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"load"]
-                                                      operands:[NSArray arrayWithObjects:
-                                                        [IFConstantExpression expressionWithString:maybeSurrogatePath],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        [IFConstantExpression expressionWithInt:0],
-                                                        nil]]
-           forKey:@"expression"];
-    [surrogates addObject:[IFConfiguredFilter configuredFilterWithFilter:filter environment:env]];
+    IFFilter* filter = [IFFilter ghostFilterWithInputArity:0];
+    // TODO load image at maybeSurrogatePath
+    [surrogates addObject:filter];
   }
   return surrogates;
 }
@@ -106,7 +90,7 @@ enum IFLayoutLayer {
 {
   NSMutableArray* nodes = [NSMutableArray array];
   NSArray* templates = [[IFDocument documentTemplateManager] templates];
-  for (int i = 0, count = 3/*TODO [templates count]*/; i < count; ++i) {
+  for (int i = 0, count = 0/*TODO [templates count]*/; i < count; ++i) {
     IFTreeNode* clonedNode = [[[templates objectAtIndex:i] node] cloneNode];
     int parentsCount = [clonedNode inputArity];
     for (int p = 0; p < parentsCount; ++p)

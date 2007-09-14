@@ -4,7 +4,7 @@
   <description>Drop shadow</description>
   <tree id="1">
     <filter>
-      <name>drop-shadow</name>
+      <name>IFDropShadowFilter</name>
       <env>
         <key>color</key>
         <color>
@@ -18,7 +18,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

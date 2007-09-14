@@ -25,6 +25,7 @@
 + (id)histogramOf:(IFExpression*)imageExpr;
 
 + (id)expressionWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
++ (id)expressionWithOperatorNamed:(NSString*)theOperatorName operands:(IFExpression*)firstOperand, ...;
 - (id)initWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
 
 - (IFOperator*)operator;

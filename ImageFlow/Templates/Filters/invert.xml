@@ -4,11 +4,11 @@
   <description>Invert colors of input image</description>
   <tree id="1">
     <filter>
-      <name>invert</name>
+      <name>IFInvertFilter</name>
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>      
     </tree>
   </tree>

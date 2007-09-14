@@ -7,7 +7,7 @@
 //
 
 #import "IFFileSinkController.h"
-#import "IFConfiguredFilter.h"
+#import "IFFilter.h"
 
 @implementation IFFileSinkController
 
@@ -55,7 +55,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"fileTypeIndex"];
   fileTypeIndex = [fileTypes indexOfObject:fileType];
@@ -85,7 +85,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)updateOptionTabIndex;
 {
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"optionTabIndex"];
   NSNumber* boxedOptionTabIndex = [fileTypesOptions objectForKey:fileType];
@@ -95,7 +95,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (IBAction)browseFile:(id)sender;
 {
-  IFEnvironment* env = [(IFConfiguredFilter*)[filterController content] environment];
+  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
 
   NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
   NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];

@@ -227,29 +227,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)handleMouseDown:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDown)
-    [filterDelegate mouseDown:event
-                       inView:imageView
-          viewFilterTransform:viewEditTransform
-              withEnvironment:[[[[cursors editMark] node] filter] environment]];
+  [editedFilter mouseDown:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 - (void)handleMouseDragged:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseDragged)
-    [filterDelegate mouseDragged:event
-                          inView:imageView
-             viewFilterTransform:viewEditTransform
-                 withEnvironment:[[[[cursors editMark] node] filter] environment]];
+  [editedFilter mouseDragged:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 - (void)handleMouseUp:(NSEvent*)event;
 {
-  if (filterDelegateCapabilities & IFFilterDelegateHasMouseUp)
-    [filterDelegate mouseUp:event
-                     inView:imageView
-        viewFilterTransform:viewEditTransform
-            withEnvironment:[[[[cursors editMark] node] filter] environment]];
+  [editedFilter mouseUp:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 @end
@@ -270,14 +258,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     [self updateEditViewTransform];
     [self updateAnnotations];
 
-    filterDelegate = [[[[[cursors editMark] node] filter] filter] delegate];
-    filterDelegateCapabilities = 0
-      | ([filterDelegate respondsToSelector:@selector(mouseDown:inView:viewFilterTransform:withEnvironment:)]
-         ? IFFilterDelegateHasMouseDown : 0)
-      | ([filterDelegate respondsToSelector:@selector(mouseDragged:inView:viewFilterTransform:withEnvironment:)]
-         ? IFFilterDelegateHasMouseDragged : 0)
-      | ([filterDelegate respondsToSelector:@selector(mouseUp:inView:viewFilterTransform:withEnvironment:)]
-         ? IFFilterDelegateHasMouseUp : 0);
+    editedFilter = [[[cursors editMark] node] filter];
   } else if (context == IFCanvasBoundsDidChange) {
     [self updateImageViewVisibleBounds];
   } else
@@ -364,7 +345,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)updateExpression;
 {
   IFTreeNode* node = [[cursors viewMark] node];
-  IFFilter* filter = [[node filter] filter];
+  IFFilter* filter = [node filter];
   IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
     expr = [filter variantNamed:[self activeVariant] ofExpression:expr];
@@ -377,13 +358,13 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     [imageView setAnnotations:nil];
   else {
     IFTreeNode* nodeToEdit = [[cursors editMark] node];
-    [imageView setAnnotations:[[[nodeToEdit filter] filter] editingAnnotationsForNode:nodeToEdit view:imageView]];
+    [imageView setAnnotations:[[nodeToEdit filter] editingAnnotationsForNode:nodeToEdit view:imageView]];
   }
 }
 
 - (void)updateVariants;
 {
-  IFFilter* filter = [[[[cursors viewMark] node] filter] filter];
+  IFFilter* filter = [[[cursors viewMark] node] filter];
   [self setVariants:(mode == IFImageViewModeView
                      ? [filter variantNamesForViewing]
                      : [filter variantNamesForEditing])];
@@ -402,9 +383,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   
   for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [node child]) {
     if (node == nil) return;
-    IFConfiguredFilter* cFilter = [[node child] filter];
+    IFFilter* filter = [[node child] filter];
     int parentIndex = [[[node child] parents] indexOfObject:node];
-    [evTransform appendTransform:[[cFilter filter] transformForParentAtIndex:parentIndex withEnvironment:[cFilter environment]]];
+    [evTransform appendTransform:[filter transformForParentAtIndex:parentIndex]];
   }
 
   [editViewTransform setTransformStruct:[evTransform transformStruct]];

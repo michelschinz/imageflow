@@ -4,7 +4,7 @@
   <description>Threshold input image</description>
   <tree id="1">
     <filter>
-      <name>threshold</name>
+      <name>IFThresholdFilter</name>
       <env>
         <key>threshold</key>
         <number>0.5</number>
@@ -12,7 +12,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

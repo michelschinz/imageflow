@@ -4,7 +4,7 @@
   <description>Print image</description>
   <tree id="1">
     <filter>
-      <name>print</name>
+      <name>IFPrintSink</name>
       <env>
         <key>printToFile</key>
         <number>0</number>

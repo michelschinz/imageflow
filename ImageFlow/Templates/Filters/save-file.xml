@@ -4,7 +4,7 @@
   <description>Save image to file</description>
   <tree id="1">
     <filter>
-      <name>save-file</name>
+      <name>IFFileSink</name>
       <env>
         <key>fileName</key>
         <string>/tmp/out.jpg</string>

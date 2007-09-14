@@ -10,7 +10,7 @@
 #import "IFDocumentXMLEncoder.h"
 #import "IFDocumentXMLDecoder.h"
 #import "IFTreeViewWindowController.h"
-#import "IFConfiguredFilter.h"
+#import "IFFilter.h"
 #import "IFExpressionEvaluator.h"
 #import "IFDirectoryManager.h"
 #import "IFDocumentTemplate.h"
@@ -337,7 +337,7 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
   const int ghostsToAdd = [replacement inputArity] - parentsCount;
   [node replaceByNode:replacement transformingMarks:marks];
   for (int i = 0; i < ghostsToAdd; ++i)
-    [replacement insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]
+    [replacement insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
              inParentsAtIndex:parentsCount + i];
   if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
     IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
@@ -350,7 +350,7 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
 // private
 - (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
-  IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:[node inputArity]]];
+  IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:[node inputArity]]];
   // TODO avoid inserting ghost when possible (i.e. the tree is well-typed even without it).
   [node replaceByNode:ghost transformingMarks:marks];
   [self ensureGhostNodes];
@@ -416,7 +416,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
       collectBoundary(parent, nodes, boundary);
     else {
       [boundary addObject:parent];
-      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
+      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
     }
   }
 }
@@ -432,7 +432,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
     [macroNode insertObject:[actualParameters objectAtIndex:i] inParentsAtIndex:i];
   // detach old root and attach new one (the macro node)
   int rootIndex = [[[root child] parents] indexOfObject:root];
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
   [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
 }
 
@@ -457,7 +457,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   for (int i = 0; i < [macroParents count]; ++i) {
     IFTreeNode* parent = [macroParents objectAtIndex:i];
     [detachedMacroParents addObject:parent];
-    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]];
+    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
   }
 
   // Clone macro node body, and replace parameter nodes by parent nodes, introducing aliases when necessary
@@ -527,40 +527,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   NSMutableSet* aliases = [NSMutableSet set];
   [self collectAliasesForNodes:nodes startingAt:fakeRoot inSet:aliases];
   return aliases;
-}
-
-#pragma mark exportation
-
-- (NSArray*)collectExportersForKind:(NSString*)kind startingAt:(IFTreeNode*)root;
-{
-  NSMutableArray* exporters = [NSMutableArray array];
-  if ([kind isEqualToString:[[[root filter] filter] exporterKind]])
-    [exporters addObject:root];
-  NSArray* parentExporters = [[self collect] collectExportersForKind:kind startingAt:[[root parents] each]];
-  for (int i = 0; i < [parentExporters count]; ++i)
-    [exporters addObjectsFromArray:[parentExporters objectAtIndex:i]];
-  return exporters;
-}
-
-- (void)exportForKind:(NSString*)kind;
-{
-  NSArray* exporters = [self collectExportersForKind:kind startingAt:fakeRoot];
-  for (int i = 0; i < [exporters count]; ++i) {
-    IFTreeNode* node = [exporters objectAtIndex:i];
-    IFConfiguredFilter* configuredFilter = [node filter];
-    IFImageConstantExpression* imageExpr = (IFImageConstantExpression*)[evaluator evaluateExpression:[[[node parents] objectAtIndex:0] expression]];
-    [[configuredFilter filter] exportImage:imageExpr environment:[configuredFilter environment] document:self];
-  }
-}
-
-- (IBAction)exportAllFiles:(id)sender;
-{
-  [self exportForKind:@"file"];
-}
-
-- (IBAction)exportAllPrints:(id)sender;
-{
-  [self exportForKind:@"printer"];
 }
 
 #pragma mark loading and saving
@@ -657,13 +623,13 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
       hasGhostColumn |= ([[root parents] count] == 0);
     else if ([root outputArity] == 1) {
       [[root retain] autorelease];
-      IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:1]];
+      IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:1]];
       [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
       [newRoot insertObject:root inParentsAtIndex:0];
     }
   }
   if (!hasGhostColumn)
-    [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]]
+    [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
           inParentsAtIndex:[[fakeRoot parents] count]];
   [self debugCheckTree:self];
 }

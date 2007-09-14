@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<filter>
-  <name>invert</name>
-  <description>Invert image colors</description>
-  <expression>
-    <operation name="invert"><parent index="0"/></operation>
-  </expression>
-  <delegate_class>IFInvertFilterDelegate</delegate_class>
-</filter>

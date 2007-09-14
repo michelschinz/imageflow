@@ -4,7 +4,7 @@
   <description>Draw bitmap image</description>
   <tree id="1">
     <filter>
-      <name>bitmap</name>
+      <name>IFBitmapDrawingSource</name>
       <env>
         <key>drawing</key>
         <expression>&lt;operation name="empty"/&gt;</expression>

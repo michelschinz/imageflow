@@ -12,7 +12,7 @@
 
 @interface IFDocumentXMLEncoder (Private)
 - (NSXMLElement*)treeToXML:(IFTreeNode*)root identities:(NSDictionary*)identities;
-- (NSXMLElement*)configuredFilterToXML:(IFConfiguredFilter*)filter;
+- (NSXMLElement*)filterToXML:(IFFilter*)filter;
 - (NSXMLElement*)environmentToXML:(IFEnvironment*)environment;
 @end
 
@@ -63,7 +63,7 @@
     [xml addAttribute:[NSXMLNode attributeWithName:@"idref" stringValue:[originalIdentity stringValue]]];
   } else {
     xml = [NSXMLElement elementWithName:@"tree"];
-    [xml addChild:[self configuredFilterToXML:[root filter]]];
+    [xml addChild:[self filterToXML:[root filter]]];
     NSAssert([root parents] != nil, @"nil parents");
     NSArray* xmlParents = (NSArray*)[[self collect] treeToXML:[[root parents] each] identities:identities];
     [[xml do] addChild:[xmlParents each]];
@@ -75,7 +75,7 @@
   return xml;
 }
 
-- (NSXMLElement*)configuredFilterToXML:(IFConfiguredFilter*)filter;
+- (NSXMLElement*)filterToXML:(IFFilter*)filter;
 {
   NSXMLElement* xml = [NSXMLElement elementWithName:@"filter"];
   [xml addChild:[NSXMLElement elementWithName:@"name" stringValue:[[filter filter] name]]];

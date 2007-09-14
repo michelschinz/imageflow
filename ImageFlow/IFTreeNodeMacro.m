@@ -22,8 +22,7 @@
 - (id)initWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
 {
   IFTreeNodeReference* rootReference = [IFTreeNodeReference referenceWithTreeNode:theRoot];
-  if (![super initWithFilter:[IFConfiguredFilter configuredFilterWithFilter:[IFFilterMacro filterWithMacroRootReference:rootReference]
-                                                                environment:[IFEnvironment environment]]])
+  if (![super initWithFilter:[IFFilterMacro filterWithMacroRootReference:rootReference]])
     return nil;
   inlineOnInsertion = theInlineOnInsertion;
   rootRef = [rootReference retain];

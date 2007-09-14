@@ -4,7 +4,7 @@
   <description>Load image from file</description>
   <tree id="1">
     <filter>
-      <name>load</name>
+      <name>IFFileSource</name>
       <env>
         <key>fileName</key>
         <string></string>

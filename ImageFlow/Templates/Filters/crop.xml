@@ -4,7 +4,7 @@
   <description>Crop input image</description>
   <tree id="1">
     <filter>
-      <name>crop</name>
+      <name>IFCropFilter</name>
       <env>
         <key>rectangle</key>
         <rect>{{0,0}{100,100}}</rect>
@@ -12,7 +12,7 @@
     </filter>
     <tree id="2">
       <filter>
-        <name>nop</name>
+        <name>IFGhostFilter</name>
       </filter>
     </tree>
   </tree>

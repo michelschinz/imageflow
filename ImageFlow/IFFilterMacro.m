@@ -20,10 +20,7 @@ static NSString* IFRootExpressionChangedContext = @"IFRootExpressionChangedConte
 
 - (id)initWithMacroRootReference:(IFTreeNodeReference*)theMacroRootRef;
 {
-  if (![super initWithName:@"<macro>"
-                expression:[[theMacroRootRef treeNode] expression]
-           settingsNibName:nil
-                  delegate:nil])
+  if (![super initWithEnvironment:[IFEnvironment environment]])
     return nil;
   macroRootRef = [theMacroRootRef retain];
   [macroRootRef addObserver:self forKeyPath:@"treeNode.expression" options:0 context:IFRootExpressionChangedContext];
@@ -43,10 +40,9 @@ static NSString* IFRootExpressionChangedContext = @"IFRootExpressionChangedConte
   NSLog(@"TODO");
 }
 
-- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
+- (NSArray*)potentialRawExpressions;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  return [NSArray arrayWithObject:[[macroRootRef treeNode] expression]];
 }
 
 @end

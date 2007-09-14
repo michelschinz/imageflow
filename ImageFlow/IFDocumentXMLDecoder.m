@@ -15,7 +15,7 @@
 - (int)xmlNodeIdentity:(NSXMLElement*)xml;
 - (void)collectXMLFragmentsIn:(NSXMLElement*)xml accumulator:(NSMutableArray*)accumulator;
 - (IFTreeNode*)treeFromXML:(NSXMLElement*)xml nodeMap:(NSDictionary*)nodeMap;
-- (IFConfiguredFilter*)configuredFilterFromXML:(NSXMLElement*)xml;
+- (IFFilter*)filterFromXML:(NSXMLElement*)xml;
 - (IFEnvironment*)environmentFromXML:(NSXMLElement*)xml;
 @end
 
@@ -107,7 +107,7 @@
         return nil;
       [parents addObject:parent];
     }
-    IFConfiguredFilter* filter = [self configuredFilterFromXML:(NSXMLElement*)[xml childAtIndex:0]];
+    IFFilter* filter = [self filterFromXML:(NSXMLElement*)[xml childAtIndex:0]];
     IFTreeNode* tree = [IFTreeNode nodeWithFilter:filter];
     for (int i = 0; i < [parents count]; ++i)
       [tree insertObject:[parents objectAtIndex:i] inParentsAtIndex:i];
@@ -122,13 +122,12 @@
   }
 }
 
-- (IFConfiguredFilter*)configuredFilterFromXML:(NSXMLElement*)xml;
+- (IFFilter*)filterFromXML:(NSXMLElement*)xml;
 {
-  IFFilter* filter = [IFFilter filterForName:[[xml childAtIndex:0] stringValue]];
   IFEnvironment* filterEnv = ([xml childCount] > 1)
     ? [self environmentFromXML:(NSXMLElement*)[xml childAtIndex:1]]
     : [IFEnvironment environment];
-  return [IFConfiguredFilter configuredFilterWithFilter:filter environment:filterEnv];
+  return [IFFilter filterWithName:[[xml childAtIndex:0] stringValue] environment:filterEnv];
 }
 
 - (IFEnvironment*)environmentFromXML:(NSXMLElement*)xml;

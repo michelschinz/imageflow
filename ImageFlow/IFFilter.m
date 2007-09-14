@@ -9,122 +9,105 @@
 #import "IFFilter.h"
 #import "IFDirectoryManager.h"
 #import "IFExpressionPlugger.h"
-#import "IFFilterXMLDecoder.h"
+
+@interface IFFilter (Private)
+- (void)startObservingEnvironmentKeys:(NSSet*)keys;
+- (void)stopObservingEnvironmentKeys:(NSSet*)keys;
+- (void)updateExpression;
+- (void)setExpression:(IFExpression*)newExpression;
+@end
+
+static NSString* IFEnvironmentKeySetDidChangeContext = @"IFEnvironmentKeySetDidChangeContext";
+static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidChangeContext";
 
 @implementation IFFilter
 
-typedef enum {
-  IFDelegateHasLabelWithEnvironment      = (1 << 0),
-  IFDelegateHasToolTipWithEnvironment    = (1 << 1),
-  IFDelegateSupportsExportation          = (1 << 2),
-  IFDelegateHasEditingAnnotations        = (1 << 3),
-  IFDelegateHasVariantNamesForViewing    = (1 << 4),
-  IFDelegateHasVariantNamesForEditing    = (1 << 5),
-  IFDelegateHasTransformForParentAtIndex = (1 << 6),
-} IFFilterDelegateCapabilities;
-
-static NSArray* allFilters = nil;
-static NSDictionary* allFiltersByName;
-
-+ (void)initialize;
++ (id)ghostFilterWithInputArity:(int)inputArity;
 {
-  if (self != [IFFilter class])
-    return; // avoid repeated initialisation
-
-  NSFileManager* fileMgr = [NSFileManager defaultManager];
-  NSString* filtersDir = [[IFDirectoryManager sharedDirectoryManager] filtersDirectory];
-  NSArray* allFiles = (NSArray*)[[filtersDir collect] stringByAppendingPathComponent:[[fileMgr directoryContentsAtPath:filtersDir] each]];
-  IFFilterXMLDecoder* decoder = [IFFilterXMLDecoder decoder];
-  allFilters = [(NSArray*)[[decoder collect] filterWithXMLFile:[allFiles each]] retain];
-  allFiltersByName = [[NSDictionary dictionaryWithObjects:allFilters forKeys:(NSArray*)[[allFilters collect] name]] retain];
+  IFEnvironment* env = [IFEnvironment environment];
+  [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
+  return [self filterWithName:@"IFGhostFilter" environment:env];
 }
 
-+ (IFFilter*)filterForName:(NSString*)name;
++ (id)filterWithName:(NSString*)filterName environment:(IFEnvironment*)theEnvironment;
 {
-  IFFilter* filter = [allFiltersByName objectForKey:name];
-  NSAssert1(filter != nil, @"unknown filter name: %@",name); // TODO error handling
-  return filter;
+  Class cls = [[NSBundle mainBundle] classNamed:filterName];
+  NSAssert1(cls != nil, @"cannot find class for filter named '%@'",filterName);
+  return [[[cls alloc] initWithEnvironment:theEnvironment] autorelease];
 }
 
-+ (id)filterWithName:(NSString*)theName
-          expression:(IFExpression*)theExpression
-     settingsNibName:(NSString*)theSettingsNibName
-            delegate:(NSObject<IFFilterDelegate>*)theDelegate;
-{
-  return [[[self alloc] initWithName:theName expression:theExpression settingsNibName:theSettingsNibName delegate:theDelegate] autorelease];
-}  
-
-- (id)initWithName:(NSString*)theName
-        expression:(IFExpression*)theExpression
-   settingsNibName:(NSString*)theSettingsNibName
-          delegate:(NSObject<IFFilterDelegate>*)theDelegate;
+- (id)initWithEnvironment:(IFEnvironment*)theEnvironment;
 {
   if (![super init])
     return nil;
-  name = [theName copy];
-  expression = [theExpression retain];
-  settingsNibName = [theSettingsNibName copy];
+  environment = [theEnvironment retain];
+  expression = nil;
+  settingsNib = nil;
   
-  delegate = theDelegate; // do not retain
-  if (![delegate respondsToSelector:@selector(potentialTypesWithEnvironment:)])
-    NSLog(@"invalid delegate %@ for filter %@ (no potentialTypesWithEnvironment: method)", delegate, name);
-//  NSAssert2([delegate respondsToSelector:@selector(potentialTypesWithEnvironment:)],
-//            @"invalid delegate %@ for filter %@ (no potentialTypesWithEnvironment: method)", delegate, name);
-  delegateCapabilities = 0
-    | ([delegate respondsToSelector:@selector(labelWithEnvironment:)] ? IFDelegateHasLabelWithEnvironment : 0)
-    | ([delegate respondsToSelector:@selector(toolTipWithEnvironment:)] ? IFDelegateHasToolTipWithEnvironment : 0)
-    | ([delegate respondsToSelector:@selector(exporterKind:)] ? IFDelegateSupportsExportation : 0)
-    | ([delegate respondsToSelector:@selector(editingAnnotationsForNode:view:)] ? IFDelegateHasEditingAnnotations : 0)
-    | ([delegate respondsToSelector:@selector(variantNamesForViewing)] ? IFDelegateHasVariantNamesForViewing : 0)
-    | ([delegate respondsToSelector:@selector(variantNamesForEditing)] ? IFDelegateHasVariantNamesForEditing : 0)
-    | ([delegate respondsToSelector:@selector(transformForParentAtIndex:withEnvironment:)] ? IFDelegateHasTransformForParentAtIndex : 0);    
-
+  [self startObservingEnvironmentKeys:[environment keys]];
+  [environment addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFEnvironmentKeySetDidChangeContext];
+  
   return self;
 }
 
 - (void)dealloc;
 {
-  OBJC_RELEASE(delegate);
+  [environment removeObserver:self forKeyPath:@"keys"];
+  [self stopObservingEnvironmentKeys:[environment keys]];
+
   OBJC_RELEASE(settingsNib);
-  OBJC_RELEASE(settingsNibName);
   OBJC_RELEASE(expression);
-  OBJC_RELEASE(name);
+  OBJC_RELEASE(environment);
   [super dealloc];
+}
+
+- (IFFilter*)clone;
+{
+  return [IFFilter filterWithName:[self name] environment:[environment clone]];
 }
 
 - (NSString*)name;
 {
-  return name;
+  return [self className];
 }
 
-- (NSObject<IFFilterDelegate>*)delegate;
+- (IFEnvironment*)environment;
 {
-  return delegate;
+  return environment;
 }
 
 - (BOOL)isGhost;
 {
-  return [expression isKindOfClass:[IFOperatorExpression class]] && ([expression operator] == [IFOperator operatorForName:@"nop"]);
+  return NO;
 }
 
-- (NSArray*)potentialTypesWithEnvironment:(IFEnvironment*)environment;
+- (NSArray*)potentialTypes;
 {
-  return [delegate potentialTypesWithEnvironment:environment];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
-- (BOOL)hasSettingsNib;
+- (NSArray*)potentialRawExpressions;
 {
-  return settingsNibName != nil;
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (IFExpression*)expression;
+{
+  if (expression == nil)
+    [self updateExpression];
+  return expression;
 }
 
 - (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
 {
-  if (settingsNibName == nil)
-    return nil;
+  if (settingsNib == nil) {
+    settingsNib = [[NSNib alloc] initWithNibNamed:[self className] bundle:nil];
+    if (settingsNib == nil)
+      return nil; // Nib file does not exist
+  }
 
-  if (settingsNib == nil)
-    settingsNib = [[NSNib alloc] initWithNibNamed:settingsNibName bundle:nil];
-  
   NSArray* topLevelObjects = nil;
   BOOL nibOk = [settingsNib instantiateNibWithOwner:owner topLevelObjects:&topLevelObjects];
   NSAssert1(nibOk, @"error during nib instantiation %@", settingsNib);
@@ -134,74 +117,114 @@ static NSDictionary* allFiltersByName;
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
-  return delegate != nil ? [delegate nameOfParentAtIndex:index] : [NSString stringWithFormat:@"parent %d",index];
+  return [NSString stringWithFormat:@"parent %d",index];
 }
 
-- (NSString*)labelWithEnvironment:(IFEnvironment*)environment;
+- (NSString*)label;
 {
-  return (delegateCapabilities & IFDelegateHasLabelWithEnvironment) ? [delegate labelWithEnvironment:environment] : name;
+  return [self name];
 }
 
-- (NSString*)toolTipWithEnvironment:(IFEnvironment*)environment;
+- (NSString*)toolTip;
 {
-  return (delegateCapabilities & IFDelegateHasToolTipWithEnvironment)
-  ? [delegate toolTipWithEnvironment:environment]
-  : [self labelWithEnvironment:environment];
+  return [self label];
 }
 
 - (NSArray*)editingAnnotationsForNode:(IFTreeNode*)node view:(NSView*)view;
 {
-  return (delegateCapabilities & IFDelegateHasEditingAnnotations)
-  ? [delegate editingAnnotationsForNode:node view:view]
-  : [NSArray array];
+  return [NSArray array];
+}
+
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  // do nothing by default
+}
+
+- (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  // do nothing by default
+}
+
+- (void)mouseUp:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  // do nothing by default
 }
 
 - (NSArray*)variantNamesForViewing;
 {
-  return (delegateCapabilities & IFDelegateHasVariantNamesForViewing)
-  ? [delegate variantNamesForViewing]
-  : [NSArray arrayWithObject:@""];
+  return [NSArray arrayWithObject:@""];
 }
 
 - (NSArray*)variantNamesForEditing;
 {
-  return (delegateCapabilities & IFDelegateHasVariantNamesForEditing)
-  ? [delegate variantNamesForEditing]
-  : [NSArray arrayWithObject:@""];  
+  return [NSArray arrayWithObject:@""];  
 }
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
-  NSAssert([delegate respondsToSelector:@selector(variantNamed:ofExpression:)], @"invalid delegate");
-  return [delegate variantNamed:variantName ofExpression:originalExpression];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
-- (NSAffineTransform*)transformForParentAtIndex:(int)index withEnvironment:(IFEnvironment*)env;
+- (NSAffineTransform*)transformForParentAtIndex:(int)index;
 {
-  return (delegateCapabilities & IFDelegateHasTransformForParentAtIndex)
-  ? [delegate transformForParentAtIndex:index withEnvironment:env]
-  : [NSAffineTransform transform];
+  return [NSAffineTransform transform];
 }
 
-- (NSString*)exporterKind;
+@end
+
+@implementation IFFilter (Private)
+
+- (void)startObservingEnvironmentKeys:(NSSet*)keys;
 {
-  return (delegateCapabilities & IFDelegateSupportsExportation) ? [delegate exporterKind] : nil;
+  NSEnumerator* keysEnum = [keys objectEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject])
+    [environment addObserver:self forKeyPath:key options:0 context:IFEnvironmentValueDidChangeContext];
 }
 
-- (void)exportImage:(IFImageConstantExpression*)imageExpr environment:(IFEnvironment*)environment document:(IFDocument*)document;
+- (void)stopObservingEnvironmentKeys:(NSSet*)keys;
 {
-  NSAssert(delegateCapabilities & IFDelegateSupportsExportation, @"delegate doesn't support exportation");
-  [delegate exportImage:imageExpr environment:environment document:document];
+  NSEnumerator* keysEnum = [keys objectEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject])
+    [environment removeObserver:self forKeyPath:key];
 }
 
-- (IFExpression*)expression;
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  return expression;
+  if (context == IFEnvironmentKeySetDidChangeContext) {
+    NSSet* oldKeys = [change objectForKey:NSKeyValueChangeOldKey];
+    NSSet* newKeys = [change objectForKey:NSKeyValueChangeNewKey];
+    int changeKind = [(NSNumber*)[change objectForKey:NSKeyValueChangeKindKey] intValue];
+    switch (changeKind) {
+      case NSKeyValueChangeInsertion:
+        [self startObservingEnvironmentKeys:newKeys];
+        break;
+      case NSKeyValueChangeRemoval:
+        [self stopObservingEnvironmentKeys:oldKeys];
+        break;
+      default:
+        NSAssert(NO, @"unexpected change kind");
+        break;
+    }
+  } else if (context == IFEnvironmentValueDidChangeContext) {
+    [self updateExpression]; // TODO only if key is part of expression
+  } else
+    NSAssert(NO, @"unexpected context");
 }
 
-- (IFExpression*)expressionWithEnvironment:(IFEnvironment*)environment;
+- (void)updateExpression;
 {
-  return [IFExpressionPlugger plugValuesInExpression:expression withValuesFromVariablesEnvironment:[environment asDictionary]];
+  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:0] withValuesFromVariablesEnvironment:[environment asDictionary]]];
+}
+
+- (void)setExpression:(IFExpression*)newExpression;
+{
+  if (newExpression == expression)
+    return;
+  [expression release];
+  expression = [newExpression retain];
 }
 
 @end

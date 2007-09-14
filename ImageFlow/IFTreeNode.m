@@ -23,12 +23,12 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 
 const unsigned int ID_NONE = ~0;
 
-+ (id)nodeWithFilter:(IFConfiguredFilter*)theFilter;
++ (id)nodeWithFilter:(IFFilter*)theFilter;
 {
   return [[[IFTreeNode alloc] initWithFilter:theFilter] autorelease];
 }
 
-- (id)initWithFilter:(IFConfiguredFilter*)theFilter;
+- (id)initWithFilter:(IFFilter*)theFilter;
 {
   if (![super init]) return nil;
   name = nil;
@@ -186,7 +186,7 @@ const unsigned int ID_NONE = ~0;
   return self;
 }
 
-- (IFConfiguredFilter*)filter;
+- (IFFilter*)filter;
 {
   return filter;
 }
@@ -220,7 +220,7 @@ const unsigned int ID_NONE = ~0;
   
   NSArray* parentsCopy = [[self parents] copy];
   for (int i = 0; i < [parentsCopy count]; i++) {
-    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFConfiguredFilter ghostFilterWithInputArity:0]];
+    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]];
     [self replaceObjectInParentsAtIndex:i withObject:ghost];
     IFTreeNode* parent = [parentsCopy objectAtIndex:i];
     [replacement insertObject:parent inParentsAtIndex:i];

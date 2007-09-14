@@ -4,13 +4,13 @@
   <description>Mask images</description>
   <tree id="1">
     <filter>
-      <name>mask</name>
+      <name>IFMaskFilter</name>
     </filter>
     <tree id="2">
-      <filter><name>nop</name><env/></filter>
+      <filter><name>IFGhostFilter</name><env/></filter>
     </tree>
     <tree id="3">
-      <filter><name>nop</name><env/></filter>
+      <filter><name>IFGhostFilter</name><env/></filter>
     </tree>
   </tree>
 </imageflow>

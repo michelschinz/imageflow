@@ -66,7 +66,7 @@
   // Layout output connectors, if any.
   if (parentsCount > 1) {
     float connectorsHeight = 0.0;
-    IFFilter* rootFilter = [[root filter] filter];
+    IFFilter* rootFilter = [root filter];
     for (int i = 0; i < parentsCount; ++i) {
       float currLeft = NSMinX([[directParentsLayout objectAtIndex:i] frame]);
       float leftReach = (i > 0)

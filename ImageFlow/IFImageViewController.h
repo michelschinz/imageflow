@@ -36,13 +36,11 @@ typedef enum {
   
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
+  IFFilter* editedFilter;
 
   IFVariable* canvasBounds;
   float marginSize;
   IFDirection marginDirection;
-  
-  NSObject<IFFilterDelegate>* filterDelegate;
-  unsigned filterDelegateCapabilities;
 }
 
 - (IFImageView*)imageView;
