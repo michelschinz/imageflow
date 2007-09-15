@@ -41,6 +41,7 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
   if (![super init])
     return nil;
   environment = [theEnvironment retain];
+  activeTypeIndex = 0;
   expression = nil;
   settingsNib = nil;
   
@@ -91,6 +92,19 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
+- (int)activeTypeIndex;
+{
+  return activeTypeIndex;
+}
+
+- (void)setActiveTypeIndex:(int)newIndex;
+{
+  if (newIndex == activeTypeIndex)
+    return;
+  activeTypeIndex = newIndex;
+  [self updateExpression];
 }
 
 - (IFExpression*)expression;
@@ -216,7 +230,7 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
 
 - (void)updateExpression;
 {
-  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:0] withValuesFromVariablesEnvironment:[environment asDictionary]]];
+  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:activeTypeIndex] withValuesFromVariablesEnvironment:[environment asDictionary]]];
 }
 
 - (void)setExpression:(IFExpression*)newExpression;

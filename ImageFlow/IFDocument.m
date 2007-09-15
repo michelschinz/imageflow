@@ -17,6 +17,9 @@
 #import "IFDocumentTemplateManager.h"
 #import "IFTreeNodeParameter.h"
 #import "IFTreeNodeAlias.h"
+#import "IFTypeChecker.h"
+#import "IFTypeVar.h"
+#import "IFFunType.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -38,7 +41,6 @@
 - (void)stopObservingEnvironment:(IFEnvironment*)env;
 - (void)startObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
 - (void)stopObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
-- (IBAction)debugCheckTree:(id)sender;
 @end
 
 @implementation IFDocument
@@ -254,79 +256,28 @@ static IFDocumentTemplateManager* templateManager;
   [self ensureGhostNodes];
 }
 
-static value camlCons(value h, value t) {
-  CAMLparam2(h,t);
-  CAMLlocal1(cell);
-  cell = caml_alloc(2, 0);
-  Store_field(cell, 0, h);
-  Store_field(cell, 1, t);
-  CAMLreturn(cell);
-}
-
-static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* potentialTypes) {
-  CAMLparam0();
-  CAMLlocal4(camlConstraints, camlConstraint, camlPotentialTypes, camlTypes);
-
-  // Transform constraints to lists (of lists of ints)
-  camlConstraints = Val_int(0);
-  for (int i = [constraints count] - 1; i >= 0; --i) {
-    NSArray* constraint = [constraints objectAtIndex:i];
-    camlConstraint = Val_int(0);
-    for (int j = [constraint count] - 1; j >= 0; --j) {
-      int c = [[constraint objectAtIndex:j] intValue];
-      camlConstraint = camlCons(Val_int(c), camlConstraint);
-    }
-    camlConstraints = camlCons(camlConstraint, camlConstraints);
-  }
-  
-  // Transform potential types to their Caml equivalent
-  camlPotentialTypes = Val_int(0);
-  for (int i = [potentialTypes count] - 1; i >= 0; --i) {
-    NSArray* types = [potentialTypes objectAtIndex:i];
-    camlTypes = Val_int(0);
-    for (int j = [types count] - 1; j >= 0; --j) {
-      IFType* type = [types objectAtIndex:j];
-      camlTypes = camlCons([type asCaml], camlTypes);
-    }
-    camlPotentialTypes = camlCons(camlTypes,camlPotentialTypes);
-  }
-
-  static value* validConfigurationExistsClosure = NULL;
-  if (validConfigurationExistsClosure == NULL)
-    validConfigurationExistsClosure = caml_named_value("Typechecker.check");
-
-  CAMLreturn(caml_callback2(*validConfigurationExistsClosure, camlConstraints, camlPotentialTypes));
-}
-
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
 {
   NSArray* sortedNodes = [self topologicallySortedNodes];
   int nodesCount = [sortedNodes count];
-
-  NSMutableArray* constraints = [NSMutableArray arrayWithCapacity:nodesCount];
-  for (int i = 0; i < nodesCount; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    NSArray* parents = [node parents];
-    NSMutableArray* constraint = [NSMutableArray arrayWithCapacity:[parents count]];
-    for (int j = 0, pCount = [parents count]; j < pCount; ++j)
-      [constraint addObject:[NSNumber numberWithInt:[sortedNodes indexOfObject:[[parents objectAtIndex:j] original]]]];
-    [constraints addObject:constraint];
-  }
-
+  
   NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
   for (int i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
     if (node == ghost) {
-      NSArray* replacementPotentialTypes = [replacement potentialTypes];
-      NSMutableArray* limitedReplacementTypes = [NSMutableArray arrayWithCapacity:[replacementPotentialTypes count]];
-      for (int i = 0; i < [replacementPotentialTypes count]; ++i)
-        [limitedReplacementTypes addObject:[[replacementPotentialTypes objectAtIndex:i] typeByLimitingArityTo:[ghost inputArity]]];
-      [potentialTypes addObject:limitedReplacementTypes];
+      NSArray* pt = [replacement potentialTypes];
+      NSMutableArray* limitedPT = [NSMutableArray arrayWithCapacity:[pt count]];
+      for (int j = 0; j < [pt count]; ++j)
+        [limitedPT addObject:[[pt objectAtIndex:j] typeByLimitingArityTo:[ghost inputArity]]];
+      [potentialTypes addObject:limitedPT];
+      // should be (but crashes right now):
+//     [potentialTypes addObject:[[[replacement potentialTypes] collect] typeByLimitingArityTo:[ghost inputArity]]];
     } else
       [potentialTypes addObject:[node potentialTypes]];
   }
-
-  return Bool_val(camlCanReplaceGhostNodeUsingNode(constraints, potentialTypes));
+  
+  IFTypeChecker* tc = [IFTypeChecker sharedInstance];
+  return [tc checkDAG:[tc dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
@@ -350,9 +301,33 @@ static value camlCanReplaceGhostNodeUsingNode(NSArray* constraints, NSArray* pot
 // private
 - (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
-  IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:[node inputArity]]];
-  // TODO avoid inserting ghost when possible (i.e. the tree is well-typed even without it).
-  [node replaceByNode:ghost transformingMarks:marks];
+  BOOL ghostNeeded;
+  if ([node inputArity] == 1) {
+    // To see whether a ghost is needed or not, we pretend that the node to delete has the type of the identity function ('a=>'a). If it typechecks, the node can be simply removed (i.e. no need for a ghost).
+    NSArray* sortedNodes = [self topologicallySortedNodes];
+    int nodesCount = [sortedNodes count];
+    
+    NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
+    for (int i = 0; i < nodesCount; ++i) {
+      if ([sortedNodes objectAtIndex:i] == node) {
+        IFTypeVar* tvar = [IFTypeVar typeVarWithIndex:0];
+        [potentialTypes addObject:[NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:tvar] returnType:tvar]]];
+      } else
+        [potentialTypes addObject:[[sortedNodes objectAtIndex:i] potentialTypes]];
+    }
+    
+    IFTypeChecker* tc = [IFTypeChecker sharedInstance];
+    ghostNeeded = ![tc checkDAG:[tc dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
+  } else
+    ghostNeeded = YES;
+
+  if (ghostNeeded) {
+    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:[node inputArity]]];
+    [node replaceByNode:ghost transformingMarks:marks];
+  } else {
+    IFTreeNode* child = [node child];
+    [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:node] withObject:[[node parents] objectAtIndex:0]];    
+  }
   [self ensureGhostNodes];
 }
 
@@ -631,7 +606,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   if (!hasGhostColumn)
     [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
           inParentsAtIndex:[[fakeRoot parents] count]];
-  [self debugCheckTree:self];
 }
 
 #pragma mark Undo support
@@ -669,6 +643,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
         NSAssert1(NO, @"unexpected change kind: %d",changeKind);
         break;
     }
+    [fakeRoot fixChildLinks];
     [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self]
                                                postingStyle:NSPostWhenIdle];
   } else if ([keyPath isEqualToString:@"keys"]) {
@@ -768,13 +743,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   while (key = [keysEnum nextObject]) {
     [env removeObserver:self forKeyPath:key];
   }
-}
-
-#pragma mark Debugging
-
-- (IBAction)debugCheckTree:(id)sender;
-{
-  [fakeRoot debugCheckLinks];
 }
 
 @end

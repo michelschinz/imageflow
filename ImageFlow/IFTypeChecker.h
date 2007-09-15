@@ -10,6 +10,12 @@
 
 #import "IFTreeNode.h"
 
+typedef enum {
+  IFTreeModificationInsertNode,
+  IFTreeModificationDeleteNode,
+  IFTreeModificationReplaceGhost,
+} IFTreeModification;
+
 @interface IFTypeChecker : NSObject {
 
 }
@@ -17,5 +23,8 @@
 + (IFTypeChecker*)sharedInstance;
 
 - (NSArray*)inferTypeForTree:(IFTreeNode*)root;
+
+- (NSArray*)dagFromTopologicallySortedNodes:(NSArray*)sortedNode;
+- (BOOL)checkDAG:(NSArray*)adjMatrix withPotentialTypes:(NSArray*)potentialTypes;
 
 @end

@@ -13,6 +13,7 @@
 #import "IFExpressionPlugger.h"
 
 @interface IFTreeNode (Private)
+- (void)setChild:(IFTreeNode*)newChild;
 - (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
 @end
 
@@ -107,14 +108,19 @@ const unsigned int ID_NONE = ~0;
   [self updateExpression];
 }
 
-- (void)setChild:(IFTreeNode*)newChild;
-{
-  child = newChild;
-}
-
 - (IFTreeNode*)child;
 {
   return child;
+}
+
+- (void)fixChildLinks;
+{
+  NSArray* myParents = [self parents];
+  for (int i = 0; i < [myParents count]; ++i) {
+    IFTreeNode* parent = [myParents objectAtIndex:i];
+    [parent setChild:self];
+    [parent fixChildLinks];
+  }
 }
 
 - (NSArray*)dfsAncestors;
@@ -261,22 +267,14 @@ const unsigned int ID_NONE = ~0;
   expression = [newExpression retain];
 }
 
-#pragma mark -
-#pragma mark Debugging
-
-- (void)debugCheckLinks;
-{
-  NSArray* myParents = [self parents];
-  for (int i = 0; i < [myParents count]; ++i) {
-    IFTreeNode* parent = [myParents objectAtIndex:i];
-    [parent debugCheckLinks];
-    NSAssert3([parent child] == self,@"invalid child for node %@: should be %@, is %@",parent,self,[parent child]);
-  }
-}
-
 @end
 
 @implementation IFTreeNode (Private)
+
+- (void)setChild:(IFTreeNode*)newChild;
+{
+  child = newChild;
+}
 
 - (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
 {

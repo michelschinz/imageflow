@@ -80,6 +80,7 @@
 
 - (IFType*)typeByLimitingArityTo:(int)maxArity;
 {
+  NSLog(@"self: %@  lim. arity to: %d",self,maxArity);
   if (maxArity == 0)
     return returnType;
   else if (maxArity >= [self arity])

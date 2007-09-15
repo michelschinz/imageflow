@@ -34,6 +34,7 @@ extern const unsigned int ID_NONE;
 - (void)removeObjectFromParentsAtIndex:(unsigned int)index;
 - (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
 - (IFTreeNode*)child;
+- (void)fixChildLinks;
 - (NSArray*)dfsAncestors;
 - (NSArray*)topologicallySortedAncestorsWithoutAliases;
 - (BOOL)isParentOf:(IFTreeNode*)other;
@@ -59,10 +60,5 @@ extern const unsigned int ID_NONE;
 // protected
 - (void)setExpression:(IFExpression*)newExpression;
 - (void)updateExpression;
-
-- (void)setChild:(IFTreeNode*)newChild;
-
-// debugging
-- (void)debugCheckLinks;
 
 @end

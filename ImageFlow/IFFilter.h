@@ -17,6 +17,7 @@
 
 @interface IFFilter : NSObject {
   IFEnvironment* environment;
+  int activeTypeIndex;
   IFExpression* expression;
   NSNib* settingsNib;
 }
@@ -33,6 +34,8 @@
 - (BOOL)isGhost;
 - (NSArray*)potentialTypes;
 - (NSArray*)potentialRawExpressions;
+- (int)activeTypeIndex;
+- (void)setActiveTypeIndex:(int)newIndex;
 - (IFExpression*)expression;
 
 - (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
