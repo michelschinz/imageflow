@@ -264,16 +264,9 @@ static IFDocumentTemplateManager* templateManager;
   NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
   for (int i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    if (node == ghost) {
-      NSArray* pt = [replacement potentialTypes];
-      NSMutableArray* limitedPT = [NSMutableArray arrayWithCapacity:[pt count]];
-      for (int j = 0; j < [pt count]; ++j)
-        [limitedPT addObject:[[pt objectAtIndex:j] typeByLimitingArityTo:[ghost inputArity]]];
-      [potentialTypes addObject:limitedPT];
-      // should be (but crashes right now):
-//     [potentialTypes addObject:[[[replacement potentialTypes] collect] typeByLimitingArityTo:[ghost inputArity]]];
-    } else
-      [potentialTypes addObject:[node potentialTypes]];
+    [potentialTypes addObject:(node == ghost
+                               ? (NSArray*)[[[replacement potentialTypes] collect] typeByLimitingArityTo:[ghost inputArity]]
+                               : [node potentialTypes])];
   }
   
   IFTypeChecker* tc = [IFTypeChecker sharedInstance];
