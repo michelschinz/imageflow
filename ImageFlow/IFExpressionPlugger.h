@@ -19,6 +19,5 @@
 
 + (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromVariablesEnvironment:(NSDictionary*)environment;
 + (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromParentsEnvironment:(NSDictionary*)environment;
-+ (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromWildcardsEnvironment:(NSDictionary*)environment;
 
 @end

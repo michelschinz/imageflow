@@ -64,8 +64,6 @@
     return [[[IFParentExpression alloc] initWithXML:xmlTree] autorelease];
   else if ([xmlName isEqualToString:@"variable"])
     return [[[IFVariableExpression alloc] initWithXML:xmlTree] autorelease];
-  else if ([xmlName isEqualToString:@"wildcard"])
-    return [[[IFWildcardExpression alloc] initWithXML:xmlTree] autorelease];
   else if ([xmlName isEqualToString:@"constant"])
     return [[[IFConstantExpression alloc] initWithXML:xmlTree] autorelease];
   else {

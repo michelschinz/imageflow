@@ -11,7 +11,6 @@
 typedef enum {
   IFExpressionPluggerModeVariables,
   IFExpressionPluggerModeParents,
-  IFExpressionPluggerModeWildcards,
 } IFExpressionPluggerMode;
 
 @interface IFExpressionPlugger (Private)
@@ -30,11 +29,6 @@ typedef enum {
 + (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromParentsEnvironment:(NSDictionary*)environment;
 {
   return [self plugValuesInExpression:expression withValuesFromEnvironment:environment mode:IFExpressionPluggerModeParents];
-}
-
-+ (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromWildcardsEnvironment:(NSDictionary*)environment;
-{
-  return [self plugValuesInExpression:expression withValuesFromEnvironment:environment mode:IFExpressionPluggerModeWildcards];
 }
 
 - (IFExpression*)plugValuesInExpression:(IFExpression*)expression;
@@ -62,11 +56,6 @@ typedef enum {
   [self substituteUsingKey:[expression name] ifInMode:IFExpressionPluggerModeVariables defaultExpression:expression];
   if (result != nil && ![result isKindOfClass:[IFExpression class]])
     result = [IFConstantExpression expressionWithObject:result];
-}
-
-- (void)caseWildcardExpression:(IFWildcardExpression*)expression;
-{
-  [self substituteUsingKey:[expression name] ifInMode:IFExpressionPluggerModeWildcards defaultExpression:expression];
 }
 
 - (void)caseConstantExpression:(IFConstantExpression*)expression;

@@ -12,7 +12,6 @@
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFConstantExpression.h"
-#import "IFWildcardExpression.h"
 
 @interface IFExpressionVisitor : NSObject {
 
@@ -21,7 +20,6 @@
 - (void)caseOperatorExpression:(IFOperatorExpression*)expression;
 - (void)caseParentExpression:(IFParentExpression*)expression;
 - (void)caseVariableExpression:(IFVariableExpression*)expression;
-- (void)caseWildcardExpression:(IFWildcardExpression*)expression;
 - (void)caseConstantExpression:(IFConstantExpression*)expression;
 
 @end

@@ -23,10 +23,6 @@
 {
 }
 
-- (void)caseWildcardExpression:(IFWildcardExpression*)expression;
-{
-}
-
 - (void)caseConstantExpression:(IFConstantExpression*)expression;
 {
 }
