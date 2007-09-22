@@ -209,6 +209,19 @@ const unsigned int ID_NONE = ~0;
   return [filter potentialTypes];
 }
 
+- (void)beginReconfiguration;
+{
+  NSAssert(!inReconfiguration, @"already in reconfiguration");
+  inReconfiguration = YES;
+}
+
+- (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
+{
+  NSAssert(inReconfiguration, @"not in reconfiguration");
+  [filter setActiveTypeIndex:typeIndex];
+  inReconfiguration = NO;
+}
+
 - (int)inputArity;
 {
   return [[[self potentialTypes] objectAtIndex:0] arity];
@@ -243,7 +256,8 @@ const unsigned int ID_NONE = ~0;
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   NSAssert(context == IFFilterExpressionChangedContext || context == IFParentExpressionChangedContext, @"unexpected context");
-  [self updateExpression];
+  if (!(context == IFParentExpressionChangedContext && inReconfiguration))
+    [self updateExpression];
 }
 
 #pragma mark -

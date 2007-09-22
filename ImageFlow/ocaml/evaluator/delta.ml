@@ -35,6 +35,8 @@ let rec delta cache old_expr new_expr =
       Rect.outset (delta cache i1 i2) r1 r1
   | Op("invert",[|i1|]), Op("invert",[|i2|]) ->
       delta cache i1 i2
+  | Op("invert-mask",[|i1|]), Op("invert-mask",[|i2|]) ->
+      delta cache i1 i2
   | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when i1 = i2 ->
       delta cache m1 m2
   | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when m1 = m2 ->

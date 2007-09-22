@@ -78,7 +78,7 @@
 - (NSXMLElement*)filterToXML:(IFFilter*)filter;
 {
   NSXMLElement* xml = [NSXMLElement elementWithName:@"filter"];
-  [xml addChild:[NSXMLElement elementWithName:@"name" stringValue:[[filter filter] name]]];
+  [xml addChild:[NSXMLElement elementWithName:@"name" stringValue:[filter name]]];
   [xml addChild:[self environmentToXML:[filter environment]]];
   return xml;
 }

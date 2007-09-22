@@ -16,6 +16,7 @@ extern const unsigned int ID_NONE;
 @interface IFTreeNode : NSObject {
   NSString* name;
   BOOL isFolded;
+  BOOL inReconfiguration;
   IFFilter* filter;
   IFExpression* expression;
 
@@ -53,7 +54,8 @@ extern const unsigned int ID_NONE;
 - (int)inputArity;
 - (int)outputArity;
 - (NSArray*)potentialTypes;
-
+- (void)beginReconfiguration;
+- (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
 
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 

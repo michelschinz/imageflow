@@ -59,6 +59,7 @@ static IFDocumentTemplateManager* templateManager;
 - (id)init 
 {
   if (![super init]) return nil;
+  typeChecker = [IFTypeChecker sharedInstance];
   evaluator = [IFExpressionEvaluator new];
 
   fakeRoot = [[IFTreeNode nodeWithFilter:nil] retain];
@@ -269,8 +270,7 @@ static IFDocumentTemplateManager* templateManager;
                                : [node potentialTypes])];
   }
   
-  IFTypeChecker* tc = [IFTypeChecker sharedInstance];
-  return [tc checkDAG:[tc dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
+  return [typeChecker checkDAG:[typeChecker dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
@@ -308,9 +308,7 @@ static IFDocumentTemplateManager* templateManager;
       } else
         [potentialTypes addObject:[[sortedNodes objectAtIndex:i] potentialTypes]];
     }
-    
-    IFTypeChecker* tc = [IFTypeChecker sharedInstance];
-    ghostNeeded = ![tc checkDAG:[tc dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
+    ghostNeeded = ![typeChecker checkDAG:[typeChecker dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
   } else
     ghostNeeded = YES;
 
@@ -554,6 +552,15 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   return nodes;
 }
 
+- (void)configureFilters;
+{
+  NSArray* nodes = [self topologicallySortedNodes];
+  NSArray* newConfig = [typeChecker configureDAG:[typeChecker dagFromTopologicallySortedNodes:nodes] withPotentialTypes:[[nodes collect] potentialTypes]];
+  [[nodes do] beginReconfiguration];
+  for (int i = 0; i < [nodes count]; ++i)
+    [[nodes objectAtIndex:i] endReconfigurationWithActiveTypeIndex:[[newConfig objectAtIndex:i] intValue]];
+}  
+
 - (void)overwriteWith:(IFDocument*)other;
 {
   // Destroy all current contents
@@ -599,6 +606,8 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   if (!hasGhostColumn)
     [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
           inParentsAtIndex:[[fakeRoot parents] count]];
+  
+  [self configureFilters];
 }
 
 #pragma mark Undo support

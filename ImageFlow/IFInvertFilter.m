@@ -20,10 +20,12 @@
 {
   static NSArray* types = nil;
   if (types == nil) {
-    // TODO add Mask=>Mask
-    types = [[NSArray arrayWithObject:
+    types = [[NSArray arrayWithObjects:
       [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                               returnType:[IFImageType imageRGBAType]]] retain];
+                               returnType:[IFImageType imageRGBAType]],
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType maskType]]
+                               returnType:[IFImageType maskType]],
+      nil] retain];      
   }
   return types;
 }
@@ -32,9 +34,10 @@
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"invert" operands:
-      [IFParentExpression parentExpressionWithIndex:0],
-      nil]] retain];
+    exprs = [[NSArray arrayWithObjects:
+      [IFOperatorExpression expressionWithOperatorNamed:@"invert" operands:[IFParentExpression parentExpressionWithIndex:0],nil],
+      [IFOperatorExpression expressionWithOperatorNamed:@"invert-mask" operands:[IFParentExpression parentExpressionWithIndex:0],nil],
+      nil] retain];
   }
   return exprs;
 }

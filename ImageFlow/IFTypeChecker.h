@@ -24,7 +24,9 @@ typedef enum {
 
 - (NSArray*)inferTypeForTree:(IFTreeNode*)root;
 
-- (NSArray*)dagFromTopologicallySortedNodes:(NSArray*)sortedNode;
-- (BOOL)checkDAG:(NSArray*)adjMatrix withPotentialTypes:(NSArray*)potentialTypes;
+- (NSArray*)dagFromTopologicallySortedNodes:(NSArray*)sortedNodes;
+
+- (BOOL)checkDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
+- (NSArray*)configureDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
 
 @end

@@ -57,7 +57,7 @@ let eval expr =
       out_mask (Coreimage.gaussian_blur m r)
   | Op("invert", [|Image i|]) ->
       out_image (Coreimage.invert i)
-  | Op("invert", [|Mask m|]) ->
+  | Op("invert-mask", [|Mask m|]) ->
       out_mask (Coreimage.invert_mask m)
   | Op("load", [|String f; _; _; _; _; _; _; _; _|]) ->
       begin try

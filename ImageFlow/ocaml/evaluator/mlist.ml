@@ -33,6 +33,11 @@ let rec take n l =
     hd :: tl -> hd :: (take (pred n) tl)
   | _ -> failwith "take"
 
+let rec index p = function
+    [] -> raise Not_found
+  | hd :: _ when p hd -> 0
+  | _ :: tl -> 1 + (index p tl)
+
 let first = List.hd
 
 let rec last = function

@@ -28,6 +28,8 @@ let rec rewriteOp = function
       Op("gaussian-blur", [|Op("resample", [|i; Num f|]); Num (r *. f)|])
   | Op("resample", [|Op("invert", [|i|]); Num f|]) when f < 1. ->
       Op("invert", [|Op("resample", [|i; Num f|])|])
+  | Op("resample", [|Op("invert-mask", [|i|]); Num f|]) when f < 1. ->
+      Op("invert-mask", [|Op("resample", [|i; Num f|])|])
   | Op("resample", [|Op("mask", [|i; m|]); Num f|]) when f < 1. ->
       Op("mask", [|Op("resample", [|i; Num f|]); Op("resample", [|m; Num f|])|])
   | Op("resample", [|Op("mask-overlay", [|i; m; c|]); Num f|]) when f < 1. ->
@@ -91,6 +93,8 @@ let rec rewriteOp = function
   | Op("extent", [|Op("gaussian-blur", [|i; Num r|])|]) ->
       Op("rect-outset", [|Op("extent", [|i|]); Num r|])
   | Op("extent", [|Op("invert", [|i|])|]) ->
+      Op("extent", [|i|])
+  | Op("extent", [|Op("invert-mask", [|i|])|]) ->
       Op("extent", [|i|])
   | Op("extent", [|Op("mask", [|i; m|])|]) ->
       Op("rect-union", [|Op("extent", [|i|]); Op("extent", [|m|])|])

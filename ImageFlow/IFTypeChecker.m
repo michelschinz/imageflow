@@ -13,8 +13,9 @@
 #import <caml/alloc.h>
 #import <caml/callback.h>
 
-static void camlInferTypesForTree(int paramsCount, NSArray* graph, NSArray* types, NSArray** inferredTypes);
-static value camlTypecheck(NSArray* constraints, NSArray* potentialTypes);
+static void camlInferTypesForTree(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes);
+static value camlTypecheck(NSArray* dag, NSArray* potentialTypes);
+static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** configuration);
 
 @implementation IFTypeChecker
 
@@ -48,12 +49,12 @@ static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
   [paramNodes sortUsingFunction:compareParamNodes context:nil];
   [paramNodes addObjectsFromArray:nonParamNodes];
 
-  NSArray* graph = [self dagFromTopologicallySortedNodes:paramNodes];
+  NSArray* dag = [self dagFromTopologicallySortedNodes:paramNodes];
   NSMutableArray* types = [NSMutableArray arrayWithCapacity:[paramNodes count]];
   for (int i = 0, count = [paramNodes count]; i < count; ++i)
     [types addObject:[[paramNodes objectAtIndex:i] potentialTypes]];
   NSArray* inferredTypes = nil;
-  camlInferTypesForTree(paramsCount, graph, types, &inferredTypes);
+  camlInferTypesForTree(paramsCount, dag, types, &inferredTypes);
   return inferredTypes;
 }
 
@@ -72,9 +73,16 @@ static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
   return dag;
 }
 
-- (BOOL)checkDAG:(NSArray*)adjMatrix withPotentialTypes:(NSArray*)potentialTypes;
+- (BOOL)checkDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
 {
-  return Bool_val(camlTypecheck(adjMatrix, potentialTypes));
+  return Bool_val(camlTypecheck(dag, potentialTypes));
+}
+
+- (NSArray*)configureDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
+{
+  NSArray* configuration;
+  camlConfigureDAG(dag,potentialTypes,&configuration);
+  return configuration;
 }
 
 @end
@@ -88,21 +96,21 @@ static value camlCons(value h, value t) {
   CAMLreturn(cell);
 }
 
-static value graphToCaml(NSArray* graph) {
+static value dagToCaml(NSArray* dag) {
   CAMLparam0();
-  CAMLlocal2(camlGraph, camlPreds);
+  CAMLlocal2(camlDAG, camlPreds);
 
-  camlGraph = Val_int(0);
-  for (int i = [graph count] - 1; i >= 0; --i) {
-    NSArray* preds = [graph objectAtIndex:i];
+  camlDAG = Val_int(0);
+  for (int i = [dag count] - 1; i >= 0; --i) {
+    NSArray* preds = [dag objectAtIndex:i];
     camlPreds = Val_int(0);
     for (int j = [preds count] - 1; j >= 0; --j) {
       int c = [[preds objectAtIndex:j] intValue];
       camlPreds = camlCons(Val_int(c), camlPreds);
     }
-    camlGraph = camlCons(camlPreds, camlGraph);
+    camlDAG = camlCons(camlPreds, camlDAG);
   }
-  CAMLreturn(camlGraph);
+  CAMLreturn(camlDAG);
 }
 
 static value potentialTypesToCaml(NSArray* potentialTypes) {
@@ -122,16 +130,16 @@ static value potentialTypesToCaml(NSArray* potentialTypes) {
   CAMLreturn(camlPotentialTypes);
 }
 
-static void camlInferTypesForTree(int paramsCount, NSArray* graph, NSArray* types, NSArray** inferredTypes) {
+static void camlInferTypesForTree(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes) {
   CAMLparam0();
-  CAMLlocal3(camlGraph, camlTypes, camlInferredTypes);
+  CAMLlocal3(camlDAG, camlTypes, camlInferredTypes);
   
-  camlGraph = graphToCaml(graph);
+  camlDAG = dagToCaml(dag);
   camlTypes = potentialTypesToCaml(types);
   static value* inferClosure = NULL;
   if (inferClosure == NULL)
     inferClosure = caml_named_value("Typechecker.infer");
-  camlInferredTypes = caml_callback3(*inferClosure, Val_int(paramsCount), camlGraph, camlTypes);
+  camlInferredTypes = caml_callback3(*inferClosure, Val_int(paramsCount), camlDAG, camlTypes);
   
   NSMutableArray* iTypes = [NSMutableArray array];
   while (camlInferredTypes != Val_int(0)) {
@@ -142,38 +150,40 @@ static void camlInferTypesForTree(int paramsCount, NSArray* graph, NSArray* type
   CAMLreturn0;
 }
 
-static value camlTypecheck(NSArray* constraints, NSArray* potentialTypes) {
+static value camlTypecheck(NSArray* dag, NSArray* potentialTypes) {
   CAMLparam0();
-  CAMLlocal4(camlConstraints, camlConstraint, camlPotentialTypes, camlTypes);
+  CAMLlocal2(camlDAG, camlPotentialTypes);
   
-  // Transform constraints to lists (of lists of ints)
-  camlConstraints = Val_int(0);
-  for (int i = [constraints count] - 1; i >= 0; --i) {
-    NSArray* constraint = [constraints objectAtIndex:i];
-    camlConstraint = Val_int(0);
-    for (int j = [constraint count] - 1; j >= 0; --j) {
-      int c = [[constraint objectAtIndex:j] intValue];
-      camlConstraint = camlCons(Val_int(c), camlConstraint);
-    }
-    camlConstraints = camlCons(camlConstraint, camlConstraints);
-  }
+  camlDAG = dagToCaml(dag);
+  camlPotentialTypes = potentialTypesToCaml(potentialTypes);
   
-  // Transform potential types to their Caml equivalent
-  camlPotentialTypes = Val_int(0);
-  for (int i = [potentialTypes count] - 1; i >= 0; --i) {
-    NSArray* types = [potentialTypes objectAtIndex:i];
-    camlTypes = Val_int(0);
-    for (int j = [types count] - 1; j >= 0; --j) {
-      IFType* type = [types objectAtIndex:j];
-      camlTypes = camlCons([type asCaml], camlTypes);
-    }
-    camlPotentialTypes = camlCons(camlTypes,camlPotentialTypes);
-  }
+  static value* checkClosure = NULL;
+  if (checkClosure == NULL)
+    checkClosure = caml_named_value("Typechecker.check");
   
-  static value* validConfigurationExistsClosure = NULL;
-  if (validConfigurationExistsClosure == NULL)
-    validConfigurationExistsClosure = caml_named_value("Typechecker.check");
-  
-  CAMLreturn(caml_callback2(*validConfigurationExistsClosure, camlConstraints, camlPotentialTypes));
+  CAMLreturn(caml_callback2(*checkClosure, camlDAG, camlPotentialTypes));
 }
 
+static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** configuration) {
+  CAMLparam0();
+  CAMLlocal4(camlDAG, camlTypes, camlConfigurationOption, camlConfiguration);
+  
+  camlDAG = dagToCaml(dag);
+  camlTypes = potentialTypesToCaml(potentialTypes);
+  static value* configClosure = NULL;
+  if (configClosure == NULL)
+    configClosure = caml_named_value("Typechecker.first_valid_configuration");
+  camlConfigurationOption = caml_callback2(*configClosure, camlDAG, camlTypes);
+
+  if (!Is_long(camlConfigurationOption)) {
+    camlConfiguration = Field(camlConfigurationOption, 0);
+    NSMutableArray* config = [NSMutableArray array];
+    while (camlConfiguration != Val_int(0)) {
+      [config addObject:[NSNumber numberWithInt:Int_val(Field(camlConfiguration,0))]];
+      camlConfiguration = Field(camlConfiguration,1);
+    }
+    *configuration = config;
+  } else
+    *configuration = nil;
+  CAMLreturn0;
+}

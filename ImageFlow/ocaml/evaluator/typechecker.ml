@@ -76,6 +76,14 @@ let unify cs =
         raise Unification_failure
   in try unify' cs with Invalid_argument _ -> raise Unification_failure
 
+let can_unify t1 t2 =
+  try
+    unify [(t1, t2)];
+    true
+  with
+    Unification_failure ->
+      false
+
 let unification_constraints preds conf =
   let node_var i = TVar (- (succ i)) in
   let rec loop i preds conf acc = match preds, conf with
@@ -88,7 +96,7 @@ let unification_constraints preds conf =
       loop (succ i) ps tps ((tp, TFun (args_tps, node_var i)) :: acc)
   in loop 0 preds conf []
 
-let valid_configurations preds types =
+let valid_types preds types =
   let rec loop valid_confs = function
       [] -> valid_confs
     | c :: cs ->
@@ -100,7 +108,7 @@ let valid_configurations preds types =
   in loop [] (Mlist.cartesian_product (List.map alpha_rename_tvars types))
 
 let check preds types =
-  match valid_configurations preds types with
+  match valid_types preds types with
     [] -> false
   | _ -> true
 
@@ -112,7 +120,17 @@ let infer paramsCount preds types =
   List.map (fun conf ->
     TFun(Array.of_list (Mlist.take paramsCount conf),
          res_type (Mlist.last conf)))
-    (valid_configurations preds types)
+    (valid_types preds types)
+
+let first_valid_configuration preds types =
+  match valid_types preds types with
+    [] ->
+      None
+  | fst :: _ ->
+      Some (List.map2
+              (fun tp tps -> Mlist.index (can_unify tp) tps)
+              fst
+              types)
 
 (* Debugging *)
 
