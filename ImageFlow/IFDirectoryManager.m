@@ -33,21 +33,6 @@ static IFDirectoryManager* sharedDirectoryManager = nil;
   [super dealloc];
 }
 
-- (NSString*)operatorsDirectory;
-{
-  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Operators"];  
-}
-
-- (NSString*)rulesDirectory;
-{
-  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Rules"];  
-}
-
-- (NSString*)filtersDirectory;
-{
-  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Filters"];  
-}
-
 - (NSString*)sourceTemplatesDirectory;
 {
   return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Templates"];

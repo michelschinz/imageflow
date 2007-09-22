@@ -11,8 +11,6 @@
 #import "IFDirectoryManager.h"
 
 @interface IFOperator (Private)
-+ (id)operatorWithXMLFile:(NSString*)xmlFile;
-+ (id)operatorWithXML:(NSXMLElement*)xmlTree;
 - (id)initWithName:(NSString*)theName;
 @end
 
@@ -26,10 +24,43 @@ static NSDictionary* allOperatorsByName;
   if (self != [IFOperator class])
     return; // avoid repeated initialisation
   
-  NSFileManager* fileMgr = [NSFileManager defaultManager];
-  NSString* operatorsDir = [[IFDirectoryManager sharedDirectoryManager] operatorsDirectory];
-  NSArray* allFiles = (NSArray*)[[operatorsDir collect] stringByAppendingPathComponent:[[fileMgr directoryContentsAtPath:operatorsDir] each]];
-  allOperators = (NSArray*)[[self collect] operatorWithXMLFile:[allFiles each]];
+  allOperators = [[NSArray arrayWithObjects:
+    [[[self alloc] initWithName:@"blend"] autorelease],
+    [[[self alloc] initWithName:@"channel-to-mask"] autorelease],
+    [[[self alloc] initWithName:@"checkerboard"] autorelease],
+    [[[self alloc] initWithName:@"circle"] autorelease],
+    [[[self alloc] initWithName:@"color-controls"] autorelease],
+    [[[self alloc] initWithName:@"constant-color"] autorelease],
+    [[[self alloc] initWithName:@"crop-overlay"] autorelease],
+    [[[self alloc] initWithName:@"crop"] autorelease],
+    [[[self alloc] initWithName:@"div"] autorelease],
+    [[[self alloc] initWithName:@"empty"] autorelease],
+    [[[self alloc] initWithName:@"extent"] autorelease],
+    [[[self alloc] initWithName:@"file-extent"] autorelease],
+    [[[self alloc] initWithName:@"gaussian-blur"] autorelease],
+    [[[self alloc] initWithName:@"histogram-rgb"] autorelease],
+    [[[self alloc] initWithName:@"invert-mask"] autorelease],
+    [[[self alloc] initWithName:@"invert"] autorelease],
+    [[[self alloc] initWithName:@"load"] autorelease],
+    [[[self alloc] initWithName:@"mask-overlay"] autorelease],
+    [[[self alloc] initWithName:@"mask"] autorelease],
+    [[[self alloc] initWithName:@"mul"] autorelease],
+    [[[self alloc] initWithName:@"nop"] autorelease],
+    [[[self alloc] initWithName:@"paint"] autorelease],
+    [[[self alloc] initWithName:@"point-mul"] autorelease],
+    [[[self alloc] initWithName:@"print"] autorelease],
+    [[[self alloc] initWithName:@"rect-mul"] autorelease],
+    [[[self alloc] initWithName:@"rect-outset"] autorelease],
+    [[[self alloc] initWithName:@"rect-translate"] autorelease],
+    [[[self alloc] initWithName:@"rect-union"] autorelease],
+    [[[self alloc] initWithName:@"resample"] autorelease],
+    [[[self alloc] initWithName:@"save-file"] autorelease],
+    [[[self alloc] initWithName:@"opacity"] autorelease],
+    [[[self alloc] initWithName:@"single-color"] autorelease],
+    [[[self alloc] initWithName:@"threshold"] autorelease],
+    [[[self alloc] initWithName:@"translate"] autorelease],
+    [[[self alloc] initWithName:@"unsharp-mask"] autorelease],
+    nil] retain];
   allOperatorsByName = [[NSDictionary dictionaryWithObjects:allOperators forKeys:(NSArray*)[[allOperators collect] name]] retain];
 }
 
@@ -58,28 +89,6 @@ static NSDictionary* allOperatorsByName;
 @end
 
 @implementation IFOperator (Private)
-
-+ (id)operatorWithXMLFile:(NSString*)xmlFile;
-{
-  NSError* outError = nil; // TODO handle errors
-  NSXMLDocument* xmlDoc = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL fileURLWithPath:xmlFile] options:0 error:&outError] autorelease];
-  NSAssert1(outError == nil, @"error: %@", outError);
-  return [self operatorWithXML:[xmlDoc rootElement]];
-}
-
-+ (id)operatorWithXML:(NSXMLElement*)xmlTree;
-{
-  NSString* name = @"";
-  for (int i = 0; i < [xmlTree childCount]; ++i) {
-    NSXMLNode* xmlChild = [xmlTree childAtIndex:i];
-    NSString* xmlChildName = [xmlChild name];
-    if ([xmlChildName isEqualToString:@"name"])
-      name = [xmlChild stringValue];
-    else
-      NSLog(@"unknown XML element: %@",xmlChildName); // TODO
-  }
-  return [[[self alloc] initWithName:name] autorelease];
-}
 
 - (id)initWithName:(NSString*)theName;
 {

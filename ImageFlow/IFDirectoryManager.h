@@ -15,9 +15,6 @@
 
 + (IFDirectoryManager*)sharedDirectoryManager;
 
-- (NSString*)operatorsDirectory;
-- (NSString*)rulesDirectory;
-- (NSString*)filtersDirectory;
 - (NSString*)sourceTemplatesDirectory;
 
 - (NSString*)applicationSupportDirectory;

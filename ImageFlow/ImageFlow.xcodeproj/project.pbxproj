@@ -153,7 +153,6 @@
 		FAE6A41D0ACBD9050059BA3B /* IFGrabableViewMixin.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */; };
 		FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE8129908CF307C00B43274 /* IFImageView.m */; };
 		FAE874DB0908C4E300E856B9 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = FAE8749F0908C2B800E856B9 /* Templates */; };
-		FAE874E70908C5AC00E856B9 /* Operators in Resources */ = {isa = PBXBuildFile; fileRef = FAE874DE0908C5AC00E856B9 /* Operators */; };
 		FAEC284F0916137200AB4196 /* IFHistogramConstantExpressionCI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */; };
 		FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F5C0B2821A100D5DC62 /* IFVariable.m */; };
 		FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F650B28220700D5DC62 /* IFVariableKVO.m */; };
@@ -489,7 +488,6 @@
 		FAE8129808CF307C00B43274 /* IFImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageView.h; sourceTree = "<group>"; };
 		FAE8129908CF307C00B43274 /* IFImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageView.m; sourceTree = "<group>"; };
 		FAE8749F0908C2B800E856B9 /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
-		FAE874DE0908C5AC00E856B9 /* Operators */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Operators; sourceTree = "<group>"; };
 		FAEC284C0916137200AB4196 /* IFHistogramConstantExpressionCI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpressionCI.h; sourceTree = "<group>"; };
 		FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpressionCI.m; sourceTree = "<group>"; };
 		FAED0F5B0B2821A100D5DC62 /* IFVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariable.h; sourceTree = "<group>"; };
@@ -712,7 +710,6 @@
 			isa = PBXGroup;
 			children = (
 				FA68E173092E04EF009D02CB /* Images */,
-				FAE874DE0908C5AC00E856B9 /* Operators */,
 				FAE8749F0908C2B800E856B9 /* Templates */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -1598,7 +1595,6 @@
 				FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */,
 				FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */,
 				FAE874DB0908C4E300E856B9 /* Templates in Resources */,
-				FAE874E70908C5AC00E856B9 /* Operators in Resources */,
 				FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */,
 				FA1BF71709194BDD00E288BB /* IFThresholdFilter.nib in Resources */,
 				FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */,
