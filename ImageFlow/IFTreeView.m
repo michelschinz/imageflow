@@ -441,7 +441,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)insertNewline:(id)sender
 {
-  [document insertNode:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:1]] asChildOf:[self cursorNode]];
+  [document insertNode:[IFTreeNode ghostNodeWithInputArity:1] asChildOf:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
 }
 
@@ -961,7 +961,7 @@ static enum {
 {
   NSAssert(view == self, @"unexpected view");
   IFTreeLayoutNode* layoutNode = userData;
-  return [[[layoutNode node] filter] toolTip];
+  return [[layoutNode node] toolTip];
 }
 
 #pragma mark Tracking rectangles

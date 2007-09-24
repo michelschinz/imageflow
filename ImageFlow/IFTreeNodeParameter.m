@@ -19,7 +19,7 @@
 
 - (id)initWithIndex:(int)theIndex;
 {
-  if (![super initWithFilter:nil])
+  if (![super init])
     return nil;
   index = theIndex;
   return self;

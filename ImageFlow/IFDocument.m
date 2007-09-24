@@ -15,6 +15,7 @@
 #import "IFDirectoryManager.h"
 #import "IFDocumentTemplate.h"
 #import "IFDocumentTemplateManager.h"
+#import "IFTreeNodeFilter.h"
 #import "IFTreeNodeParameter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
@@ -62,7 +63,7 @@ static IFDocumentTemplateManager* templateManager;
   typeChecker = [IFTypeChecker sharedInstance];
   evaluator = [IFExpressionEvaluator new];
 
-  fakeRoot = [[IFTreeNode nodeWithFilter:nil] retain];
+  fakeRoot = [[IFTreeNodeFilter nodeWithFilter:nil] retain];
   [self ensureGhostNodes];
   [self startObservingTree:fakeRoot];
   
@@ -281,8 +282,7 @@ static IFDocumentTemplateManager* templateManager;
   const int ghostsToAdd = [replacement inputArity] - parentsCount;
   [node replaceByNode:replacement transformingMarks:marks];
   for (int i = 0; i < ghostsToAdd; ++i)
-    [replacement insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
-             inParentsAtIndex:parentsCount + i];
+    [replacement insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsAtIndex:parentsCount + i];
   if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
     IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
     if ([macroReplacement inlineOnInsertion])
@@ -313,7 +313,7 @@ static IFDocumentTemplateManager* templateManager;
     ghostNeeded = YES;
 
   if (ghostNeeded) {
-    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:[node inputArity]]];
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[node inputArity]];
     [node replaceByNode:ghost transformingMarks:marks];
   } else {
     IFTreeNode* child = [node child];
@@ -382,7 +382,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
       collectBoundary(parent, nodes, boundary);
     else {
       [boundary addObject:parent];
-      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
+      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode ghostNodeWithInputArity:0]];
     }
   }
 }
@@ -398,7 +398,7 @@ static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boun
     [macroNode insertObject:[actualParameters objectAtIndex:i] inParentsAtIndex:i];
   // detach old root and attach new one (the macro node)
   int rootIndex = [[[root child] parents] indexOfObject:root];
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
+  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode ghostNodeWithInputArity:0]];
   [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
 }
 
@@ -423,7 +423,7 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   for (int i = 0; i < [macroParents count]; ++i) {
     IFTreeNode* parent = [macroParents objectAtIndex:i];
     [detachedMacroParents addObject:parent];
-    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]];
+    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode ghostNodeWithInputArity:0]];
   }
 
   // Clone macro node body, and replace parameter nodes by parent nodes, introducing aliases when necessary
@@ -598,13 +598,13 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
       hasGhostColumn |= ([[root parents] count] == 0);
     else if ([root outputArity] == 1) {
       [[root retain] autorelease];
-      IFTreeNode* newRoot = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:1]];
+      IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
       [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
       [newRoot insertObject:root inParentsAtIndex:0];
     }
   }
   if (!hasGhostColumn)
-    [fakeRoot insertObject:[IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]]
+    [fakeRoot insertObject:[IFTreeNode ghostNodeWithInputArity:0]
           inParentsAtIndex:[[fakeRoot parents] count]];
   
   [self configureFilters];
@@ -693,7 +693,8 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 - (void)startObservingTree:(IFTreeNode*)node;
 {
-  [self startObservingEnvironment:[[node filter] environment]];
+  if ([node filter] != nil) // TODO && ![node isAlias] ???
+    [self startObservingEnvironment:[[node filter] environment]];
   [node addObserver:self forKeyPath:@"parents" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
   [self startObservingTreesIn:[node parents]];
 }
@@ -706,7 +707,8 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 - (void)stopObservingTree:(IFTreeNode*)node;
 {
-  [self stopObservingEnvironment:[[node filter] environment]];
+  if ([node filter] != nil)
+    [self stopObservingEnvironment:[[node filter] environment]];
   [node removeObserver:self forKeyPath:@"parents"];
   [self stopObservingTreesIn:[node parents]];
 }

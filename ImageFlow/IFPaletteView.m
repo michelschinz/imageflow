@@ -7,6 +7,7 @@
 //
 
 #import "IFPaletteView.h"
+#import "IFTreeNodeFilter.h"
 #import "IFTreeLayoutNode.h"
 #import "IFTreeLayoutComposite.h"
 #import "IFDocumentTemplateManager.h"
@@ -78,10 +79,6 @@ enum IFLayoutLayer {
     NSString* maybeSurrogatePath = [[NSBundle mainBundle] pathForImageResource:fileName];
     if (maybeSurrogatePath == nil)
       break;
-    
-    IFFilter* filter = [IFFilter ghostFilterWithInputArity:0];
-    // TODO load image at maybeSurrogatePath
-    [surrogates addObject:filter];
   }
   return surrogates;
 }
@@ -94,7 +91,7 @@ enum IFLayoutLayer {
     IFTreeNode* clonedNode = [[[templates objectAtIndex:i] node] cloneNode];
     int parentsCount = [clonedNode inputArity];
     for (int p = 0; p < parentsCount; ++p)
-      [clonedNode insertObject:[IFTreeNode nodeWithFilter:[surrogateFilters objectAtIndex:p]]
+      [clonedNode insertObject:[IFTreeNodeFilter nodeWithFilter:[surrogateFilters objectAtIndex:p]]
               inParentsAtIndex:p];
     [nodes addObject:clonedNode];
   }  

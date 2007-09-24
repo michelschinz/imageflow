@@ -14,22 +14,20 @@
 extern const unsigned int ID_NONE;
 
 @interface IFTreeNode : NSObject {
-  NSString* name;
-  BOOL isFolded;
-  BOOL inReconfiguration;
-  IFFilter* filter;
-  IFExpression* expression;
-
   NSMutableArray* parents;
   IFTreeNode* child; // not retained, to avoid cycles
+
+  NSString* name;
+  BOOL isFolded;
+  IFExpression* expression;
 }
 
-+ (id)nodeWithFilter:(IFFilter*)theFilter;
-- (id)initWithFilter:(IFFilter*)theFilter;
++ (id)ghostNodeWithInputArity:(int)inputArity;
+
 - (IFTreeNode*)cloneNode;
 - (IFTreeNode*)cloneNodeAndAncestors;
 
-// hierarchy
+#pragma mark Hierarchy
 - (NSArray*)parents;
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
 - (void)removeObjectFromParentsAtIndex:(unsigned int)index;
@@ -39,8 +37,9 @@ extern const unsigned int ID_NONE;
 - (NSArray*)dfsAncestors;
 - (NSArray*)topologicallySortedAncestorsWithoutAliases;
 - (BOOL)isParentOf:(IFTreeNode*)other;
+- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 
-// attributes
+#pragma mark Attributes
 - (void)setName:(NSString*)newName;
 - (NSString*)name;
 - (void)setIsFolded:(BOOL)newIsFolded;
@@ -57,9 +56,23 @@ extern const unsigned int ID_NONE;
 - (void)beginReconfiguration;
 - (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
 
-- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+#pragma mark Tree view support
+- (NSString*)nameOfParentAtIndex:(int)index;
+- (NSString*)label;
+- (NSString*)toolTip;
 
-// protected
+#pragma mark Image view support
+- (NSArray*)editingAnnotationsForView:(NSView*)view;
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+- (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+- (void)mouseUp:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+- (NSArray*)variantNamesForViewing;
+- (NSArray*)variantNamesForEditing;
+- (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
+- (NSAffineTransform*)transformForParentAtIndex:(int)index;
+
+#pragma mark -
+#pragma mark (protected)
 - (void)setExpression:(IFExpression*)newExpression;
 - (void)updateExpression;
 

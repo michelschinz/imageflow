@@ -36,7 +36,7 @@ typedef enum {
   
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
-  IFFilter* editedFilter;
+  IFTreeNode* editedNode;
 
   IFVariable* canvasBounds;
   float marginSize;

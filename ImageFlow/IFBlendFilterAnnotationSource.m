@@ -29,7 +29,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   if (![super init])
     return nil;
   node = [theNode retain];
-  [self setValue:[NSValue valueWithRect:[self rect]]];
+  [super setValue:[NSValue valueWithRect:[self rect]]];
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
   return self;
 }

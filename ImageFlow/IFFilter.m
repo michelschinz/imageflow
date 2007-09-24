@@ -22,13 +22,6 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
 
 @implementation IFFilter
 
-+ (id)ghostFilterWithInputArity:(int)inputArity;
-{
-  IFEnvironment* env = [IFEnvironment environment];
-  [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
-  return [self filterWithName:@"IFGhostFilter" environment:env];
-}
-
 + (id)filterWithName:(NSString*)filterName environment:(IFEnvironment*)theEnvironment;
 {
   Class cls = [[NSBundle mainBundle] classNamed:filterName];

@@ -22,7 +22,6 @@
   NSNib* settingsNib;
 }
 
-+ (id)ghostFilterWithInputArity:(int)inputArity;
 + (id)filterWithName:(NSString*)filterName environment:(IFEnvironment*)theEnvironment;
 - (id)initWithEnvironment:(IFEnvironment*)theEnvironment;
 

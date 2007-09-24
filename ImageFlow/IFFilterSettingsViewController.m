@@ -85,7 +85,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 - (void)updateSettingsView;
 {
   IFTreeNode* nodeToEdit = [[cursors editMark] node];
-  if (nodeToEdit == nil)
+  if (nodeToEdit == nil || [nodeToEdit filter] == nil)
     return;
   
   IFFilter* filter = [nodeToEdit filter];

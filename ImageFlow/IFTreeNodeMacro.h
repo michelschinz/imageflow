@@ -24,6 +24,4 @@
 - (BOOL)inlineOnInsertion;
 - (IFTreeNode*)root;
 
-- (void)unlinkTree;
-
 @end

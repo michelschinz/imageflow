@@ -66,7 +66,6 @@
   // Layout output connectors, if any.
   if (parentsCount > 1) {
     float connectorsHeight = 0.0;
-    IFFilter* rootFilter = [root filter];
     for (int i = 0; i < parentsCount; ++i) {
       float currLeft = NSMinX([[directParentsLayout objectAtIndex:i] frame]);
       float leftReach = (i > 0)
@@ -77,7 +76,7 @@
         : 0.0;
       
       IFTreeLayoutElement* outputConnectorLayout = [self layoutOutputConnectorForTreeNode:[parents objectAtIndex:i]
-                                                                                      tag:[rootFilter nameOfParentAtIndex:i]
+                                                                                      tag:[root nameOfParentAtIndex:i]
                                                                                 leftReach:leftReach
                                                                                rightReach:rightReach];
       [outputConnectorLayout translateBy:NSMakePoint(currLeft,0)];

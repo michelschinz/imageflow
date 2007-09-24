@@ -10,6 +10,7 @@
 
 #import "IFTreeNode.h"
 #import "IFTreeNodeAlias.h"
+#import "IFTreeNodeFilter.h"
 
 @interface IFDocumentXMLDecoder (Private)
 - (int)xmlNodeIdentity:(NSXMLElement*)xml;
@@ -108,7 +109,7 @@
       [parents addObject:parent];
     }
     IFFilter* filter = [self filterFromXML:(NSXMLElement*)[xml childAtIndex:0]];
-    IFTreeNode* tree = [IFTreeNode nodeWithFilter:filter];
+    IFTreeNode* tree = [IFTreeNodeFilter nodeWithFilter:filter];
     for (int i = 0; i < [parents count]; ++i)
       [tree insertObject:[parents objectAtIndex:i] inParentsAtIndex:i];
     return tree;

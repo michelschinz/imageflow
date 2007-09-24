@@ -20,7 +20,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 
 - (id)initWithOriginal:(IFTreeNode*)theOriginal;
 {
-  if (![super initWithFilter:[theOriginal filter]])
+  if (![super init])
     return nil;
   IFTreeNode* realOriginal = theOriginal;
   while ([realOriginal isAlias])
@@ -67,6 +67,11 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return original;
 }
 
+- (IFFilter*)filter;
+{
+  return [original filter];
+}
+
 - (int)inputArity
 {
   return 0;
@@ -83,6 +88,63 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   }
   return potentialTypes;
 }
+
+#pragma mark Tree view support
+
+- (NSString*)nameOfParentAtIndex:(int)index;
+{
+  return [original nameOfParentAtIndex:index];
+}
+
+- (NSString*)label;
+{
+  return [original label];
+}
+
+- (NSString*)toolTip;
+{
+  return [original toolTip];
+}
+
+#pragma mark Image view support
+
+- (NSArray*)editingAnnotationsForView:(NSView*)view;
+{
+  return [original editingAnnotationsForView:view];
+}
+
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  return [original mouseDown:event inView:imageView viewFilterTransform:viewFilterTransform];
+}
+
+- (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  return [original mouseDragged:event inView:imageView viewFilterTransform:viewFilterTransform];
+}
+
+- (void)mouseUp:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  return [original mouseUp:event inView:imageView viewFilterTransform:viewFilterTransform];
+}
+
+- (NSArray*)variantNamesForViewing;
+{
+  return [original variantNamesForViewing];
+}
+
+- (NSArray*)variantNamesForEditing;
+{
+  return [original variantNamesForEditing];
+}
+
+- (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
+{
+  return [original variantNamed:variantName ofExpression:originalExpression];
+}
+
+#pragma mark -
+#pragma mark (protected)
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {

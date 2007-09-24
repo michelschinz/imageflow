@@ -227,17 +227,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)handleMouseDown:(NSEvent*)event;
 {
-  [editedFilter mouseDown:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseDown:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 - (void)handleMouseDragged:(NSEvent*)event;
 {
-  [editedFilter mouseDragged:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseDragged:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 - (void)handleMouseUp:(NSEvent*)event;
 {
-  [editedFilter mouseUp:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseUp:event inView:imageView viewFilterTransform:viewEditTransform];
 }
 
 @end
@@ -258,7 +258,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     [self updateEditViewTransform];
     [self updateAnnotations];
 
-    editedFilter = [[[cursors editMark] node] filter];
+    editedNode = [[cursors editMark] node];
   } else if (context == IFCanvasBoundsDidChange) {
     [self updateImageViewVisibleBounds];
   } else
@@ -345,10 +345,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)updateExpression;
 {
   IFTreeNode* node = [[cursors viewMark] node];
-  IFFilter* filter = [node filter];
   IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
-    expr = [filter variantNamed:[self activeVariant] ofExpression:expr];
+    expr = [node variantNamed:[self activeVariant] ofExpression:expr];
   [self setExpression:expr];
 }
 
@@ -358,16 +357,15 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     [imageView setAnnotations:nil];
   else {
     IFTreeNode* nodeToEdit = [[cursors editMark] node];
-    [imageView setAnnotations:[[nodeToEdit filter] editingAnnotationsForNode:nodeToEdit view:imageView]];
+    [imageView setAnnotations:[nodeToEdit editingAnnotationsForView:imageView]];
   }
 }
 
 - (void)updateVariants;
 {
-  IFFilter* filter = [[[cursors viewMark] node] filter];
   [self setVariants:(mode == IFImageViewModeView
-                     ? [filter variantNamesForViewing]
-                     : [filter variantNamesForEditing])];
+                     ? [[[cursors viewMark] node] variantNamesForViewing]
+                     : [[[cursors viewMark] node] variantNamesForEditing])];
 }
 
 - (void)updateEditViewTransform;
@@ -383,9 +381,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   
   for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [node child]) {
     if (node == nil) return;
-    IFFilter* filter = [[node child] filter];
-    int parentIndex = [[[node child] parents] indexOfObject:node];
-    [evTransform appendTransform:[filter transformForParentAtIndex:parentIndex]];
+    [evTransform appendTransform:[[node child] transformForParentAtIndex:[[[node child] parents] indexOfObject:node]]];
   }
 
   [editViewTransform setTransformStruct:[evTransform transformStruct]];

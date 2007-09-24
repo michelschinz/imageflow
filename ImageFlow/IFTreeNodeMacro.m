@@ -8,7 +8,6 @@
 
 #import "IFTreeNodeMacro.h"
 
-#import "IFFilterMacro.h"
 #import "IFTreeNodeParameter.h"
 #import "IFTypeChecker.h"
 
@@ -21,11 +20,10 @@
 
 - (id)initWithRoot:(IFTreeNode*)theRoot inlineOnInsertion:(BOOL)theInlineOnInsertion;
 {
-  IFTreeNodeReference* rootReference = [IFTreeNodeReference referenceWithTreeNode:theRoot];
-  if (![super initWithFilter:[IFFilterMacro filterWithMacroRootReference:rootReference]])
+  if (![super init])
     return nil;
   inlineOnInsertion = theInlineOnInsertion;
-  rootRef = [rootReference retain];
+  rootRef = [[IFTreeNodeReference referenceWithTreeNode:theRoot] retain];
   potentialTypes = nil;
   return self;
 }
@@ -44,11 +42,8 @@
 
 - (NSArray*)potentialTypes;
 {
-  if (potentialTypes == nil) {
+  if (potentialTypes == nil)
     potentialTypes = [[[IFTypeChecker sharedInstance] inferTypeForTree:[self root]] retain];
-    NSLog(@"expr: %@",[[self root] expression]);
-    NSLog(@"type: %@",potentialTypes);
-  }
   return potentialTypes;
 }
 
@@ -62,10 +57,10 @@
   return [rootRef treeNode];
 }
 
-- (void)unlinkTree;
+- (void)updateExpression;
 {
-  NSAssert(NO, @"TODO");
-  // TODO clone tree deeply, and make sure that clients are informed of the change
+  // TODO plug parameters
+  [self setExpression:[[self root] expression]];
 }
 
 @end

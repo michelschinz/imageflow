@@ -7,10 +7,9 @@
 //
 
 #import "IFTreeNode.h"
-#import "IFTreeMark.h"
-#import "IFTreeNodeAlias.h"
-#import "IFXMLCoder.h"
+#import "IFTreeNodeFilter.h"
 #import "IFExpressionPlugger.h"
+#import "IFTreeMark.h"
 
 @interface IFTreeNode (Private)
 - (void)setChild:(IFTreeNode*)newChild;
@@ -19,23 +18,20 @@
 
 @implementation IFTreeNode
 
-static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedContext";
 static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedContext";
 
-const unsigned int ID_NONE = ~0;
-
-+ (id)nodeWithFilter:(IFFilter*)theFilter;
++ (id)ghostNodeWithInputArity:(int)inputArity;
 {
-  return [[[IFTreeNode alloc] initWithFilter:theFilter] autorelease];
+  IFEnvironment* env = [IFEnvironment environment];
+  [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
+  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:@"IFGhostFilter" environment:env]];
 }
 
-- (id)initWithFilter:(IFFilter*)theFilter;
+- (id)init;
 {
   if (![super init]) return nil;
   name = nil;
   isFolded = NO;
-  filter = [theFilter retain];
-  [filter addObserver:self forKeyPath:@"expression" options:0 context:IFFilterExpressionChangedContext];
   parents = [NSMutableArray new];
   child = nil;
   return self;
@@ -48,16 +44,14 @@ const unsigned int ID_NONE = ~0;
     [self removeObjectFromParentsAtIndex:0];
   OBJC_RELEASE(parents);
   OBJC_RELEASE(expression);
-  [filter removeObserver:self forKeyPath:@"expression"];  
-  OBJC_RELEASE(filter);
   OBJC_RELEASE(name);
   [super dealloc];
 }
 
 - (IFTreeNode*)cloneNode;
 {
-  NSAssert([self class] == [IFTreeNode class], @"missing redefiniton of <clone> method");
-  return [IFTreeNode nodeWithFilter:[filter clone]];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (IFTreeNode*)cloneNodeAndAncestors;
@@ -135,7 +129,7 @@ const unsigned int ID_NONE = ~0;
   NSArray* nodes = [self dfsAncestors];
   NSMutableArray* sortedNodes = [NSMutableArray arrayWithCapacity:[nodes count]];
   NSMutableSet* seenNodes = [NSMutableSet setWithCapacity:[nodes count]];
-  for (int i = 0, count = [nodes count]; [sortedNodes count] < count; i = (i + 1) % count) {
+  for (int i = 0, count = [nodes count]; [seenNodes count] < count; i = (i + 1) % count) {
     IFTreeNode* node = [nodes objectAtIndex:i];
     NSSet* parentsSet = [NSSet setWithArray:[[node original] parents]];
     if (![seenNodes containsObject:node] && [parentsSet isSubsetOfSet:seenNodes]) {
@@ -150,6 +144,26 @@ const unsigned int ID_NONE = ~0;
 - (BOOL)isParentOf:(IFTreeNode*)other;
 {
   return (other != nil) && (self == other || [[self child] isParentOf:other]);
+}
+
+- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+{
+  NSAssert([[replacement parents] count] == 0 && [replacement child] == nil, @"non-detached replacement node");
+  
+  NSArray* parentsCopy = [[self parents] copy];
+  for (int i = 0; i < [parentsCopy count]; i++) {
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+    [self replaceObjectInParentsAtIndex:i withObject:ghost];
+    IFTreeNode* parent = [parentsCopy objectAtIndex:i];
+    [replacement insertObject:parent inParentsAtIndex:i];
+  }
+  [parentsCopy release];
+  
+  [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:self]
+                            withObject:replacement];
+  
+  for (int i = 0; i < [marks count]; ++i)
+    [[marks objectAtIndex:i] setNode:replacement ifCurrentNodeIs:self];
 }
 
 #pragma mark Attributes
@@ -179,7 +193,7 @@ const unsigned int ID_NONE = ~0;
 
 - (BOOL)isGhost;
 {
-  return [filter isGhost];
+  return NO;
 }
 
 - (BOOL)isAlias;
@@ -194,7 +208,7 @@ const unsigned int ID_NONE = ~0;
 
 - (IFFilter*)filter;
 {
-  return filter;
+  return nil;
 }
 
 - (IFExpression*)expression;
@@ -206,20 +220,18 @@ const unsigned int ID_NONE = ~0;
 
 - (NSArray*)potentialTypes;
 {
-  return [filter potentialTypes];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (void)beginReconfiguration;
 {
-  NSAssert(!inReconfiguration, @"already in reconfiguration");
-  inReconfiguration = YES;
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 - (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
 {
-  NSAssert(inReconfiguration, @"not in reconfiguration");
-  [filter setActiveTypeIndex:typeIndex];
-  inReconfiguration = NO;
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 - (int)inputArity;
@@ -229,48 +241,89 @@ const unsigned int ID_NONE = ~0;
 
 - (int)outputArity;
 {
-  NSLog(@"TODO outputArity");
+  // TODO
   return 1;
-}
-
-- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
-{
-  NSAssert([[replacement parents] count] == 0 && [replacement child] == nil, @"non-detached replacement node");
-  
-  NSArray* parentsCopy = [[self parents] copy];
-  for (int i = 0; i < [parentsCopy count]; i++) {
-    IFTreeNode* ghost = [IFTreeNode nodeWithFilter:[IFFilter ghostFilterWithInputArity:0]];
-    [self replaceObjectInParentsAtIndex:i withObject:ghost];
-    IFTreeNode* parent = [parentsCopy objectAtIndex:i];
-    [replacement insertObject:parent inParentsAtIndex:i];
-  }
-  [parentsCopy release];
-
-  [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:self]
-                            withObject:replacement];
-  
-  for (int i = 0; i < [marks count]; ++i)
-    [[marks objectAtIndex:i] setNode:replacement ifCurrentNodeIs:self];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  NSAssert(context == IFFilterExpressionChangedContext || context == IFParentExpressionChangedContext, @"unexpected context");
-  if (!(context == IFParentExpressionChangedContext && inReconfiguration))
-    [self updateExpression];
+  NSAssert(context == IFParentExpressionChangedContext, @"unexpected context");
+  [self updateExpression];
+}
+
+#pragma mark Tree view support
+
+- (NSString*)nameOfParentAtIndex:(int)index;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSString*)label;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSString*)toolTip;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+#pragma mark Image view support
+
+- (NSArray*)editingAnnotationsForView:(NSView*)view;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)mouseUp:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
+{
+  [self doesNotRecognizeSelector:_cmd];
+}
+
+- (NSArray*)variantNamesForViewing;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSArray*)variantNamesForEditing;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSAffineTransform*)transformForParentAtIndex:(int)index;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 #pragma mark -
-#pragma mark Protected
+#pragma mark (protected)
 
 - (void)updateExpression;
 {
-  if (filter == nil)
-    return;
-  NSMutableDictionary* parentEnv = [NSMutableDictionary dictionary];
-  for (int i = 0; i < [parents count]; ++i)
-    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
-  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentEnv]];
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 - (void)setExpression:(IFExpression*)newExpression;

@@ -277,7 +277,7 @@ static int countAncestors(IFTreeNode* node) {
   [parStyle setAlignment:NSCenterTextAlignment];
   NSString* labelStr = [node isFolded]
     ? [NSString stringWithFormat:@"(%d nodes)",1 + countAncestors(node)]
-    : [[node filter] label];
+    : [node label];
   NSAttributedString* label = [[[NSAttributedString alloc] initWithString:labelStr
                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                  parStyle, NSParagraphStyleAttributeName,
