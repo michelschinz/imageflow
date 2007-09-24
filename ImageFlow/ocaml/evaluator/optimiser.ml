@@ -49,6 +49,8 @@ let rec rewriteOp = function
       Op("single-color", [|Op("resample", [|i; Num f|]); c|])
   | Op("resample", [|Op("threshold", [|i; t|]); Num f|]) when f < 1. ->
       Op("threshold", [|Op("resample", [|i; Num f|]); t|])
+  | Op("resample", [|Op("threshold-mask", [|i; t|]); Num f|]) when f < 1. ->
+      Op("threshold-mask", [|Op("resample", [|i; Num f|]); t|])
   | Op("resample", [|Op("translate", [|i; Point t|]); Num f|]) when f < 1. ->
       Op("translate", [|Op("resample", [|i; Num f|]); Point (Point.scale t f)|])
   | Op("resample", [|Op("unsharp-mask", [|i; y; Num r|]); Num f|])
@@ -111,6 +113,8 @@ let rec rewriteOp = function
   | Op("extent", [|Op("single-color", [|i; _|])|]) ->
       Op("extent", [|i|])
   | Op("extent", [|Op("threshold", [|i; _|])|]) ->
+      Op("extent", [|i|])
+  | Op("extent", [|Op("threshold-mask", [|i; _|])|]) ->
       Op("extent", [|i|])
   | Op("extent", [|Op("translate", [|i; v|])|]) ->
       Op("rect-translate", [|Op("extent", [|i|]); v|])

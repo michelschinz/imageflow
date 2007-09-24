@@ -56,6 +56,8 @@ let rec delta cache old_expr new_expr =
       delta cache i1 i2
   | Op("threshold",[|i1;Num t1|]), Op("threshold",[|i2;Num t2|]) when t1 = t2 ->
       delta cache i1 i2
+  | Op("threshold-mask",[|i1;Num t1|]), Op("threshold-mask",[|i2;Num t2|]) when t1 = t2 ->
+      delta cache i1 i2
   | Op("translate",[|i1;p1|]), Op("translate",[|i2;p2|]) when p1 = p2 ->
       delta cache i1 i2
   | Op("unsharp-mask",[|i1;Num y1; Num r1|]), Op("unsharp-mask",[|i2;Num y2; Num r2|])

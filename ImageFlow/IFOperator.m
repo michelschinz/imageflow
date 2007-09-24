@@ -58,6 +58,7 @@ static NSDictionary* allOperatorsByName;
     [[[self alloc] initWithName:@"opacity"] autorelease],
     [[[self alloc] initWithName:@"single-color"] autorelease],
     [[[self alloc] initWithName:@"threshold"] autorelease],
+    [[[self alloc] initWithName:@"threshold-mask"] autorelease],
     [[[self alloc] initWithName:@"translate"] autorelease],
     [[[self alloc] initWithName:@"unsharp-mask"] autorelease],
     nil] retain];

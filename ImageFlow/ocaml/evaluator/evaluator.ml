@@ -90,7 +90,7 @@ let eval expr =
       out_image (Coreimage.single_color i c)
   | Op("threshold", [|Image i; Num t|]) ->
       out_image (Coreimage.threshold i t)
-  | Op("threshold", [|Mask m; Num t|]) ->
+  | Op("threshold-mask", [|Mask m; Num t|]) ->
       out_mask (Coreimage.threshold_mask m t)
   | Op("translate", [|Image i; Point t|]) ->
       let at = Affinetransform.translation (Point.x t) (Point.y t) in
