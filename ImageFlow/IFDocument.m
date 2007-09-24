@@ -27,9 +27,10 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
+- (void)ensureGhostNodes;
+- (void)finishTreeModification;
 - (NSArray*)topologicallySortedNodes;
 - (void)overwriteWith:(IFDocument*)other;
-- (void)ensureGhostNodes;
 - (void)insertNodes:(NSArray*)parents intoParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
 - (void)removeParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
 - (void)replaceParentsOfNode:(IFTreeNode*)node byNodes:(NSArray*)newParents atIndices:(NSIndexSet*)indices;
@@ -212,7 +213,7 @@ static IFDocumentTemplateManager* templateManager;
        --i)
     ;
   [fakeRoot insertObject:newRoot inParentsAtIndex:i+1];
-  [self ensureGhostNodes];
+  [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
@@ -235,7 +236,7 @@ static IFDocumentTemplateManager* templateManager;
     [parent insertObject:p inParentsAtIndex:i];
   }
   [child insertObject:parent inParentsAtIndex:0];
-  [self ensureGhostNodes];
+  [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
@@ -255,7 +256,7 @@ static IFDocumentTemplateManager* templateManager;
   [originalChild replaceObjectInParentsAtIndex:parentIndex withObject:child];
   [child insertObject:parent inParentsAtIndex:0];
   // TODO add ghost parents if needed
-  [self ensureGhostNodes];
+  [self finishTreeModification];
 }
 
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
@@ -288,7 +289,7 @@ static IFDocumentTemplateManager* templateManager;
     if ([macroReplacement inlineOnInsertion])
       [self inlineMacroNode:macroReplacement transformingMarks:marks];
   }
-  [self ensureGhostNodes];
+  [self finishTreeModification];
 }
 
 // private
@@ -319,7 +320,7 @@ static IFDocumentTemplateManager* templateManager;
     IFTreeNode* child = [node child];
     [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:node] withObject:[[node parents] objectAtIndex:0]];    
   }
-  [self ensureGhostNodes];
+  [self finishTreeModification];
 }
 
 - (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
@@ -544,12 +545,24 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 
 @implementation IFDocument (Private)
 
-- (NSArray*)topologicallySortedNodes;
+- (void)ensureGhostNodes;
 {
-  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot topologicallySortedAncestorsWithoutAliases]];
-  NSAssert([nodes lastObject] == fakeRoot, @"internal error");
-  [nodes removeLastObject];
-  return nodes;
+  BOOL hasGhostColumn = NO;
+  NSArray* roots = [self roots];
+  for (unsigned int i = 0; i < [roots count]; i++) {
+    IFTreeNode* root = [roots objectAtIndex:i];
+    if ([root isGhost])
+      hasGhostColumn |= ([[root parents] count] == 0);
+    else if ([root outputArity] == 1) {
+      [[root retain] autorelease];
+      IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
+      [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
+      [newRoot insertObject:root inParentsAtIndex:0];
+    }
+  }
+  if (!hasGhostColumn)
+    [fakeRoot insertObject:[IFTreeNode ghostNodeWithInputArity:0]
+          inParentsAtIndex:[[fakeRoot parents] count]];
 }
 
 - (void)configureFilters;
@@ -560,6 +573,21 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   for (int i = 0; i < [nodes count]; ++i)
     [[nodes objectAtIndex:i] endReconfigurationWithActiveTypeIndex:[[newConfig objectAtIndex:i] intValue]];
 }  
+
+- (void)finishTreeModification;
+{
+  [self ensureGhostNodes];
+  [self configureFilters];
+  [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
+}
+
+- (NSArray*)topologicallySortedNodes;
+{
+  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot topologicallySortedAncestorsWithoutAliases]];
+  NSAssert([nodes lastObject] == fakeRoot, @"internal error");
+  [nodes removeLastObject];
+  return nodes;
+}
 
 - (void)overwriteWith:(IFDocument*)other;
 {
@@ -585,29 +613,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   [otherRoots release];
 
   // TODO copy marks
-}
-
-// TODO this should be done by the observation routines
-- (void)ensureGhostNodes;
-{
-  BOOL hasGhostColumn = NO;
-  NSArray* roots = [self roots];
-  for (unsigned int i = 0; i < [roots count]; i++) {
-    IFTreeNode* root = [roots objectAtIndex:i];
-    if ([root isGhost])
-      hasGhostColumn |= ([[root parents] count] == 0);
-    else if ([root outputArity] == 1) {
-      [[root retain] autorelease];
-      IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
-      [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
-      [newRoot insertObject:root inParentsAtIndex:0];
-    }
-  }
-  if (!hasGhostColumn)
-    [fakeRoot insertObject:[IFTreeNode ghostNodeWithInputArity:0]
-          inParentsAtIndex:[[fakeRoot parents] count]];
-  
-  [self configureFilters];
 }
 
 #pragma mark Undo support
@@ -646,8 +651,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
         break;
     }
     [fakeRoot fixChildLinks];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self]
-                                               postingStyle:NSPostWhenIdle];
   } else if ([keyPath isEqualToString:@"keys"]) {
     // Change in the keys of an observed environment
     switch (changeKind) {
