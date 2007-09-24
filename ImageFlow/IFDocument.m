@@ -27,6 +27,7 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
+- (void)maybeInlineNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 - (void)ensureGhostNodes;
 - (void)finishTreeModification;
 - (NSArray*)topologicallySortedNodes;
@@ -218,10 +219,41 @@ static IFDocumentTemplateManager* templateManager;
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  // TODO check types instead of arity only
-  return [parent inputArity] >= [[child parents] count]
-  && [parent outputArity] == 1
-  && [child inputArity] >= 1;
+  // TODO add ghost nodes if required (and if we want it)
+  NSArray* sortedNodes = [self topologicallySortedNodes];
+  
+  const int newCount = [sortedNodes count]+1;
+  const int oldChildIndex = [sortedNodes indexOfObject:child];
+  const int newParentIndex = oldChildIndex;
+  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:newCount];
+  NSMutableArray* dag = [NSMutableArray arrayWithCapacity:newCount];
+  // First add all nodes above child (excluded), without modification...
+  for (int i = 0; i < oldChildIndex; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    [potentialTypes addObject:[node potentialTypes]];
+    [dag addObject:[typeChecker predecessorIndexesOfNode:node inArray:sortedNodes]];
+  }
+  // ...then add new parent and child, with proper parent(s)...
+  [potentialTypes addObject:[parent potentialTypes]];
+  [dag addObject:[typeChecker predecessorIndexesOfNode:child inArray:sortedNodes]];
+  [potentialTypes addObject:[child potentialTypes]];
+  [dag addObject:[NSArray arrayWithObject:[NSNumber numberWithInt:newParentIndex]]];
+  // ...finally add remaining nodes, with adjusted predecessor indexes.
+  for (int i = oldChildIndex + 1; i < newCount - 1; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i-1];
+    [potentialTypes addObject:[node potentialTypes]];
+    
+    NSArray* oldPreds = [typeChecker predecessorIndexesOfNode:node inArray:sortedNodes];
+    const int pCount = [oldPreds count];
+    NSMutableArray* newPreds = [NSMutableArray arrayWithCapacity:pCount];
+    for (int j = 0; j < pCount; ++j) {
+      int oldPred = [[oldPreds objectAtIndex:j] intValue];
+      [newPreds addObject:[NSNumber numberWithInt:oldPred + (oldPred >= oldChildIndex ? 1 : 0)]];
+    }
+    [dag addObject:newPreds];
+  }
+  
+  return [typeChecker checkDAG:dag withPotentialTypes:potentialTypes];  
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
@@ -236,26 +268,56 @@ static IFDocumentTemplateManager* templateManager;
     [parent insertObject:p inParentsAtIndex:i];
   }
   [child insertObject:parent inParentsAtIndex:0];
+  [self maybeInlineNode:parent transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  // TODO check types instead of arity only
-  return [parent outputArity] == 1 && [child inputArity] >= 1;
+  // TODO add ghost nodes if required (and if we want it)
+  NSArray* sortedNodes = [self topologicallySortedNodes];
+  
+  const int newCount = [sortedNodes count]+1;
+  const int parentIndex = [sortedNodes indexOfObject:parent];
+  const int childIndex = parentIndex + 1;
+  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:newCount];
+  NSMutableArray* dag = [NSMutableArray arrayWithCapacity:newCount];
+  // First add all nodes above parent (included), without modification...
+  for (int i = 0; i < childIndex; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    [potentialTypes addObject:[node potentialTypes]];
+    [dag addObject:[typeChecker predecessorIndexesOfNode:node inArray:sortedNodes]];
+  }
+  // ...then add child, with proper parent...
+  [potentialTypes addObject:[child potentialTypes]];
+  [dag addObject:[NSArray arrayWithObject:[NSNumber numberWithInt:parentIndex]]];
+  // ...finally add remaining nodes, with adjusted predecessor indexes.
+  for (int i = childIndex; i < newCount - 1; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    [potentialTypes addObject:[node potentialTypes]];
+
+    NSArray* oldPreds = [typeChecker predecessorIndexesOfNode:node inArray:sortedNodes];
+    const int pCount = [oldPreds count];
+    NSMutableArray* newPreds = [NSMutableArray arrayWithCapacity:pCount];
+    for (int j = 0; j < pCount; ++j) {
+      int oldPred = [[oldPreds objectAtIndex:j] intValue];
+      [newPreds addObject:[NSNumber numberWithInt:oldPred + (oldPred >= parentIndex ? 1 : 0)]];
+    }
+    [dag addObject:newPreds];
+  }
+  
+  return [typeChecker checkDAG:dag withPotentialTypes:potentialTypes];
 }
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  if (![self canInsertNode:child asChildOf:parent]) {
-    NSBeep();
-    return;
-  }
+  NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
+
   IFTreeNode* originalChild = [parent child];
   int parentIndex = [[originalChild parents] indexOfObject:parent];
   [originalChild replaceObjectInParentsAtIndex:parentIndex withObject:child];
   [child insertObject:parent inParentsAtIndex:0];
-  // TODO add ghost parents if needed
+  [self maybeInlineNode:child transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
@@ -284,11 +346,7 @@ static IFDocumentTemplateManager* templateManager;
   [node replaceByNode:replacement transformingMarks:marks];
   for (int i = 0; i < ghostsToAdd; ++i)
     [replacement insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsAtIndex:parentsCount + i];
-  if ([replacement isKindOfClass:[IFTreeNodeMacro class]]) {
-    IFTreeNodeMacro* macroReplacement = (IFTreeNodeMacro*)replacement;
-    if ([macroReplacement inlineOnInsertion])
-      [self inlineMacroNode:macroReplacement transformingMarks:marks];
-  }
+  [self maybeInlineNode:replacement transformingMarks:marks];
   [self finishTreeModification];
 }
 
@@ -544,6 +602,15 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 @end
 
 @implementation IFDocument (Private)
+
+- (void)maybeInlineNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
+{
+  if ([node isKindOfClass:[IFTreeNodeMacro class]]) {
+    IFTreeNodeMacro* macroNode = (IFTreeNodeMacro*)node;
+    if ([macroNode inlineOnInsertion])
+      [self inlineMacroNode:macroNode transformingMarks:marks];
+  }
+}
 
 - (void)ensureGhostNodes;
 {

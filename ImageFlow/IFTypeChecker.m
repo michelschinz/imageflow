@@ -58,18 +58,22 @@ static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
   return inferredTypes;
 }
 
+- (NSArray*)predecessorIndexesOfNode:(IFTreeNode*)node inArray:(NSArray*)array;
+{
+  NSArray* parents = [node parents];
+  int count = [parents count];
+  NSMutableArray* predecessors = [NSMutableArray arrayWithCapacity:count];
+  for (int i = 0; i < count; ++i)
+    [predecessors addObject:[NSNumber numberWithInt:[array indexOfObject:[[parents objectAtIndex:i] original]]]];
+  return predecessors;
+}
+
 - (NSArray*)dagFromTopologicallySortedNodes:(NSArray*)sortedNodes;
 {
   int nodesCount = [sortedNodes count];
   NSMutableArray* dag = [NSMutableArray arrayWithCapacity:nodesCount];
-  for (int i = 0; i < nodesCount; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    NSArray* parents = [node parents];
-    NSMutableArray* predecessors = [NSMutableArray arrayWithCapacity:[parents count]];
-    for (int j = 0, pCount = [parents count]; j < pCount; ++j)
-      [predecessors addObject:[NSNumber numberWithInt:[sortedNodes indexOfObject:[[parents objectAtIndex:j] original]]]];
-    [dag addObject:predecessors];
-  }
+  for (int i = 0; i < nodesCount; ++i)
+    [dag addObject:[self predecessorIndexesOfNode:[sortedNodes objectAtIndex:i] inArray:sortedNodes]];
   return dag;
 }
 
