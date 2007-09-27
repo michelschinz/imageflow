@@ -10,6 +10,7 @@
 
 #import "IFFilter.h"
 #import "IFType.h"
+#import "IFGraph.h"
 
 extern const unsigned int ID_NONE;
 
@@ -35,9 +36,10 @@ extern const unsigned int ID_NONE;
 - (IFTreeNode*)child;
 - (void)fixChildLinks;
 - (NSArray*)dfsAncestors;
-- (NSArray*)topologicallySortedAncestorsWithoutAliases;
 - (BOOL)isParentOf:(IFTreeNode*)other;
 - (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+
+- (IFGraph*)graph;
 
 #pragma mark Attributes
 - (void)setName:(NSString*)newName;
@@ -45,6 +47,7 @@ extern const unsigned int ID_NONE;
 - (void)setIsFolded:(BOOL)newIsFolded;
 - (BOOL)isFolded;
 - (BOOL)isGhost;
+- (BOOL)isRootOfGhostTree;
 - (BOOL)isAlias;
 - (IFTreeNode*)original;
 - (IFFilter*)filter;

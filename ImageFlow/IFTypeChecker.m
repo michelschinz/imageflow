@@ -13,7 +13,7 @@
 #import <caml/alloc.h>
 #import <caml/callback.h>
 
-static void camlInferTypesForTree(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes);
+static void camlInferTypes(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes);
 static value camlTypecheck(NSArray* dag, NSArray* potentialTypes);
 static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** configuration);
 
@@ -27,56 +27,6 @@ static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** co
   return instance;
 }
 
-static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
-  int i1 = [n1 index], i2 = [n2 index];
-  if (i1 < i2) return NSOrderedAscending;
-  else if (i1 > i2) return NSOrderedDescending;
-  else return NSOrderedSame;
-}
-
-- (NSArray*)inferTypeForTree:(IFTreeNode*)root;
-{
-  NSArray* allNodes = [root topologicallySortedAncestorsWithoutAliases];
-  
-  NSMutableArray* paramNodes = [NSMutableArray array];
-  NSMutableArray* nonParamNodes = [NSMutableArray array];
-  for (int i = 0, count = [allNodes count]; i < count; ++i) {
-    IFTreeNode* node = [allNodes objectAtIndex:i];
-    [([node isKindOfClass:[IFTreeNodeParameter class]] ? paramNodes : nonParamNodes) addObject:node];
-  }
-  int paramsCount = [paramNodes count];
-
-  [paramNodes sortUsingFunction:compareParamNodes context:nil];
-  [paramNodes addObjectsFromArray:nonParamNodes];
-
-  NSArray* dag = [self dagFromTopologicallySortedNodes:paramNodes];
-  NSMutableArray* types = [NSMutableArray arrayWithCapacity:[paramNodes count]];
-  for (int i = 0, count = [paramNodes count]; i < count; ++i)
-    [types addObject:[[paramNodes objectAtIndex:i] potentialTypes]];
-  NSArray* inferredTypes = nil;
-  camlInferTypesForTree(paramsCount, dag, types, &inferredTypes);
-  return inferredTypes;
-}
-
-- (NSArray*)predecessorIndexesOfNode:(IFTreeNode*)node inArray:(NSArray*)array;
-{
-  NSArray* parents = [node parents];
-  int count = [parents count];
-  NSMutableArray* predecessors = [NSMutableArray arrayWithCapacity:count];
-  for (int i = 0; i < count; ++i)
-    [predecessors addObject:[NSNumber numberWithInt:[array indexOfObject:[[parents objectAtIndex:i] original]]]];
-  return predecessors;
-}
-
-- (NSArray*)dagFromTopologicallySortedNodes:(NSArray*)sortedNodes;
-{
-  int nodesCount = [sortedNodes count];
-  NSMutableArray* dag = [NSMutableArray arrayWithCapacity:nodesCount];
-  for (int i = 0; i < nodesCount; ++i)
-    [dag addObject:[self predecessorIndexesOfNode:[sortedNodes objectAtIndex:i] inArray:sortedNodes]];
-  return dag;
-}
-
 - (BOOL)checkDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
 {
   return Bool_val(camlTypecheck(dag, potentialTypes));
@@ -87,6 +37,13 @@ static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
   NSArray* configuration;
   camlConfigureDAG(dag,potentialTypes,&configuration);
   return configuration;
+}
+
+- (NSArray*)inferTypesForDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes parametersCount:(int)paramsCount;
+{
+  NSArray* inferredTypes;
+  camlInferTypes(paramsCount,dag,potentialTypes,&inferredTypes);
+  return inferredTypes;
 }
 
 @end
@@ -134,7 +91,7 @@ static value potentialTypesToCaml(NSArray* potentialTypes) {
   CAMLreturn(camlPotentialTypes);
 }
 
-static void camlInferTypesForTree(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes) {
+static void camlInferTypes(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes) {
   CAMLparam0();
   CAMLlocal3(camlDAG, camlTypes, camlInferredTypes);
   

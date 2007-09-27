@@ -40,10 +40,31 @@
   return [IFTreeNodeMacro nodeMacroWithRoot:[self root] inlineOnInsertion:inlineOnInsertion];
 }
 
+static NSComparisonResult compareParamNodes(id n1, id n2, void* nothing) {
+  int i1 = [n1 index], i2 = [n2 index];
+  if (i1 < i2) return NSOrderedAscending;
+  else if (i1 > i2) return NSOrderedDescending;
+  else return NSOrderedSame;
+}
+
 - (NSArray*)potentialTypes;
 {
-  if (potentialTypes == nil)
-    potentialTypes = [[[IFTypeChecker sharedInstance] inferTypeForTree:[self root]] retain];
+  if (potentialTypes == nil) {
+    IFGraph* graph = [[self root] graph];
+    
+    NSArray* allNodes = [[self root] dfsAncestors];
+    NSMutableArray* paramNodes = [NSMutableArray array];
+    for (int i = 0, count = [allNodes count]; i < count; ++i) {
+      IFTreeNode* node = [allNodes objectAtIndex:i];
+      if ([node isKindOfClass:[IFTreeNodeParameter class]])
+        [paramNodes addObject:node];
+    }
+    [paramNodes sortUsingFunction:compareParamNodes context:nil];
+
+    NSArray* paramGraphNodes = (NSArray*)[[graph collect] nodeWithData:[paramNodes each]];
+    IFGraphNode* rootGraphNode = [graph nodeWithData:[self root]];
+    potentialTypes = [[graph inferTypeForParamNodes:paramGraphNodes resultNode:rootGraphNode] retain];
+  }
   return potentialTypes;
 }
 

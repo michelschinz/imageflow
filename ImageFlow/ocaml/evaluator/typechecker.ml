@@ -117,10 +117,13 @@ let infer paramsCount preds types =
       TFun(_, res_type) -> res_type
     | other -> other
   in
-  List.map (fun conf ->
-    TFun(Array.of_list (Mlist.take paramsCount conf),
-         res_type (Mlist.last conf)))
-    (valid_types preds types)
+  if paramsCount = 0 then
+    List.map (fun conf -> res_type (Mlist.last conf))
+      (valid_types preds types)
+  else
+    List.map (fun conf -> TFun(Array.of_list (Mlist.take paramsCount conf),
+                               res_type (Mlist.last conf)))
+      (valid_types preds types)
 
 let first_valid_configuration preds types =
   match valid_types preds types with

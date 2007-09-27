@@ -21,6 +21,8 @@
 #import "IFTypeChecker.h"
 #import "IFTypeVar.h"
 #import "IFFunType.h"
+#import "IFGraph.h"
+#import "IFGraphNode.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -29,8 +31,12 @@
 @interface IFDocument (Private)
 - (void)maybeInlineNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 - (void)ensureGhostNodes;
+- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
+- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
+- (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
+- (void)removeAllRightGhostPredecessorsOfNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
+- (IFGraph*)graph;
 - (void)finishTreeModification;
-- (NSArray*)topologicallySortedNodes;
 - (void)overwriteWith:(IFDocument*)other;
 - (void)insertNodes:(NSArray*)parents intoParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
 - (void)removeParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
@@ -219,94 +225,51 @@ static IFDocumentTemplateManager* templateManager;
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  // TODO add ghost nodes if required (and if we want it)
-  NSArray* sortedNodes = [self topologicallySortedNodes];
-  
-  const int newCount = [sortedNodes count]+1;
-  const int oldChildIndex = [sortedNodes indexOfObject:child];
-  const int newParentIndex = oldChildIndex;
-  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:newCount];
-  NSMutableArray* dag = [NSMutableArray arrayWithCapacity:newCount];
-  // First add all nodes above child (excluded), without modification...
-  for (int i = 0; i < oldChildIndex; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    [potentialTypes addObject:[node potentialTypes]];
-    [dag addObject:[typeChecker predecessorIndexesOfNode:node inArray:sortedNodes]];
-  }
-  // ...then add new parent and child, with proper parent(s)...
-  [potentialTypes addObject:[parent potentialTypes]];
-  [dag addObject:[typeChecker predecessorIndexesOfNode:child inArray:sortedNodes]];
-  [potentialTypes addObject:[child potentialTypes]];
-  [dag addObject:[NSArray arrayWithObject:[NSNumber numberWithInt:newParentIndex]]];
-  // ...finally add remaining nodes, with adjusted predecessor indexes.
-  for (int i = oldChildIndex + 1; i < newCount - 1; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i-1];
-    [potentialTypes addObject:[node potentialTypes]];
-    
-    NSArray* oldPreds = [typeChecker predecessorIndexesOfNode:node inArray:sortedNodes];
-    const int pCount = [oldPreds count];
-    NSMutableArray* newPreds = [NSMutableArray arrayWithCapacity:pCount];
-    for (int j = 0; j < pCount; ++j) {
-      int oldPred = [[oldPreds objectAtIndex:j] intValue];
-      [newPreds addObject:[NSNumber numberWithInt:oldPred + (oldPred >= oldChildIndex ? 1 : 0)]];
-    }
-    [dag addObject:newPreds];
-  }
-  
-  return [typeChecker checkDAG:dag withPotentialTypes:potentialTypes];  
+  IFGraph* graph = [self graph];
+  IFGraphNode* graphChild = [graph nodeWithData:[child original]];
+  [self removeAllRightGhostPredecessorsOfNode:graphChild inGraph:graph];
+
+  IFGraphNode* graphParent = [IFGraphNode graphNodeWithTypes:[parent potentialTypes] data:parent];
+  [graph addNode:graphParent];
+  [graphParent setPredecessors:[graphChild predecessors]];
+  [self addRightGhostPredecessorsForNode:graphParent inGraph:graph];
+
+  [graphChild setPredecessors:[NSArray arrayWithObject:graphParent]];
+  [self addRightGhostPredecessorsForNode:graphChild inGraph:graph];
+
+  return [graph isTypeable];  
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
   NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
 
-  // TODO add ghost nodes when needed
+  [self removeAllRightGhostParentsOfNode:child];
   int parentsCount = [[child parents] count];
   for (int i = 0; i < parentsCount; ++i) {
     IFTreeNode* p = [[[[child parents] objectAtIndex:0] retain] autorelease];
     [child removeObjectFromParentsAtIndex:0];
     [parent insertObject:p inParentsAtIndex:i];
   }
+  [self addRightGhostParentsForNode:parent];
+
   [child insertObject:parent inParentsAtIndex:0];
+  [self addRightGhostParentsForNode:child];
+
   [self maybeInlineNode:parent transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  // TODO add ghost nodes if required (and if we want it)
-  NSArray* sortedNodes = [self topologicallySortedNodes];
-  
-  const int newCount = [sortedNodes count]+1;
-  const int parentIndex = [sortedNodes indexOfObject:parent];
-  const int childIndex = parentIndex + 1;
-  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:newCount];
-  NSMutableArray* dag = [NSMutableArray arrayWithCapacity:newCount];
-  // First add all nodes above parent (included), without modification...
-  for (int i = 0; i < childIndex; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    [potentialTypes addObject:[node potentialTypes]];
-    [dag addObject:[typeChecker predecessorIndexesOfNode:node inArray:sortedNodes]];
-  }
-  // ...then add child, with proper parent...
-  [potentialTypes addObject:[child potentialTypes]];
-  [dag addObject:[NSArray arrayWithObject:[NSNumber numberWithInt:parentIndex]]];
-  // ...finally add remaining nodes, with adjusted predecessor indexes.
-  for (int i = childIndex; i < newCount - 1; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    [potentialTypes addObject:[node potentialTypes]];
-
-    NSArray* oldPreds = [typeChecker predecessorIndexesOfNode:node inArray:sortedNodes];
-    const int pCount = [oldPreds count];
-    NSMutableArray* newPreds = [NSMutableArray arrayWithCapacity:pCount];
-    for (int j = 0; j < pCount; ++j) {
-      int oldPred = [[oldPreds objectAtIndex:j] intValue];
-      [newPreds addObject:[NSNumber numberWithInt:oldPred + (oldPred >= parentIndex ? 1 : 0)]];
-    }
-    [dag addObject:newPreds];
-  }
-  
-  return [typeChecker checkDAG:dag withPotentialTypes:potentialTypes];
+  IFGraph* graph = [self graph];
+  IFGraphNode* graphParent = [graph nodeWithData:[parent original]];
+  IFGraphNode* graphChild = [IFGraphNode graphNodeWithTypes:[child potentialTypes] data:child];
+  [graph addNode:graphChild];
+  [[[graph nodes] do] replacePredecessor:graphParent byNode:graphChild];
+  [graphChild setPredecessors:[NSArray arrayWithObject:graphParent]];
+  [self addRightGhostPredecessorsForNode:graphChild inGraph:graph];
+  return [graph isTypeable];
 }
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
@@ -317,35 +280,34 @@ static IFDocumentTemplateManager* templateManager;
   int parentIndex = [[originalChild parents] indexOfObject:parent];
   [originalChild replaceObjectInParentsAtIndex:parentIndex withObject:child];
   [child insertObject:parent inParentsAtIndex:0];
+  [self addRightGhostParentsForNode:child];
+
   [self maybeInlineNode:child transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
 {
-  NSArray* sortedNodes = [self topologicallySortedNodes];
-  int nodesCount = [sortedNodes count];
-  
-  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
-  for (int i = 0; i < nodesCount; ++i) {
-    IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    [potentialTypes addObject:(node == ghost
-                               ? (NSArray*)[[[replacement potentialTypes] collect] typeByLimitingArityTo:[ghost inputArity]]
-                               : [node potentialTypes])];
-  }
-  
-  return [typeChecker checkDAG:[typeChecker dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
+  IFGraph* graph = [self graph];
+  IFGraphNode* graphGhost = [graph nodeWithData:[ghost original]];
+  [self removeAllRightGhostPredecessorsOfNode:graphGhost inGraph:graph];
+  IFGraphNode* graphReplacement = [IFGraphNode graphNodeWithTypes:[replacement potentialTypes] data:replacement];
+  [graphReplacement setPredecessors:[graphGhost predecessors]];
+  [[[graph nodes] do] replacePredecessor:graphGhost byNode:graphReplacement];
+  [graph removeNode:graphGhost];
+  [graph addNode:graphReplacement];
+  [self addRightGhostPredecessorsForNode:graphReplacement inGraph:graph];
+  return [graph isTypeable];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 {
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
-
-  const int parentsCount = [[node parents] count];
-  const int ghostsToAdd = [replacement inputArity] - parentsCount;
+  
+  [self removeAllRightGhostParentsOfNode:node];
   [node replaceByNode:replacement transformingMarks:marks];
-  for (int i = 0; i < ghostsToAdd; ++i)
-    [replacement insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsAtIndex:parentsCount + i];
+  [self addRightGhostParentsForNode:replacement];
+
   [self maybeInlineNode:replacement transformingMarks:marks];
   [self finishTreeModification];
 }
@@ -353,21 +315,16 @@ static IFDocumentTemplateManager* templateManager;
 // private
 - (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 {
+  // TODO handle case where node to delete has aliases
+  [self removeAllRightGhostParentsOfNode:node]; // TODO marks
+
+  IFGraph* graph = [self graph];
+  IFGraphNode* graphNode = [graph nodeWithData:node];
   BOOL ghostNeeded;
-  if ([node inputArity] == 1) {
-    // To see whether a ghost is needed or not, we pretend that the node to delete has the type of the identity function ('a=>'a). If it typechecks, the node can be simply removed (i.e. no need for a ghost).
-    NSArray* sortedNodes = [self topologicallySortedNodes];
-    int nodesCount = [sortedNodes count];
-    
-    NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
-    for (int i = 0; i < nodesCount; ++i) {
-      if ([sortedNodes objectAtIndex:i] == node) {
-        IFTypeVar* tvar = [IFTypeVar typeVarWithIndex:0];
-        [potentialTypes addObject:[NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:tvar] returnType:tvar]]];
-      } else
-        [potentialTypes addObject:[[sortedNodes objectAtIndex:i] potentialTypes]];
-    }
-    ghostNeeded = ![typeChecker checkDAG:[typeChecker dagFromTopologicallySortedNodes:sortedNodes] withPotentialTypes:potentialTypes];
+  if ([[graphNode predecessors] count] == 1) {
+    [[[graph nodes] do] replacePredecessor:graphNode byNode:[[graphNode predecessors] lastObject]];
+    [graph removeNode:graphNode];
+    ghostNeeded = ![graph isTypeable];
   } else
     ghostNeeded = YES;
 
@@ -632,28 +589,74 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
           inParentsAtIndex:[[fakeRoot parents] count]];
 }
 
+// TODO move to some other class
+- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
+{
+  for (int i = [[node parents] count]; i < [node inputArity]; ++i)
+    [node insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsAtIndex:i];
+}
+
+- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
+{
+  for (;;) {
+    IFTreeNode* lastParent = [[node parents] lastObject];
+    if (lastParent == nil || ![lastParent isRootOfGhostTree])
+      break;
+    [node removeObjectFromParentsAtIndex:[[node parents] count] - 1];
+  }
+}
+
+// TODO move to some other class
+- (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
+{
+  NSArray* ghostTypes = [[IFTreeNode ghostNodeWithInputArity:0] potentialTypes];
+  int predsToAdd = [[node data] inputArity] - [[node predecessors] count];
+  while (predsToAdd-- > 0) {
+    IFGraphNode* newPred = [IFGraphNode graphNodeWithTypes:ghostTypes];
+    [graph addNode:newPred];
+    [node addPredecessor:newPred];
+  }
+}
+
+// TODO move to some other class
+- (void)removeAllRightGhostPredecessorsOfNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
+{
+  for (;;) {
+    IFGraphNode* lastPred = [[node predecessors] lastObject];
+    NSAssert(lastPred == nil || [lastPred data] != nil, @"no tree node attached to graph node");
+    if (lastPred == nil || ![[lastPred data] isRootOfGhostTree])
+      break;
+    [node removeLastPredecessor];
+    [graph removeNode:lastPred];
+  }
+}
+
+- (IFGraph*)graph;
+{
+  IFGraph* graph = [fakeRoot graph];
+  [graph removeNode:[graph nodeWithData:fakeRoot]];
+  return graph;
+}
+
 - (void)configureFilters;
 {
-  NSArray* nodes = [self topologicallySortedNodes];
-  NSArray* newConfig = [typeChecker configureDAG:[typeChecker dagFromTopologicallySortedNodes:nodes] withPotentialTypes:[[nodes collect] potentialTypes]];
-  [[nodes do] beginReconfiguration];
-  for (int i = 0; i < [nodes count]; ++i)
-    [[nodes objectAtIndex:i] endReconfigurationWithActiveTypeIndex:[[newConfig objectAtIndex:i] intValue]];
-}  
+  IFGraph* graph = [self graph];
+  NSDictionary* config = [graph resolveOverloading];
+  NSArray* graphNodes = [graph topologicallySortedNodes];
+  const int graphNodesCount = [graphNodes count];
+  for (int i = 0; i < graphNodesCount; ++i)
+    [[(IFGraphNode*)[graphNodes objectAtIndex:i] data] beginReconfiguration];
+  for (int i = 0; i < graphNodesCount; ++i) {
+    IFGraphNode* graphNode = [graphNodes objectAtIndex:i];
+    [[graphNode data] endReconfigurationWithActiveTypeIndex:[[config objectForKey:graphNode] intValue]];
+  }
+}
 
 - (void)finishTreeModification;
 {
   [self ensureGhostNodes];
   [self configureFilters];
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
-}
-
-- (NSArray*)topologicallySortedNodes;
-{
-  NSMutableArray* nodes = [NSMutableArray arrayWithArray:[fakeRoot topologicallySortedAncestorsWithoutAliases]];
-  NSAssert([nodes lastObject] == fakeRoot, @"internal error");
-  [nodes removeLastObject];
-  return nodes;
 }
 
 - (void)overwriteWith:(IFDocument*)other;

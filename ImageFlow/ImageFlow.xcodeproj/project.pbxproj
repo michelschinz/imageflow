@@ -128,6 +128,8 @@
 		FAD6A40A08879CE200D07873 /* IFTreeLayoutSingle.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6A40908879CE200D07873 /* IFTreeLayoutSingle.m */; };
 		FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */; };
 		FAD7189F08B5DDFF00CF732B /* IFProbeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */; };
+		FAD951860CAA511B00A7E78A /* IFGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951840CAA511B00A7E78A /* IFGraph.m */; };
+		FAD9518B0CAA518E00A7E78A /* IFGraphNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951890CAA518E00A7E78A /* IFGraphNode.m */; };
 		FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */; };
 		FADDD4CD08B0AB7B000A1EBE /* IFTreeLayoutMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDD4CC08B0AB7B000A1EBE /* IFTreeLayoutMark.m */; };
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
@@ -447,6 +449,10 @@
 		FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGhostFilter.nib; sourceTree = "<group>"; };
 		FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProbeWindowController.h; sourceTree = "<group>"; };
 		FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProbeWindowController.m; sourceTree = "<group>"; };
+		FAD951830CAA511B00A7E78A /* IFGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraph.h; sourceTree = "<group>"; };
+		FAD951840CAA511B00A7E78A /* IFGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGraph.m; sourceTree = "<group>"; };
+		FAD951880CAA518E00A7E78A /* IFGraphNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraphNode.h; sourceTree = "<group>"; };
+		FAD951890CAA518E00A7E78A /* IFGraphNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGraphNode.m; sourceTree = "<group>"; };
 		FADD9A8F0AA727A300547F53 /* IFBorderlessWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBorderlessWindow.h; sourceTree = "<group>"; };
 		FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBorderlessWindow.m; sourceTree = "<group>"; };
 		FADDD4CB08B0AB7B000A1EBE /* IFTreeLayoutMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutMark.h; sourceTree = "<group>"; };
@@ -1181,6 +1187,17 @@
 			name = Inspectors;
 			sourceTree = "<group>";
 		};
+		FAD951870CAA512800A7E78A /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				FAD951830CAA511B00A7E78A /* IFGraph.h */,
+				FAD951840CAA511B00A7E78A /* IFGraph.m */,
+				FAD951880CAA518E00A7E78A /* IFGraphNode.h */,
+				FAD951890CAA518E00A7E78A /* IFGraphNode.m */,
+			);
+			name = Graph;
+			sourceTree = "<group>";
+		};
 		FAE0DE5108C361B300595ED4 /* Histogram */ = {
 			isa = PBXGroup;
 			children = (
@@ -1472,6 +1489,7 @@
 				FA690ACE090525750096B97D /* Language */,
 				FAAF1035090A5AE800479538 /* Filter */,
 				FA1EB1FF086AAB35007FD6AF /* Tree */,
+				FAD951870CAA512800A7E78A /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
 				FAE0DE5208C3621500595ED4 /* Histograms */,
 				FA92E83E08B3457C00E57EF7 /* Probes */,
@@ -1784,6 +1802,8 @@
 				FAFCF5E90C9A934500B69055 /* IFFileSink.m in Sources */,
 				FAFCF5ED0C9A935D00B69055 /* IFPrintSink.m in Sources */,
 				FA0079E80CA53D9900E7B2D0 /* IFTreeNodeFilter.m in Sources */,
+				FAD951860CAA511B00A7E78A /* IFGraph.m in Sources */,
+				FAD9518B0CAA518E00A7E78A /* IFGraphNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

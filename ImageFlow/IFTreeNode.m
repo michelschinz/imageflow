@@ -124,23 +124,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   return result;
 }
 
-- (NSArray*)topologicallySortedAncestorsWithoutAliases;
-{
-  NSArray* nodes = [self dfsAncestors];
-  NSMutableArray* sortedNodes = [NSMutableArray arrayWithCapacity:[nodes count]];
-  NSMutableSet* seenNodes = [NSMutableSet setWithCapacity:[nodes count]];
-  for (int i = 0, count = [nodes count]; [seenNodes count] < count; i = (i + 1) % count) {
-    IFTreeNode* node = [nodes objectAtIndex:i];
-    NSSet* parentsSet = [NSSet setWithArray:[[node original] parents]];
-    if (![seenNodes containsObject:node] && [parentsSet isSubsetOfSet:seenNodes]) {
-      if (![node isAlias])
-        [sortedNodes addObject:node];
-      [seenNodes addObject:node];
-    }
-  }
-  return sortedNodes;
-}
-
 - (BOOL)isParentOf:(IFTreeNode*)other;
 {
   return (other != nil) && (self == other || [[self child] isParentOf:other]);
@@ -164,6 +147,36 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   
   for (int i = 0; i < [marks count]; ++i)
     [[marks objectAtIndex:i] setNode:replacement ifCurrentNodeIs:self];
+}
+
+- (IFGraph*)graph;
+{
+  IFGraph* graph = [IFGraph graph];
+  
+  // Phase 1: collect all tree nodes and create corresponding graph nodes.
+  NSMutableDictionary* treeNodeToGraphNode = createMutableDictionaryWithRetainedKeys();
+  NSMutableSet* nodesToVisit = [NSMutableSet setWithObject:self];
+  while ([nodesToVisit count] > 0) {
+    IFTreeNode* treeNode = [nodesToVisit anyObject];
+    if (![treeNode isAlias]) {
+      IFGraphNode* graphNode = [IFGraphNode graphNodeWithTypes:[treeNode potentialTypes] data:treeNode];
+      CFDictionarySetValue((CFMutableDictionaryRef)treeNodeToGraphNode,treeNode,graphNode);
+      [graph addNode:graphNode];
+    }
+    [nodesToVisit removeObject:treeNode];
+    [nodesToVisit addObjectsFromArray:[treeNode parents]];
+  }
+  
+  // Phase 2: set predecessors for graph nodes.
+  NSEnumerator* nodeEnum = [treeNodeToGraphNode keyEnumerator];
+  IFTreeNode* treeNode;
+  while (treeNode = [nodeEnum nextObject]) {
+    NSArray* nodeParents = [treeNode parents];
+    IFGraphNode* graphNode = [treeNodeToGraphNode objectForKey:treeNode];
+    for (int i = 0; i < [nodeParents count]; ++i)
+      [graphNode addPredecessor:[treeNodeToGraphNode objectForKey:[[nodeParents objectAtIndex:i] original]]];
+  }
+  return graph;
 }
 
 #pragma mark Attributes
@@ -194,6 +207,16 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 - (BOOL)isGhost;
 {
   return NO;
+}
+
+- (BOOL)isRootOfGhostTree;
+{
+  if (![self isGhost])
+    return NO;
+  for (int i = 0; i < [parents count]; ++i)
+    if (![[parents objectAtIndex:i] isRootOfGhostTree])
+      return NO;
+  return YES;
 }
 
 - (BOOL)isAlias;
