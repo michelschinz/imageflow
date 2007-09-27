@@ -141,11 +141,6 @@ static NSArray* types = nil;
   return 0;
 }
 
-- (IFType*)typeByLimitingArityTo:(int)maxArity;
-{
-  return self;
-}
-
 - (value)camlRepresentation;
 {
   return Val_int(tag);

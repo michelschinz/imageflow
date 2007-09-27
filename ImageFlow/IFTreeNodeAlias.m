@@ -82,7 +82,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   NSArray* originalPTs = [original potentialTypes];
   NSMutableArray* potentialTypes = [NSMutableArray array];
   for (int i = 0, count = [originalPTs count]; i < count; ++i) {
-    IFType* limitedType = [[originalPTs objectAtIndex:i] typeByLimitingArityTo:0];
+    IFType* limitedType = [[originalPTs objectAtIndex:i] resultType];
     if (![potentialTypes containsObject:limitedType])
       [potentialTypes addObject:limitedType];
   }

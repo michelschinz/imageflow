@@ -78,14 +78,9 @@
   return [argumentTypes count];
 }
 
-- (IFType*)typeByLimitingArityTo:(int)maxArity;
+- (IFType*)resultType;
 {
-  if (maxArity == 0)
-    return returnType;
-  else if (maxArity >= [self arity])
-    return self;
-  else
-    return [IFFunType funTypeWithArgumentTypes:[argumentTypes subarrayWithRange:NSMakeRange(0,maxArity)] returnType:returnType];
+  return returnType;
 }
 
 static value elemAsCaml(const char* elem) {

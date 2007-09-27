@@ -47,11 +47,6 @@
   return 0;
 }
 
-- (IFType*)typeByLimitingArityTo:(int)maxArity;
-{
-  return self;
-}
-
 - (value)camlRepresentation;
 {
   CAMLparam0();

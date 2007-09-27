@@ -79,10 +79,9 @@ void camlTypeToObjcType(value camlType, IFType** objcType) {
   return 0;
 }
 
-- (IFType*)typeByLimitingArityTo:(int)maxArity;
+- (IFType*)resultType;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  return self;
 }
 
 - (value)asCaml;
