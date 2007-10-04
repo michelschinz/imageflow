@@ -8,8 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFTreeNode.h"
-
 typedef enum {
   IFTreeModificationInsertNode,
   IFTreeModificationDeleteNode,

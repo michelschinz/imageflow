@@ -40,8 +40,7 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 - (void)dealloc;
 {
   child = nil;
-  while ([parents count] > 0)
-    [self removeObjectFromParentsAtIndex:0];
+  [[parents do] removeObserver:self forKeyPath:@"expression"];
   OBJC_RELEASE(parents);
   OBJC_RELEASE(expression);
   OBJC_RELEASE(name);

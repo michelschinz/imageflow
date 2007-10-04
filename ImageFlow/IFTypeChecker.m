@@ -8,7 +8,8 @@
 
 #import "IFTypeChecker.h"
 
-#import "IFTreeNodeParameter.h"
+#import "IFType.h"
+
 #import <caml/memory.h>
 #import <caml/alloc.h>
 #import <caml/callback.h>
