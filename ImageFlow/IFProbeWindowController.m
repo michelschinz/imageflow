@@ -72,7 +72,6 @@ static NSDictionary* stringToInt;
   previousMarkIndex = markIndex;
   markIndex = index;
   [probe setMark:[marks objectAtIndex:markIndex]];
-  [[self window] setTitle:[[probe mark] tag]];
 }
 
 - (IBAction)stickToBookmark:(id)sender;

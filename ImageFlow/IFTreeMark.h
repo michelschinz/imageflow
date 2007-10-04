@@ -11,17 +11,12 @@
 #import "IFTreeNode.h"
 
 @interface IFTreeMark : NSObject {
-  NSString* tag;
   IFTreeNode* node;
 }
 
-+ (id)markWithTag:(NSString*)theTag;
-+ (id)markWithTag:(NSString*)theTag node:(IFTreeNode*)theNode;
-- (id)initWithTag:(NSString*)theTag node:(IFTreeNode*)theNode;
++ (id)mark;
 
 - (BOOL)isSet;
-
-- (NSString*)tag;
 
 - (IFTreeNode*)node;
 - (void)setNode:(IFTreeNode*)newNode;

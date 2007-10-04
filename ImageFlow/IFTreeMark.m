@@ -16,27 +16,13 @@
           && [super automaticallyNotifiesObserversForKey:theKey]);
 }
 
-+ (id)markWithTag:(NSString*)theTag;
++ (id)mark;
 {
-  return [self markWithTag:theTag node:nil];
-}
-
-+ (id)markWithTag:(NSString*)theTag node:(IFTreeNode*)theNode;
-{
-  return [[[self alloc] initWithTag:theTag node:theNode] autorelease];
-}
-
-- (id)initWithTag:(NSString*)theTag node:(IFTreeNode*)theNode;
-{
-  if (![super init]) return nil;
-  tag = [theTag copy];
-  node = [theNode retain];
-  return self;
+  return [[[self alloc] init] autorelease];
 }
 
 - (void)dealloc;
 {
-  OBJC_RELEASE(tag);
   OBJC_RELEASE(node);
   [super dealloc];
 }
@@ -44,11 +30,6 @@
 - (BOOL)isSet;
 {
   return ([self node] != nil);
-}
-
-- (NSString*)tag;
-{
-  return tag;
 }
 
 - (IFTreeNode*)node;

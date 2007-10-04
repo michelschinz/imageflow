@@ -69,19 +69,19 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     return nil;
 
   marks = [[NSArray arrayWithObjects:
-    [IFTreeMark markWithTag:@"0"],
-    [IFTreeMark markWithTag:@"1"],
-    [IFTreeMark markWithTag:@"2"],
-    [IFTreeMark markWithTag:@"3"],
-    [IFTreeMark markWithTag:@"4"],
-    [IFTreeMark markWithTag:@"5"],
-    [IFTreeMark markWithTag:@"6"],
-    [IFTreeMark markWithTag:@"7"],
-    [IFTreeMark markWithTag:@"8"],
-    [IFTreeMark markWithTag:@"9"],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
+    [IFTreeMark mark],
     nil] retain];
-  IFTreeMark* cursorMark = [IFTreeMark markWithTag:@"<cursor>"];
-  IFTreeMark* viewMark = [IFTreeMark markWithTag:@"<view>"];
+  IFTreeMark* cursorMark = [IFTreeMark mark];
+  IFTreeMark* viewMark = [IFTreeMark mark];
   allMarks = [[marks arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:cursorMark,viewMark,nil]] retain];
   cursors = [[IFTreeCursorPair treeCursorPairWithEditMark:cursorMark viewMark:viewMark] retain];
   unreachableNodes = [NSSet new];
