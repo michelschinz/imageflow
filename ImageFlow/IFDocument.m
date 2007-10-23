@@ -38,18 +38,6 @@
 - (IFGraph*)graph;
 - (void)finishTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
-- (void)insertNodes:(NSArray*)parents intoParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
-- (void)removeParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
-- (void)replaceParentsOfNode:(IFTreeNode*)node byNodes:(NSArray*)newParents atIndices:(NSIndexSet*)indices;
-- (void)setValue:(id)value forKey:(NSString*)key inEnvironment:(IFEnvironment*)env;
-- (void)startObservingTree:(IFTreeNode*)root;
-- (void)startObservingTreesIn:(NSArray*)nodes;
-- (void)stopObservingTree:(IFTreeNode*)root;
-- (void)stopObservingTreesIn:(NSArray*)nodes;
-- (void)startObservingEnvironment:(IFEnvironment*)env;
-- (void)stopObservingEnvironment:(IFEnvironment*)env;
-- (void)startObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
-- (void)stopObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
 @end
 
 @implementation IFDocument
@@ -73,7 +61,6 @@ static IFDocumentTemplateManager* templateManager;
 
   fakeRoot = [[IFTreeNodeFilter nodeWithFilter:nil] retain];
   [self ensureGhostNodes];
-  [self startObservingTree:fakeRoot];
   
   canvasBounds = NSMakeRect(0,0,800,600);
   workingSpaceProfile = nil;
@@ -86,7 +73,6 @@ static IFDocumentTemplateManager* templateManager;
 
 - (void)dealloc;
 {
-  [self stopObservingTree:fakeRoot];
   OBJC_RELEASE(fakeRoot);
 
   OBJC_RELEASE(workingSpaceProfile);
@@ -683,143 +669,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
   [otherRoots release];
 
   // TODO copy marks
-}
-
-#pragma mark Undo support
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
-{
-  id oldValue = [change objectForKey:NSKeyValueChangeOldKey];
-  if (oldValue == [NSNull null]) oldValue = nil;
-  id newValue = [change objectForKey:NSKeyValueChangeNewKey];
-  if (newValue == [NSNull null]) newValue = nil;
-  int changeKind = [[change objectForKey:NSKeyValueChangeKindKey] intValue];
-
-  if ([keyPath isEqualToString:@"parents"]) {
-    IFTreeNode* node = object;
-    NSIndexSet* indices = [change objectForKey:NSKeyValueChangeIndexesKey];
-    switch (changeKind) {
-      case NSKeyValueChangeInsertion:
-        [self startObservingTreesIn:newValue];
-        [[[self undoManager] prepareWithInvocationTarget:self] removeParentsOfNode:node atIndices:indices];
-        break;
-      case NSKeyValueChangeRemoval:
-        [self stopObservingTreesIn:oldValue];
-        [[[self undoManager] prepareWithInvocationTarget:self] insertNodes:oldValue intoParentsOfNode:node atIndices:indices];
-        break;
-      case NSKeyValueChangeReplacement:
-        [self stopObservingTreesIn:oldValue];
-        [self startObservingTreesIn:newValue];
-        [[[self undoManager] prepareWithInvocationTarget:self] replaceParentsOfNode:node byNodes:oldValue atIndices:indices];
-        break;
-      case NSKeyValueChangeSetting:
-        [self stopObservingTreesIn:oldValue];
-        [self startObservingTreesIn:newValue];
-        break;
-      default:
-        NSAssert1(NO, @"unexpected change kind: %d",changeKind);
-        break;
-    }
-    [fakeRoot fixChildLinks];
-  } else if ([keyPath isEqualToString:@"keys"]) {
-    // Change in the keys of an observed environment
-    switch (changeKind) {
-      case NSKeyValueChangeInsertion:
-        [self startObservingKeys:newValue ofEnvironment:object];
-        break;
-      case NSKeyValueChangeRemoval:
-        [self stopObservingKeys:oldValue ofEnvironment:object];
-        break;
-      default:
-        NSAssert1(NO, @"unexpected change kind: %d",changeKind);
-        break;
-    }
-  } else {
-    [[[self undoManager] prepareWithInvocationTarget:self] setValue:oldValue forKey:keyPath inEnvironment:object];
-  }
-}
-
-- (void)insertNodes:(NSArray*)parents intoParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
-{
-  NSEnumerator* parentsEnum = [parents objectEnumerator];
-  for (int i = [indices firstIndex]; i != NSNotFound; i = [indices indexGreaterThanIndex:i])
-    [node insertObject:[parentsEnum nextObject] inParentsAtIndex:i];  
-}
-
-- (void)removeParentsOfNode:(IFTreeNode*)node atIndices:(NSIndexSet*)indices;
-{
-  for (int i = [indices firstIndex], c = 0; i != NSNotFound; i = [indices indexGreaterThanIndex:i], ++c)
-    [node removeObjectFromParentsAtIndex:(i - c)];
-}
-
-- (void)replaceParentsOfNode:(IFTreeNode*)node byNodes:(NSArray*)newParents atIndices:(NSIndexSet*)indices;
-{
-  NSEnumerator* parentsEnum = [newParents objectEnumerator];
-  for (int i = [indices firstIndex]; i != NSNotFound; i = [indices indexGreaterThanIndex:i])
-    [node replaceObjectInParentsAtIndex:i withObject:[parentsEnum nextObject]];
-}
-
-- (void)setValue:(id)value forKey:(NSString*)key inEnvironment:(IFEnvironment*)env;
-{
-  [env setValue:value forKey:key];
-}
-
-- (void)startObservingTree:(IFTreeNode*)node;
-{
-  if ([node filter] != nil) // TODO && ![node isAlias] ???
-    [self startObservingEnvironment:[[node filter] environment]];
-  [node addObserver:self forKeyPath:@"parents" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-  [self startObservingTreesIn:[node parents]];
-}
-
-- (void)startObservingTreesIn:(NSArray*)nodes;
-{
-  if (nodes != nil && nodes != (NSArray*)[NSNull null])
-    [[self do] startObservingTree:[nodes each]];
-}
-
-- (void)stopObservingTree:(IFTreeNode*)node;
-{
-  if ([node filter] != nil)
-    [self stopObservingEnvironment:[[node filter] environment]];
-  [node removeObserver:self forKeyPath:@"parents"];
-  [self stopObservingTreesIn:[node parents]];
-}
-
-- (void)stopObservingTreesIn:(NSArray*)nodes;
-{
-  if (nodes != nil && nodes != (NSArray*)[NSNull null])
-    [[self do] stopObservingTree:[nodes each]];
-}
-
-- (void)startObservingEnvironment:(IFEnvironment*)env;
-{
-  [env addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-  [self startObservingKeys:[env keys] ofEnvironment:env];
-}
-
-- (void)stopObservingEnvironment:(IFEnvironment*)env;
-{
-  [self stopObservingKeys:[env keys] ofEnvironment:env];
-  [env removeObserver:self forKeyPath:@"keys"];
-}
-
-- (void)startObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
-{
-  NSEnumerator* keysEnum = [keys objectEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject]) {
-    [env addObserver:self forKeyPath:key options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-  }
-}
-
-- (void)stopObservingKeys:(NSSet*)keys ofEnvironment:(IFEnvironment*)env;
-{
-  NSEnumerator* keysEnum = [keys objectEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject]) {
-    [env removeObserver:self forKeyPath:key];
-  }
 }
 
 @end
