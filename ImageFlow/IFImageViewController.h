@@ -13,6 +13,7 @@
 #import "IFTreeNode.h"
 #import "IFExpressionEvaluator.h"
 #import "IFTreeCursorPair.h"
+#import "IFTree.h"
 
 typedef enum {
   IFImageViewModeView,
@@ -34,6 +35,7 @@ typedef enum {
   NSArray* variants;
   NSString* activeVariant;
   
+  IFTree* tree;
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
   IFTreeNode* editedNode;
@@ -47,6 +49,7 @@ typedef enum {
 - (NSView*)activeView;
 
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
+- (void)setTree:(IFTree*)newTree;
 
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 - (IFTreeCursorPair*)cursorPair;

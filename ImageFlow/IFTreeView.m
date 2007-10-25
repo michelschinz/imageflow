@@ -165,7 +165,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 {
   const SEL action = [item action];
   if (action == @selector(toggleNodeFoldingState:))
-    return [[[self cursorNode] parents] count] > 0;
+    return [[document tree] parentsCountOfNode:[self cursorNode]] > 0;
   else if (action == @selector(removeBookmark:) || action == @selector(goToBookmark:))
     return [[marks objectAtIndex:[item tag]] isSet];
   else
@@ -328,9 +328,10 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)moveUpExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* node = [self cursorNode];
-  if (![node isFolded] && [[node parents] count] > 0)
-    [self moveToNode:[[node parents] objectAtIndex:(([[node parents] count] - 1) / 2)] extendingSelection:extendSelection];
-  else
+  if (![node isFolded] && [[document tree] parentsCountOfNode:node] > 0) {
+    NSArray* parents = [[document tree] parentsOfNode:node];
+    [self moveToNode:[parents objectAtIndex:(([parents count] - 1) / 2)] extendingSelection:extendSelection];
+  } else
     [self moveToClosestNodeInDirection:IFUp extendingSelection:extendSelection];
 }
 
@@ -348,7 +349,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 {
   IFTreeNode* current = [self cursorNode];
   if ([[document roots] indexOfObject:current] == NSNotFound)
-    [self moveToNode:[current child] extendingSelection:extendSelection];
+    [self moveToNode:[[document tree] childOfNode:current] extendingSelection:extendSelection];
   else
     [self moveToClosestNodeInDirection:IFDown extendingSelection:extendSelection];
 }
@@ -366,7 +367,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)moveLeftExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* current = [self cursorNode];
-  NSArray* siblings = [[current child] parents];
+  NSArray* siblings = [[document tree] siblingsOfNode:current];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings > 0)
     [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)] extendingSelection:extendSelection];
@@ -387,7 +388,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)moveRightExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* current = [self cursorNode];
-  NSArray* siblings = [[current child] parents];
+  NSArray* siblings = [[document tree] siblingsOfNode:current];
   int indexInSiblings = [siblings indexOfObject:current];
   if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
     [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)] extendingSelection:extendSelection];

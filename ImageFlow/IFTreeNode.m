@@ -12,8 +12,12 @@
 #import "IFTreeMark.h"
 
 @interface IFTreeNode (Private)
+- (NSArray*)parents;
+- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
+- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
+- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
+- (IFTreeNode*)child;
 - (void)setChild:(IFTreeNode*)newChild;
-- (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
 @end
 
 @implementation IFTreeNode
@@ -53,131 +57,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   return nil;
 }
 
-- (IFTreeNode*)cloneNodeAndAncestors;
-{
-  IFTreeNode* clone = [self cloneNode];
-  NSArray* parentsToClone = [self parents];
-  for (int i = 0; i < [parentsToClone count]; ++i)
-    [clone insertObject:[[parentsToClone objectAtIndex:i] cloneNodeAndAncestors] inParentsAtIndex:i];
-  return clone;
-}
-
-#pragma mark Parents and child
-
-- (NSArray*)parents;
-{
-  return parents;
-}
-
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-{
-  [parent setChild:self];
-  [parents insertObject:parent atIndex:index];
-  
-  [self updateExpression];
-  [parent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
-}
-
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-{
-  IFTreeNode* parent = [parents objectAtIndex:index];
-  [parent removeObserver:self forKeyPath:@"expression"];
-  
-  [parent setChild:nil];
-  [parents removeObjectAtIndex:index];
-  
-  [self updateExpression];
-}
-
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-{
-  IFTreeNode* oldParent = [parents objectAtIndex:index];
-  [oldParent removeObserver:self forKeyPath:@"expression"];
-  
-  [newParent setChild:self];
-  [parents replaceObjectAtIndex:index withObject:newParent];
-  
-  [newParent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
-  [self updateExpression];
-}
-
-- (IFTreeNode*)child;
-{
-  return child;
-}
-
-- (void)fixChildLinks;
-{
-  NSArray* myParents = [self parents];
-  for (int i = 0; i < [myParents count]; ++i) {
-    IFTreeNode* parent = [myParents objectAtIndex:i];
-    [parent setChild:self];
-    [parent fixChildLinks];
-  }
-}
-
-- (NSArray*)dfsAncestors;
-{
-  NSMutableArray* result = [NSMutableArray array];
-  [self dfsCollectAncestorsInArray:result];
-  return result;
-}
-
-- (BOOL)isParentOf:(IFTreeNode*)other;
-{
-  return (other != nil) && (self == other || [[self child] isParentOf:other]);
-}
-
-- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
-{
-  NSAssert([[replacement parents] count] == 0 && [replacement child] == nil, @"non-detached replacement node");
-  
-  NSArray* parentsCopy = [[self parents] copy];
-  for (int i = 0; i < [parentsCopy count]; i++) {
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
-    [self replaceObjectInParentsAtIndex:i withObject:ghost];
-    IFTreeNode* parent = [parentsCopy objectAtIndex:i];
-    [replacement insertObject:parent inParentsAtIndex:i];
-  }
-  [parentsCopy release];
-  
-  [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:self]
-                            withObject:replacement];
-  
-  for (int i = 0; i < [marks count]; ++i)
-    [[marks objectAtIndex:i] setNode:replacement ifCurrentNodeIs:self];
-}
-
-- (IFGraph*)graph;
-{
-  IFGraph* graph = [IFGraph graph];
-  
-  // Phase 1: collect all tree nodes and create corresponding graph nodes.
-  NSMutableDictionary* treeNodeToGraphNode = createMutableDictionaryWithRetainedKeys();
-  NSMutableSet* nodesToVisit = [NSMutableSet setWithObject:self];
-  while ([nodesToVisit count] > 0) {
-    IFTreeNode* treeNode = [nodesToVisit anyObject];
-    if (![treeNode isAlias]) {
-      IFGraphNode* graphNode = [IFGraphNode graphNodeWithTypes:[treeNode potentialTypes] data:treeNode];
-      CFDictionarySetValue((CFMutableDictionaryRef)treeNodeToGraphNode,treeNode,graphNode);
-      [graph addNode:graphNode];
-    }
-    [nodesToVisit removeObject:treeNode];
-    [nodesToVisit addObjectsFromArray:[treeNode parents]];
-  }
-  
-  // Phase 2: set predecessors for graph nodes.
-  NSEnumerator* nodeEnum = [treeNodeToGraphNode keyEnumerator];
-  IFTreeNode* treeNode;
-  while (treeNode = [nodeEnum nextObject]) {
-    NSArray* nodeParents = [treeNode parents];
-    IFGraphNode* graphNode = [treeNodeToGraphNode objectForKey:treeNode];
-    for (int i = 0; i < [nodeParents count]; ++i)
-      [graphNode addPredecessor:[treeNodeToGraphNode objectForKey:[[nodeParents objectAtIndex:i] original]]];
-  }
-  return graph;
-}
-
 #pragma mark Attributes
 
 - (void)setName:(NSString*)newName;
@@ -206,16 +85,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 - (BOOL)isGhost;
 {
   return NO;
-}
-
-- (BOOL)isRootOfGhostTree;
-{
-  if (![self isGhost])
-    return NO;
-  for (int i = 0; i < [parents count]; ++i)
-    if (![[parents objectAtIndex:i] isRootOfGhostTree])
-      return NO;
-  return YES;
 }
 
 - (BOOL)isAlias;
@@ -360,15 +229,51 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 
 @implementation IFTreeNode (Private)
 
+- (NSArray*)parents;
+{
+  return parents;
+}
+
+- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
+{
+  [parent setChild:self];
+  [parents insertObject:parent atIndex:index];
+  
+  [self updateExpression];
+  [parent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
+}
+
+- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
+{
+  IFTreeNode* parent = [parents objectAtIndex:index];
+  [parent removeObserver:self forKeyPath:@"expression"];
+  
+  [parent setChild:nil];
+  [parents removeObjectAtIndex:index];
+  
+  [self updateExpression];
+}
+
+- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
+{
+  IFTreeNode* oldParent = [parents objectAtIndex:index];
+  [oldParent removeObserver:self forKeyPath:@"expression"];
+  
+  [newParent setChild:self];
+  [parents replaceObjectAtIndex:index withObject:newParent];
+  
+  [newParent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
+  [self updateExpression];
+}
+
+- (IFTreeNode*)child;
+{
+  return child;
+}
+
 - (void)setChild:(IFTreeNode*)newChild;
 {
   child = newChild;
-}
-
-- (void)dfsCollectAncestorsInArray:(NSMutableArray*)accumulator;
-{
-  [[parents do] dfsCollectAncestorsInArray:accumulator];
-  [accumulator addObject:self];
 }
 
 @end

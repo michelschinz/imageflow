@@ -103,6 +103,14 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   evaluator = [newEvaluator retain];
 }
 
+- (void)setTree:(IFTree*)newTree;
+{
+  if (newTree == tree)
+    return;
+  [tree release];
+  tree = [newTree retain];
+}
+
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 {
   if (newCursors == cursors)
@@ -379,9 +387,10 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   IFTreeNode* nodeToView = [[cursors viewMark] node];
   if (nodeToView == nil) return;
   
-  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [node child]) {
+  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [tree childOfNode:node]) {
     if (node == nil) return;
-    [evTransform appendTransform:[[node child] transformForParentAtIndex:[[[node child] parents] indexOfObject:node]]];
+    IFTreeNode* child = [tree childOfNode:node];
+    [evTransform appendTransform:[child transformForParentAtIndex:[[tree parentsOfNode:child] indexOfObject:node]]];
   }
 
   [editViewTransform setTransformStruct:[evTransform transformStruct]];

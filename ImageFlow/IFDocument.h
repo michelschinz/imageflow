@@ -6,6 +6,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFTree.h"
 #import "IFTreeNode.h"
 #import "IFTreeMark.h"
 #import "IFColorProfile.h"
@@ -27,7 +28,8 @@ extern NSString* IFTreeChangedNotification;
   NSRect canvasBounds;
   IFColorProfile* workingSpaceProfile;
   float resolutionX, resolutionY; // in DPI
-  
+
+  IFTree* tree;
   IFTreeNode* fakeRoot;
 }
 
@@ -35,6 +37,7 @@ extern NSString* IFTreeChangedNotification;
 
 - (IFExpressionEvaluator*)evaluator;
 
+- (IFTree*)tree;
 - (NSArray*)roots;
 
 - (NSString*)title;

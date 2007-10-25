@@ -11,7 +11,7 @@
 #import "IFDocumentXMLDecoder.h"
 
 @interface IFDocumentTemplate (Private)
-- (void)extractTemplateNodesFor:(IFTreeNode*)root into:(NSMutableSet*)result;
+- (void)extractTemplateNodesFor:(IFTreeNode*)root ofTree:(IFTree*)tree into:(NSMutableSet*)result;
 - (void)load;
 @end
 
@@ -78,12 +78,12 @@
 
 @implementation IFDocumentTemplate (Private)
 
-- (void)extractTemplateNodesFor:(IFTreeNode*)root into:(NSMutableSet*)result;
+- (void)extractTemplateNodesFor:(IFTreeNode*)root ofTree:(IFTree*)tree into:(NSMutableSet*)result;
 {
   if ([root isGhost])
     return;
   [result addObject:root];
-  [[self do] extractTemplateNodesFor:[[root parents] each] into:result];
+  [[self do] extractTemplateNodesFor:[[tree parentsOfNode:root] each] ofTree:tree into:result];
 }
 
 - (void)load;
@@ -101,19 +101,20 @@
   name = [[document title] copy];
   comment = [[document documentDescription] copy];
   
+  IFTree* tree = [document tree];
   NSArray* roots = [document roots];
   IFTreeNode* root;
   do {
     // TODO check if more than one root exist, and act accordingly
     root = [roots count] > 0 ? [roots objectAtIndex:0] : nil;
-    roots = [root parents];
+    roots = [tree parentsOfNode:root];
   } while (root != nil && [root isGhost]);
 
   if (root == nil)
     node = nil;
   else {
     NSMutableSet* nodes = [NSMutableSet new];
-    [self extractTemplateNodesFor:root into:nodes];
+    [self extractTemplateNodesFor:root ofTree:[document tree] into:nodes];
     NSAssert([nodes count] == 1, @"cannot make templates of more than one node (TODO)");
     node = [nodes anyObject];
   }

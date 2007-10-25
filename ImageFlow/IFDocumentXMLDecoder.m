@@ -12,6 +12,11 @@
 #import "IFTreeNodeAlias.h"
 #import "IFTreeNodeFilter.h"
 
+// HACK
+@interface IFTreeNode (Private)
+- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
+@end
+
 @interface IFDocumentXMLDecoder (Private)
 - (int)xmlNodeIdentity:(NSXMLElement*)xml;
 - (void)collectXMLFragmentsIn:(NSXMLElement*)xml accumulator:(NSMutableArray*)accumulator;

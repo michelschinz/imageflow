@@ -85,17 +85,7 @@ enum IFLayoutLayer {
 
 + (NSArray*)templateNodesWithSurrogateParentFilters:(NSArray*)surrogateFilters;
 {
-  NSMutableArray* nodes = [NSMutableArray array];
-  NSArray* templates = [[IFDocument documentTemplateManager] templates];
-  for (int i = 0, count = 0/*TODO [templates count]*/; i < count; ++i) {
-    IFTreeNode* clonedNode = [[[templates objectAtIndex:i] node] cloneNode];
-    int parentsCount = [clonedNode inputArity];
-    for (int p = 0; p < parentsCount; ++p)
-      [clonedNode insertObject:[IFTreeNodeFilter nodeWithFilter:[surrogateFilters objectAtIndex:p]]
-              inParentsAtIndex:p];
-    [nodes addObject:clonedNode];
-  }  
-  return nodes;
+  return nil; // TODO
 }
 
 - (void)updateBounds;

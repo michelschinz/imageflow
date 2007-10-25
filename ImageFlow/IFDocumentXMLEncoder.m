@@ -11,7 +11,7 @@
 #import "IFTreeNodeAlias.h"
 
 @interface IFDocumentXMLEncoder (Private)
-- (NSXMLElement*)treeToXML:(IFTreeNode*)root identities:(NSDictionary*)identities;
+- (NSXMLElement*)nodeToXML:(IFTreeNode*)root tree:(IFTree*)tree identities:(NSDictionary*)identities;
 - (NSXMLElement*)filterToXML:(IFFilter*)filter;
 - (NSXMLElement*)environmentToXML:(IFEnvironment*)environment;
 @end
@@ -42,7 +42,7 @@
     [NSXMLElement elementWithName:@"resolutionX" stringValue:[xmlCoder encodeFloat:[document resolutionX]]],
     [NSXMLElement elementWithName:@"resolutionY" stringValue:[xmlCoder encodeFloat:[document resolutionY]]],
     nil]];
-  NSArray* xmlRoots = (NSArray*)[[self collect] treeToXML:[[document roots] each] identities:identities];
+  NSArray* xmlRoots = (NSArray*)[[self collect] nodeToXML:[[document roots] each] tree:[document tree] identities:identities];
   [[xmlRoot do] addChild:[xmlRoots each]];
   NSXMLDocument* xmlDoc = [NSXMLDocument documentWithRootElement:xmlRoot];
   [xmlDoc setVersion:@"1.0"];
@@ -53,7 +53,7 @@
 
 @implementation IFDocumentXMLEncoder (Private)
 
-- (NSXMLElement*)treeToXML:(IFTreeNode*)root identities:(NSDictionary*)identities;
+- (NSXMLElement*)nodeToXML:(IFTreeNode*)root tree:(IFTree*)tree identities:(NSDictionary*)identities;
 {
   NSXMLElement* xml;
   if ([root isAlias]) {
@@ -64,8 +64,8 @@
   } else {
     xml = [NSXMLElement elementWithName:@"tree"];
     [xml addChild:[self filterToXML:[root filter]]];
-    NSAssert([root parents] != nil, @"nil parents");
-    NSArray* xmlParents = (NSArray*)[[self collect] treeToXML:[[root parents] each] identities:identities];
+    NSAssert([tree parentsOfNode:root] != nil, @"nil parents");
+    NSArray* xmlParents = (NSArray*)[[self collect] nodeToXML:[[tree parentsOfNode:root] each] tree:tree identities:identities];
     [[xml do] addChild:[xmlParents each]];
   }
 

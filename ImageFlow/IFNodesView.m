@@ -59,6 +59,12 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
   return document;
 }
 
+- (IFTree*)tree;
+{
+  NSAssert(document != nil, @"document not set");
+  return [document tree];
+}
+
 - (IFTreeLayoutParameters*)layoutParameters;
 {
   return layoutParameters;

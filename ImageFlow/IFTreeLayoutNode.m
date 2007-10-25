@@ -129,11 +129,11 @@ static NSImage* lockedViewImage = nil;
   return IFTreeLayoutElementKindNode;
 }
 
-static int countAncestors(IFTreeNode* node) {
-  NSArray* parents = [node parents];
+static int countAncestors(IFTree* tree, IFTreeNode* node) {
+  NSArray* parents = [tree parentsOfNode:node];
   int count = [parents count];
   for (int i = 0; i < [parents count]; ++i)
-    count += countAncestors([parents objectAtIndex:i]);
+    count += countAncestors(tree, [parents objectAtIndex:i]);
   return count;
 }
 
@@ -276,7 +276,7 @@ static int countAncestors(IFTreeNode* node) {
   NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
   [parStyle setAlignment:NSCenterTextAlignment];
   NSString* labelStr = [node isFolded]
-    ? [NSString stringWithFormat:@"(%d nodes)",1 + countAncestors(node)]
+    ? [NSString stringWithFormat:@"(%d nodes)",1 + countAncestors([containingView tree], node)]
     : [node label];
   NSAttributedString* label = [[[NSAttributedString alloc] initWithString:labelStr
                                                                attributes:[NSDictionary dictionaryWithObjectsAndKeys:

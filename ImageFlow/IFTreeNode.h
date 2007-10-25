@@ -26,20 +26,6 @@ extern const unsigned int ID_NONE;
 + (id)ghostNodeWithInputArity:(int)inputArity;
 
 - (IFTreeNode*)cloneNode;
-- (IFTreeNode*)cloneNodeAndAncestors;
-
-#pragma mark Hierarchy
-- (NSArray*)parents;
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-- (IFTreeNode*)child;
-- (void)fixChildLinks;
-- (NSArray*)dfsAncestors;
-- (BOOL)isParentOf:(IFTreeNode*)other;
-- (void)replaceByNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
-
-- (IFGraph*)graph;
 
 #pragma mark Attributes
 - (void)setName:(NSString*)newName;
@@ -47,7 +33,6 @@ extern const unsigned int ID_NONE;
 - (void)setIsFolded:(BOOL)newIsFolded;
 - (BOOL)isFolded;
 - (BOOL)isGhost;
-- (BOOL)isRootOfGhostTree;
 - (BOOL)isAlias;
 - (IFTreeNode*)original;
 - (IFFilter*)filter;

@@ -28,6 +28,8 @@
 - (void)setDocument:(IFDocument*)document;
 - (IFDocument*)document;
 
+- (IFTree*)tree;
+
 - (IFTreeLayoutParameters*)layoutParameters;
 - (IFTreeLayoutElement*)layoutLayerAtIndex:(int)index;
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;

@@ -9,8 +9,8 @@
 #import "IFTreeIdentifier.h"
 
 @interface IFTreeIdentifier (Private)
-- (void)identifyTree:(IFTreeNode*)root usingOnlyHints:(NSDictionary*)hints freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
-- (void)identifyTree:(IFTreeNode*)root freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
+- (void)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root usingOnlyHints:(NSDictionary*)hints freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
+- (void)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
 @end
 
 
@@ -21,12 +21,12 @@
   return [[[self alloc] init] autorelease];
 }
 
-- (NSDictionary*)identifyTree:(IFTreeNode*)root hints:(NSDictionary*)hints;
+- (NSDictionary*)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root hints:(NSDictionary*)hints;
 {
   NSMutableIndexSet* freeIndices = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0,10000000)];
   NSMutableDictionary* result = [NSMutableDictionary dictionary];
-  [self identifyTree:root usingOnlyHints:hints freeIndices:freeIndices accumulator:result];
-  [self identifyTree:root freeIndices:freeIndices accumulator:result];
+  [self identifyTree:tree startingAt:root usingOnlyHints:hints freeIndices:freeIndices accumulator:result];
+  [self identifyTree:tree startingAt:root freeIndices:freeIndices accumulator:result];
   return result;
 }
 
@@ -34,7 +34,7 @@
 
 @implementation IFTreeIdentifier (Private)
 
-- (void)identifyTree:(IFTreeNode*)root usingOnlyHints:(NSDictionary*)hints freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
+- (void)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root usingOnlyHints:(NSDictionary*)hints freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
 {
   NSValue* boxedRoot = [NSValue valueWithPointer:root];
   NSNumber* hint = [hints objectForKey:boxedRoot];
@@ -42,10 +42,10 @@
     [accumulator setObject:hint forKey:boxedRoot];
     [freeIndices removeIndex:[hint intValue]];
   }
-  [[self do] identifyTree:[[root parents] each] usingOnlyHints:hints freeIndices:freeIndices accumulator:accumulator];
+  [[self do] identifyTree:tree startingAt:[[tree parentsOfNode:root] each] usingOnlyHints:hints freeIndices:freeIndices accumulator:accumulator];
 }
 
-- (void)identifyTree:(IFTreeNode*)root freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
+- (void)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
 {
   NSValue* boxedRoot = [NSValue valueWithPointer:root];
   if ([accumulator objectForKey:boxedRoot] == nil) {
@@ -53,7 +53,7 @@
     [accumulator setObject:[NSNumber numberWithInt:index] forKey:boxedRoot];
     [freeIndices removeIndex:index];
   }
-  [[self do] identifyTree:[[root parents] each] freeIndices:freeIndices accumulator:accumulator];
+  [[self do] identifyTree:tree startingAt:[[tree parentsOfNode:root] each] freeIndices:freeIndices accumulator:accumulator];
 }
 
 @end

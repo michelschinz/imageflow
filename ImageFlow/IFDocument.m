@@ -29,6 +29,7 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
+- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
 - (void)ensureGhostNodes;
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
@@ -58,6 +59,7 @@ static IFDocumentTemplateManager* templateManager;
   typeChecker = [IFTypeChecker sharedInstance];
   evaluator = [IFExpressionEvaluator new];
 
+  tree = [[IFTree tree] retain];
   fakeRoot = [[IFTreeNodeFilter nodeWithFilter:nil] retain];
   [self ensureGhostNodes];
   
@@ -73,6 +75,7 @@ static IFDocumentTemplateManager* templateManager;
 - (void)dealloc;
 {
   OBJC_RELEASE(fakeRoot);
+  OBJC_RELEASE(tree);
 
   OBJC_RELEASE(workingSpaceProfile);
   
@@ -95,9 +98,14 @@ static IFDocumentTemplateManager* templateManager;
   return evaluator;
 }
 
+- (IFTree*)tree;
+{
+  return tree;
+}
+
 - (NSArray*)roots;
 {
-  return [fakeRoot parents];
+  return [tree parentsOfNode:fakeRoot];
 }
 
 #pragma mark meta-data
@@ -201,10 +209,10 @@ static IFDocumentTemplateManager* templateManager;
   NSArray* roots = [self roots];
   int i;
   for (i = [roots count] - 1;
-       (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([[[roots objectAtIndex:i] parents] count] == 0);
+       (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
        --i)
     ;
-  [fakeRoot insertObject:newRoot inParentsAtIndex:i+1];
+  [tree insertObject:newRoot inParentsOfNode:fakeRoot atIndex:i+1];
   [self finishTreeModification];
 }
 
@@ -230,15 +238,15 @@ static IFDocumentTemplateManager* templateManager;
   NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
 
   [self removeAllRightGhostParentsOfNode:child];
-  int parentsCount = [[child parents] count];
+  int parentsCount = [tree parentsCountOfNode:child];
   for (int i = 0; i < parentsCount; ++i) {
-    IFTreeNode* p = [[[[child parents] objectAtIndex:0] retain] autorelease];
-    [child removeObjectFromParentsAtIndex:0];
-    [parent insertObject:p inParentsAtIndex:i];
+    IFTreeNode* p = [[[[tree parentsOfNode:child] objectAtIndex:0] retain] autorelease];
+    [tree removeObjectFromParentsOfNode:child atIndex:0];
+    [tree insertObject:p inParentsOfNode:parent atIndex:i];
   }
   [self addRightGhostParentsForNode:parent];
 
-  [child insertObject:parent inParentsAtIndex:0];
+  [tree insertObject:parent inParentsOfNode:child atIndex:0];
   [self addRightGhostParentsForNode:child];
 
   [self finishTreeModification];
@@ -260,10 +268,10 @@ static IFDocumentTemplateManager* templateManager;
 {
   NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
 
-  IFTreeNode* originalChild = [parent child];
-  int parentIndex = [[originalChild parents] indexOfObject:parent];
-  [originalChild replaceObjectInParentsAtIndex:parentIndex withObject:child];
-  [child insertObject:parent inParentsAtIndex:0];
+  IFTreeNode* originalChild = [tree childOfNode:parent];
+  int parentIndex = [[tree parentsOfNode:originalChild] indexOfObject:parent];
+  [tree replaceObjectInParentsOfNode:originalChild atIndex:parentIndex withObject:child];
+  [tree insertObject:parent inParentsOfNode:child atIndex:0];
   [self addRightGhostParentsForNode:child];
 
   [self finishTreeModification];
@@ -288,7 +296,7 @@ static IFDocumentTemplateManager* templateManager;
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
   
   [self removeAllRightGhostParentsOfNode:node];
-  [node replaceByNode:replacement transformingMarks:marks];
+  [self replaceNode:node byNode:replacement];
   [self addRightGhostParentsForNode:replacement];
 
   [self finishTreeModification];
@@ -312,10 +320,10 @@ static IFDocumentTemplateManager* templateManager;
 
   if (ghostNeeded) {
     IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[node inputArity]];
-    [node replaceByNode:ghost transformingMarks:marks];
+    [self replaceNode:node byNode:ghost];
   } else {
-    IFTreeNode* child = [node child];
-    [child replaceObjectInParentsAtIndex:[[child parents] indexOfObject:node] withObject:[[node parents] objectAtIndex:0]];    
+    IFTreeNode* child = [tree childOfNode:node];
+    [tree replaceObjectInParentsOfNode:child atIndex:[[tree parentsOfNode:child] indexOfObject:node] withObject:[[tree parentsOfNode:node] objectAtIndex:0]];
   }
   [self finishTreeModification];
 }
@@ -341,26 +349,26 @@ static IFDocumentTemplateManager* templateManager;
 
 - (NSSet*)allNodes;
 {
-  NSMutableSet* allNodes = [NSMutableSet setWithArray:[fakeRoot dfsAncestors]];
+  NSMutableSet* allNodes = [NSMutableSet setWithArray:[tree dfsAncestorsOfNode:fakeRoot]];
   [allNodes removeObject:fakeRoot];
   return allNodes;
 }
 
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 {
-  return [NSSet setWithArray:[node dfsAncestors]];
+  return [NSSet setWithArray:[tree dfsAncestorsOfNode:node]];
 }
 
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 {
-  return [NSSet setWithArray:[[self rootOfTreeContainingNode:node] dfsAncestors]];
+  return [NSSet setWithArray:[tree dfsAncestorsOfNode:[self rootOfTreeContainingNode:node]]];
 }
 
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 {
   IFTreeNode* root = node;
-  while (root != nil && [root child] != fakeRoot)
-    root = [root child];
+  while (root != nil && [tree childOfNode:root] != fakeRoot)
+    root = [tree childOfNode:root];
   NSAssert1(root != nil, @"cannot find root of tree containing %@",node);
   return root;  
 }
@@ -368,8 +376,8 @@ static IFDocumentTemplateManager* templateManager;
 // private
 - (void)collectPathFromRootToNode:(IFTreeNode*)node inArray:(NSMutableArray*)result;
 {
-  if ([node child] != fakeRoot)
-    [self collectPathFromRootToNode:[node child] inArray:result];
+  if ([tree childOfNode:node] != fakeRoot)
+    [self collectPathFromRootToNode:[tree childOfNode:node] inArray:result];
   [result addObject:node];
 }
 
@@ -383,7 +391,7 @@ static IFDocumentTemplateManager* templateManager;
 // private
 - (void)collectAliasesForNodes:(NSSet*)nodes startingAt:(IFTreeNode*)root inSet:(NSMutableSet*)resultSet;
 {
-  NSArray* parents = [root parents];
+  NSArray* parents = [tree parentsOfNode:root];
   if ([parents count] == 0) {
     if ([root isKindOfClass:[IFTreeNodeAlias class]] && [nodes containsObject:[(IFTreeNodeAlias*)root original]])
       [resultSet addObject:root];
@@ -414,7 +422,7 @@ static IFDocumentTemplateManager* templateManager;
 
 - (NSFileWrapper*)fileWrapperOfType:(NSString*)typeName error:(NSError**)outError;
 {
-  NSDictionary* identities = [[IFTreeIdentifier treeIdentifier] identifyTree:fakeRoot hints:[NSDictionary dictionary]];
+  NSDictionary* identities = [[IFTreeIdentifier treeIdentifier] identifyTree:tree startingAt:fakeRoot hints:[NSDictionary dictionary]];
   NSXMLDocument* xmlDoc = [[IFDocumentXMLEncoder encoder] documentToXML:self identities:identities];
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   return [[[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -447,6 +455,21 @@ static IFDocumentTemplateManager* templateManager;
 
 @implementation IFDocument (Private)
 
+- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+{
+  NSArray* parentsCopy = [[tree parentsOfNode:toReplace] copy];
+  for (int i = 0; i < [parentsCopy count]; i++) {
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+    [tree replaceObjectInParentsOfNode:toReplace atIndex:i withObject:ghost];
+    IFTreeNode* parent = [parentsCopy objectAtIndex:i];
+    [tree insertObject:parent inParentsOfNode:replacement atIndex:i];
+  }
+  [parentsCopy release];
+  
+  IFTreeNode* child = [tree childOfNode:toReplace];
+  [tree replaceObjectInParentsOfNode:child atIndex:[[tree parentsOfNode:child] indexOfObject:toReplace] withObject:replacement];
+}
+
 - (void)ensureGhostNodes;
 {
   BOOL hasGhostColumn = NO;
@@ -454,33 +477,32 @@ static IFDocumentTemplateManager* templateManager;
   for (unsigned int i = 0; i < [roots count]; i++) {
     IFTreeNode* root = [roots objectAtIndex:i];
     if ([root isGhost])
-      hasGhostColumn |= ([[root parents] count] == 0);
+      hasGhostColumn |= ([tree parentsCountOfNode:root] == 0);
     else if ([root outputArity] == 1) {
       [[root retain] autorelease];
       IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
-      [fakeRoot replaceObjectInParentsAtIndex:i withObject:newRoot];
-      [newRoot insertObject:root inParentsAtIndex:0];
+      [tree replaceObjectInParentsOfNode:fakeRoot atIndex:i withObject:newRoot];
+      [tree insertObject:root inParentsOfNode:newRoot atIndex:0];
     }
   }
   if (!hasGhostColumn)
-    [fakeRoot insertObject:[IFTreeNode ghostNodeWithInputArity:0]
-          inParentsAtIndex:[[fakeRoot parents] count]];
+    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:fakeRoot atIndex:[tree parentsCountOfNode:fakeRoot]];
 }
 
 // TODO move to some other class
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 {
-  for (int i = [[node parents] count]; i < [node inputArity]; ++i)
-    [node insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsAtIndex:i];
+  for (int i = [tree parentsCountOfNode:node]; i < [node inputArity]; ++i)
+    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:node atIndex:i];
 }
 
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 {
   for (;;) {
-    IFTreeNode* lastParent = [[node parents] lastObject];
-    if (lastParent == nil || ![lastParent isRootOfGhostTree])
+    IFTreeNode* lastParent = [[tree parentsOfNode:node] lastObject];
+    if (lastParent == nil || ![tree isGhostSubtreeRoot:lastParent])
       break;
-    [node removeObjectFromParentsAtIndex:[[node parents] count] - 1];
+    [tree removeObjectFromParentsOfNode:node atIndex:[tree parentsCountOfNode:node]-1];
   }
 }
 
@@ -502,7 +524,7 @@ static IFDocumentTemplateManager* templateManager;
   for (;;) {
     IFGraphNode* lastPred = [[node predecessors] lastObject];
     NSAssert(lastPred == nil || [lastPred data] != nil, @"no tree node attached to graph node");
-    if (lastPred == nil || ![[lastPred data] isRootOfGhostTree])
+    if (lastPred == nil || ![tree isGhostSubtreeRoot:[lastPred data]])
       break;
     [node removeLastPredecessor];
     [graph removeNode:lastPred];
@@ -511,7 +533,7 @@ static IFDocumentTemplateManager* templateManager;
 
 - (IFGraph*)graph;
 {
-  IFGraph* graph = [fakeRoot graph];
+  IFGraph* graph = [tree graphOfNode:fakeRoot];
   [graph removeNode:[graph nodeWithData:fakeRoot]];
   return graph;
 }
@@ -540,8 +562,8 @@ static IFDocumentTemplateManager* templateManager;
 - (void)overwriteWith:(IFDocument*)other;
 {
   // Destroy all current contents
-  while ([[fakeRoot parents] count] > 0)
-    [fakeRoot removeObjectFromParentsAtIndex:0];
+  while ([[tree parentsOfNode:fakeRoot] count] > 0)
+    [tree removeObjectFromParentsOfNode:fakeRoot atIndex:0];
 
   // Copy everything from other document
   [self setAuthorName:[other authorName]];
@@ -550,12 +572,13 @@ static IFDocumentTemplateManager* templateManager;
   [self setResolutionX:[other resolutionX]];
   [self setResolutionY:[other resolutionY]];
   
+  IFTree* otherTree = other->tree; // HACK
   IFTreeNode* otherFakeRoot = other->fakeRoot; // HACK
-  NSArray* otherRoots = [[otherFakeRoot parents] copy];
+  NSArray* otherRoots = [[otherTree parentsOfNode:otherFakeRoot] copy];
   for (int i = 0; i < [otherRoots count]; ++i) {
     IFTreeNode* otherRoot = [[otherRoots objectAtIndex:i] retain];
-    [otherFakeRoot removeObjectFromParentsAtIndex:0];
-    [fakeRoot insertObject:otherRoot inParentsAtIndex:i];
+    [otherTree removeObjectFromParentsOfNode:otherFakeRoot atIndex:0];
+    [tree insertObject:otherRoot inParentsOfNode:fakeRoot atIndex:i];
     [otherRoot release];
   }
   [otherRoots release];

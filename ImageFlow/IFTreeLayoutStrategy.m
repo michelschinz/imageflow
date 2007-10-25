@@ -47,7 +47,7 @@
   NSMutableSet* layoutElems = [NSMutableSet set];
   
   // Layout all parents
-  NSArray* parents = [root isFolded] ? [NSArray array] : [root parents];
+  NSArray* parents = [root isFolded] ? [NSArray array] : [[view tree] parentsOfNode:root];
   const int parentsCount = [parents count];
   NSMutableArray* directParentsLayout = [NSMutableArray arrayWithCapacity:parentsCount];
   float x = 0.0;

@@ -220,6 +220,8 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     IFExpressionEvaluator* evaluator = [newDocument evaluator];
     [hudWindowController setEvaluator:evaluator];
     [imageViewController setEvaluator:evaluator];
+    
+    [imageViewController setTree:[newDocument tree]];
 
     NSArray* controllers = [newDocument windowControllers];
     NSAssert([controllers count] == 1, @"unexpected number of controllers");
