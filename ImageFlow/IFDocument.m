@@ -29,6 +29,7 @@
 
 @interface IFDocument (Private)
 - (void)ensureGhostNodes;
+- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)tree;
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 - (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
@@ -275,28 +276,18 @@ static IFDocumentTemplateManager* templateManager;
   [self finishTreeModification];
 }
 
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
-  IFGraph* graph = [self graph];
-  IFGraphNode* graphGhost = [graph nodeWithData:[ghost original]];
-  [self removeAllRightGhostPredecessorsOfNode:graphGhost inGraph:graph];
-  IFGraphNode* graphReplacement = [IFGraphNode graphNodeWithTypes:[replacement potentialTypes] data:replacement];
-  [graphReplacement setPredecessors:[graphGhost predecessors]];
-  [[[graph nodes] do] replacePredecessor:graphGhost byNode:graphReplacement];
-  [graph removeNode:graphGhost];
-  [graph addNode:graphReplacement];
-  [self addRightGhostPredecessorsForNode:graphReplacement inGraph:graph];
-  return [graph isTypeable];
+  IFTree* testTree = [tree clone];
+  // TODO remove aliases (replace by edges)
+  [self replaceGhostNode:node usingNode:replacement inTree:testTree];
+  return [testTree isTypeCorrect];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
-  
-  [tree removeAllRightGhostParentsOfNode:node];
-  [tree replaceNode:node byNode:replacement];
-  [tree addRightGhostParentsForNode:replacement];
-
+  [self replaceGhostNode:node usingNode:replacement inTree:tree];
   [self finishTreeModification];
 }
 
@@ -433,6 +424,13 @@ static IFDocumentTemplateManager* templateManager;
   }
   if (!hasGhostColumn)
     [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:[tree root] atIndex:[tree parentsCountOfNode:[tree root]]];
+}
+
+- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)theTree;
+{
+  [theTree removeAllRightGhostParentsOfNode:node];
+  [theTree replaceNode:node byNode:replacement];
+  [theTree addRightGhostParentsForNode:replacement];
 }
 
 // TODO move to some other class

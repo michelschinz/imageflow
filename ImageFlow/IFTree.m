@@ -8,6 +8,7 @@
 
 #import "IFTree.h"
 #import "IFTreeEdge.h"
+#import "IFTypeChecker.h"
 
 // HACK (temporary)
 @interface IFTreeNode (Private)
@@ -18,6 +19,7 @@
 @end
 
 @interface IFTree (Private)
+- (NSArray*)serialiseSortedNodes:(NSArray*)sortedNodes;
 - (void)rebuildGraphFromTree;
 - (void)rebuildTreeFromGraph;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
@@ -30,18 +32,28 @@
   return [[[self alloc] init] autorelease];
 }
 
-- (id)init;
+- (id)initWithGraph:(IFOrientedGraph*)theGraph;
 {
   if (![super init])
     return nil;
-  graph = [[IFOrientedGraph graph] retain];
+  graph = [theGraph retain];
   return self;
+}
+
+- (id)init;
+{
+  return [self initWithGraph:[IFOrientedGraph graph]];
 }
 
 - (void)dealloc;
 {
   OBJC_RELEASE(graph);
   [super dealloc];
+}
+
+- (IFTree*)clone;
+{
+  return [[[IFTree alloc] initWithGraph:[graph clone]] autorelease];
 }
 
 - (IFGraph*)graphOfNode:(IFTreeNode*)node;
@@ -175,6 +187,36 @@
   [self rebuildTreeFromGraph];
 }
 
+#pragma mark Type checking
+
+- (BOOL)isCyclic;
+{
+  return [graph isCyclic];
+}
+
+- (BOOL)isTypeCorrect;
+{
+  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
+  NSArray* sortedNodes = [graph topologicallySortedNodes];
+  if (sortedNodes == nil)
+    return NO; // cyclic graph
+  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
+  return [typeChecker checkDAG:[self serialiseSortedNodes:sortedNodesNoRoot] withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+}
+
+- (NSDictionary*)resolveOverloading;
+{
+  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
+  NSArray* sortedNodes = [graph topologicallySortedNodes];
+  NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
+  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
+  NSArray* config = [typeChecker configureDAG:[self serialiseSortedNodes:sortedNodesNoRoot] withPotentialTypes:[[sortedNodesNoRoot collect] types]];
+  NSMutableDictionary* configDict = createMutableDictionaryWithRetainedKeys();
+  for (int i = 0; i < [sortedNodesNoRoot count]; ++i)
+    CFDictionarySetValue((CFMutableDictionaryRef)configDict, [sortedNodesNoRoot objectAtIndex:i], [config objectAtIndex:i]);
+  return configDict;
+}
+
 #pragma mark -
 #pragma mark OBSOLETE
 
@@ -199,6 +241,22 @@
 @end
 
 @implementation IFTree (Private)
+
+- (NSArray*)serialiseSortedNodes:(NSArray*)sortedNodes;
+{
+  const int nodesCount = [sortedNodes count];
+  NSMutableArray* serialisedNodes = [NSMutableArray arrayWithCapacity:nodesCount];
+  for (int i = 0; i < nodesCount; ++i) {
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
+    NSArray* preds = [self parentsOfNode:node];
+    const int predsCount = [preds count];
+    NSMutableArray* serialisedPreds = [NSMutableArray arrayWithCapacity:predsCount];
+    for (int j = 0; j < predsCount; ++j)
+      [serialisedPreds addObject:[NSNumber numberWithInt:[sortedNodes indexOfObject:[preds objectAtIndex:j]]]];
+    [serialisedNodes addObject:serialisedPreds];
+  }
+  return serialisedNodes;
+}
 
 - (void)populateGraph:(IFOrientedGraph*)grph fromTree:(IFTreeNode*)root;
 {

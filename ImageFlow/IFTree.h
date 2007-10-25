@@ -17,6 +17,8 @@
 
 + (id)tree;
 
+- (IFTree*)clone;
+
 - (IFGraph*)graphOfNode:(IFTreeNode*)node;
 
 - (IFTreeNode*)root;
@@ -38,6 +40,12 @@
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 - (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+
+#pragma mark Type checking
+
+- (BOOL)isCyclic;
+- (BOOL)isTypeCorrect;
+- (NSDictionary*)resolveOverloading;
 
 #pragma mark -
 #pragma mark OBSOLETE
