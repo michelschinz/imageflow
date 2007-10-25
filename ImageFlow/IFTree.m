@@ -19,6 +19,7 @@
 
 @interface IFTree (Private)
 - (void)rebuildGraphFromTree;
+- (void)rebuildTreeFromGraph;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 @end
 
@@ -133,6 +134,50 @@
   return YES;
 }
 
+#pragma mark High level editing
+
+- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
+{
+  for (int i = [self parentsCountOfNode:node]; i < [node inputArity]; ++i) {
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+    [graph addNode:ghost];
+    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:ghost toNode:node];
+  }
+  [self rebuildTreeFromGraph];
+}
+
+- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
+{
+  for (;;) {
+    IFTreeNode* lastParent = [[self parentsOfNode:node] lastObject];
+    if (lastParent == nil || ![self isGhostSubtreeRoot:lastParent])
+      break;
+    [[graph do] removeNode:[[self dfsAncestorsOfNode:lastParent] each]];
+  }
+  [self rebuildTreeFromGraph];
+}
+
+- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+{
+  IFTreeEdge* edge;
+  [graph addNode:replacement];
+  
+  NSEnumerator* inEdgesEnum = [[graph incomingEdgesForNode:toReplace] objectEnumerator];
+  while (edge = [inEdgesEnum nextObject])
+    [graph addEdge:[edge clone] fromNode:[graph edgeSource:edge] toNode:replacement];
+
+  NSEnumerator* outEdgesEnum = [[graph outgoingEdgesForNode:toReplace] objectEnumerator];
+  while (edge = [outEdgesEnum nextObject])
+    [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
+
+  [graph removeNode:toReplace];
+  
+  [self rebuildTreeFromGraph];
+}
+
+#pragma mark -
+#pragma mark OBSOLETE
+
 - (void)insertObject:(IFTreeNode*)newParent inParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
 {
   [node insertObject:newParent inParentsAtIndex:index];
@@ -173,6 +218,24 @@
   [self populateGraph:newGraph fromTree:root];
   [graph release];
   graph = [newGraph retain];
+}
+
+- (void)rebuildParentsForNode:(IFTreeNode*)root;
+{
+  NSArray* parents = [self parentsOfNode:root];
+  for (int i = 0; i < [parents count]; ++i) {
+    if ([[root parents] count] == i)
+      [root insertObject:[parents objectAtIndex:i] inParentsAtIndex:i];
+    else
+      [root replaceObjectInParentsAtIndex:i withObject:[parents objectAtIndex:i]];
+  }
+  [[self do] rebuildParentsForNode:[parents each]];
+}
+
+- (void)rebuildTreeFromGraph;
+{
+  IFTreeNode* root = [self root];
+  [self rebuildParentsForNode:root];
 }
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;

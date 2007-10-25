@@ -24,6 +24,11 @@
   return self;
 }
 
+- (IFTreeEdge*)clone;
+{
+  return [IFTreeEdge edgeWithTargetIndex:[self targetIndex]];
+}
+
 - (unsigned)targetIndex;
 {
   return targetIndex;

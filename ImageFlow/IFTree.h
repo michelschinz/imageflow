@@ -33,7 +33,15 @@
 - (unsigned)parentsCountOfNode:(IFTreeNode*)node;
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
 
-// obsolete (to be removed)
+#pragma mark High level editing
+
+- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
+- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
+- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+
+#pragma mark -
+#pragma mark OBSOLETE
+
 - (void)insertObject:(IFTreeNode*)newParent inParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
 - (void)replaceObjectInParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index withObject:(IFTreeNode*)newParent;
 - (void)removeObjectFromParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;

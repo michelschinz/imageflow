@@ -16,6 +16,8 @@
 + (id)edgeWithTargetIndex:(unsigned)theTargetIndex;
 - (id)initWithTargetIndex:(unsigned)theTargetIndex;
 
+- (IFTreeEdge*)clone;
+
 - (unsigned)targetIndex;
 
 @end

@@ -28,7 +28,6 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
 - (void)ensureGhostNodes;
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
@@ -290,60 +289,30 @@ static IFDocumentTemplateManager* templateManager;
   return [graph isTypeable];
 }
 
-- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
+- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
   
-  [self removeAllRightGhostParentsOfNode:node];
-  [self replaceNode:node byNode:replacement];
-  [self addRightGhostParentsForNode:replacement];
+  [tree removeAllRightGhostParentsOfNode:node];
+  [tree replaceNode:node byNode:replacement];
+  [tree addRightGhostParentsForNode:replacement];
 
   [self finishTreeModification];
 }
 
-// private
-- (void)deleteSingleNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
+- (void)deleteNode:(IFTreeNode*)node;
 {
-  // TODO handle case where node to delete has aliases
-  [self removeAllRightGhostParentsOfNode:node]; // TODO marks
-
-  IFGraph* graph = [self graph];
-  IFGraphNode* graphNode = [graph nodeWithData:node];
-  BOOL ghostNeeded;
-  if ([[graphNode predecessors] count] == 1) {
-    [[[graph nodes] do] replacePredecessor:graphNode byNode:[[graphNode predecessors] lastObject]];
-    [graph removeNode:graphNode];
-    ghostNeeded = ![graph isTypeable];
-  } else
-    ghostNeeded = YES;
-
-  if (ghostNeeded) {
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[node inputArity]];
-    [self replaceNode:node byNode:ghost];
-  } else {
-    IFTreeNode* child = [tree childOfNode:node];
-    [tree replaceObjectInParentsOfNode:child atIndex:[[tree parentsOfNode:child] indexOfObject:node] withObject:[[tree parentsOfNode:node] objectAtIndex:0]];
-  }
-  [self finishTreeModification];
+  [self deleteContiguousNodes:[NSSet setWithObject:node]];
 }
 
-- (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
+- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
 {
-  [self deleteContiguousNodes:[NSSet setWithObject:node] transformingMarks:marks];
-}
-
-- (void)deleteContiguousNodes:(NSSet*)contiguousNodes transformingMarks:(NSArray*)marks;
-{
-  // Delete aliases of nodes we're about to delete
-  NSMutableSet* aliases = [NSMutableSet setWithSet:[self aliasesForNodes:contiguousNodes]];
-  [aliases minusSet:contiguousNodes];
-  [[self do] deleteSingleNode:[aliases each] transformingMarks:marks];
-
-  // Delete the nodes themselves
-  IFTreeNode* nodeToDelete;
   NSAssert([contiguousNodes count] == 1, @"cannot delete more than 1 node (TODO)");
-  nodeToDelete = [contiguousNodes anyObject];
-  [self deleteSingleNode:nodeToDelete transformingMarks:marks];
+
+  IFTreeNode* nodeToDelete = [contiguousNodes anyObject];
+  [tree replaceNode:nodeToDelete byNode:[IFTreeNode ghostNodeWithInputArity:[nodeToDelete inputArity]]];
+  
+  [self finishTreeModification];
 }
 
 - (NSSet*)allNodes;
@@ -446,21 +415,6 @@ static IFDocumentTemplateManager* templateManager;
 @end
 
 @implementation IFDocument (Private)
-
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
-{
-  NSArray* parentsCopy = [[tree parentsOfNode:toReplace] copy];
-  for (int i = 0; i < [parentsCopy count]; i++) {
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
-    [tree replaceObjectInParentsOfNode:toReplace atIndex:i withObject:ghost];
-    IFTreeNode* parent = [parentsCopy objectAtIndex:i];
-    [tree insertObject:parent inParentsOfNode:replacement atIndex:i];
-  }
-  [parentsCopy release];
-  
-  IFTreeNode* child = [tree childOfNode:toReplace];
-  [tree replaceObjectInParentsOfNode:child atIndex:[[tree parentsOfNode:child] indexOfObject:toReplace] withObject:replacement];
-}
 
 - (void)ensureGhostNodes;
 {

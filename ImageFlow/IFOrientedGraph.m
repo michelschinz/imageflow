@@ -52,6 +52,7 @@
 - (void)removeNode:(id)node;
 {
   [nodes removeObject:node];
+  [[self do] removeEdge:[[[[nodeToEdgeSet objectForKey:node] collect] data] each]];
   CFDictionaryRemoveValue((CFMutableDictionaryRef)nodeToEdgeSet,node);
 }
 

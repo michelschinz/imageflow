@@ -426,7 +426,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)delete:(id)sender;
 {
-  [document deleteContiguousNodes:[self selectedNodes] transformingMarks:allMarks];
+  [document deleteContiguousNodes:[self selectedNodes]];
 }
 
 - (void)deleteBackward:(id)sender;
@@ -437,7 +437,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)deleteNodeUnderMouse:(id)sender;
 {
   IFTreeNode* designatedNode = [[layoutStrategy deleteButtonCell] representedObject];
-  [document deleteNode:designatedNode transformingMarks:allMarks];
+  [document deleteNode:designatedNode];
 }
 
 - (void)insertNewline:(id)sender
@@ -511,7 +511,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
   IFTreeNode* node = [[proxy node] cloneNode];
   if ([document canReplaceGhostNode:[self cursorNode] usingNode:node])
-    [document replaceGhostNode:[self cursorNode] usingNode:node transformingMarks:allMarks];
+    [document replaceGhostNode:[self cursorNode] usingNode:node];
   else
     NSBeep();
 }
@@ -538,7 +538,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
   } else if ([types containsObject:IFTreeNodeArrayPboardType]) {
     NSArray* nodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
-    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]] transformingMarks:allMarks];
+    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]];
   }
 }
 
@@ -647,18 +647,18 @@ static enum {
         } else {
           NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
           if ([targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:draggedMacro])
-            [document replaceGhostNode:targetNode usingNode:draggedMacro transformingMarks:allMarks];
+            [document replaceGhostNode:targetNode usingNode:draggedMacro];
           else
             return NO;
         }
         if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
-          [document deleteContiguousNodes:draggedNodes transformingMarks:allMarks];
+          [document deleteContiguousNodes:draggedNodes];
         return YES;        
       } else if ((operation & NSDragOperationLink) != 0) {
         // Link: create node alias
         IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]];
         if ([draggedNodes count] == 1 && [targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:alias]) {
-          [document replaceGhostNode:targetNode usingNode:alias transformingMarks:allMarks];
+          [document replaceGhostNode:targetNode usingNode:alias];
           return YES;
         } else
           return NO;
@@ -684,7 +684,7 @@ static enum {
         IFTreeNode* loadNode = [loadTemplate node];
         [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
         if ([document canReplaceGhostNode:targetNode usingNode:loadNode]) {
-          [document replaceGhostNode:targetNode usingNode:[loadNode cloneNode] transformingMarks:allMarks];
+          [document replaceGhostNode:targetNode usingNode:[loadNode cloneNode]];
           return YES;
         } else
           return NO;
