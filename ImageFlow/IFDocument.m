@@ -16,7 +16,6 @@
 #import "IFDocumentTemplate.h"
 #import "IFDocumentTemplateManager.h"
 #import "IFTreeNodeFilter.h"
-#import "IFTreeNodeParameter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
 #import "IFTypeVar.h"
