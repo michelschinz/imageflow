@@ -469,7 +469,8 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)copy:(id)sender;
 {
   NSSet* nodesToCopy = [self selectedNodes];
-  IFTreeNode* nodeToCopy = [document macroNodeByCopyingNodesOf:nodesToCopy inlineOnInsertion:YES];
+  NSAssert([nodesToCopy count] == 1, @"cannot copy multiple nodes (TODO)");
+  IFTreeNode* nodeToCopy = [nodesToCopy anyObject];
   NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:IFPrivatePboard];
   [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodePboardType] owner:self];
   [self setCopiedNode:nodeToCopy];
@@ -630,7 +631,8 @@ static enum {
       
       if ((operation & (NSDragOperationCopy|NSDragOperationMove)) != 0) {
         // Copy or move node
-        IFTreeNodeMacro* draggedMacro = [document macroNodeByCopyingNodesOf:draggedNodes inlineOnInsertion:YES];
+        NSAssert([draggedNodes count] == 1, @"cannot drag multiple nodes (TODO)");
+        IFTreeNode* draggedMacro = [draggedNodes anyObject];
         if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]]) {
           if ([document canInsertNode:draggedMacro asParentOf:targetNode])
             [document insertNode:draggedMacro asParentOf:targetNode];

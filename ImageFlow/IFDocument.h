@@ -10,7 +10,6 @@
 #import "IFTreeMark.h"
 #import "IFColorProfile.h"
 #import "IFExpressionEvaluator.h"
-#import "IFTreeNodeMacro.h"
 #import "IFTypeChecker.h"
 
 extern NSString* IFTreeChangedNotification;
@@ -66,10 +65,6 @@ extern NSString* IFTreeChangedNotification;
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement transformingMarks:(NSArray*)marks;
 - (void)deleteNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 - (void)deleteContiguousNodes:(NSSet*)contiguousNodes transformingMarks:(NSArray*)marks;
-
-- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes inlineOnInsertion:(BOOL)inlineOnInsertion;
-- (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
-- (void)inlineMacroNode:(IFTreeNodeMacro*)macroNode transformingMarks:(NSArray*)marks;
 
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;

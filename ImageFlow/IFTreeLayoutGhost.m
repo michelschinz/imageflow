@@ -180,8 +180,6 @@ static NSMutableDictionary* filterArrayControllers = nil;
       IFTreeNode* clonedTemplateNode = [[template node] cloneNode];
       if ([doc canReplaceGhostNode:node usingNode:clonedTemplateNode]) {
         [doc replaceGhostNode:node usingNode:clonedTemplateNode transformingMarks:[NSArray array]]; // TODO marks
-        if ([template nodeRequiresInlining])
-          [doc inlineMacroNode:(IFTreeNodeMacro*)clonedTemplateNode transformingMarks:[NSArray array]];
       } else
         NSBeep();
     }

@@ -29,7 +29,6 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
-- (void)maybeInlineNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
 - (void)ensureGhostNodes;
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
@@ -242,7 +241,6 @@ static IFDocumentTemplateManager* templateManager;
   [child insertObject:parent inParentsAtIndex:0];
   [self addRightGhostParentsForNode:child];
 
-  [self maybeInlineNode:parent transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
@@ -268,7 +266,6 @@ static IFDocumentTemplateManager* templateManager;
   [child insertObject:parent inParentsAtIndex:0];
   [self addRightGhostParentsForNode:child];
 
-  [self maybeInlineNode:child transformingMarks:[NSArray array]]; // TODO marks (in case of d&d node move)
   [self finishTreeModification];
 }
 
@@ -294,7 +291,6 @@ static IFDocumentTemplateManager* templateManager;
   [node replaceByNode:replacement transformingMarks:marks];
   [self addRightGhostParentsForNode:replacement];
 
-  [self maybeInlineNode:replacement transformingMarks:marks];
   [self finishTreeModification];
 }
 
@@ -338,104 +334,9 @@ static IFDocumentTemplateManager* templateManager;
 
   // Delete the nodes themselves
   IFTreeNode* nodeToDelete;
-  if ([contiguousNodes count] > 1) {
-    IFTreeNodeMacro* macroNode = [self macroNodeByCopyingNodesOf:contiguousNodes inlineOnInsertion:NO];
-    [self replaceNodesIn:contiguousNodes byMacroNode:macroNode];
-    nodeToDelete = macroNode;
-  } else
-    nodeToDelete = [contiguousNodes anyObject];
+  NSAssert([contiguousNodes count] == 1, @"cannot delete more than 1 node (TODO)");
+  nodeToDelete = [contiguousNodes anyObject];
   [self deleteSingleNode:nodeToDelete transformingMarks:marks];
-}
-
-static IFTreeNode* cloneNodesInSet(NSSet* nodes, IFTreeNode* root, int* paramsCounter)
-{
-  if ([nodes containsObject:root]) {
-    IFTreeNode* clonedRoot = [root cloneNode];
-    NSArray* parents = [root parents];
-    for (int i = 0; i < [parents count]; ++i)
-      [clonedRoot insertObject:cloneNodesInSet(nodes, [parents objectAtIndex:i], paramsCounter) inParentsAtIndex:i];
-    return clonedRoot;
-  } else
-    return [IFTreeNodeParameter nodeParameterWithIndex:(*paramsCounter)++];
-}
-
-static IFTreeNode* rootOf(NSSet* nodeSet)
-{
-  IFTreeNode* root;
-  for (root = [nodeSet anyObject]; [nodeSet containsObject:[root child]]; root = [root child])
-    ;
-  return root;
-}
-
-- (IFTreeNodeMacro*)macroNodeByCopyingNodesOf:(NSSet*)nodes inlineOnInsertion:(BOOL)inlineOnInsertion;
-{
-  int paramsCounter = 0;
-  return [IFTreeNodeMacro nodeMacroWithRoot:cloneNodesInSet(nodes, rootOf(nodes), &paramsCounter) inlineOnInsertion:inlineOnInsertion];
-}
-
-static void collectBoundary(IFTreeNode* root, NSSet* nodes, NSMutableArray* boundary)
-{
-  NSCAssert([nodes containsObject:root], @"invalid root");
-
-  NSArray* parents = [root parents];
-  for (int i = 0; i < [parents count]; ++i) {
-    IFTreeNode* parent = [parents objectAtIndex:i];
-    if ([nodes containsObject:parent])
-      collectBoundary(parent, nodes, boundary);
-    else {
-      [boundary addObject:parent];
-      [root replaceObjectInParentsAtIndex:i withObject:[IFTreeNode ghostNodeWithInputArity:0]];
-    }
-  }
-}
-
-// TODO handle marks
-- (void)replaceNodesIn:(NSSet*)nodes byMacroNode:(IFTreeNodeMacro*)macroNode;
-{
-  IFTreeNode* root = rootOf(nodes);
-  // attach parent nodes to macro node
-  NSMutableArray* actualParameters = [NSMutableArray array];
-  collectBoundary(root, nodes, actualParameters);
-  for (int i = 0; i < [actualParameters count]; ++i)
-    [macroNode insertObject:[actualParameters objectAtIndex:i] inParentsAtIndex:i];
-  // detach old root and attach new one (the macro node)
-  int rootIndex = [[[root child] parents] indexOfObject:root];
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:[IFTreeNode ghostNodeWithInputArity:0]];
-  [[root child] replaceObjectInParentsAtIndex:rootIndex withObject:macroNode];
-}
-
-static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNodes)
-{
-  NSArray* parents = [root parents];
-  for (int i = 0; i < [parents count]; ++i) {
-    IFTreeNode* parent = [parents objectAtIndex:i];
-    if ([parent isKindOfClass:[IFTreeNodeParameter class]]) {
-      IFTreeNodeParameter* param = (IFTreeNodeParameter*)parent;
-      [root replaceObjectInParentsAtIndex:i withObject:[parentsOrNodes objectAtIndex:[param index]]];
-    } else
-      replaceParameterNodes(parent, parentsOrNodes);
-  }
-}
-
-- (void)inlineMacroNode:(IFTreeNodeMacro*)macroNode transformingMarks:(NSArray*)marks;
-{
-  // Detach all parents of macro node
-  NSMutableArray* detachedMacroParents = [NSMutableArray array];
-  NSArray* macroParents = [macroNode parents];
-  for (int i = 0; i < [macroParents count]; ++i) {
-    IFTreeNode* parent = [macroParents objectAtIndex:i];
-    [detachedMacroParents addObject:parent];
-    [macroNode replaceObjectInParentsAtIndex:i withObject:[IFTreeNode ghostNodeWithInputArity:0]];
-  }
-
-  // Clone macro node body, and replace parameter nodes by parent nodes, introducing aliases when necessary
-  IFTreeNode* bodyRootClone = [[macroNode root] cloneNodeAndAncestors];
-  NSAssert(![bodyRootClone isKindOfClass:[IFTreeNodeParameter class]], @"unexpected parameter node");
-  replaceParameterNodes(bodyRootClone, detachedMacroParents);
-  int macroIndex = [[[macroNode child] parents] indexOfObject:macroNode];
-  [[macroNode child] replaceObjectInParentsAtIndex:macroIndex withObject:bodyRootClone];
-  
-  [[marks do] setNode:bodyRootClone ifCurrentNodeIs:macroNode];
 }
 
 - (NSSet*)allNodes;
@@ -545,15 +446,6 @@ static void replaceParameterNodes(IFTreeNode* root, NSMutableArray* parentsOrNod
 @end
 
 @implementation IFDocument (Private)
-
-- (void)maybeInlineNode:(IFTreeNode*)node transformingMarks:(NSArray*)marks;
-{
-  if ([node isKindOfClass:[IFTreeNodeMacro class]]) {
-    IFTreeNodeMacro* macroNode = (IFTreeNodeMacro*)node;
-    if ([macroNode inlineOnInsertion])
-      [self inlineMacroNode:macroNode transformingMarks:marks];
-  }
-}
 
 - (void)ensureGhostNodes;
 {

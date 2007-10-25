@@ -9,7 +9,6 @@
 #import "IFDocumentTemplate.h"
 #import "IFOperatorExpression.h"
 #import "IFDocumentXMLDecoder.h"
-#import "IFTreeNodeMacro.h"
 
 @interface IFDocumentTemplate (Private)
 - (void)extractTemplateNodesFor:(IFTreeNode*)root into:(NSMutableSet*)result;
@@ -115,7 +114,8 @@
   else {
     NSMutableSet* nodes = [NSMutableSet new];
     [self extractTemplateNodesFor:root into:nodes];
-    node = [[document macroNodeByCopyingNodesOf:nodes inlineOnInsertion:YES] retain];
+    NSAssert([nodes count] == 1, @"cannot make templates of more than one node (TODO)");
+    node = [nodes anyObject];
   }
 
   isLoaded = YES;
