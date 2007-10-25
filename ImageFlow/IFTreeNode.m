@@ -16,8 +16,6 @@
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
 - (void)removeObjectFromParentsAtIndex:(unsigned int)index;
 - (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-- (IFTreeNode*)child;
-- (void)setChild:(IFTreeNode*)newChild;
 @end
 
 @implementation IFTreeNode
@@ -37,13 +35,11 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   name = nil;
   isFolded = NO;
   parents = [NSMutableArray new];
-  child = nil;
   return self;
 }
 
 - (void)dealloc;
 {
-  child = nil;
   [[parents do] removeObserver:self forKeyPath:@"expression"];
   OBJC_RELEASE(parents);
   OBJC_RELEASE(expression);
@@ -236,7 +232,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
 
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
 {
-  [parent setChild:self];
   [parents insertObject:parent atIndex:index];
   
   [self updateExpression];
@@ -248,7 +243,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   IFTreeNode* parent = [parents objectAtIndex:index];
   [parent removeObserver:self forKeyPath:@"expression"];
   
-  [parent setChild:nil];
   [parents removeObjectAtIndex:index];
   
   [self updateExpression];
@@ -259,21 +253,10 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   IFTreeNode* oldParent = [parents objectAtIndex:index];
   [oldParent removeObserver:self forKeyPath:@"expression"];
   
-  [newParent setChild:self];
   [parents replaceObjectAtIndex:index withObject:newParent];
   
   [newParent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
   [self updateExpression];
-}
-
-- (IFTreeNode*)child;
-{
-  return child;
-}
-
-- (void)setChild:(IFTreeNode*)newChild;
-{
-  child = newChild;
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "IFTree.h"
+#import "IFTreeEdge.h"
 
 // HACK (temporary)
 @interface IFTreeNode (Private)
@@ -14,10 +15,10 @@
 - (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
 - (void)removeObjectFromParentsAtIndex:(unsigned int)index;
 - (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-- (IFTreeNode*)child;
 @end
 
 @interface IFTree (Private)
+- (void)rebuildGraphFromTree;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 @end
 
@@ -86,12 +87,23 @@
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
 {
-  return [node parents];
+  NSSet* inEdges = [graph incomingEdgesForNode:node];
+  NSMutableArray* parents = [NSMutableArray arrayWithCapacity:[inEdges count]];
+  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
+  IFTreeEdge* inEdge;
+  while (inEdge = [inEdgesEnum nextObject]) {
+    while ([parents count] < [inEdge targetIndex] + 1)
+      [parents addObject:[NSNull null]];
+    [parents replaceObjectAtIndex:[inEdge targetIndex] withObject:[graph edgeSource:inEdge]];
+  }
+  return parents;
 }
 
 - (IFTreeNode*)childOfNode:(IFTreeNode*)node;
 {
-  return [node child];
+  NSSet* succs = [graph successorsOfNode:node];
+  NSAssert([succs count] <= 1, @"too many successors for node");
+  return [succs count] == 0 ? nil : [succs anyObject];
 }
 
 - (NSArray*)siblingsOfNode:(IFTreeNode*)node;
@@ -124,21 +136,44 @@
 - (void)insertObject:(IFTreeNode*)newParent inParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
 {
   [node insertObject:newParent inParentsAtIndex:index];
+  [self rebuildGraphFromTree];
 }
 
 - (void)replaceObjectInParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index withObject:(IFTreeNode*)newParent;
 {
   [node replaceObjectInParentsAtIndex:index withObject:newParent];
+  [self rebuildGraphFromTree];
 }
 
 - (void)removeObjectFromParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
 {
   [node removeObjectFromParentsAtIndex:index];
+  [self rebuildGraphFromTree];
 }
 
 @end
 
 @implementation IFTree (Private)
+
+- (void)populateGraph:(IFOrientedGraph*)grph fromTree:(IFTreeNode*)root;
+{
+  [grph addNode:root];
+  NSArray* parents = [root parents];
+  for (int i = 0; i < [parents count]; ++i) {
+    IFTreeNode* parent = [parents objectAtIndex:i];
+    [self populateGraph:grph fromTree:parent];
+    [grph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:parent toNode:root];
+  }
+}
+
+- (void)rebuildGraphFromTree;
+{
+  IFTreeNode* root = [self root];
+  IFOrientedGraph* newGraph = [IFOrientedGraph graph];
+  [self populateGraph:newGraph fromTree:root];
+  [graph release];
+  graph = [newGraph retain];
+}
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 {

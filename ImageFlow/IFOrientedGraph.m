@@ -93,7 +93,7 @@
     NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
     IFOrientedGraphEdge* edge;
     while (edge = [edgesEnum nextObject]) {
-      if ([edge fromNode] == node) {
+      if ([edge toNode] == node) {
         [sourceNodes removeObject:node];
         break;
       }
@@ -111,7 +111,7 @@
     NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
     IFOrientedGraphEdge* edge;
     while (edge = [edgesEnum nextObject]) {
-      if ([edge toNode] == node) {
+      if ([edge fromNode] == node) {
         [sinkNodes removeObject:node];
         break;
       }

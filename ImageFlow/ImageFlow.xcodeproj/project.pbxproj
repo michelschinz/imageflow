@@ -131,6 +131,7 @@
 		FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD887A20CD073D100D3DE7D /* IFTree.m */; };
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
 		FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */; };
+		FAD889EB0CD0CBCB00D3DE7D /* IFTreeEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */; };
 		FAD951860CAA511B00A7E78A /* IFGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951840CAA511B00A7E78A /* IFGraph.m */; };
 		FAD9518B0CAA518E00A7E78A /* IFGraphNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951890CAA518E00A7E78A /* IFGraphNode.m */; };
 		FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */; };
@@ -456,6 +457,8 @@
 		FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFOrientedGraph.m; sourceTree = "<group>"; };
 		FAD888F70CD0A83B00D3DE7D /* IFOrientedGraphEdge.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFOrientedGraphEdge.h; sourceTree = "<group>"; };
 		FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFOrientedGraphEdge.m; sourceTree = "<group>"; };
+		FAD889E80CD0CBCB00D3DE7D /* IFTreeEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeEdge.h; sourceTree = "<group>"; };
+		FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeEdge.m; sourceTree = "<group>"; };
 		FAD951830CAA511B00A7E78A /* IFGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraph.h; sourceTree = "<group>"; };
 		FAD951840CAA511B00A7E78A /* IFGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGraph.m; sourceTree = "<group>"; };
 		FAD951880CAA518E00A7E78A /* IFGraphNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraphNode.h; sourceTree = "<group>"; };
@@ -880,6 +883,8 @@
 				FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */,
 				FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */,
 				FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */,
+				FAD889E80CD0CBCB00D3DE7D /* IFTreeEdge.h */,
+				FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */,
 				FABC3D51088AD689007E8691 /* IFTreeMark.h */,
 				FABC3D52088AD689007E8691 /* IFTreeMark.m */,
 				FA2411770962C98100173105 /* IFTreeIdentifier.h */,
@@ -1818,6 +1823,7 @@
 				FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */,
 				FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */,
 				FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */,
+				FAD889EB0CD0CBCB00D3DE7D /* IFTreeEdge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

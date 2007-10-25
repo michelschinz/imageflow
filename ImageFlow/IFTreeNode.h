@@ -16,7 +16,6 @@ extern const unsigned int ID_NONE;
 
 @interface IFTreeNode : NSObject {
   NSMutableArray* parents;
-  IFTreeNode* child; // not retained, to avoid cycles
 
   NSString* name;
   BOOL isFolded;
