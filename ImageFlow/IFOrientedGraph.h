@@ -19,11 +19,15 @@
 - (id)clone;
 
 - (NSSet*)nodes;
+
 - (void)addNode:(id)node;
 - (void)removeNode:(id)node;
 - (BOOL)containsNode:(id)node;
 - (NSSet*)predecessorsOfNode:(id)node;
 - (NSSet*)successorsOfNode:(id)node;
+
+- (NSSet*)sourceNodes;
+- (NSSet*)sinkNodes;
 
 - (void)addEdge:(id)edge fromNode:(id)fromNode toNode:(id)toNode;
 - (void)removeEdge:(id)edge;

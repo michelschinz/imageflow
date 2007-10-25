@@ -34,6 +34,7 @@
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 - (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
 - (void)removeAllRightGhostPredecessorsOfNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
+- (NSSet*)aliasesForNodes:(NSSet*)nodes;
 - (IFGraph*)graph;
 - (void)finishTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
@@ -59,7 +60,7 @@ static IFDocumentTemplateManager* templateManager;
   evaluator = [IFExpressionEvaluator new];
 
   tree = [[IFTree tree] retain];
-  fakeRoot = [[IFTreeNodeFilter nodeWithFilter:nil] retain];
+  [tree addNode:[IFTreeNodeFilter nodeWithFilter:nil]];
   [self ensureGhostNodes];
   
   canvasBounds = NSMakeRect(0,0,800,600);
@@ -73,7 +74,6 @@ static IFDocumentTemplateManager* templateManager;
 
 - (void)dealloc;
 {
-  OBJC_RELEASE(fakeRoot);
   OBJC_RELEASE(tree);
 
   OBJC_RELEASE(workingSpaceProfile);
@@ -104,7 +104,7 @@ static IFDocumentTemplateManager* templateManager;
 
 - (NSArray*)roots;
 {
-  return [tree parentsOfNode:fakeRoot];
+  return [tree parentsOfNode:[tree root]];
 }
 
 #pragma mark meta-data
@@ -211,7 +211,7 @@ static IFDocumentTemplateManager* templateManager;
        (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
        --i)
     ;
-  [tree insertObject:newRoot inParentsOfNode:fakeRoot atIndex:i+1];
+  [tree insertObject:newRoot inParentsOfNode:[tree root] atIndex:i+1];
   [self finishTreeModification];
 }
 
@@ -348,8 +348,8 @@ static IFDocumentTemplateManager* templateManager;
 
 - (NSSet*)allNodes;
 {
-  NSMutableSet* allNodes = [NSMutableSet setWithArray:[tree dfsAncestorsOfNode:fakeRoot]];
-  [allNodes removeObject:fakeRoot];
+  NSMutableSet* allNodes = [NSMutableSet setWithArray:[tree dfsAncestorsOfNode:[tree root]]];
+  [allNodes removeObject:[tree root]];
   return allNodes;
 }
 
@@ -366,7 +366,7 @@ static IFDocumentTemplateManager* templateManager;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 {
   IFTreeNode* root = node;
-  while (root != nil && [tree childOfNode:root] != fakeRoot)
+  while (root != nil && [tree childOfNode:root] != [tree root])
     root = [tree childOfNode:root];
   NSAssert1(root != nil, @"cannot find root of tree containing %@",node);
   return root;  
@@ -375,7 +375,7 @@ static IFDocumentTemplateManager* templateManager;
 // private
 - (void)collectPathFromRootToNode:(IFTreeNode*)node inArray:(NSMutableArray*)result;
 {
-  if ([tree childOfNode:node] != fakeRoot)
+  if ([tree childOfNode:node] != [tree root])
     [self collectPathFromRootToNode:[tree childOfNode:node] inArray:result];
   [result addObject:node];
 }
@@ -398,13 +398,6 @@ static IFDocumentTemplateManager* templateManager;
     [[self do] collectAliasesForNodes:nodes startingAt:[parents each] inSet:resultSet];
 }
 
-- (NSSet*)aliasesForNodes:(NSSet*)nodes;
-{
-  NSMutableSet* aliases = [NSMutableSet set];
-  [self collectAliasesForNodes:nodes startingAt:fakeRoot inSet:aliases];
-  return aliases;
-}
-
 #pragma mark loading and saving
 
 - (BOOL)prepareSavePanel:(NSSavePanel*)savePanel;
@@ -421,7 +414,7 @@ static IFDocumentTemplateManager* templateManager;
 
 - (NSFileWrapper*)fileWrapperOfType:(NSString*)typeName error:(NSError**)outError;
 {
-  NSDictionary* identities = [[IFTreeIdentifier treeIdentifier] identifyTree:tree startingAt:fakeRoot hints:[NSDictionary dictionary]];
+  NSDictionary* identities = [[IFTreeIdentifier treeIdentifier] identifyTree:tree startingAt:[tree root] hints:[NSDictionary dictionary]];
   NSXMLDocument* xmlDoc = [[IFDocumentXMLEncoder encoder] documentToXML:self identities:identities];
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   return [[[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -480,12 +473,12 @@ static IFDocumentTemplateManager* templateManager;
     else if ([root outputArity] == 1) {
       [[root retain] autorelease];
       IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
-      [tree replaceObjectInParentsOfNode:fakeRoot atIndex:i withObject:newRoot];
+      [tree replaceObjectInParentsOfNode:[tree root] atIndex:i withObject:newRoot];
       [tree insertObject:root inParentsOfNode:newRoot atIndex:0];
     }
   }
   if (!hasGhostColumn)
-    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:fakeRoot atIndex:[tree parentsCountOfNode:fakeRoot]];
+    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:[tree root] atIndex:[tree parentsCountOfNode:[tree root]]];
 }
 
 // TODO move to some other class
@@ -530,10 +523,17 @@ static IFDocumentTemplateManager* templateManager;
   }
 }
 
+- (NSSet*)aliasesForNodes:(NSSet*)nodes;
+{
+  NSMutableSet* aliases = [NSMutableSet set];
+  [self collectAliasesForNodes:nodes startingAt:[tree root] inSet:aliases];
+  return aliases;
+}
+
 - (IFGraph*)graph;
 {
-  IFGraph* graph = [tree graphOfNode:fakeRoot];
-  [graph removeNode:[graph nodeWithData:fakeRoot]];
+  IFGraph* graph = [tree graphOfNode:[tree root]];
+  [graph removeNode:[graph nodeWithData:[tree root]]];
   return graph;
 }
 
@@ -561,8 +561,8 @@ static IFDocumentTemplateManager* templateManager;
 - (void)overwriteWith:(IFDocument*)other;
 {
   // Destroy all current contents
-  while ([[tree parentsOfNode:fakeRoot] count] > 0)
-    [tree removeObjectFromParentsOfNode:fakeRoot atIndex:0];
+  while ([[tree parentsOfNode:[tree root]] count] > 0)
+    [tree removeObjectFromParentsOfNode:[tree root] atIndex:0];
 
   // Copy everything from other document
   [self setAuthorName:[other authorName]];
@@ -572,12 +572,12 @@ static IFDocumentTemplateManager* templateManager;
   [self setResolutionY:[other resolutionY]];
   
   IFTree* otherTree = other->tree; // HACK
-  IFTreeNode* otherFakeRoot = other->fakeRoot; // HACK
+  IFTreeNode* otherFakeRoot = [otherTree root]; // HACK
   NSArray* otherRoots = [[otherTree parentsOfNode:otherFakeRoot] copy];
   for (int i = 0; i < [otherRoots count]; ++i) {
     IFTreeNode* otherRoot = [[otherRoots objectAtIndex:i] retain];
     [otherTree removeObjectFromParentsOfNode:otherFakeRoot atIndex:0];
-    [tree insertObject:otherRoot inParentsOfNode:fakeRoot atIndex:i];
+    [tree insertObject:otherRoot inParentsOfNode:[tree root] atIndex:i];
     [otherRoot release];
   }
   [otherRoots release];

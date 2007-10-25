@@ -32,11 +32,13 @@
 {
   if (![super init])
     return nil;
+  graph = [[IFOrientedGraph graph] retain];
   return self;
 }
 
 - (void)dealloc;
 {
+  OBJC_RELEASE(graph);
   [super dealloc];
 }
 
@@ -68,6 +70,18 @@
       [graphNode addPredecessor:[treeNodeToGraphNode objectForKey:[[nodeParents objectAtIndex:i] original]]];
   }
   return grph;
+}
+
+- (IFTreeNode*)root;
+{
+  NSSet* roots = [graph sinkNodes];
+  NSAssert([roots count] <= 1, @"too many roots");
+  return [roots count] == 0 ? nil : [roots anyObject];
+}
+
+- (void)addNode:(IFTreeNode*)node;
+{
+  [graph addNode:node];
 }
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;

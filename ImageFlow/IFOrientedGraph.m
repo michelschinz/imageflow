@@ -84,6 +84,42 @@
   return succs;
 }
 
+- (NSSet*)sourceNodes;
+{
+  NSMutableSet* sourceNodes = [NSMutableSet setWithSet:nodes];
+  NSEnumerator* nodesEnum = [nodeToEdgeSet keyEnumerator];
+  id node;
+  while (node = [nodesEnum nextObject]) {
+    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
+    IFOrientedGraphEdge* edge;
+    while (edge = [edgesEnum nextObject]) {
+      if ([edge fromNode] == node) {
+        [sourceNodes removeObject:node];
+        break;
+      }
+    }
+  }
+  return sourceNodes;
+}
+
+- (NSSet*)sinkNodes;
+{
+  NSMutableSet* sinkNodes = [NSMutableSet setWithSet:nodes];
+  NSEnumerator* nodesEnum = [nodeToEdgeSet keyEnumerator];
+  id node;
+  while (node = [nodesEnum nextObject]) {
+    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
+    IFOrientedGraphEdge* edge;
+    while (edge = [edgesEnum nextObject]) {
+      if ([edge toNode] == node) {
+        [sinkNodes removeObject:node];
+        break;
+      }
+    }
+  }
+  return sinkNodes;
+}
+
 - (void)addEdge:(id)edge fromNode:(id)fromNode toNode:(id)toNode;
 {
   IFOrientedGraphEdge* realEdge = [IFOrientedGraphEdge edgeFromNode:fromNode toNode:toNode data:edge];

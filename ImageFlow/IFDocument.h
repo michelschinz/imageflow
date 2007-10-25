@@ -30,7 +30,6 @@ extern NSString* IFTreeChangedNotification;
   float resolutionX, resolutionY; // in DPI
 
   IFTree* tree;
-  IFTreeNode* fakeRoot;
 }
 
 + (IFDocumentTemplateManager*)documentTemplateManager;
@@ -74,6 +73,5 @@ extern NSString* IFTreeChangedNotification;
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
-- (NSSet*)aliasesForNodes:(NSSet*)nodes;
 
 @end
