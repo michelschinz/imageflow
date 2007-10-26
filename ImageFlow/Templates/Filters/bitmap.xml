@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Draw bitmap</title>
+<tree-template>
+  <name>Draw bitmap</name>
   <description>Draw bitmap image</description>
-  <tree id="1">
-    <filter>
-      <name>IFBitmapDrawingSource</name>
-      <env>
+  <tree>
+    <node id="1">
+      <filter>IFBitmapDrawingSource</filter>
+      <settings>
         <key>drawing</key>
         <expression>&lt;operation name="empty"/&gt;</expression>
         <key>defaultColor</key>
@@ -20,7 +20,7 @@
         <integer>0</integer>
         <key>brushOpacity</key>
         <number>1</number>
-      </env>
-    </filter>
-  </tree>
-</imageflow>
+      </settings>
+    </node>
+  </tree>  
+</tree-template>

@@ -10,7 +10,7 @@
 #import "IFTreeLayoutGhost.h"
 #import "IFTreeViewWindowController.h"
 #import "IFDirectoryManager.h"
-#import "IFDocumentTemplateManager.h"
+#import "IFTreeTemplateManager.h"
 
 @interface IFTreeLayoutGhost (Private)
 - (void)updateLayout;
@@ -34,7 +34,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
   NSArrayController* controller = [filterArrayControllers objectForKey:[NSValue valueWithNonretainedObject:filter]];
   if (controller == nil) {
     controller = [NSArrayController new];
-    [controller setContent:[[IFDocument documentTemplateManager] templates]];
+    [controller setContent:[[IFTreeTemplateManager sharedManager] templates]];
     [filterArrayControllers setObject:controller forKey:[NSValue valueWithNonretainedObject:filter]];
   }
   return controller;
@@ -176,7 +176,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
     NSArray* selected = [arrayController selectedObjects];
     if ([selected count] > 0) {
       IFDocument* doc = [containingView document];
-      IFDocumentTemplate* template = [selected objectAtIndex:0];
+      IFTreeTemplate* template = [selected objectAtIndex:0];
       IFTreeNode* clonedTemplateNode = [[template node] cloneNode];
       if ([doc canReplaceGhostNode:node usingNode:clonedTemplateNode]) {
         [doc replaceGhostNode:node usingNode:clonedTemplateNode];

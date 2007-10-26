@@ -15,9 +15,6 @@
 
 extern NSString* IFTreeChangedNotification;
 
-@class IFDocumentTemplate;
-@class IFDocumentTemplateManager;
-
 @interface IFDocument : NSDocument {
   IFTypeChecker* typeChecker;
   IFExpressionEvaluator* evaluator;
@@ -31,8 +28,6 @@ extern NSString* IFTreeChangedNotification;
 
   IFTree* tree;
 }
-
-+ (IFDocumentTemplateManager*)documentTemplateManager;
 
 - (IFExpressionEvaluator*)evaluator;
 

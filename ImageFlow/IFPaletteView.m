@@ -10,7 +10,6 @@
 #import "IFTreeNodeFilter.h"
 #import "IFTreeLayoutNode.h"
 #import "IFTreeLayoutComposite.h"
-#import "IFDocumentTemplateManager.h"
 #import "IFVariableExpression.h"
 
 @interface IFPaletteView (Private)

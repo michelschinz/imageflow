@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Drop shadow</title>
+<tree-template>
+  <name>Drop shadow</name>
   <description>Drop shadow</description>
-  <tree id="1">
-    <filter>
-      <name>IFDropShadowFilter</name>
-      <env>
+  <tree>
+    <node id="1">
+      <filter>IFDropShadowFilter</filter>
+      <settings>
         <key>color</key>
         <color>
           0 0 0 1.0
@@ -14,12 +14,7 @@
         <point>{10,10}</point>
         <key>blur</key>
         <number>3</number>
-      </env>
-    </filter>
-    <tree id="2">
-      <filter>
-        <name>IFGhostFilter</name>
-      </filter>
-    </tree>
+      </settings>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

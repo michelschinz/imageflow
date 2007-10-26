@@ -13,8 +13,6 @@
 #import "IFFilter.h"
 #import "IFExpressionEvaluator.h"
 #import "IFDirectoryManager.h"
-#import "IFDocumentTemplate.h"
-#import "IFDocumentTemplateManager.h"
 #import "IFTreeNodeFilter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
@@ -40,15 +38,6 @@
 @implementation IFDocument
 
 NSString* IFTreeChangedNotification = @"IFTreeChanged";
-
-static IFDocumentTemplateManager* templateManager;
-
-+ (IFDocumentTemplateManager*)documentTemplateManager;
-{
-  if (templateManager == nil)
-    templateManager = [[IFDocumentTemplateManager alloc] initWithDirectory:[[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectory]];
-  return templateManager;
-}
 
 - (id)init 
 {

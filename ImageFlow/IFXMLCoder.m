@@ -10,6 +10,7 @@
 #import "IFColorProfile.h"
 #import "NSDataAdditions.h"
 #import "IFExpression.h"
+#import "IFTreeNodeFilter.h"
 
 @implementation IFXMLCoder
 
@@ -83,6 +84,8 @@ static IFXMLCoder* sharedCoder = nil;
   return [typeNames objectAtIndex:[self typeForData:data]];
 }
 
+#pragma mark Low-level encoding
+
 - (NSString*)encodeData:(NSObject*)data;
 {
   switch ([self typeForData:data]) {
@@ -127,6 +130,71 @@ static IFXMLCoder* sharedCoder = nil;
 {
   return [self encodeData:[NSNumber numberWithInt:data]];
 }
+
+#pragma mark -
+#pragma mark High-level decoding
+
+- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
+{
+  NSAssert([[xml name] isEqualToString:@"tree-template"], @"invalid XML document");
+  NSString* name = nil;
+  NSString* description = nil;
+  IFTreeNode* node = nil;
+  
+  for (int i = 0; i < [xml childCount]; ++i) {
+    NSXMLNode* child = [xml childAtIndex:i];
+    NSString* childName = [child name];
+    
+    if ([childName isEqualToString:@"name"])
+      name = [child stringValue];
+    else if ([childName isEqualToString:@"description"])
+      description = [child stringValue];
+    else if ([childName isEqualToString:@"tree"])
+      node = [self decodeTree:child];
+    else
+      NSAssert1(NO, @"invalid node: %@", child);
+  }
+  
+  return [IFTreeTemplate templateWithName:name description:description node:node];
+}
+
+- (IFTreeNode*)decodeTree:(NSXMLNode*)xml;
+{
+  NSAssert([[xml name] isEqualToString:@"tree"], @"invalid XML document");
+  NSAssert([xml childCount] == 1, @"invalid XML document");
+  return [self decodeTreeNode:[xml childAtIndex:0]];
+}
+
+- (IFTreeNode*)decodeTreeNode:(NSXMLNode*)xml;
+{
+  NSAssert([[xml name] isEqualToString:@"node"], @"invalid XML document");
+  NSString* filterName = nil;
+  IFEnvironment* filterSettings = [IFEnvironment environment];
+  for (int i = 0; i < [xml childCount]; ++i) {
+    NSXMLNode* child = [xml childAtIndex:i];
+    NSString* childName = [child name];
+    if ([childName isEqualToString:@"filter"])
+      filterName = [child stringValue];
+    else if ([childName isEqualToString:@"settings"])
+      filterSettings = [self decodeFilterSettings:child];
+    else
+      NSAssert1(NO, @"invalid node: %@", child);
+  }
+  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:filterName environment:filterSettings]];
+}
+
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+{
+  IFEnvironment* env = [IFEnvironment environment];
+  for (int i = 0; i < [xml childCount]; i += 2) {
+    NSXMLNode* keyNode = [xml childAtIndex:i];
+    NSXMLNode* valueNode = [xml childAtIndex:i+1];
+    [env setValue:[self decodeString:[valueNode stringValue] typeName:[valueNode name]] forKey:[keyNode stringValue]];
+  }
+  return env;
+}
+
+#pragma mark Low-level decoding
 
 - (id)decodeString:(NSString*)string type:(IFXMLDataType)type;
 {

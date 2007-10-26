@@ -1,15 +1,10 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Invert colors</title>
+<tree-template>
+  <name>Invert colors</name>
   <description>Invert colors of input image</description>
-  <tree id="1">
-    <filter>
-      <name>IFInvertFilter</name>
-    </filter>
-    <tree id="2">
-      <filter>
-        <name>IFGhostFilter</name>
-      </filter>      
-    </tree>
+  <tree>
+    <node id="1">
+      <filter>IFInvertFilter</filter>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

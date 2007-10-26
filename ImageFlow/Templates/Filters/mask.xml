@@ -1,16 +1,10 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Mask</title>
+<tree-template>
+  <name>Mask</name>
   <description>Mask images</description>
-  <tree id="1">
-    <filter>
-      <name>IFMaskFilter</name>
-    </filter>
-    <tree id="2">
-      <filter><name>IFGhostFilter</name><env/></filter>
-    </tree>
-    <tree id="3">
-      <filter><name>IFGhostFilter</name><env/></filter>
-    </tree>
+  <tree>
+    <node id="1">
+      <filter>IFMaskFilter</filter>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

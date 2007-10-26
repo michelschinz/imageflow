@@ -1,24 +1,18 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Blend</title>
+<tree-template>
+  <name>Blend</name>
   <description>Blend images</description>
-  <tree id="1">
-    <filter>
-      <name>IFBlendFilter</name>
-      <env>
+  <tree>
+    <node id="1">
+      <filter>IFBlendFilter</filter>
+      <settings>
         <key>mode</key>
         <integer>0</integer>
         <key>translation</key>
         <point>{0,0}</point>
         <key>alpha</key>
         <number>1.0</number>
-      </env>
-    </filter>
-    <tree id="2">
-      <filter><name>IFGhostFilter</name><env/></filter>
-    </tree>
-    <tree id="3">
-      <filter><name>IFGhostFilter</name><env/></filter>
-    </tree>
+      </settings>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

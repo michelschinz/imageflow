@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Load file</title>
+<tree-template>
+  <name>Load file</name>
   <description>Load image from file</description>
-  <tree id="1">
-    <filter>
-      <name>IFFileSource</name>
-      <env>
+  <tree>
+    <node id="1">
+      <filter>IFFileSource</filter>
+      <settings>
         <key>fileName</key>
         <string></string>
 
@@ -29,7 +29,7 @@
 
         <key>embedResources</key>
         <number>1</number>
-      </env>
-    </filter>
+      </settings>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

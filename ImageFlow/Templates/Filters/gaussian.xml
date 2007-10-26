@@ -1,19 +1,14 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Gaussian blur</title>
+<tree-template>
+  <name>Gaussian blur</name>
   <description>Blur input image</description>
-  <tree id="1">
-    <filter>
-      <name>IFGaussianBlurFilter</name>
-      <env>
+  <tree>
+    <node id="1">
+      <filter>IFGaussianBlurFilter</filter>
+      <settings>
         <key>radius</key>
         <number>5</number>
-      </env>
-    </filter>
-    <tree id="2">
-      <filter>
-        <name>IFGhostFilter</name>
-      </filter>
-    </tree>
+      </settings>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

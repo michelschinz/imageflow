@@ -1,21 +1,16 @@
 <?xml version="1.0"?>
-<imageflow>
-  <title>Unsharp mask</title>
-  <description>Increases the contrast of the edges between pixels of different colors in an image.</description>
-  <tree id="1">
-    <filter>
-      <name>IFUnsharpMaskFilter</name>
-      <env>
+<tree-template>
+  <name>Unsharp mask</name>
+  <description>Increases the sharpness of input image.</description>
+  <tree>
+    <node id="1">
+      <filter>IFUnsharpMaskFilter</filter>
+      <settings>
       	<key>intensity</key>
         <number>0.5</number>
         <key>radius</key>
         <number>2.5</number>
-      </env>
-    </filter>
-    <tree id="2">
-      <filter>
-        <name>IFGhostFilter</name>
-      </filter>
-    </tree>
+      </settings>
+    </node>
   </tree>
-</imageflow>
+</tree-template>

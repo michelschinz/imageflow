@@ -16,8 +16,8 @@
 #import "IFTreeLayoutComposite.h"
 #import "IFImageInspectorWindowController.h"
 #import "IFHistogramInspectorWindowController.h"
-#import "IFDocumentTemplate.h"
-#import "IFDocumentTemplateManager.h"
+#import "IFTreeTemplate.h"
+#import "IFTreeTemplateManager.h"
 #import "IFTreeNodeProxy.h"
 #import "IFUtilities.h"
 
@@ -670,7 +670,7 @@ static enum {
       NSArray* fileNames = [pboard propertyListForType:NSFilenamesPboardType];
       if (targetElement == nil) {
         // Create new file source nodes for dragged files
-        IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
+        IFTreeTemplate* loadTemplate = [[IFTreeTemplateManager sharedManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         for (int i = 0; i < [fileNames count]; ++i) {
           IFTreeNode* newNode = [loadNode cloneNode];
@@ -680,7 +680,7 @@ static enum {
         return YES;
       } else if ([targetNode isGhost]) {
         // Replace ghost node by "load" node
-        IFDocumentTemplate* loadTemplate = [[IFDocument documentTemplateManager] loadFileTemplate];
+        IFTreeTemplate* loadTemplate = [[IFTreeTemplateManager sharedManager] loadFileTemplate];
         IFTreeNode* loadNode = [loadTemplate node];
         [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
         if ([document canReplaceGhostNode:targetNode usingNode:loadNode]) {

@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFTreeTemplate.h"
+#import "IFTreeNode.h"
+#import "IFEnvironment.h"
+
 typedef enum {
   IFXMLDataTypeInvalid = -1,
   IFXMLDataTypeString,
@@ -31,10 +35,22 @@ typedef enum {
 - (IFXMLDataType)typeForData:(NSObject*)data;
 - (NSString*)typeNameForData:(NSObject*)data;
 
+#pragma mark Low-level encoding
+
 - (NSString*)encodeData:(NSObject*)data;
 - (NSString*)encodeFloat:(float)data;
 - (NSString*)encodeInt:(int)data;
 - (NSString*)encodeUnsignedInt:(unsigned int)data;
+
+#pragma mark -
+#pragma mark High-level decoding
+
+- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
+- (IFTreeNode*)decodeTree:(NSXMLNode*)xml;
+- (IFTreeNode*)decodeTreeNode:(NSXMLNode*)xml;
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+
+#pragma mark Low-level decoding
 
 - (id)decodeString:(NSString*)string type:(IFXMLDataType)type;
 - (id)decodeString:(NSString*)string typeName:(NSString*)typeName;
