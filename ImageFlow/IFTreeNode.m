@@ -11,16 +11,7 @@
 #import "IFExpressionPlugger.h"
 #import "IFTreeMark.h"
 
-@interface IFTreeNode (Private)
-- (NSArray*)parents;
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-@end
-
 @implementation IFTreeNode
-
-static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedContext";
 
 + (id)ghostNodeWithInputArity:(int)inputArity;
 {
@@ -34,14 +25,11 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   if (![super init]) return nil;
   name = nil;
   isFolded = NO;
-  parents = [NSMutableArray new];
   return self;
 }
 
 - (void)dealloc;
 {
-  [[parents do] removeObserver:self forKeyPath:@"expression"];
-  OBJC_RELEASE(parents);
   OBJC_RELEASE(expression);
   OBJC_RELEASE(name);
   [super dealloc];
@@ -132,12 +120,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
   return 1;
 }
 
-- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
-{
-  NSAssert(context == IFParentExpressionChangedContext, @"unexpected context");
-  [self updateExpression];
-}
-
 #pragma mark Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
@@ -219,44 +201,6 @@ static NSString* IFParentExpressionChangedContext = @"IFParentExpressionChangedC
     return;
   [expression release];
   expression = [newExpression retain];
-}
-
-@end
-
-@implementation IFTreeNode (Private)
-
-- (NSArray*)parents;
-{
-  return parents;
-}
-
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-{
-  [parents insertObject:parent atIndex:index];
-  
-  [self updateExpression];
-  [parent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
-}
-
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-{
-  IFTreeNode* parent = [parents objectAtIndex:index];
-  [parent removeObserver:self forKeyPath:@"expression"];
-  
-  [parents removeObjectAtIndex:index];
-  
-  [self updateExpression];
-}
-
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-{
-  IFTreeNode* oldParent = [parents objectAtIndex:index];
-  [oldParent removeObserver:self forKeyPath:@"expression"];
-  
-  [parents replaceObjectAtIndex:index withObject:newParent];
-  
-  [newParent addObserver:self forKeyPath:@"expression" options:0 context:IFParentExpressionChangedContext];
-  [self updateExpression];
 }
 
 @end

@@ -15,8 +15,6 @@
 extern const unsigned int ID_NONE;
 
 @interface IFTreeNode : NSObject {
-  NSMutableArray* parents;
-
   NSString* name;
   BOOL isFolded;
   IFExpression* expression;

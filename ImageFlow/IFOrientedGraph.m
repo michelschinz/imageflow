@@ -45,6 +45,8 @@
 
 - (void)addNode:(id)node;
 {
+  if ([nodes containsObject:node])
+    return;
   [nodes addObject:node];
   CFDictionarySetValue((CFMutableDictionaryRef)nodeToEdgeSet,node,[NSMutableSet set]);
 }

@@ -10,18 +10,8 @@
 #import "IFTreeEdge.h"
 #import "IFTypeChecker.h"
 
-// HACK (temporary)
-@interface IFTreeNode (Private)
-- (NSArray*)parents;
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-@end
-
 @interface IFTree (Private)
 - (NSArray*)serialiseSortedNodes:(NSArray*)sortedNodes;
-- (void)rebuildGraphFromTree;
-- (void)rebuildTreeFromGraph;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 @end
 
@@ -155,7 +145,6 @@
     [graph addNode:ghost];
     [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:ghost toNode:node];
   }
-  [self rebuildTreeFromGraph];
 }
 
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
@@ -166,7 +155,50 @@
       break;
     [[graph do] removeNode:[[self dfsAncestorsOfNode:lastParent] each]];
   }
-  [self rebuildTreeFromGraph];
+}
+
+- (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
+{
+  IFTreeNode* root = [self root];
+
+  NSSet* rootInEdgesCopy = [[graph incomingEdgesForNode:root] copy];
+  NSEnumerator* rootInEdgesEnum = [rootInEdgesCopy objectEnumerator];
+  IFTreeEdge* inEdge;
+  while (inEdge = [rootInEdgesEnum nextObject]) {
+    if ([inEdge targetIndex] >= index) {
+      [graph addEdge:[IFTreeEdge edgeWithTargetIndex:[inEdge targetIndex] + 1] fromNode:[graph edgeSource:inEdge] toNode:root];
+      [graph removeEdge:inEdge];
+    }
+  }
+  [rootInEdgesCopy release];
+  
+  [graph addNode:node];
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:index] fromNode:node toNode:root];
+}
+
+- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
+{
+  [graph addNode:parent];
+  NSSet* childInEdgesCopy = [[graph incomingEdgesForNode:child] copy];
+  NSEnumerator* childInEdgesEnum = [childInEdgesCopy objectEnumerator];
+  IFTreeEdge* childInEdge;
+  while (childInEdge = [childInEdgesEnum nextObject]) {
+    [graph addEdge:[childInEdge clone] fromNode:[graph edgeSource:childInEdge] toNode:parent];
+    [graph removeEdge:childInEdge];
+  }
+  [childInEdgesCopy release];
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:parent toNode:child];
+}
+
+- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
+{
+  [graph addNode:child];
+  NSSet* parentOutEdges = [graph outgoingEdgesForNode:parent];
+  NSAssert([parentOutEdges count] == 1, @"internal error");
+  IFTreeEdge* parentOutEdge = [parentOutEdges anyObject];
+  [graph addEdge:[parentOutEdge clone] fromNode:child toNode:[graph edgeTarget:parentOutEdge]];
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:parent toNode:child];
+  [graph removeEdge:parentOutEdge];
 }
 
 - (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
@@ -183,8 +215,6 @@
     [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
 
   [graph removeNode:toReplace];
-  
-  [self rebuildTreeFromGraph];
 }
 
 #pragma mark Type checking
@@ -217,27 +247,6 @@
   return configDict;
 }
 
-#pragma mark -
-#pragma mark OBSOLETE
-
-- (void)insertObject:(IFTreeNode*)newParent inParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
-{
-  [node insertObject:newParent inParentsAtIndex:index];
-  [self rebuildGraphFromTree];
-}
-
-- (void)replaceObjectInParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index withObject:(IFTreeNode*)newParent;
-{
-  [node replaceObjectInParentsAtIndex:index withObject:newParent];
-  [self rebuildGraphFromTree];
-}
-
-- (void)removeObjectFromParentsOfNode:(IFTreeNode*)node atIndex:(unsigned)index;
-{
-  [node removeObjectFromParentsAtIndex:index];
-  [self rebuildGraphFromTree];
-}
-
 @end
 
 @implementation IFTree (Private)
@@ -256,44 +265,6 @@
     [serialisedNodes addObject:serialisedPreds];
   }
   return serialisedNodes;
-}
-
-- (void)populateGraph:(IFOrientedGraph*)grph fromTree:(IFTreeNode*)root;
-{
-  [grph addNode:root];
-  NSArray* parents = [root parents];
-  for (int i = 0; i < [parents count]; ++i) {
-    IFTreeNode* parent = [parents objectAtIndex:i];
-    [self populateGraph:grph fromTree:parent];
-    [grph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:parent toNode:root];
-  }
-}
-
-- (void)rebuildGraphFromTree;
-{
-  IFTreeNode* root = [self root];
-  IFOrientedGraph* newGraph = [IFOrientedGraph graph];
-  [self populateGraph:newGraph fromTree:root];
-  [graph release];
-  graph = [newGraph retain];
-}
-
-- (void)rebuildParentsForNode:(IFTreeNode*)root;
-{
-  NSArray* parents = [self parentsOfNode:root];
-  for (int i = 0; i < [parents count]; ++i) {
-    if ([[root parents] count] == i)
-      [root insertObject:[parents objectAtIndex:i] inParentsAtIndex:i];
-    else
-      [root replaceObjectInParentsAtIndex:i withObject:[parents objectAtIndex:i]];
-  }
-  [[self do] rebuildParentsForNode:[parents each]];
-}
-
-- (void)rebuildTreeFromGraph;
-{
-  IFTreeNode* root = [self root];
-  [self rebuildParentsForNode:root];
 }
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;

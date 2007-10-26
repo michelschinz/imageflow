@@ -72,8 +72,8 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
   if (filter == nil)
     return;
   NSMutableDictionary* parentEnv = [NSMutableDictionary dictionary];
-  for (int i = 0; i < [parents count]; ++i)
-    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
+//  for (int i = 0; i < [parents count]; ++i)
+//    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
   [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentEnv]];
 }
 

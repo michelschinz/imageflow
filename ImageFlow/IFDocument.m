@@ -30,11 +30,8 @@
 @interface IFDocument (Private)
 - (void)ensureGhostNodes;
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)tree;
-- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
-- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
-- (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
-- (void)removeAllRightGhostPredecessorsOfNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
-- (NSSet*)aliasesForNodes:(NSSet*)nodes;
+- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
+- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
 - (IFGraph*)graph;
 - (void)finishTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
@@ -203,7 +200,7 @@ static IFDocumentTemplateManager* templateManager;
 
 #pragma mark document manipulation
 
-- (void)addTree:(IFTreeNode*)newRoot;
+- (void)addTree:(IFTreeNode*)newNode;
 {
   NSArray* roots = [self roots];
   int i;
@@ -211,68 +208,39 @@ static IFDocumentTemplateManager* templateManager;
        (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
        --i)
     ;
-  [tree insertObject:newRoot inParentsOfNode:[tree root] atIndex:i+1];
+  [tree addNode:newNode asNewRootAtIndex:i+1];
+
   [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  IFGraph* graph = [self graph];
-  IFGraphNode* graphChild = [graph nodeWithData:[child original]];
-  [self removeAllRightGhostPredecessorsOfNode:graphChild inGraph:graph];
-
-  IFGraphNode* graphParent = [IFGraphNode graphNodeWithTypes:[parent potentialTypes] data:parent];
-  [graph addNode:graphParent];
-  [graphParent setPredecessors:[graphChild predecessors]];
-  [self addRightGhostPredecessorsForNode:graphParent inGraph:graph];
-
-  [graphChild setPredecessors:[NSArray arrayWithObject:graphParent]];
-  [self addRightGhostPredecessorsForNode:graphChild inGraph:graph];
-
-  return [graph isTypeable];  
+  IFTree* testTree = [tree clone];
+  // TODO remove aliases
+  [self insertNode:parent asParentOf:child inTree:testTree];
+  return [testTree isTypeCorrect];
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
   NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
 
-  [self removeAllRightGhostParentsOfNode:child];
-  int parentsCount = [tree parentsCountOfNode:child];
-  for (int i = 0; i < parentsCount; ++i) {
-    IFTreeNode* p = [[[[tree parentsOfNode:child] objectAtIndex:0] retain] autorelease];
-    [tree removeObjectFromParentsOfNode:child atIndex:0];
-    [tree insertObject:p inParentsOfNode:parent atIndex:i];
-  }
-  [self addRightGhostParentsForNode:parent];
-
-  [tree insertObject:parent inParentsOfNode:child atIndex:0];
-  [self addRightGhostParentsForNode:child];
-
+  [self insertNode:parent asParentOf:child inTree:tree];
   [self finishTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  IFGraph* graph = [self graph];
-  IFGraphNode* graphParent = [graph nodeWithData:[parent original]];
-  IFGraphNode* graphChild = [IFGraphNode graphNodeWithTypes:[child potentialTypes] data:child];
-  [graph addNode:graphChild];
-  [[[graph nodes] do] replacePredecessor:graphParent byNode:graphChild];
-  [graphChild setPredecessors:[NSArray arrayWithObject:graphParent]];
-  [self addRightGhostPredecessorsForNode:graphChild inGraph:graph];
-  return [graph isTypeable];
+  IFTree* testTree = [tree clone];
+  // TODO remove aliases
+  [self insertNode:child asChildOf:parent inTree:testTree];
+  return [testTree isTypeCorrect];
 }
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
   NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
-
-  IFTreeNode* originalChild = [tree childOfNode:parent];
-  int parentIndex = [[tree parentsOfNode:originalChild] indexOfObject:parent];
-  [tree replaceObjectInParentsOfNode:originalChild atIndex:parentIndex withObject:child];
-  [tree insertObject:parent inParentsOfNode:child atIndex:0];
-  [self addRightGhostParentsForNode:child];
-
+  [self insertNode:child asChildOf:parent inTree:tree];
   [self finishTreeModification];
 }
 
@@ -347,17 +315,6 @@ static IFDocumentTemplateManager* templateManager;
   return result;
 }
 
-// private
-- (void)collectAliasesForNodes:(NSSet*)nodes startingAt:(IFTreeNode*)root inSet:(NSMutableSet*)resultSet;
-{
-  NSArray* parents = [tree parentsOfNode:root];
-  if ([parents count] == 0) {
-    if ([root isKindOfClass:[IFTreeNodeAlias class]] && [nodes containsObject:[(IFTreeNodeAlias*)root original]])
-      [resultSet addObject:root];
-  } else
-    [[self do] collectAliasesForNodes:nodes startingAt:[parents each] inSet:resultSet];
-}
-
 #pragma mark loading and saving
 
 - (BOOL)prepareSavePanel:(NSSavePanel*)savePanel;
@@ -415,15 +372,11 @@ static IFDocumentTemplateManager* templateManager;
     IFTreeNode* root = [roots objectAtIndex:i];
     if ([root isGhost])
       hasGhostColumn |= ([tree parentsCountOfNode:root] == 0);
-    else if ([root outputArity] == 1) {
-      [[root retain] autorelease];
-      IFTreeNode* newRoot = [IFTreeNode ghostNodeWithInputArity:1];
-      [tree replaceObjectInParentsOfNode:[tree root] atIndex:i withObject:newRoot];
-      [tree insertObject:root inParentsOfNode:newRoot atIndex:0];
-    }
+    else if ([root outputArity] == 1)
+      [tree insertNode:[IFTreeNode ghostNodeWithInputArity:1] asChildOf:root];
   }
   if (!hasGhostColumn)
-    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:[tree root] atIndex:[tree parentsCountOfNode:[tree root]]];
+    [tree addNode:[IFTreeNode ghostNodeWithInputArity:0] asNewRootAtIndex:[tree parentsCountOfNode:[tree root]]];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)theTree;
@@ -433,53 +386,18 @@ static IFDocumentTemplateManager* templateManager;
   [theTree addRightGhostParentsForNode:replacement];
 }
 
-// TODO move to some other class
-- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
+- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
 {
-  for (int i = [tree parentsCountOfNode:node]; i < [node inputArity]; ++i)
-    [tree insertObject:[IFTreeNode ghostNodeWithInputArity:0] inParentsOfNode:node atIndex:i];
+  [targetTree removeAllRightGhostParentsOfNode:child];
+  [targetTree insertNode:parent asParentOf:child];
+  [targetTree addRightGhostParentsForNode:parent];
+  [targetTree addRightGhostParentsForNode:child];
 }
 
-- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
+- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
 {
-  for (;;) {
-    IFTreeNode* lastParent = [[tree parentsOfNode:node] lastObject];
-    if (lastParent == nil || ![tree isGhostSubtreeRoot:lastParent])
-      break;
-    [tree removeObjectFromParentsOfNode:node atIndex:[tree parentsCountOfNode:node]-1];
-  }
-}
-
-// TODO move to some other class
-- (void)addRightGhostPredecessorsForNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
-{
-  NSArray* ghostTypes = [[IFTreeNode ghostNodeWithInputArity:0] potentialTypes];
-  int predsToAdd = [[node data] inputArity] - [[node predecessors] count];
-  while (predsToAdd-- > 0) {
-    IFGraphNode* newPred = [IFGraphNode graphNodeWithTypes:ghostTypes];
-    [graph addNode:newPred];
-    [node addPredecessor:newPred];
-  }
-}
-
-// TODO move to some other class
-- (void)removeAllRightGhostPredecessorsOfNode:(IFGraphNode*)node inGraph:(IFGraph*)graph;
-{
-  for (;;) {
-    IFGraphNode* lastPred = [[node predecessors] lastObject];
-    NSAssert(lastPred == nil || [lastPred data] != nil, @"no tree node attached to graph node");
-    if (lastPred == nil || ![tree isGhostSubtreeRoot:[lastPred data]])
-      break;
-    [node removeLastPredecessor];
-    [graph removeNode:lastPred];
-  }
-}
-
-- (NSSet*)aliasesForNodes:(NSSet*)nodes;
-{
-  NSMutableSet* aliases = [NSMutableSet set];
-  [self collectAliasesForNodes:nodes startingAt:[tree root] inSet:aliases];
-  return aliases;
+  [targetTree insertNode:child asChildOf:parent];
+  [targetTree addRightGhostParentsForNode:child];
 }
 
 - (IFGraph*)graph;
@@ -512,10 +430,6 @@ static IFDocumentTemplateManager* templateManager;
 
 - (void)overwriteWith:(IFDocument*)other;
 {
-  // Destroy all current contents
-  while ([[tree parentsOfNode:[tree root]] count] > 0)
-    [tree removeObjectFromParentsOfNode:[tree root] atIndex:0];
-
   // Copy everything from other document
   [self setAuthorName:[other authorName]];
   [self setDocumentDescription:[other documentDescription]];
@@ -523,16 +437,8 @@ static IFDocumentTemplateManager* templateManager;
   [self setResolutionX:[other resolutionX]];
   [self setResolutionY:[other resolutionY]];
   
-  IFTree* otherTree = other->tree; // HACK
-  IFTreeNode* otherFakeRoot = [otherTree root]; // HACK
-  NSArray* otherRoots = [[otherTree parentsOfNode:otherFakeRoot] copy];
-  for (int i = 0; i < [otherRoots count]; ++i) {
-    IFTreeNode* otherRoot = [[otherRoots objectAtIndex:i] retain];
-    [otherTree removeObjectFromParentsOfNode:otherFakeRoot atIndex:0];
-    [tree insertObject:otherRoot inParentsOfNode:[tree root] atIndex:i];
-    [otherRoot release];
-  }
-  [otherRoots release];
+  [tree release];
+  tree = [other->tree retain]; // HACK
 
   // TODO copy marks
 }
