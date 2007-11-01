@@ -9,6 +9,7 @@
 #import "IFTree.h"
 #import "IFTreeEdge.h"
 #import "IFTypeChecker.h"
+#import "IFSubtree.h"
 
 static NSString* IFTreeNodeExpressionChangedContext = @"IFTreeNodeExpressionChangedContext";
 
@@ -18,6 +19,9 @@ static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNode
 static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
+
+- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
+- (void)debugDump;
 @end
 
 @implementation IFTree
@@ -218,21 +222,27 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [graph removeEdge:parentOutEdge];
 }
 
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (void)replaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
-  IFTreeEdge* edge;
-  [graph addNode:replacement];
-  
-  NSEnumerator* inEdgesEnum = [[graph incomingEdgesForNode:toReplace] objectEnumerator];
-  while (edge = [inEdgesEnum nextObject])
-    [graph addEdge:[edge clone] fromNode:[graph edgeSource:edge] toNode:replacement];
+  NSAssert([toReplace baseTree] == self, @"cannot replace subtree belonging to different tree");
 
-  NSEnumerator* outEdgesEnum = [[graph outgoingEdgesForNode:toReplace] objectEnumerator];
+  [graph addNode:replacement];
+
+  // Create incoming edges
+  NSSet* includedNodes = [toReplace includedNodes];
+  NSArray* parentNodes = [toReplace sortedParentsOfInputNodes];
+  for (int i = 0; i < [parentNodes count]; ++i)
+    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:[parentNodes objectAtIndex:i] toNode:replacement];
+
+  // Create outgoing edge
+  NSEnumerator* outEdgesEnum = [[graph outgoingEdgesForNode:[toReplace root]] objectEnumerator];
+  IFTreeEdge* edge;
   while (edge = [outEdgesEnum nextObject])
     [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
 
-  [graph removeNode:toReplace];
+  // Remove nodes
+  [[graph do] removeNode:[includedNodes each]];
 }
 
 #pragma mark Type checking
@@ -272,6 +282,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     [node startUpdatingExpression];
   }
 }
+
 
 @end
 
@@ -328,6 +339,22 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph)
 {
   [[self do] dfsCollectAncestorsOfNode:[[self parentsOfNode:node] each] inArray:accumulator];
   [accumulator addObject:node];
+}
+
+#pragma mark -
+#pragma mark Debugging
+
+- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
+{
+  NSLog(@"%2d %@", indent, [[root filter] expression]);
+  NSArray* parents = [self parentsOfNode:root];
+  for (int i = 0; i < [parents count]; ++i)
+    [self debugDumpFrom:[parents objectAtIndex:i] indent:indent+1];
+}
+
+- (void)debugDump;
+{
+  [self debugDumpFrom:[self root] indent:0];
 }
 
 @end

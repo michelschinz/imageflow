@@ -98,6 +98,7 @@
 		FA74F07A0AB5EC5B00027606 /* duplicationTool.png in Resources */ = {isa = PBXBuildFile; fileRef = FA74F0780AB5EC5B00027606 /* duplicationTool.png */; };
 		FA74F07B0AB5EC5B00027606 /* eraserTool.png in Resources */ = {isa = PBXBuildFile; fileRef = FA74F0790AB5EC5B00027606 /* eraserTool.png */; };
 		FA79DF6B09475668004493E7 /* IFTreeLayoutOutputConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = FA79DF6909475668004493E7 /* IFTreeLayoutOutputConnector.m */; };
+		FA8492B00CDA23E700F78F29 /* IFSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8492AE0CDA23E700F78F29 /* IFSubtree.m */; };
 		FA89DA7B0946116D0015B01E /* IFTreeLayoutOrnament.m in Sources */ = {isa = PBXBuildFile; fileRef = FA89DA790946116D0015B01E /* IFTreeLayoutOrnament.m */; };
 		FA8C858A08864ADD003A77FB /* IFTreeLayoutGhost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8C858908864ADD003A77FB /* IFTreeLayoutGhost.m */; };
 		FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */; };
@@ -399,6 +400,8 @@
 		FA74F0790AB5EC5B00027606 /* eraserTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraserTool.png; sourceTree = "<group>"; };
 		FA79DF6809475668004493E7 /* IFTreeLayoutOutputConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutOutputConnector.h; sourceTree = "<group>"; };
 		FA79DF6909475668004493E7 /* IFTreeLayoutOutputConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutOutputConnector.m; sourceTree = "<group>"; };
+		FA8492AD0CDA23E700F78F29 /* IFSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSubtree.h; sourceTree = "<group>"; };
+		FA8492AE0CDA23E700F78F29 /* IFSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSubtree.m; sourceTree = "<group>"; };
 		FA89DA780946116D0015B01E /* IFTreeLayoutOrnament.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutOrnament.h; sourceTree = "<group>"; };
 		FA89DA790946116D0015B01E /* IFTreeLayoutOrnament.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutOrnament.m; sourceTree = "<group>"; };
 		FA8C858808864ADD003A77FB /* IFTreeLayoutGhost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutGhost.h; sourceTree = "<group>"; };
@@ -879,6 +882,8 @@
 				FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */,
 				FAD889E80CD0CBCB00D3DE7D /* IFTreeEdge.h */,
 				FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */,
+				FA8492AD0CDA23E700F78F29 /* IFSubtree.h */,
+				FA8492AE0CDA23E700F78F29 /* IFSubtree.m */,
 				FABC3D51088AD689007E8691 /* IFTreeMark.h */,
 				FABC3D52088AD689007E8691 /* IFTreeMark.m */,
 				FA2411770962C98100173105 /* IFTreeIdentifier.h */,
@@ -1812,6 +1817,7 @@
 				FAD889EB0CD0CBCB00D3DE7D /* IFTreeEdge.m in Sources */,
 				FAE531E30CD210C200B39F8F /* IFTreeTemplate.m in Sources */,
 				FAE531F30CD2138800B39F8F /* IFTreeTemplateManager.m in Sources */,
+				FA8492B00CDA23E700F78F29 /* IFSubtree.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

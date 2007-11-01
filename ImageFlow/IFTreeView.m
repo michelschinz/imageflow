@@ -33,6 +33,7 @@
 - (void)clearSelectedNodes;
 - (void)setSelectedNodes:(NSSet*)newSelectedNodes;
 - (NSSet*)selectedNodes;
+- (IFSubtree*)selectedSubtree;
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 - (IFTreeNode*)cursorNode;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
@@ -426,7 +427,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)delete:(id)sender;
 {
-  [document deleteContiguousNodes:[self selectedNodes]];
+  [document deleteSubtree:[self selectedSubtree]];
 }
 
 - (void)deleteBackward:(id)sender;
@@ -538,7 +539,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
   } else if ([types containsObject:IFTreeNodeArrayPboardType]) {
     NSArray* nodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
-    [document deleteContiguousNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]];
+    [document deleteSubtree:[IFSubtree subtreeOf:[document tree] includingNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]]];
   }
 }
 
@@ -651,8 +652,8 @@ static enum {
           else
             return NO;
         }
-        if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
-          [document deleteContiguousNodes:draggedNodes];
+// TODO       if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
+//          [document deleteContiguousNodes:draggedNodes];
         return YES;        
       } else if ((operation & NSDragOperationLink) != 0) {
         // Link: create node alias
@@ -897,6 +898,11 @@ static enum {
       : [NSSet setWithObject:cursorNode];
   } else
     return selectedNodes;
+}
+
+- (IFSubtree*)selectedSubtree;
+{
+  return [IFSubtree subtreeOf:[document tree] includingNodes:[self selectedNodes]];
 }
 
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;

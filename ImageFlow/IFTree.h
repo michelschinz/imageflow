@@ -10,6 +10,7 @@
 
 #import "IFTreeNode.h"
 #import "IFOrientedGraph.h"
+@class IFSubtree;
 
 @interface IFTree : NSObject {
   BOOL propagateNewParentExpressions;
@@ -48,7 +49,7 @@
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (void)replaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
 
 #pragma mark Type checking
 

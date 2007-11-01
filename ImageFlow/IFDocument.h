@@ -7,6 +7,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTree.h"
+#import "IFSubtree.h"
 #import "IFTreeNode.h"
 #import "IFTreeMark.h"
 #import "IFColorProfile.h"
@@ -61,7 +62,7 @@ extern NSString* IFTreeChangedNotification;
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 - (void)deleteNode:(IFTreeNode*)node;
-- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
+- (void)deleteSubtree:(IFSubtree*)subtree;
 
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;

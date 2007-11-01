@@ -252,17 +252,13 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (void)deleteNode:(IFTreeNode*)node;
 {
-  [self deleteContiguousNodes:[NSSet setWithObject:node]];
+  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
 }
 
-- (void)deleteContiguousNodes:(NSSet*)contiguousNodes;
+- (void)deleteSubtree:(IFSubtree*)subtree;
 {
-  NSAssert([contiguousNodes count] == 1, @"cannot delete more than 1 node (TODO)");
-
-  IFTreeNode* nodeToDelete = [contiguousNodes anyObject];
-
   [self beginTreeModification];
-  [tree replaceNode:nodeToDelete byNode:[IFTreeNode ghostNodeWithInputArity:[nodeToDelete inputArity]]];  
+  [tree replaceSubtree:subtree byNode:[IFTreeNode ghostNodeWithInputArity:[subtree inputArity]]];
   [self endTreeModification];
 }
 
@@ -376,7 +372,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)theTree;
 {
   [theTree removeAllRightGhostParentsOfNode:node];
-  [theTree replaceNode:node byNode:replacement];
+  [theTree replaceSubtree:[IFSubtree subtreeOf:theTree includingNodes:[NSSet setWithObject:node]] byNode:replacement];
   [theTree addRightGhostParentsForNode:replacement];
 }
 
