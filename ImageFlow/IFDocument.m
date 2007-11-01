@@ -205,7 +205,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
   IFTree* testTree = [tree clone];
-  // TODO remove aliases
   [self insertNode:parent asParentOf:child inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -221,7 +220,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
   IFTree* testTree = [tree clone];
-  // TODO remove aliases
   [self insertNode:child asChildOf:parent inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -236,7 +234,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
   IFTree* testTree = [tree clone];
-  // TODO remove aliases (replace by edges)
   [self replaceGhostNode:node usingNode:replacement inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -280,6 +277,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [NSSet setWithArray:[tree dfsAncestorsOfNode:[self rootOfTreeContainingNode:node]]];
 }
 
+// TODO move to IFTree ?
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 {
   IFTreeNode* root = node;
@@ -297,6 +295,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [result addObject:node];
 }
 
+// TODO move to IFTree ?
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
 {
   NSMutableArray* result = [NSMutableArray array];

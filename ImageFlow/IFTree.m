@@ -11,7 +11,10 @@
 #import "IFTypeChecker.h"
 
 @interface IFTree (Private)
-- (NSArray*)serialiseSortedNodes:(NSArray*)sortedNodes;
+static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node);
+static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNodes);
+static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
+
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 @end
 
@@ -90,16 +93,7 @@
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
 {
-  NSSet* inEdges = [graph incomingEdgesForNode:node];
-  NSMutableArray* parents = [NSMutableArray arrayWithCapacity:[inEdges count]];
-  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
-  IFTreeEdge* inEdge;
-  while (inEdge = [inEdgesEnum nextObject]) {
-    while ([parents count] < [inEdge targetIndex] + 1)
-      [parents addObject:[NSNull null]];
-    [parents replaceObjectAtIndex:[inEdge targetIndex] withObject:[graph edgeSource:inEdge]];
-  }
-  return parents;
+  return nodeParents(graph,node);
 }
 
 - (IFTreeNode*)childOfNode:(IFTreeNode*)node;
@@ -221,26 +215,28 @@
 
 - (BOOL)isCyclic;
 {
-  return [graph isCyclic];
+  return [graphCloneWithoutAliases(graph) isCyclic];
 }
 
 - (BOOL)isTypeCorrect;
 {
   IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
-  NSArray* sortedNodes = [graph topologicallySortedNodes];
+  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
+  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   if (sortedNodes == nil)
     return NO; // cyclic graph
   NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  return [typeChecker checkDAG:[self serialiseSortedNodes:sortedNodesNoRoot] withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
 }
 
 - (NSDictionary*)resolveOverloading;
 {
   IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
-  NSArray* sortedNodes = [graph topologicallySortedNodes];
+  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
+  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
   NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  NSArray* config = [typeChecker configureDAG:[self serialiseSortedNodes:sortedNodesNoRoot] withPotentialTypes:[[sortedNodesNoRoot collect] types]];
+  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] types]];
   NSMutableDictionary* configDict = createMutableDictionaryWithRetainedKeys();
   for (int i = 0; i < [sortedNodesNoRoot count]; ++i)
     CFDictionarySetValue((CFMutableDictionaryRef)configDict, [sortedNodesNoRoot objectAtIndex:i], [config objectAtIndex:i]);
@@ -251,13 +247,27 @@
 
 @implementation IFTree (Private)
 
-- (NSArray*)serialiseSortedNodes:(NSArray*)sortedNodes;
+static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node)
+{
+  NSSet* inEdges = [graph incomingEdgesForNode:node];
+  NSMutableArray* parents = [NSMutableArray arrayWithCapacity:[inEdges count]];
+  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
+  IFTreeEdge* inEdge;
+  while (inEdge = [inEdgesEnum nextObject]) {
+    while ([parents count] < [inEdge targetIndex] + 1)
+      [parents addObject:[NSNull null]];
+    [parents replaceObjectAtIndex:[inEdge targetIndex] withObject:[graph edgeSource:inEdge]];
+  }
+  return parents;
+}
+
+static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNodes)
 {
   const int nodesCount = [sortedNodes count];
   NSMutableArray* serialisedNodes = [NSMutableArray arrayWithCapacity:nodesCount];
   for (int i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    NSArray* preds = [self parentsOfNode:node];
+    NSArray* preds = nodeParents(graph,node);
     const int predsCount = [preds count];
     NSMutableArray* serialisedPreds = [NSMutableArray arrayWithCapacity:predsCount];
     for (int j = 0; j < predsCount; ++j)
@@ -265,6 +275,23 @@
     [serialisedNodes addObject:serialisedPreds];
   }
   return serialisedNodes;
+}
+
+static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph)
+{
+  IFOrientedGraph* clone = [graph clone];
+  NSEnumerator* cloneNodesEnum = [[clone nodes] objectEnumerator];
+  IFTreeNode* node;
+  while (node = [cloneNodesEnum nextObject]) {
+    if ([node isAlias]) {
+      NSSet* outEdges = [clone outgoingEdgesForNode:node];
+      NSCAssert([outEdges count] == 1, @"internal error");
+      IFTreeEdge* outEdge = [outEdges anyObject];
+      [clone addEdge:[IFTreeEdge edgeWithTargetIndex:[outEdge targetIndex]] fromNode:[node original] toNode:[clone edgeTarget:outEdge]];
+      [clone removeNode:node];
+    }
+  }
+  return clone;
 }
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;

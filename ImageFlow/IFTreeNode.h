@@ -12,8 +12,6 @@
 #import "IFType.h"
 #import "IFGraph.h"
 
-extern const unsigned int ID_NONE;
-
 @interface IFTreeNode : NSObject {
   NSString* name;
   BOOL isFolded;
