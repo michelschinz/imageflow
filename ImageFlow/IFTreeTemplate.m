@@ -44,12 +44,6 @@
   return description;
 }
 
-- (NSString*)comment;
-{
-  NSLog(@"obsolete method <comment>");
-  return description;
-}
-
 - (IFTreeNode*)node;
 {
   return node;

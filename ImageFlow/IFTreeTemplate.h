@@ -20,7 +20,7 @@
 - (id)initWithName:(NSString*)theName description:(NSString*)theDescription node:(IFTreeNode*)theNode;
 
 - (NSString*)name;
-- (NSString*)comment;
+- (NSString*)description;
 - (IFTreeNode*)node;
 
 @end
