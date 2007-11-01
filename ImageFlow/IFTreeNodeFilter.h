@@ -13,6 +13,7 @@
 
 @interface IFTreeNodeFilter : IFTreeNode {
   BOOL inReconfiguration;
+  NSMutableDictionary* parentExpressions;
   IFFilter* filter;
 }
 

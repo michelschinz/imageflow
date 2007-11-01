@@ -31,7 +31,8 @@
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
 - (IFGraph*)graph;
-- (void)finishTreeModification;
+- (void)beginTreeModification;
+- (void)endTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
 @end
 
@@ -48,6 +49,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   tree = [[IFTree tree] retain];
   [tree addNode:[IFTreeNodeFilter nodeWithFilter:nil]];
   [self ensureGhostNodes];
+  [tree setPropagateNewParentExpressions:YES];
   
   canvasBounds = NSMakeRect(0,0,800,600);
   workingSpaceProfile = nil;
@@ -197,14 +199,15 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
        (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
        --i)
     ;
-  [tree addNode:newNode asNewRootAtIndex:i+1];
 
-  [self finishTreeModification];
+  [self beginTreeModification];
+  [tree addNode:newNode asNewRootAtIndex:i+1];
+  [self endTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  IFTree* testTree = [tree clone];
+  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
   [self insertNode:parent asParentOf:child inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -213,13 +216,14 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
 
+  [self beginTreeModification];
   [self insertNode:parent asParentOf:child inTree:tree];
-  [self finishTreeModification];
+  [self endTreeModification];
 }
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  IFTree* testTree = [tree clone];
+  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
   [self insertNode:child asChildOf:parent inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -227,13 +231,15 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
   NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
+  
+  [self beginTreeModification];
   [self insertNode:child asChildOf:parent inTree:tree];
-  [self finishTreeModification];
+  [self endTreeModification];
 }
 
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
-  IFTree* testTree = [tree clone];
+  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
   [self replaceGhostNode:node usingNode:replacement inTree:testTree];
   return [testTree isTypeCorrect];
 }
@@ -241,8 +247,10 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
+  
+  [self beginTreeModification];
   [self replaceGhostNode:node usingNode:replacement inTree:tree];
-  [self finishTreeModification];
+  [self endTreeModification];
 }
 
 - (void)deleteNode:(IFTreeNode*)node;
@@ -255,9 +263,10 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   NSAssert([contiguousNodes count] == 1, @"cannot delete more than 1 node (TODO)");
 
   IFTreeNode* nodeToDelete = [contiguousNodes anyObject];
-  [tree replaceNode:nodeToDelete byNode:[IFTreeNode ghostNodeWithInputArity:[nodeToDelete inputArity]]];
-  
-  [self finishTreeModification];
+
+  [self beginTreeModification];
+  [tree replaceNode:nodeToDelete byNode:[IFTreeNode ghostNodeWithInputArity:[nodeToDelete inputArity]]];  
+  [self endTreeModification];
 }
 
 - (NSSet*)allNodes;
@@ -409,10 +418,18 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   }
 }
 
-- (void)finishTreeModification;
+- (void)beginTreeModification;
 {
+  NSAssert([tree propagateNewParentExpressions], @"internal error");
+  [tree setPropagateNewParentExpressions:NO];
+}
+
+- (void)endTreeModification;
+{
+  NSAssert(![tree propagateNewParentExpressions], @"internal error");
   [self ensureGhostNodes];
   [self configureFilters];
+  [tree setPropagateNewParentExpressions:YES];
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
 }
 

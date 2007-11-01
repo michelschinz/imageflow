@@ -21,6 +21,8 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 - (id)initWithFilter:(IFFilter*)theFilter;
 {
   if (![super init]) return nil;
+  inReconfiguration = NO;
+  parentExpressions = [[NSMutableDictionary dictionary] retain];
   filter = [theFilter retain];
   [filter addObserver:self forKeyPath:@"expression" options:0 context:IFFilterExpressionChangedContext];
   return self;
@@ -30,6 +32,7 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 {
   [filter removeObserver:self forKeyPath:@"expression"];  
   OBJC_RELEASE(filter);
+  OBJC_RELEASE(parentExpressions);
   [super dealloc];
 }
 
@@ -67,14 +70,17 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
   inReconfiguration = NO;
 }
 
+- (void)setParentExpression:(IFExpression*)parentExpression atIndex:(unsigned)index;
+{
+  [parentExpressions setObject:parentExpression forKey:[NSNumber numberWithUnsignedInt:index]];
+  [self updateExpression];
+}
+
 - (void)updateExpression;
 {
   if (filter == nil)
     return;
-  NSMutableDictionary* parentEnv = [NSMutableDictionary dictionary];
-//  for (int i = 0; i < [parents count]; ++i)
-//    [parentEnv setObject:[[parents objectAtIndex:i] expression] forKey:[NSNumber numberWithInt:i]];
-  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentEnv]];
+  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentExpressions]];
 }
 
 #pragma mark Tree view support

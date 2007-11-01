@@ -10,6 +10,8 @@
 #import "IFTreeEdge.h"
 #import "IFTypeChecker.h"
 
+static NSString* IFTreeNodeExpressionChangedContext = @"IFTreeNodeExpressionChangedContext";
+
 @interface IFTree (Private)
 static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node);
 static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNodes);
@@ -25,28 +27,36 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [[[self alloc] init] autorelease];
 }
 
-- (id)initWithGraph:(IFOrientedGraph*)theGraph;
+- (id)initWithGraph:(IFOrientedGraph*)theGraph propagateNewParentExpressions:(BOOL)thePropagateNewParentExpressions;
 {
   if (![super init])
     return nil;
   graph = [theGraph retain];
+  propagateNewParentExpressions = NO;
+  [self setPropagateNewParentExpressions:thePropagateNewParentExpressions];
   return self;
 }
 
 - (id)init;
 {
-  return [self initWithGraph:[IFOrientedGraph graph]];
+  return [self initWithGraph:[IFOrientedGraph graph] propagateNewParentExpressions:NO];
 }
 
 - (void)dealloc;
 {
+  [self setPropagateNewParentExpressions:NO];
   OBJC_RELEASE(graph);
   [super dealloc];
 }
 
 - (IFTree*)clone;
 {
-  return [[[IFTree alloc] initWithGraph:[graph clone]] autorelease];
+  return [[[IFTree alloc] initWithGraph:[graph clone] propagateNewParentExpressions:propagateNewParentExpressions] autorelease];
+}
+
+- (IFTree*)cloneWithoutNewParentExpressionsPropagation;
+{
+  return [[[IFTree alloc] initWithGraph:[graph clone] propagateNewParentExpressions:NO] autorelease];
 }
 
 - (IFGraph*)graphOfNode:(IFTreeNode*)node;
@@ -88,6 +98,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)addNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   [graph addNode:node];
 }
 
@@ -130,10 +141,48 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return YES;
 }
 
+#pragma mark Expression propagation
+
+- (BOOL)propagateNewParentExpressions;
+{
+  return propagateNewParentExpressions;
+}
+
+- (void)setPropagateNewParentExpressions:(BOOL)newValue;
+{
+  if (newValue == propagateNewParentExpressions)
+    return;
+
+  NSEnumerator* nodesEnum = [[graph nodes] objectEnumerator];
+  IFTreeNode* node;
+  while (node = [nodesEnum nextObject]) {
+    if (newValue)
+      [node addObserver:self forKeyPath:@"expression" options:0 context:IFTreeNodeExpressionChangedContext];
+    else
+      [node removeObserver:self forKeyPath:@"expression"];
+  }
+  propagateNewParentExpressions = newValue;
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
+{
+  NSAssert(propagateNewParentExpressions, @"internal error");
+  NSAssert1(context == IFTreeNodeExpressionChangedContext, @"unexpected context: %@", context);
+
+  IFTreeNode* node = object;
+  NSSet* outEdges = [graph outgoingEdgesForNode:node];
+  NSAssert([outEdges count] == 1, @"internal error");
+
+  IFTreeEdge* outEdge = [outEdges anyObject];
+  IFTreeNode* child = [graph edgeTarget:outEdge];
+  [child setParentExpression:[node expression] atIndex:[outEdge targetIndex]];
+}
+
 #pragma mark High level editing
 
 - (void)addRightGhostParentsForNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   for (int i = [self parentsCountOfNode:node]; i < [node inputArity]; ++i) {
     IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
     [graph addNode:ghost];
@@ -143,6 +192,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   for (;;) {
     IFTreeNode* lastParent = [[self parentsOfNode:node] lastObject];
     if (lastParent == nil || ![self isGhostSubtreeRoot:lastParent])
@@ -153,6 +203,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
 
   NSSet* rootInEdgesCopy = [[graph incomingEdgesForNode:root] copy];
@@ -172,6 +223,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   [graph addNode:parent];
   NSSet* childInEdgesCopy = [[graph incomingEdgesForNode:child] copy];
   NSEnumerator* childInEdgesEnum = [childInEdgesCopy objectEnumerator];
@@ -186,6 +238,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   [graph addNode:child];
   NSSet* parentOutEdges = [graph outgoingEdgesForNode:parent];
   NSAssert([parentOutEdges count] == 1, @"internal error");
@@ -197,6 +250,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeEdge* edge;
   [graph addNode:replacement];
   

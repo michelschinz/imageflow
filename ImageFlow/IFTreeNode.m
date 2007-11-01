@@ -25,6 +25,7 @@
   if (![super init]) return nil;
   name = nil;
   isFolded = NO;
+  expression = nil;
   return self;
 }
 
@@ -84,6 +85,11 @@
 - (IFFilter*)filter;
 {
   return nil;
+}
+
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
+{
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 - (IFExpression*)expression;

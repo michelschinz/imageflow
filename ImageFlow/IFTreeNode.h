@@ -31,6 +31,8 @@
 - (BOOL)isAlias;
 - (IFTreeNode*)original;
 - (IFFilter*)filter;
+
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 - (IFExpression*)expression;
 
 - (int)inputArity;

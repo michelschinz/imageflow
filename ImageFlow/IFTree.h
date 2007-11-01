@@ -12,28 +12,33 @@
 #import "IFOrientedGraph.h"
 
 @interface IFTree : NSObject {
+  BOOL propagateNewParentExpressions;
   IFOrientedGraph* graph;
 }
 
 + (id)tree;
 
 - (IFTree*)clone;
+- (IFTree*)cloneWithoutNewParentExpressionsPropagation;
 
-- (IFGraph*)graphOfNode:(IFTreeNode*)node;
-
+#pragma mark Navigation
 - (IFTreeNode*)root;
 
-- (void)addNode:(IFTreeNode*)node;
-
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
-- (IFTreeNode*)childOfNode:(IFTreeNode*)node;
-
-- (NSArray*)siblingsOfNode:(IFTreeNode*)node;
-
-- (NSArray*)dfsAncestorsOfNode:(IFTreeNode*)node;
-
 - (unsigned)parentsCountOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)childOfNode:(IFTreeNode*)node;
+- (NSArray*)siblingsOfNode:(IFTreeNode*)node;
+- (NSArray*)dfsAncestorsOfNode:(IFTreeNode*)node;
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
+
+#pragma mark Expression propagation
+
+- (BOOL)propagateNewParentExpressions;
+- (void)setPropagateNewParentExpressions:(BOOL)newValue;
+
+#pragma mark Low level editing
+
+- (void)addNode:(IFTreeNode*)node;
 
 #pragma mark High level editing
 
@@ -50,5 +55,10 @@
 - (BOOL)isCyclic;
 - (BOOL)isTypeCorrect;
 - (NSDictionary*)resolveOverloading;
+
+#pragma mark -
+#pragma mark OBSOLETE
+
+- (IFGraph*)graphOfNode:(IFTreeNode*)node;
 
 @end
