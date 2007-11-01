@@ -11,6 +11,7 @@
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFTypeVar.h"
+#import "IFParentExpression.h"
 
 @implementation IFGhostFilter
 
@@ -21,7 +22,7 @@
 
 - (NSArray*)potentialTypes;
 {
-  int inputArity = [[environment valueForKey:@"inputArity"] intValue];
+  unsigned inputArity = [[environment valueForKey:@"inputArity"] unsignedIntValue];
   if (inputArity == 0)
     return [NSArray arrayWithObject:[IFTypeVar typeVarWithIndex:0]];
   else {
@@ -34,11 +35,11 @@
 
 - (NSArray*)potentialRawExpressions;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression nop]] retain];
-  }
-  return exprs;
+  unsigned inputArity = [[environment valueForKey:@"inputArity"] unsignedIntValue];
+  NSMutableArray* operands = [NSMutableArray arrayWithCapacity:inputArity];
+  for (unsigned i = 0; i < inputArity; ++i)
+    [operands addObject:[IFParentExpression parentExpressionWithIndex:i]];
+  return [NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"nop"] operands:operands]];
 }
 
 @end
