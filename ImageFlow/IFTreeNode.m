@@ -25,6 +25,7 @@
   if (![super init]) return nil;
   name = nil;
   isFolded = NO;
+  updateExpression = NO;
   expression = nil;
   return self;
 }
@@ -87,11 +88,6 @@
   return nil;
 }
 
-- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
 - (IFExpression*)expression;
 {
   if (expression == nil)
@@ -105,12 +101,23 @@
   return nil;
 }
 
-- (void)beginReconfiguration;
+- (void)stopUpdatingExpression;
+{
+  updateExpression = NO;
+}
+
+- (void)startUpdatingExpression;
+{
+  updateExpression = YES;
+  [self maybeUpdateExpression];
+}
+
+- (void)setActiveTypeIndex:(unsigned)newIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 {
   [self doesNotRecognizeSelector:_cmd];
 }
@@ -195,6 +202,12 @@
 
 #pragma mark -
 #pragma mark (protected)
+
+- (void)maybeUpdateExpression;
+{
+  if (updateExpression)
+    [self updateExpression];
+}
 
 - (void)updateExpression;
 {

@@ -10,11 +10,11 @@
 
 #import "IFFilter.h"
 #import "IFType.h"
-#import "IFGraph.h"
 
 @interface IFTreeNode : NSObject {
   NSString* name;
   BOOL isFolded;
+  BOOL updateExpression;
   IFExpression* expression;
 }
 
@@ -31,15 +31,16 @@
 - (BOOL)isAlias;
 - (IFTreeNode*)original;
 - (IFFilter*)filter;
-
-- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 - (IFExpression*)expression;
 
 - (int)inputArity;
 - (int)outputArity;
 - (NSArray*)potentialTypes;
-- (void)beginReconfiguration;
-- (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
+
+- (void)stopUpdatingExpression;
+- (void)startUpdatingExpression;
+- (void)setActiveTypeIndex:(unsigned)newIndex;
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 
 #pragma mark Tree view support
 - (NSString*)nameOfParentAtIndex:(int)index;
@@ -58,7 +59,8 @@
 
 #pragma mark -
 #pragma mark (protected)
-- (void)setExpression:(IFExpression*)newExpression;
+- (void)maybeUpdateExpression;
 - (void)updateExpression;
+- (void)setExpression:(IFExpression*)newExpression;
 
 @end

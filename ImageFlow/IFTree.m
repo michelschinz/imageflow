@@ -59,36 +59,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [[[IFTree alloc] initWithGraph:[graph clone] propagateNewParentExpressions:NO] autorelease];
 }
 
-- (IFGraph*)graphOfNode:(IFTreeNode*)node;
-{
-  IFGraph* grph = [IFGraph graph];
-  
-  // Phase 1: collect all tree nodes and create corresponding graph nodes.
-  NSMutableDictionary* treeNodeToGraphNode = createMutableDictionaryWithRetainedKeys();
-  NSMutableSet* nodesToVisit = [NSMutableSet setWithObject:node];
-  while ([nodesToVisit count] > 0) {
-    IFTreeNode* treeNode = [nodesToVisit anyObject];
-    if (![treeNode isAlias]) {
-      IFGraphNode* graphNode = [IFGraphNode graphNodeWithTypes:[treeNode potentialTypes] data:treeNode];
-      CFDictionarySetValue((CFMutableDictionaryRef)treeNodeToGraphNode,treeNode,graphNode);
-      [grph addNode:graphNode];
-    }
-    [nodesToVisit removeObject:treeNode];
-    [nodesToVisit addObjectsFromArray:[self parentsOfNode:treeNode]];
-  }
-  
-  // Phase 2: set predecessors for graph nodes.
-  NSEnumerator* nodeEnum = [treeNodeToGraphNode keyEnumerator];
-  IFTreeNode* treeNode;
-  while (treeNode = [nodeEnum nextObject]) {
-    NSArray* nodeParents = [self parentsOfNode:treeNode];
-    IFGraphNode* graphNode = [treeNodeToGraphNode objectForKey:treeNode];
-    for (int i = 0; i < [nodeParents count]; ++i)
-      [graphNode addPredecessor:[treeNodeToGraphNode objectForKey:[[nodeParents objectAtIndex:i] original]]];
-  }
-  return grph;
-}
-
 - (IFTreeNode*)root;
 {
   NSSet* roots = [graph sinkNodes];
@@ -283,18 +253,24 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
 }
 
-- (NSDictionary*)resolveOverloading;
+- (void)configureNodes;
 {
   IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
   IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
   NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
   NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] types]];
-  NSMutableDictionary* configDict = createMutableDictionaryWithRetainedKeys();
-  for (int i = 0; i < [sortedNodesNoRoot count]; ++i)
-    CFDictionarySetValue((CFMutableDictionaryRef)configDict, [sortedNodesNoRoot objectAtIndex:i], [config objectAtIndex:i]);
-  return configDict;
+  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+
+  for (int i = 0; i < [config count]; ++i) {
+    IFTreeNode* node = [sortedNodesNoRoot objectAtIndex:i];
+    [node stopUpdatingExpression];
+    NSArray* parents = [self parentsOfNode:node];
+    for (int i = 0; i < [parents count]; ++i)
+      [node setParentExpression:[[parents objectAtIndex:i] expression] atIndex:i];
+    [node setActiveTypeIndex:[[config objectAtIndex:i] unsignedIntValue]];
+    [node startUpdatingExpression];
+  }
 }
 
 @end

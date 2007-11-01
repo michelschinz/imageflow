@@ -57,23 +57,15 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
   return [filter potentialTypes];
 }
 
-- (void)beginReconfiguration;
+- (void)setActiveTypeIndex:(unsigned)newIndex;
 {
-  NSAssert(!inReconfiguration, @"already in reconfiguration");
-  inReconfiguration = YES;
-}
-
-- (void)endReconfigurationWithActiveTypeIndex:(int)typeIndex;
-{
-  NSAssert(inReconfiguration, @"not in reconfiguration");
-  [filter setActiveTypeIndex:typeIndex];
-  inReconfiguration = NO;
+  [filter setActiveTypeIndex:newIndex];
 }
 
 - (void)setParentExpression:(IFExpression*)parentExpression atIndex:(unsigned)index;
 {
   [parentExpressions setObject:parentExpression forKey:[NSNumber numberWithUnsignedInt:index]];
-  [self updateExpression];
+  [self maybeUpdateExpression];
 }
 
 - (void)updateExpression;
@@ -148,7 +140,7 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFFilterExpressionChangedContext)
-    [self updateExpression];
+    [self maybeUpdateExpression];
   else {
     if (!inReconfiguration)
       [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

@@ -18,8 +18,6 @@
 #import "IFTypeChecker.h"
 #import "IFTypeVar.h"
 #import "IFFunType.h"
-#import "IFGraph.h"
-#import "IFGraphNode.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -30,7 +28,6 @@
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)tree;
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
-- (IFGraph*)graph;
 - (void)beginTreeModification;
 - (void)endTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
@@ -397,27 +394,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [targetTree addRightGhostParentsForNode:child];
 }
 
-- (IFGraph*)graph;
-{
-  IFGraph* graph = [tree graphOfNode:[tree root]];
-  [graph removeNode:[graph nodeWithData:[tree root]]];
-  return graph;
-}
-
-- (void)configureFilters;
-{
-  IFGraph* graph = [self graph];
-  NSDictionary* config = [graph resolveOverloading];
-  NSArray* graphNodes = [graph topologicallySortedNodes];
-  const int graphNodesCount = [graphNodes count];
-  for (int i = 0; i < graphNodesCount; ++i)
-    [[(IFGraphNode*)[graphNodes objectAtIndex:i] data] beginReconfiguration];
-  for (int i = 0; i < graphNodesCount; ++i) {
-    IFGraphNode* graphNode = [graphNodes objectAtIndex:i];
-    [[graphNode data] endReconfigurationWithActiveTypeIndex:[[config objectForKey:graphNode] intValue]];
-  }
-}
-
 - (void)beginTreeModification;
 {
   NSAssert([tree propagateNewParentExpressions], @"internal error");
@@ -428,7 +404,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   NSAssert(![tree propagateNewParentExpressions], @"internal error");
   [self ensureGhostNodes];
-  [self configureFilters];
+  [tree configureNodes];
   [tree setPropagateNewParentExpressions:YES];
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
 }

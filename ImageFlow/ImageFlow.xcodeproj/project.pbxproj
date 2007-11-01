@@ -130,8 +130,6 @@
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
 		FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */; };
 		FAD889EB0CD0CBCB00D3DE7D /* IFTreeEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */; };
-		FAD951860CAA511B00A7E78A /* IFGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951840CAA511B00A7E78A /* IFGraph.m */; };
-		FAD9518B0CAA518E00A7E78A /* IFGraphNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD951890CAA518E00A7E78A /* IFGraphNode.m */; };
 		FADD9A920AA727A300547F53 /* IFBorderlessWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */; };
 		FADDD4CD08B0AB7B000A1EBE /* IFTreeLayoutMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDD4CC08B0AB7B000A1EBE /* IFTreeLayoutMark.m */; };
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
@@ -455,10 +453,6 @@
 		FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFOrientedGraphEdge.m; sourceTree = "<group>"; };
 		FAD889E80CD0CBCB00D3DE7D /* IFTreeEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeEdge.h; sourceTree = "<group>"; };
 		FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeEdge.m; sourceTree = "<group>"; };
-		FAD951830CAA511B00A7E78A /* IFGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraph.h; sourceTree = "<group>"; };
-		FAD951840CAA511B00A7E78A /* IFGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGraph.m; sourceTree = "<group>"; };
-		FAD951880CAA518E00A7E78A /* IFGraphNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGraphNode.h; sourceTree = "<group>"; };
-		FAD951890CAA518E00A7E78A /* IFGraphNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGraphNode.m; sourceTree = "<group>"; };
 		FADD9A8F0AA727A300547F53 /* IFBorderlessWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBorderlessWindow.h; sourceTree = "<group>"; };
 		FADD9A900AA727A300547F53 /* IFBorderlessWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBorderlessWindow.m; sourceTree = "<group>"; };
 		FADDD4CB08B0AB7B000A1EBE /* IFTreeLayoutMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutMark.h; sourceTree = "<group>"; };
@@ -1201,17 +1195,6 @@
 			name = Graph;
 			sourceTree = "<group>";
 		};
-		FAD951870CAA512800A7E78A /* Graph (obsolete) */ = {
-			isa = PBXGroup;
-			children = (
-				FAD951830CAA511B00A7E78A /* IFGraph.h */,
-				FAD951840CAA511B00A7E78A /* IFGraph.m */,
-				FAD951880CAA518E00A7E78A /* IFGraphNode.h */,
-				FAD951890CAA518E00A7E78A /* IFGraphNode.m */,
-			);
-			name = "Graph (obsolete)";
-			sourceTree = "<group>";
-		};
 		FAE0DE5108C361B300595ED4 /* Histogram */ = {
 			isa = PBXGroup;
 			children = (
@@ -1515,7 +1498,6 @@
 				FAAF1035090A5AE800479538 /* Filter */,
 				FA1EB1FF086AAB35007FD6AF /* Tree */,
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
-				FAD951870CAA512800A7E78A /* Graph (obsolete) */,
 				FA4501A20AD2B4B60097C977 /* Images */,
 				FAE0DE5208C3621500595ED4 /* Histograms */,
 				FA92E83E08B3457C00E57EF7 /* Probes */,
@@ -1824,8 +1806,6 @@
 				FAFCF5E90C9A934500B69055 /* IFFileSink.m in Sources */,
 				FAFCF5ED0C9A935D00B69055 /* IFPrintSink.m in Sources */,
 				FA0079E80CA53D9900E7B2D0 /* IFTreeNodeFilter.m in Sources */,
-				FAD951860CAA511B00A7E78A /* IFGraph.m in Sources */,
-				FAD9518B0CAA518E00A7E78A /* IFGraphNode.m in Sources */,
 				FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */,
 				FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */,
 				FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */,

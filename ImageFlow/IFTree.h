@@ -54,11 +54,6 @@
 
 - (BOOL)isCyclic;
 - (BOOL)isTypeCorrect;
-- (NSDictionary*)resolveOverloading;
-
-#pragma mark -
-#pragma mark OBSOLETE
-
-- (IFGraph*)graphOfNode:(IFTreeNode*)node;
+- (void)configureNodes;
 
 @end

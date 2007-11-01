@@ -148,8 +148,8 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if (context == IFOriginalExpressionChangedContext)
-    [self updateExpression];
+  NSAssert(context == IFOriginalExpressionChangedContext, @"unexpected context");
+  [self updateExpression];
 }
 
 - (void)updateExpression;
