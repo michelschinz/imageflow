@@ -63,6 +63,13 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [[[IFTree alloc] initWithGraph:[graph clone] propagateNewParentExpressions:NO] autorelease];
 }
 
+#pragma mark Navigation
+
+- (NSSet*)nodes;
+{
+  return [graph nodes];
+}
+
 - (IFTreeNode*)root;
 {
   NSSet* roots = [graph sinkNodes];

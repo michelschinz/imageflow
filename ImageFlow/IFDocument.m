@@ -258,13 +258,23 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)deleteSubtree:(IFSubtree*)subtree;
 {
   [self beginTreeModification];
+  
+  // First replace all aliases to nodes about to be deleted by ghosts...
+  NSEnumerator* allNodesEnum = [[self allNodes] objectEnumerator];
+  IFTreeNode* node;
+  while (node = [allNodesEnum nextObject]) {
+    if ([node isAlias] && ![subtree containsNode:node] && [subtree containsNode:[node original]])
+      [tree replaceSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]] byNode:[IFTreeNode ghostNodeWithInputArity:0]];
+  }
+  
+  // ...then really delete subtree
   [tree replaceSubtree:subtree byNode:[IFTreeNode ghostNodeWithInputArity:[subtree inputArity]]];
   [self endTreeModification];
 }
 
 - (NSSet*)allNodes;
 {
-  NSMutableSet* allNodes = [NSMutableSet setWithArray:[tree dfsAncestorsOfNode:[tree root]]];
+  NSMutableSet* allNodes = [NSMutableSet setWithSet:[tree nodes]];
   [allNodes removeObject:[tree root]];
   return allNodes;
 }

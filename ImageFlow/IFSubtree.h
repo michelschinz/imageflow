@@ -22,6 +22,8 @@
 - (IFTreeNode*)root;
 - (NSSet*)includedNodes;
 
+- (BOOL)containsNode:(IFTreeNode*)node;
+
 - (unsigned)inputArity;
 - (NSArray*)sortedParentsOfInputNodes;
 

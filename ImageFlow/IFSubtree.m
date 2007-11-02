@@ -60,6 +60,11 @@
   return includedNodes;
 }
 
+- (BOOL)containsNode:(IFTreeNode*)node;
+{
+  return [includedNodes containsObject:node];
+}
+
 - (unsigned)inputArity;
 {
   return [[self sortedParentsOfInputNodes] count];

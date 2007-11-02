@@ -23,6 +23,8 @@
 - (IFTree*)cloneWithoutNewParentExpressionsPropagation;
 
 #pragma mark Navigation
+
+- (NSSet*)nodes;
 - (IFTreeNode*)root;
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
@@ -30,6 +32,7 @@
 - (IFTreeNode*)childOfNode:(IFTreeNode*)node;
 - (NSArray*)siblingsOfNode:(IFTreeNode*)node;
 - (NSArray*)dfsAncestorsOfNode:(IFTreeNode*)node;
+
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
 
 #pragma mark Expression propagation
