@@ -24,8 +24,7 @@
 #import <caml/callback.h>
 
 @interface IFDocument (Private)
-- (void)ensureGhostNodes;
-- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)tree;
+- (void)ensureGhostNodes;;
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
 - (void)beginTreeModification;
@@ -204,9 +203,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 {
-  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
-  [self insertNode:parent asParentOf:child inTree:testTree];
-  return [testTree isTypeCorrect];
+  return [tree canInsertNode:parent asParentOf:child];
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
@@ -220,9 +217,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 {
-  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
-  [self insertNode:child asChildOf:parent inTree:testTree];
-  return [testTree isTypeCorrect];
+  return [tree canInsertNode:child asChildOf:parent];
 }
 
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
@@ -236,9 +231,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 {
-  IFTree* testTree = [tree cloneWithoutNewParentExpressionsPropagation];
-  [self replaceGhostNode:node usingNode:replacement inTree:testTree];
-  return [testTree isTypeCorrect];
+  return [tree canReplaceNode:node byNode:replacement];
 }
 
 - (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
@@ -246,7 +239,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
   
   [self beginTreeModification];
-  [self replaceGhostNode:node usingNode:replacement inTree:tree];
+  [tree replaceNode:node byNode:replacement];
   [self endTreeModification];
 }
 
@@ -258,17 +251,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)deleteSubtree:(IFSubtree*)subtree;
 {
   [self beginTreeModification];
-  
-  // First replace all aliases to nodes about to be deleted by ghosts...
-  NSEnumerator* allNodesEnum = [[self allNodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [allNodesEnum nextObject]) {
-    if ([node isAlias] && ![subtree containsNode:node] && [subtree containsNode:[node original]])
-      [tree replaceSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]] byNode:[IFTreeNode ghostNodeWithInputArity:0]];
-  }
-  
-  // ...then really delete subtree
-  [tree replaceSubtree:subtree byNode:[IFTreeNode ghostNodeWithInputArity:[subtree inputArity]]];
+  [tree deleteSubtree:subtree];
   [self endTreeModification];
 }
 
@@ -289,29 +272,24 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [NSSet setWithArray:[tree dfsAncestorsOfNode:[self rootOfTreeContainingNode:node]]];
 }
 
-// TODO move to IFTree ?
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 {
-  IFTreeNode* root = node;
-  while (root != nil && [tree childOfNode:root] != [tree root])
-    root = [tree childOfNode:root];
-  NSAssert1(root != nil, @"cannot find root of tree containing %@",node);
-  return root;  
+  IFTreeNode* grandChild = [tree childOfNode:[tree childOfNode:node]];
+  while (grandChild != nil) {
+    node = [tree childOfNode:node];
+    grandChild = [tree childOfNode:grandChild];
+  }
+  return node;
 }
 
-// private
-- (void)collectPathFromRootToNode:(IFTreeNode*)node inArray:(NSMutableArray*)result;
-{
-  if ([tree childOfNode:node] != [tree root])
-    [self collectPathFromRootToNode:[tree childOfNode:node] inArray:result];
-  [result addObject:node];
-}
-
-// TODO move to IFTree ?
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
 {
   NSMutableArray* result = [NSMutableArray array];
-  [self collectPathFromRootToNode:node inArray:result];
+  IFTreeNode* fakeRoot = [tree root];
+  while (node != fakeRoot) {
+    [result insertObject:node atIndex:0];
+    node = [tree childOfNode:node];
+  }
   return result;
 }
 
@@ -377,13 +355,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   }
   if (!hasGhostColumn)
     [tree addNode:[IFTreeNode ghostNodeWithInputArity:0] asNewRootAtIndex:[tree parentsCountOfNode:[tree root]]];
-}
-
-- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement inTree:(IFTree*)theTree;
-{
-  [theTree removeAllRightGhostParentsOfNode:node];
-  [theTree replaceSubtree:[IFSubtree subtreeOf:theTree includingNodes:[NSSet setWithObject:node]] byNode:replacement];
-  [theTree addRightGhostParentsForNode:replacement];
 }
 
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;

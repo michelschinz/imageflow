@@ -50,9 +50,20 @@
 - (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
 
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
+
+- (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
+
+- (BOOL)canInsertNode:(IFTreeNode*)node asParentOf:(IFTreeNode*)child;
+- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
+
+- (BOOL)canReplaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
 - (void)replaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
+
+- (BOOL)canReplaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+
+- (void)deleteSubtree:(IFSubtree*)subtree;
 
 #pragma mark Type checking
 
