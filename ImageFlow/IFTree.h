@@ -46,9 +46,6 @@
 
 #pragma mark High level editing
 
-- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
-- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
-
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;

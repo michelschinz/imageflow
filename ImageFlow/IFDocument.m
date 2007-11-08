@@ -25,8 +25,6 @@
 
 @interface IFDocument (Private)
 - (void)ensureGhostNodes;;
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
 - (void)beginTreeModification;
 - (void)endTreeModification;
 - (void)overwriteWith:(IFDocument*)other;
@@ -211,7 +209,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
 
   [self beginTreeModification];
-  [self insertNode:parent asParentOf:child inTree:tree];
+  [tree insertNode:parent asParentOf:child];
   [self endTreeModification];
 }
 
@@ -225,7 +223,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
   
   [self beginTreeModification];
-  [self insertNode:child asChildOf:parent inTree:tree];
+  [tree insertNode:child asChildOf:parent];
   [self endTreeModification];
 }
 
@@ -355,20 +353,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   }
   if (!hasGhostColumn)
     [tree addNode:[IFTreeNode ghostNodeWithInputArity:0] asNewRootAtIndex:[tree parentsCountOfNode:[tree root]]];
-}
-
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child inTree:(IFTree*)targetTree;
-{
-  [targetTree removeAllRightGhostParentsOfNode:child];
-  [targetTree insertNode:parent asParentOf:child];
-  [targetTree addRightGhostParentsForNode:parent];
-  [targetTree addRightGhostParentsForNode:child];
-}
-
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent inTree:(IFTree*)targetTree;
-{
-  [targetTree insertNode:child asChildOf:parent];
-  [targetTree addRightGhostParentsForNode:child];
 }
 
 - (void)beginTreeModification;

@@ -161,27 +161,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 #pragma mark High level editing
 
-- (void)addRightGhostParentsForNode:(IFTreeNode*)node;
-{
-  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
-  for (int i = [self parentsCountOfNode:node]; i < [node inputArity]; ++i) {
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
-    [graph addNode:ghost];
-    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:ghost toNode:node];
-  }
-}
-
-- (void)removeAllRightGhostParentsOfNode:(IFTreeNode*)node;
-{
-  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
-  for (;;) {
-    IFTreeNode* lastParent = [[self parentsOfNode:node] lastObject];
-    if (lastParent == nil || ![self isGhostSubtreeRoot:lastParent])
-      break;
-    [[graph do] removeNode:[[self dfsAncestorsOfNode:lastParent] each]];
-  }
-}
-
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
