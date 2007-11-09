@@ -185,6 +185,20 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 #pragma mark document manipulation
 
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+{
+  return [tree canReplaceNode:node byCopyOfTree:replacement];
+}
+
+- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+{
+  [self beginTreeModification];
+  [tree replaceNode:node byCopyOfTree:replacement];
+  [self endTreeModification];
+}
+
+#pragma mark (obsolete)
+
 - (void)addTree:(IFTreeNode*)newNode;
 {
   NSArray* roots = [self roots];
@@ -224,20 +238,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   
   [self beginTreeModification];
   [tree insertNode:child asChildOf:parent];
-  [self endTreeModification];
-}
-
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
-{
-  return [tree canReplaceNode:node byNode:replacement];
-}
-
-- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
-{
-  NSAssert([self canReplaceGhostNode:node usingNode:replacement], @"internal error");
-  
-  [self beginTreeModification];
-  [tree replaceNode:node byNode:replacement];
   [self endTreeModification];
 }
 

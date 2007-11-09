@@ -54,13 +54,15 @@ extern NSString* IFTreeChangedNotification;
 - (void)setResolutionY:(float)newResolutionY;
 
 // Tree manipulations
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+
+// obsolete
 - (void)addTree:(IFTreeNode*)newRoot;
 - (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 - (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
 - (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)ghost usingNode:(IFTreeNode*)replacement;
-- (void)replaceGhostNode:(IFTreeNode*)node usingNode:(IFTreeNode*)replacement;
 - (void)deleteNode:(IFTreeNode*)node;
 - (void)deleteSubtree:(IFSubtree*)subtree;
 

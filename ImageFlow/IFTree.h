@@ -47,6 +47,11 @@
 
 #pragma mark High level editing
 
+- (BOOL)canReplaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
+- (void)replaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
+
+#pragma mark (obsolete)
+
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 
 - (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;

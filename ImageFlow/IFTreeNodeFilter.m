@@ -153,6 +153,13 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
   [encoder encodeObject:filter forKey:@"filter"];
 }
 
+#pragma mark Debugging
+
+- (NSString*)description;
+{
+  return [self label];
+}
+
 #pragma mark -
 #pragma mark (protected)
 

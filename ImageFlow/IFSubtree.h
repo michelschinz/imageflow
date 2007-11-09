@@ -27,4 +27,6 @@
 - (unsigned)inputArity;
 - (NSArray*)sortedParentsOfInputNodes;
 
+- (IFTree*)extractTree;
+
 @end

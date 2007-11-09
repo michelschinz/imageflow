@@ -8,6 +8,8 @@
 
 #import "IFSubtree.h"
 
+#import "IFTreeNodeHole.h"
+
 @interface IFSubtree (Private)
 - (void)collectSortedParentsOfInputNodesIn:(NSMutableArray*)result startingAt:(IFTreeNode*)root;
 @end
@@ -75,6 +77,30 @@
   NSMutableArray* inputNodes = [NSMutableArray array];
   [self collectSortedParentsOfInputNodesIn:inputNodes startingAt:[self root]];
   return inputNodes;
+}
+
+- (IFTree*)extractTree;
+{
+  IFTree* tree = [IFTree tree];
+
+  IFTreeNode* root = [self root];
+  [tree addNode:root];
+  NSMutableSet* nodesToConsider = [NSMutableSet setWithObject:root];
+
+  while ([nodesToConsider count] != 0) {
+    IFTreeNode* node = [nodesToConsider anyObject];
+    [nodesToConsider removeObject:node];
+    NSArray* parents = [baseTree parentsOfNode:node];
+    for (int i = 0; i < [parents count]; ++i) {
+      IFTreeNode* parent = [parents objectAtIndex:i];
+      IFTreeNode* newParent = [includedNodes containsObject:parent] ? parent : [IFTreeNodeHole hole];
+      [tree addNode:newParent];
+      [tree addEdgeFromNode:newParent toNode:node withIndex:i];
+      if (parent == newParent)
+        [nodesToConsider addObject:parent];
+    }
+  }
+  return tree;
 }
 
 #pragma NSCoding protocol

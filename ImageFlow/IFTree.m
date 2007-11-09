@@ -21,6 +21,13 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 @interface IFTree (Private)
 - (IFOrientedGraph*)graph;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
+- (IFTreeEdge*)outgoingEdgeForNode:(IFTreeNode*)node;
+- (NSArray*)holesInSubtreeRootedAt:(IFTreeNode*)root;
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
+- (IFTreeNode*)detachNode:(IFTreeNode*)node;
+- (void)removeNode:(IFTreeNode*)node;
+- (void)removeTreeRootedAt:(IFTreeNode*)node;
+- (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
 - (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
 - (void)debugDump;
 @end
@@ -157,15 +164,44 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSAssert1(context == IFTreeNodeExpressionChangedContext, @"unexpected context: %@", context);
 
   IFTreeNode* node = object;
-  NSSet* outEdges = [graph outgoingEdgesForNode:node];
-  NSAssert([outEdges count] == 1, @"internal error");
-
-  IFTreeEdge* outEdge = [outEdges anyObject];
+  IFTreeEdge* outEdge = [self outgoingEdgeForNode:node];
   IFTreeNode* child = [graph edgeTarget:outEdge];
   [child setParentExpression:[node expression] atIndex:[outEdge targetIndex]];
 }
 
 #pragma mark High level editing
+
+- (BOOL)canReplaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
+{
+  IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
+  [clone replaceNode:node byCopyOfTree:tree];
+  return [clone isTypeCorrect];
+}
+
+- (void)replaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
+{
+  IFTreeNode* copiedTreeRoot = [self addCopyOfTree:tree];
+
+  NSArray* parents = [self parentsOfNode:node];
+  [[self do] detachNode:[parents each]];
+
+  IFTreeNode* hole = [self detachNode:node];
+  [self removeTreeRootedAt:node];
+
+  NSArray* parentHoles = [self holesInSubtreeRootedAt:copiedTreeRoot];
+  for (int i = 0; i < [parents count]; ++i)
+    [self plugHole:[parentHoles objectAtIndex:i] withNode:[parents objectAtIndex:i]];
+  for (int i = [parents count]; i < [parentHoles count]; ++i) {
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+    [self addNode:ghost];
+    [self plugHole:[parentHoles objectAtIndex:i] withNode:ghost];
+  }
+  [self plugHole:hole withNode:copiedTreeRoot];
+  
+  [graph debugDumpAsDot];
+}
+
+#pragma mark (obsolete)
 
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
 {
@@ -198,9 +234,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   [graph addNode:child];
-  NSSet* parentOutEdges = [graph outgoingEdgesForNode:parent];
-  NSAssert([parentOutEdges count] == 1, @"internal error");
-  IFTreeEdge* parentOutEdge = [parentOutEdges anyObject];
+  IFTreeEdge* parentOutEdge = [self outgoingEdgeForNode:parent];
   [graph addEdge:[parentOutEdge clone] fromNode:child toNode:[graph edgeTarget:parentOutEdge]];
   [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:parent toNode:child];
   [graph removeEdge:parentOutEdge];
@@ -246,10 +280,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:[parentNodes objectAtIndex:i] toNode:replacement];
   
   // Create outgoing edge
-  NSEnumerator* outEdgesEnum = [[graph outgoingEdgesForNode:[toReplace root]] objectEnumerator];
-  IFTreeEdge* edge;
-  while (edge = [outEdgesEnum nextObject])
-    [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
+  IFTreeEdge* edge = [self outgoingEdgeForNode:[toReplace root]];
+  [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
   
   // Remove nodes
   [[graph do] removeNode:[includedNodes each]];
@@ -332,6 +364,110 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 @end
 
+@implementation IFTree (Private)
+
+- (IFOrientedGraph*)graph;
+{
+  return graph;
+}
+
+- (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
+{
+  [[self do] dfsCollectAncestorsOfNode:[[self parentsOfNode:node] each] inArray:accumulator];
+  [accumulator addObject:node];
+}
+
+- (IFTreeEdge*)outgoingEdgeForNode:(IFTreeNode*)node;
+{
+  NSSet* outEdges = [graph outgoingEdgesForNode:node];
+  NSAssert([outEdges count] == 1, @"more than one outgoing edge for tree node");
+  return [outEdges anyObject];
+}
+
+#pragma mark Low level editing
+
+- (void)collectHolesInSubtreeRootedAt:(IFTreeNode*)root into:(NSMutableArray*)result;
+{
+  if ([root isHole])
+    [result addObject:root];
+  else
+    [[self do] collectHolesInSubtreeRootedAt:[[self parentsOfNode:root] each] into:result];
+}
+
+- (NSArray*)holesInSubtreeRootedAt:(IFTreeNode*)root;
+{
+  NSMutableArray* holes = [NSMutableArray array];
+  [self collectHolesInSubtreeRootedAt:root into:holes];
+  return holes;
+}
+
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree startingAtNode:(IFTreeNode*)root;
+{
+  IFTreeNode* copiedRoot = [root cloneNode];
+  [graph addNode:copiedRoot];
+
+  NSArray* parents = [tree parentsOfNode:root];
+  for (int i = 0; i < [parents count]; ++i) {
+    IFTreeNode* parent = [parents objectAtIndex:i];
+    IFTreeNode* copiedParent = [self addCopyOfTree:tree startingAtNode:parent];
+    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:copiedParent toNode:copiedRoot];
+  }
+  return copiedRoot;
+}
+
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
+{
+  return [self addCopyOfTree:tree startingAtNode:[tree root]]; 
+}
+
+- (IFTreeNode*)detachNode:(IFTreeNode*)node;
+{
+  IFTreeNode* hole = [IFTreeNodeHole hole];
+  [graph addNode:hole];
+  IFTreeEdge* outEdge = [self outgoingEdgeForNode:node];
+  [graph addEdge:[outEdge clone] fromNode:hole toNode:[graph edgeTarget:outEdge]];
+  [graph removeEdge:outEdge];
+  return hole;
+}
+
+- (void)removeNode:(IFTreeNode*)node;
+{
+  [graph removeNode:node];
+  // TODO remove aliases of node
+}
+
+- (void)removeTreeRootedAt:(IFTreeNode*)node;
+{
+  NSAssert([[graph outgoingEdgesForNode:node] count] == 0, @"trying to remove subtree");
+  [[self do] removeNode:[[self dfsAncestorsOfNode:node] each]];
+}
+
+- (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
+{
+  NSAssert([hole isHole], @"attempt to plug non-hole");
+  IFTreeEdge* outEdge = [self outgoingEdgeForNode:hole];
+  [graph addEdge:[outEdge clone] fromNode:node toNode:[graph edgeTarget:outEdge]];
+  [self removeNode:hole];
+}
+
+#pragma mark -
+#pragma mark Debugging
+
+- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
+{
+  NSLog(@"%2d %@", indent, [[root filter] expression]);
+  NSArray* parents = [self parentsOfNode:root];
+  for (int i = 0; i < [parents count]; ++i)
+    [self debugDumpFrom:[parents objectAtIndex:i] indent:indent+1];
+}
+
+- (void)debugDump;
+{
+  [self debugDumpFrom:[self root] indent:0];
+}
+
+@end
+
 static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node)
 {
   NSSet* inEdges = [graph incomingEdgesForNode:node];
@@ -379,33 +515,3 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph)
   return clone;
 }
 
-@implementation IFTree (Private)
-
-- (IFOrientedGraph*)graph;
-{
-  return graph;
-}
-
-- (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
-{
-  [[self do] dfsCollectAncestorsOfNode:[[self parentsOfNode:node] each] inArray:accumulator];
-  [accumulator addObject:node];
-}
-
-#pragma mark -
-#pragma mark Debugging
-
-- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
-{
-  NSLog(@"%2d %@", indent, [[root filter] expression]);
-  NSArray* parents = [self parentsOfNode:root];
-  for (int i = 0; i < [parents count]; ++i)
-    [self debugDumpFrom:[parents objectAtIndex:i] indent:indent+1];
-}
-
-- (void)debugDump;
-{
-  [self debugDumpFrom:[self root] indent:0];
-}
-
-@end

@@ -47,11 +47,10 @@
 
 @implementation IFTreeView
 
-static NSString* IFPrivatePboard = @"ImageFlowPrivatePasteboard";
-
 NSString* IFMarkPboardType = @"IFMarkPboardType";
-NSString* IFTreeNodeArrayPboardType = @"IFTreeNodeArrayPboardType";
-NSString* IFTreeNodePboardType = @"IFTreeNodePboardType";
+
+static NSString* IFTreeNodeArrayPboardType = @"IFTreeNodeArrayPboardType"; // TODO obsolete
+static NSString* IFTreePboardType = @"IFTreePboardType";
 
 enum IFLayoutLayer {
   IFLayoutLayerTree,
@@ -470,24 +469,9 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)copy:(id)sender;
 {
-  NSSet* nodesToCopy = [self selectedNodes];
-  NSAssert([nodesToCopy count] == 1, @"cannot copy multiple nodes (TODO)");
-  IFTreeNode* nodeToCopy = [nodesToCopy anyObject];
-  NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:IFPrivatePboard];
-  [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodePboardType] owner:self];
-  [self setCopiedNode:nodeToCopy];
-}  
-
-- (void)pasteboard:(NSPasteboard*)sender provideDataForType:(NSString*)type;
-{
-  NSAssert1([type isEqualToString:IFTreeNodePboardType], @"unexpected pasteboard type: %@",type);
-  [sender setData:[NSArchiver archivedDataWithRootObject:[IFTreeNodeProxy proxyForNode:[self copiedNode] ofDocument:document]]
-          forType:IFTreeNodePboardType];
-}
-
-- (void)pasteboardChangedOwner:(NSPasteboard *)sender;
-{
-  [self setCopiedNode:nil];
+  NSPasteboard* pboard = [NSPasteboard generalPasteboard];
+  [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
+  [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
 }
 
 - (void)cut:(id)sender;
@@ -503,16 +487,16 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     return;
   }
 
-  NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:IFPrivatePboard];
-  NSString* available = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:IFTreeNodePboardType]];
+  NSPasteboard* pboard = [NSPasteboard generalPasteboard];
+  NSString* available = [pboard availableTypeFromArray:[NSArray arrayWithObject:IFTreePboardType]];
   if (available == nil) {
     NSBeep(); // TODO deactivate menu instead (or additionally)
     return;
   }
-  IFTreeNodeProxy* proxy = [NSUnarchiver unarchiveObjectWithData:[pasteboard dataForType:IFTreeNodePboardType]];
-  IFTreeNode* node = [[proxy node] cloneNode];
-  if ([document canReplaceGhostNode:[self cursorNode] usingNode:node])
-    [document replaceGhostNode:[self cursorNode] usingNode:node];
+  
+  IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
+  if ([document canReplaceGhostNode:[self cursorNode] byCopyOfTree:tree])
+    [document replaceGhostNode:[self cursorNode] byCopyOfTree:tree];
   else
     NSBeep();
 }
@@ -613,6 +597,8 @@ static enum {
   [self clearHighlighting];
 }
 
+#if 0
+
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
   [self clearHighlighting];
@@ -710,6 +696,8 @@ static enum {
       return NO;
   }
 }
+
+#endif
 
 #pragma mark Layout
 

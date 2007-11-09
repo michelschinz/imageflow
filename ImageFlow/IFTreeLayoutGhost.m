@@ -176,10 +176,9 @@ static NSMutableDictionary* filterArrayControllers = nil;
     NSArray* selected = [arrayController selectedObjects];
     if ([selected count] > 0) {
       IFDocument* doc = [containingView document];
-      IFTreeTemplate* template = [selected objectAtIndex:0];
-      IFTreeNode* clonedTemplateNode = [[template node] cloneNode];
-      if ([doc canReplaceGhostNode:node usingNode:clonedTemplateNode]) {
-        [doc replaceGhostNode:node usingNode:clonedTemplateNode];
+      IFTree* templateTree = [[selected objectAtIndex:0] tree];
+      if ([doc canReplaceGhostNode:node byCopyOfTree:templateTree]) {
+        [doc replaceGhostNode:node byCopyOfTree:templateTree];
       } else
         NSBeep();
     }
