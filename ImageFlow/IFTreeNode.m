@@ -11,6 +11,10 @@
 #import "IFExpressionPlugger.h"
 #import "IFTreeMark.h"
 
+@interface IFTreeNode (Private)
+- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded updateExpression:(BOOL)theUpdateExpression;
+@end
+
 @implementation IFTreeNode
 
 + (id)ghostNodeWithInputArity:(int)inputArity;
@@ -22,12 +26,7 @@
 
 - (id)init;
 {
-  if (![super init]) return nil;
-  name = nil;
-  isFolded = NO;
-  updateExpression = NO;
-  expression = nil;
-  return self;
+  return [self initWithName:nil isFolded:NO updateExpression:NO];
 }
 
 - (void)dealloc;
@@ -205,6 +204,20 @@
   return nil;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithName:[decoder decodeObjectForKey:@"name"] isFolded:[decoder decodeBoolForKey:@"isFolded"] updateExpression:[decoder decodeBoolForKey:@"updateExpression"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:name forKey:@"name"];
+  [encoder encodeBool:isFolded forKey:@"isFolded"];
+  [encoder encodeBool:updateExpression forKey:@"updateExpression"];
+}
+
 #pragma mark -
 #pragma mark (protected)
 
@@ -225,6 +238,21 @@
     return;
   [expression release];
   expression = [newExpression retain];
+}
+
+@end
+
+@implementation IFTreeNode (Private)
+
+- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded updateExpression:(BOOL)theUpdateExpression;
+{
+  if (![super init])
+    return nil;
+  name = (theName == nil) ? nil : [theName retain];
+  isFolded = theIsFolded;
+  updateExpression = theUpdateExpression;
+  expression = nil;
+  return self;
 }
 
 @end

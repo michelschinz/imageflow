@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface IFOrientedGraphEdge : NSObject {
+@interface IFOrientedGraphEdge : NSObject<NSCoding> {
   id data;
   id fromNode, toNode;
 }

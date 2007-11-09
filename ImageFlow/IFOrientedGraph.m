@@ -219,6 +219,46 @@
   return [self topologicallySortedNodes] == nil;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  if (![super init])
+    return nil;
+
+  nodes = [[decoder decodeObjectForKey:@"nodes"] retain];
+
+  NSArray* edgeToRealEdgeKeys = [decoder decodeObjectForKey:@"edgeToRealEdgeKeys"];
+  NSArray* edgeToRealEdgeVals = [decoder decodeObjectForKey:@"edgeToRealEdgeVals"];
+  edgeToRealEdge = createMutableDictionaryWithRetainedKeys();
+  for (int i = 0; i < [edgeToRealEdgeKeys count]; ++i)
+    CFDictionarySetValue((CFMutableDictionaryRef)edgeToRealEdge,[edgeToRealEdgeKeys objectAtIndex:i],[edgeToRealEdgeVals objectAtIndex:i]);
+
+  NSArray* nodeToEdgeSetKeys = [decoder decodeObjectForKey:@"nodeToEdgeSetKeys"];
+  NSArray* nodeToEdgeSetVals = [decoder decodeObjectForKey:@"nodeToEdgeSetVals"];
+  nodeToEdgeSet = createMutableDictionaryWithRetainedKeys();
+  for (int i = 0; i < [nodeToEdgeSetKeys count]; ++i)
+    CFDictionarySetValue((CFMutableDictionaryRef)nodeToEdgeSet,[nodeToEdgeSetKeys objectAtIndex:i],[nodeToEdgeSetVals objectAtIndex:i]);
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:nodes forKey:@"nodes"];
+  
+  // Work-around the problem of keys that get copied.
+  NSArray* edgeToRealEdgeKeys = [edgeToRealEdge allKeys];
+  NSArray* edgeToRealEdgeVals = [[edgeToRealEdge collect] objectForKey:[edgeToRealEdgeKeys each]];
+  [encoder encodeObject:edgeToRealEdgeKeys forKey:@"edgeToRealEdgeKeys"];
+  [encoder encodeObject:edgeToRealEdgeVals forKey:@"edgeToRealEdgeVals"];
+  
+  NSArray* nodeToEdgeSetKeys = [nodeToEdgeSet allKeys];
+  NSArray* nodeToEdgeSetVals = [[nodeToEdgeSet collect] objectForKey:[nodeToEdgeSetKeys each]];
+  [encoder encodeObject:nodeToEdgeSetKeys forKey:@"nodeToEdgeSetKeys"];
+  [encoder encodeObject:nodeToEdgeSetVals forKey:@"nodeToEdgeSetVals"];
+}
+
 @end
 
 @implementation IFOrientedGraph (Private)

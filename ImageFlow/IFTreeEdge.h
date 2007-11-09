@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface IFTreeEdge : NSObject {
+@interface IFTreeEdge : NSObject<NSCoding> {
   unsigned targetIndex;
 }
 

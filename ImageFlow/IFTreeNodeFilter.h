@@ -11,7 +11,7 @@
 #import "IFTreeNode.h"
 #import "IFFilter.h"
 
-@interface IFTreeNodeFilter : IFTreeNode {
+@interface IFTreeNodeFilter : IFTreeNode<NSCoding> {
   BOOL inReconfiguration;
   NSMutableDictionary* parentExpressions;
   IFFilter* filter;

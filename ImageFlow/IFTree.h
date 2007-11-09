@@ -12,9 +12,9 @@
 #import "IFOrientedGraph.h"
 @class IFSubtree;
 
-@interface IFTree : NSObject {
-  BOOL propagateNewParentExpressions;
+@interface IFTree : NSObject<NSCoding> {
   IFOrientedGraph* graph;
+  BOOL propagateNewParentExpressions;
 }
 
 + (id)tree;

@@ -11,6 +11,10 @@
 #import "IFConstantExpression.h"
 #import "IFXMLCoder.h"
 
+@interface IFEnvironment (Private)
+- (id)initWithContentsOfDictionary:(NSDictionary*)dict;
+@end
+
 @implementation IFEnvironment
 
 + (id)environment;
@@ -20,13 +24,10 @@
 
 - (id)init;
 {
-  if (![super init])
-    return nil;
-  env = [NSMutableDictionary new];
-  return self;
+  return [self initWithContentsOfDictionary:[NSDictionary dictionary]];
 }
 
-- (void) dealloc;
+- (void)dealloc;
 {
   OBJC_RELEASE(env);
   [super dealloc];
@@ -167,4 +168,54 @@
   return env;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  NSMutableDictionary* combinedDict = [NSMutableDictionary dictionary];
+  [combinedDict addEntriesFromDictionary:[decoder decodeObjectForKey:@"generalDictionary"]];
+  NSDictionary* pointsDict = [decoder decodeObjectForKey:@"pointsDictionary"];
+  NSEnumerator* keysEnum = [pointsDict keyEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject])
+    [combinedDict setObject:[NSValue valueWithPoint:NSPointFromString([pointsDict objectForKey:key])] forKey:key];
+
+  return [self initWithContentsOfDictionary:combinedDict];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  NSMutableDictionary* generalDict = [NSMutableDictionary dictionary];
+  NSMutableDictionary* pointsDict = [NSMutableDictionary dictionary];
+  
+  NSEnumerator* keysEnum = [env keyEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject]) {
+    id value = [env valueForKey:key];
+    if ([value isKindOfClass:[NSValue class]] && ![value isKindOfClass:[NSNumber class]]) {
+      const char* type = [value objCType];
+      if (strcmp(type, @encode(NSPoint)) == 0)
+        [pointsDict setObject:NSStringFromPoint([value pointValue]) forKey:key];
+      else
+        NSAssert1(NO, @"unexpected type during archival: %s", type);
+    } else
+      [generalDict setObject:value forKey:key];
+  }
+  [encoder encodeObject:generalDict forKey:@"generalDictionary"];
+  [encoder encodeObject:pointsDict forKey:@"pointsDictionary"];
+}
+
 @end
+
+@implementation IFEnvironment (Private)
+
+- (id)initWithContentsOfDictionary:(NSDictionary*)dict;
+{
+  if (![super init])
+    return nil;
+  env = [[NSMutableDictionary dictionaryWithDictionary:dict] retain];
+  return self;
+}
+
+@end
+

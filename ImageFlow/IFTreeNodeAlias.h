@@ -10,7 +10,7 @@
 
 #import "IFTreeNode.h"
 
-@interface IFTreeNodeAlias : IFTreeNode {
+@interface IFTreeNodeAlias : IFTreeNode<NSCoding> {
   IFTreeNode* original;
 }
 

@@ -34,4 +34,16 @@
   return targetIndex;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithTargetIndex:[decoder decodeIntForKey:@"targetIndex"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeInt:targetIndex forKey:@"targetIndex"];
+}
+
 @end

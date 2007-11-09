@@ -49,4 +49,18 @@
   return data;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithFromNode:[decoder decodeObjectForKey:@"fromNode"] toNode:[decoder decodeObjectForKey:@"toNode"] data:[decoder decodeObjectForKey:@"data"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:fromNode forKey:@"fromNode"];
+  [encoder encodeObject:toNode forKey:@"toNode"];
+  [encoder encodeObject:data forKey:@"data"];
+}
+
 @end

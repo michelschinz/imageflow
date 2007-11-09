@@ -317,6 +317,18 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   }
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithGraph:[decoder decodeObjectForKey:@"graph"] propagateNewParentExpressions:[decoder decodeBoolForKey:@"propagateNewParentExpressions"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:graph forKey:@"graph"];
+  [encoder encodeBool:propagateNewParentExpressions forKey:@"propagateNewParentExpressions"];
+}
 
 @end
 

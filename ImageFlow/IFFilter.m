@@ -178,6 +178,18 @@ static NSString* IFEnvironmentValueDidChangeContext = @"IFEnvironmentValueDidCha
   return [NSAffineTransform transform];
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithEnvironment:[decoder decodeObjectForKey:@"environment"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:environment forKey:@"environment"];
+}
+
 @end
 
 @implementation IFFilter (Private)

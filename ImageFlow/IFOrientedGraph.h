@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface IFOrientedGraph : NSObject {
+@interface IFOrientedGraph : NSObject<NSCoding> {
   NSMutableSet* nodes;
   NSMutableDictionary* edgeToRealEdge;
   NSMutableDictionary* nodeToEdgeSet;

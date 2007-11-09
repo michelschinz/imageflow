@@ -77,6 +77,19 @@
   return inputNodes;
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithTree:[decoder decodeObjectForKey:@"baseTree"] includingNodes:[decoder decodeObjectForKey:@"includedNodes"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:baseTree forKey:@"baseTree"];
+  [encoder encodeObject:includedNodes forKey:@"includedNodes"];
+}
+
 @end
 
 @implementation IFSubtree (Private)

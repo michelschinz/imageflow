@@ -143,6 +143,22 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return [original variantNamed:variantName ofExpression:originalExpression];
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  [super initWithCoder:decoder];
+  original = [[decoder decodeObjectForKey:@"original"] retain];
+  [original addObserver:self forKeyPath:@"expression" options:0 context:IFOriginalExpressionChangedContext];
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [super encodeWithCoder:encoder];
+  [encoder encodeObject:original forKey:@"original"];
+}
+
 #pragma mark -
 #pragma mark (protected)
 

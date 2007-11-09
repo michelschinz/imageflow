@@ -10,7 +10,7 @@
 
 #import "IFTree.h"
 
-@interface IFSubtree : NSObject {
+@interface IFSubtree : NSObject<NSCoding> {
   IFTree* baseTree;
   NSSet* includedNodes;
 }

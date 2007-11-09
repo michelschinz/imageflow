@@ -134,6 +134,25 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
   return [filter transformForParentAtIndex:index];
 }
 
+#pragma NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  [super initWithCoder:decoder];
+  inReconfiguration = NO;
+  parentExpressions = [[NSMutableDictionary dictionary] retain];
+  filter = [[decoder decodeObjectForKey:@"filter"] retain];
+  [filter addObserver:self forKeyPath:@"expression" options:0 context:IFFilterExpressionChangedContext];
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  NSAssert(!inReconfiguration, @"internal error");
+  [super encodeWithCoder:encoder];
+  [encoder encodeObject:filter forKey:@"filter"];
+}
+
 #pragma mark -
 #pragma mark (protected)
 

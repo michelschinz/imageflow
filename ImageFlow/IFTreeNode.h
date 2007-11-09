@@ -11,7 +11,7 @@
 #import "IFFilter.h"
 #import "IFType.h"
 
-@interface IFTreeNode : NSObject {
+@interface IFTreeNode : NSObject<NSCoding> {
   NSString* name;
   BOOL isFolded;
   BOOL updateExpression;
