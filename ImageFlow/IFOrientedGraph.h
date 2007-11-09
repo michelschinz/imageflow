@@ -44,4 +44,9 @@
 - (NSArray*)topologicallySortedNodes;
 - (BOOL)isCyclic;
 
+#pragma mark -
+#pragma mark Debugging
+
+- (void)debugDumpAsDot;
+
 @end

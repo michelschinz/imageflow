@@ -259,6 +259,35 @@
   [encoder encodeObject:nodeToEdgeSetVals forKey:@"nodeToEdgeSetVals"];
 }
 
+#pragma mark -
+#pragma mark Debugging
+
+- (void)debugDumpAsDot;
+{
+  NSMutableArray* nodesArray = [NSMutableArray array];
+  NSEnumerator* nodesEnum = [nodes objectEnumerator];
+  id nodeToAdd;
+  while (nodeToAdd = [nodesEnum nextObject])
+    [nodesArray addObject:nodeToAdd];
+
+  NSLog(@"%d nodes", [nodes count]);
+  fprintf(stderr, "digraph dumpedGraph {\n");
+  for (int i = 0; i < [nodesArray count]; ++i) {
+    id node = [nodesArray objectAtIndex:i];
+
+    fprintf(stderr, "  n%d [label=\"%s\"];\n", i, [[node description] UTF8String]);
+
+    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
+    IFOrientedGraphEdge* edge;
+    while (edge = [edgesEnum nextObject]) {
+      if ([edge fromNode] == node)
+        fprintf(stderr, "  n%d -> n%d;\n", i, [nodesArray indexOfObject:[edge toNode]]);
+    }
+  }
+  fprintf(stderr, "}\n");
+  fflush(stderr);
+}
+
 @end
 
 @implementation IFOrientedGraph (Private)
