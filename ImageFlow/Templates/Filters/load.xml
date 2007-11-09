@@ -3,8 +3,8 @@
   <name>Load file</name>
   <description>Load image from file</description>
   <tree>
-    <node id="1">
-      <filter>IFFileSource</filter>
+    <filter id="1">
+      <name>IFFileSource</name>
       <settings>
         <key>fileName</key>
         <string></string>
@@ -30,6 +30,6 @@
         <key>embedResources</key>
         <number>1</number>
       </settings>
-    </node>
+    </filter>
   </tree>
 </tree-template>

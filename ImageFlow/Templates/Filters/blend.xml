@@ -3,8 +3,8 @@
   <name>Blend</name>
   <description>Blend images</description>
   <tree>
-    <node id="1">
-      <filter>IFBlendFilter</filter>
+    <filter id="1">
+      <name>IFBlendFilter</name>
       <settings>
         <key>mode</key>
         <integer>0</integer>
@@ -13,6 +13,10 @@
         <key>alpha</key>
         <number>1.0</number>
       </settings>
-    </node>
+      <parents>
+        <hole id="2"/>
+        <hole id="3"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

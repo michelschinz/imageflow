@@ -29,6 +29,7 @@
 - (BOOL)isFolded;
 - (BOOL)isGhost;
 - (BOOL)isAlias;
+- (BOOL)isHole;
 - (IFTreeNode*)original;
 - (IFFilter*)filter;
 - (IFExpression*)expression;

@@ -78,6 +78,11 @@
   return NO;
 }
 
+- (BOOL)isHole;
+{
+  return NO;
+}
+
 - (IFTreeNode*)original;
 {
   return self;

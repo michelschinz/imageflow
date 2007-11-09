@@ -3,8 +3,12 @@
   <name>Mask</name>
   <description>Mask images</description>
   <tree>
-    <node id="1">
-      <filter>IFMaskFilter</filter>
-    </node>
+    <filter id="1">
+      <name>IFMaskFilter</name>
+      <parents>
+        <hole id="2"/>
+        <hole id="3"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

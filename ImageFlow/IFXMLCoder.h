@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeTemplate.h"
+#import "IFTree.h"
 #import "IFTreeNode.h"
 #import "IFEnvironment.h"
 
@@ -46,9 +47,7 @@ typedef enum {
 #pragma mark High-level decoding
 
 - (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
-- (IFTreeNode*)decodeTree:(NSXMLNode*)xml;
-- (IFTreeNode*)decodeTreeNode:(NSXMLNode*)xml;
-- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+- (IFTree*)decodeTree:(NSXMLNode*)xml;
 
 #pragma mark Low-level decoding
 

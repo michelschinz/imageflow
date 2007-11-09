@@ -10,7 +10,17 @@
 #import "IFColorProfile.h"
 #import "NSDataAdditions.h"
 #import "IFExpression.h"
+#import "IFEnvironment.h"
+#import "IFTreeEdge.h"
 #import "IFTreeNodeFilter.h"
+#import "IFTreeNodeHole.h"
+#import "IFTreeNodeAlias.h"
+
+@interface IFXMLCoder (Private)
+- (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
+- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml;
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+@end
 
 @implementation IFXMLCoder
 
@@ -139,7 +149,7 @@ static IFXMLCoder* sharedCoder = nil;
   NSAssert([[xml name] isEqualToString:@"tree-template"], @"invalid XML document");
   NSString* name = nil;
   NSString* description = nil;
-  IFTreeNode* node = nil;
+  IFTree* tree = nil;
   
   for (int i = 0; i < [xml childCount]; ++i) {
     NSXMLNode* child = [xml childAtIndex:i];
@@ -150,48 +160,58 @@ static IFXMLCoder* sharedCoder = nil;
     else if ([childName isEqualToString:@"description"])
       description = [child stringValue];
     else if ([childName isEqualToString:@"tree"])
-      node = [self decodeTree:child];
+      tree = [self decodeTree:child];
     else
       NSAssert1(NO, @"invalid node: %@", child);
   }
   
-  return [IFTreeTemplate templateWithName:name description:description node:node];
+  return [IFTreeTemplate templateWithName:name description:description tree:tree];
 }
 
-- (IFTreeNode*)decodeTree:(NSXMLNode*)xml;
+- (IFTree*)decodeTree:(NSXMLNode*)xml;
 {
   NSAssert([[xml name] isEqualToString:@"tree"], @"invalid XML document");
   NSAssert([xml childCount] == 1, @"invalid XML document");
-  return [self decodeTreeNode:[xml childAtIndex:0]];
-}
-
-- (IFTreeNode*)decodeTreeNode:(NSXMLNode*)xml;
-{
-  NSAssert([[xml name] isEqualToString:@"node"], @"invalid XML document");
-  NSString* filterName = nil;
-  IFEnvironment* filterSettings = [IFEnvironment environment];
-  for (int i = 0; i < [xml childCount]; ++i) {
-    NSXMLNode* child = [xml childAtIndex:i];
-    NSString* childName = [child name];
-    if ([childName isEqualToString:@"filter"])
-      filterName = [child stringValue];
-    else if ([childName isEqualToString:@"settings"])
-      filterSettings = [self decodeFilterSettings:child];
-    else
-      NSAssert1(NO, @"invalid node: %@", child);
+  
+  NSError* error; // TODO check and handle errors
+  IFTree* tree = [IFTree tree];
+  NSMutableDictionary* nodeMap = [NSMutableDictionary dictionary];
+  
+  // First pass, create non-alias nodes
+  NSArray* nonAliasNodes = [xml nodesForXPath:@"//filter|//hole" error:&error];
+  for (int i = 0; i < [nonAliasNodes count]; ++i) {
+    NSXMLNode* xmlNode = [nonAliasNodes objectAtIndex:i];
+    IFTreeNode* node = [[xmlNode name] isEqualToString:@"filter"]
+      ? [self decodeFilter:xmlNode]
+      : [IFTreeNodeHole hole] ;
+    
+    [tree addNode:node];
+    [nodeMap setObject:node forKey:[self xmlNodeIdentity:xmlNode]];
   }
-  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:filterName environment:filterSettings]];
-}
-
-- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
-{
-  IFEnvironment* env = [IFEnvironment environment];
-  for (int i = 0; i < [xml childCount]; i += 2) {
-    NSXMLNode* keyNode = [xml childAtIndex:i];
-    NSXMLNode* valueNode = [xml childAtIndex:i+1];
-    [env setValue:[self decodeString:[valueNode stringValue] typeName:[valueNode name]] forKey:[keyNode stringValue]];
+  
+  // Second pass, create alias nodes
+  NSArray* aliasNodes = [xml nodesForXPath:@"//alias" error:&error];
+  for (int i = 0; i < [aliasNodes count]; ++i) {
+    NSXMLNode* xmlNode = [aliasNodes objectAtIndex:i];
+    unsigned originalId = [self decodeUnsignedInt:[[(NSXMLElement*)xmlNode attributeForName:@"original-ref"] stringValue]];
+    IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[nodeMap objectForKey:[NSNumber numberWithUnsignedInt:originalId]]]; // TODO decode and set name, if any
+    
+    [tree addNode:alias];
+    [nodeMap setObject:alias forKey:[self xmlNodeIdentity:xmlNode]];
   }
-  return env;
+  
+  // Third pass, create edges
+  NSArray* nodesWithParents = [xml nodesForXPath:@"//filter[parents]" error:&error];
+  for (int i = 0; i < [nodesWithParents count]; ++i) {
+    NSXMLNode* xmlNode = [nodesWithParents objectAtIndex:i];
+    IFTreeNode* child = [nodeMap objectForKey:[self xmlNodeIdentity:xmlNode]];
+    NSArray* xmlParents = [xmlNode nodesForXPath:@"./parents/*" error:&error];
+    for (int j = 0; j < [xmlParents count]; ++j) {
+      IFTreeNode* parent = [nodeMap objectForKey:[self xmlNodeIdentity:[xmlParents objectAtIndex:j]]];
+      [tree addEdgeFromNode:parent toNode:child withIndex:j];
+    }
+  }
+  return tree;
 }
 
 #pragma mark Low-level decoding
@@ -251,3 +271,47 @@ static IFXMLCoder* sharedCoder = nil;
 }
 
 @end
+
+@implementation IFXMLCoder (Private)
+
+- (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
+{
+  NSAssert([xml isKindOfClass:[NSXMLElement class]], @"invalid XML element");
+  NSString* identityString = [[(NSXMLElement*)xml attributeForName:@"id"] stringValue];
+  return (identityString != nil) ? [NSNumber numberWithUnsignedInt:[self decodeUnsignedInt:identityString]] : nil;
+}
+
+- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml;
+{
+  NSString* filterName = nil;
+  IFEnvironment* filterSettings = [IFEnvironment environment];
+
+  for (int i = 0; i < [xml childCount]; ++i) {
+    NSXMLNode* child = [xml childAtIndex:i];
+    NSString* childName = [child name];
+    if ([childName isEqualToString:@"name"])
+      filterName = [child stringValue];
+    else if ([childName isEqualToString:@"settings"])
+      filterSettings = [self decodeFilterSettings:child];
+    else if ([childName isEqualToString:@"parents"])
+      continue;
+    else
+      NSAssert1(NO, @"invalid node: %@", child);
+  }
+
+  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:filterName environment:filterSettings]];  
+}
+
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+{
+  IFEnvironment* env = [IFEnvironment environment];
+  for (int i = 0; i < [xml childCount]; i += 2) {
+    NSXMLNode* keyNode = [xml childAtIndex:i];
+    NSXMLNode* valueNode = [xml childAtIndex:i+1];
+    [env setValue:[self decodeString:[valueNode stringValue] typeName:[valueNode name]] forKey:[keyNode stringValue]];
+  }
+  return env;
+}
+
+@end
+

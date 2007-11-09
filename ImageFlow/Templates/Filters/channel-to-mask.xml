@@ -3,12 +3,15 @@
   <name>Channel to mask</name>
   <description>Create a mask from an image channel</description>
   <tree>
-    <node id="1">
-      <filter>IFChannelToMaskFilter</filter>
+    <filter id="1">
+      <name>IFChannelToMaskFilter</name>
       <settings>
         <key>channel</key>
         <integer>0</integer>
       </settings>
-    </node>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

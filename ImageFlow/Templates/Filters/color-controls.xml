@@ -3,8 +3,8 @@
   <name>Color controls</name>
   <description>Control contrast, brightness and saturation</description>
   <tree>
-    <node id="1">
-      <filter>IFColorControlsFilter</filter>
+    <filter id="1">
+      <name>IFColorControlsFilter</name>
       <settings>
         <key>contrast</key>
         <number>1</number>
@@ -13,6 +13,9 @@
         <key>saturation</key>
         <number>1</number>
       </settings>
-    </node>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

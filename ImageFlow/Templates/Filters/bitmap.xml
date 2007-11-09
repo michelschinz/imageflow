@@ -3,8 +3,8 @@
   <name>Draw bitmap</name>
   <description>Draw bitmap image</description>
   <tree>
-    <node id="1">
-      <filter>IFBitmapDrawingSource</filter>
+    <filter id="1">
+      <name>IFBitmapDrawingSource</name>
       <settings>
         <key>drawing</key>
         <expression>&lt;operation name="empty"/&gt;</expression>
@@ -21,6 +21,6 @@
         <key>brushOpacity</key>
         <number>1</number>
       </settings>
-    </node>
+    </filter>
   </tree>  
 </tree-template>

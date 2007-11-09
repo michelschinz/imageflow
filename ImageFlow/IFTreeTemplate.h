@@ -8,19 +8,22 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFTreeNode.h"
+#import "IFTree.h"
 
 @interface IFTreeTemplate : NSObject {
   NSString* name;
   NSString* description;
-  IFTreeNode* node;  
+  IFTree* tree;  
 }
 
-+ (id)templateWithName:(NSString*)theName description:(NSString*)theDescription node:(IFTreeNode*)theNode;
-- (id)initWithName:(NSString*)theName description:(NSString*)theDescription node:(IFTreeNode*)theNode;
++ (id)templateWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
+- (id)initWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
 
 - (NSString*)name;
 - (NSString*)description;
+- (IFTree*)tree;
+
+#pragma mark obsolete
 - (IFTreeNode*)node;
 
 @end

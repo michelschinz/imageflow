@@ -43,6 +43,7 @@
 #pragma mark Low level editing
 
 - (void)addNode:(IFTreeNode*)node;
+- (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
 
 #pragma mark High level editing
 

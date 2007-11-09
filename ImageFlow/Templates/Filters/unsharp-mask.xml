@@ -3,14 +3,17 @@
   <name>Unsharp mask</name>
   <description>Increases the sharpness of input image.</description>
   <tree>
-    <node id="1">
-      <filter>IFUnsharpMaskFilter</filter>
+    <filter id="1">
+      <name>IFUnsharpMaskFilter</name>
       <settings>
       	<key>intensity</key>
         <number>0.5</number>
         <key>radius</key>
         <number>2.5</number>
       </settings>
-    </node>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

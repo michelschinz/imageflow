@@ -11,24 +11,24 @@
 
 @implementation IFTreeTemplate
 
-+ (id)templateWithName:(NSString*)theName description:(NSString*)theDescription node:(IFTreeNode*)theNode;
++ (id)templateWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
 {
-  return [[[self alloc] initWithName:theName description:theDescription node:theNode] autorelease];
+  return [[[self alloc] initWithName:theName description:theDescription tree:theTree] autorelease];
 }
 
-- (id)initWithName:(NSString*)theName description:(NSString*)theDescription node:(IFTreeNode*)theNode;
+- (id)initWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
 {
   if (![super init])
     return nil;
   name = [theName copy];
   description = [theDescription copy];
-  node = [theNode retain];
+  tree = [theTree retain];
   return self;
 }
 
 - (void) dealloc;
 {
-  OBJC_RELEASE(node);
+  OBJC_RELEASE(tree);
   OBJC_RELEASE(description);
   OBJC_RELEASE(name);
   [super dealloc];
@@ -44,9 +44,14 @@
   return description;
 }
 
+- (IFTree*)tree;
+{
+  return tree;
+}
+
 - (IFTreeNode*)node;
 {
-  return node;
+  return [tree root];
 }
 
 @end

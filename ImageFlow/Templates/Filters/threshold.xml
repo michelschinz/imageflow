@@ -3,12 +3,15 @@
   <name>Threshold</name>
   <description>Threshold input image</description>
   <tree>
-    <node id="1">
-      <filter>IFThresholdFilter</filter>
+    <filter id="1">
+      <name>IFThresholdFilter</name>
       <settings>
         <key>threshold</key>
         <number>0.5</number>
       </settings>
-    </node>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

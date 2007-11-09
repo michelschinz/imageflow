@@ -3,8 +3,11 @@
   <name>Invert colors</name>
   <description>Invert colors of input image</description>
   <tree>
-    <node id="1">
-      <filter>IFInvertFilter</filter>
-    </node>
+    <filter id="1">
+      <name>IFInvertFilter</name>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
   </tree>
 </tree-template>

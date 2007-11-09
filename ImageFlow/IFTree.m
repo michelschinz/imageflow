@@ -10,6 +10,7 @@
 #import "IFTreeEdge.h"
 #import "IFTypeChecker.h"
 #import "IFSubtree.h"
+#import "IFTreeNodeHole.h"
 
 static NSString* IFTreeNodeExpressionChangedContext = @"IFTreeNodeExpressionChangedContext";
 
@@ -81,6 +82,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   [graph addNode:node];
+}
+
+- (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
+{
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:index] fromNode:fromNode toNode:toNode];
 }
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
