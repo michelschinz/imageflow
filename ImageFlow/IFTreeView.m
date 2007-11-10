@@ -442,7 +442,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)insertNewline:(id)sender
 {
-  [document insertNode:[IFTreeNode ghostNodeWithInputArity:1] asChildOf:[self cursorNode]];
+//TODO  [document insertNode:[IFTreeNode ghostNodeWithInputArity:1] asChildOf:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
 }
 

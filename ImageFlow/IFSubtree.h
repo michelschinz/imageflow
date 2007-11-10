@@ -24,9 +24,6 @@
 
 - (BOOL)containsNode:(IFTreeNode*)node;
 
-- (unsigned)inputArity;
-- (NSArray*)sortedParentsOfInputNodes;
-
 - (IFTree*)extractTree;
 
 @end

@@ -183,75 +183,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [evaluator setResolutionY:resolutionY];
 }
 
-#pragma mark document manipulation
-
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
-{
-  return [tree canReplaceNode:node byCopyOfTree:replacement];
-}
-
-- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
-{
-  [self beginTreeModification];
-  [tree replaceNode:node byCopyOfTree:replacement];
-  [self endTreeModification];
-}
-
-#pragma mark (obsolete)
-
-- (void)addTree:(IFTreeNode*)newNode;
-{
-  NSArray* roots = [self roots];
-  int i;
-  for (i = [roots count] - 1;
-       (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
-       --i)
-    ;
-
-  [self beginTreeModification];
-  [tree addNode:newNode asNewRootAtIndex:i+1];
-  [self endTreeModification];
-}
-
-- (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
-{
-  return [tree canInsertNode:parent asParentOf:child];
-}
-
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
-{
-  NSAssert([self canInsertNode:parent asParentOf:child], @"internal error");
-
-  [self beginTreeModification];
-  [tree insertNode:parent asParentOf:child];
-  [self endTreeModification];
-}
-
-- (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-{
-  return [tree canInsertNode:child asChildOf:parent];
-}
-
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-{
-  NSAssert([self canInsertNode:child asChildOf:parent], @"internal error");
-  
-  [self beginTreeModification];
-  [tree insertNode:child asChildOf:parent];
-  [self endTreeModification];
-}
-
-- (void)deleteNode:(IFTreeNode*)node;
-{
-  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
-}
-
-- (void)deleteSubtree:(IFSubtree*)subtree;
-{
-  [self beginTreeModification];
-  [tree deleteSubtree:subtree];
-  [self endTreeModification];
-}
+#pragma mark Tree navigation
 
 - (NSSet*)allNodes;
 {
@@ -289,6 +221,46 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     node = [tree childOfNode:node];
   }
   return result;
+}
+
+#pragma mark Tree manipulations
+
+- (void)addTree:(IFTreeNode*)newNode;
+{
+  NSArray* roots = [self roots];
+  int i;
+  for (i = [roots count] - 1;
+       (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
+       --i)
+    ;
+  
+  [self beginTreeModification];
+  [tree addNode:newNode asNewRootAtIndex:i+1];
+  [self endTreeModification];
+}
+
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+{
+  return [tree canCopyTree:replacement toReplaceNode:node];
+}
+
+- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+{
+  [self beginTreeModification];
+  [tree copyTree:replacement toReplaceNode:node];
+  [self endTreeModification];
+}
+
+- (void)deleteSubtree:(IFSubtree*)subtree;
+{
+  [self beginTreeModification];
+  [tree deleteSubtree:subtree];
+  [self endTreeModification];
+}
+
+- (void)deleteNode:(IFTreeNode*)node;
+{
+  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
 }
 
 #pragma mark loading and saving

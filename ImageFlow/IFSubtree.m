@@ -10,10 +10,6 @@
 
 #import "IFTreeNodeHole.h"
 
-@interface IFSubtree (Private)
-- (void)collectSortedParentsOfInputNodesIn:(NSMutableArray*)result startingAt:(IFTreeNode*)root;
-@end
-
 @implementation IFSubtree
 
 + (id)subtreeOf:(IFTree*)theBaseTree includingNodes:(NSSet*)theIncludedNodes;
@@ -67,18 +63,6 @@
   return [includedNodes containsObject:node];
 }
 
-- (unsigned)inputArity;
-{
-  return [[self sortedParentsOfInputNodes] count];
-}
-
-- (NSArray*)sortedParentsOfInputNodes;
-{
-  NSMutableArray* inputNodes = [NSMutableArray array];
-  [self collectSortedParentsOfInputNodesIn:inputNodes startingAt:[self root]];
-  return inputNodes;
-}
-
 - (IFTree*)extractTree;
 {
   IFTree* tree = [IFTree tree];
@@ -114,22 +98,6 @@
 {
   [encoder encodeObject:baseTree forKey:@"baseTree"];
   [encoder encodeObject:includedNodes forKey:@"includedNodes"];
-}
-
-@end
-
-@implementation IFSubtree (Private)
-
-- (void)collectSortedParentsOfInputNodesIn:(NSMutableArray*)result startingAt:(IFTreeNode*)root;
-{
-  NSArray* parents = [baseTree parentsOfNode:root];
-  for (int i = 0; i < [parents count]; ++i) {
-    IFTreeNode* parent = [parents objectAtIndex:i];
-    if ([includedNodes containsObject:parent])
-      [self collectSortedParentsOfInputNodesIn:result startingAt:parent];
-    else
-      [result addObject:parent];
-  }
 }
 
 @end

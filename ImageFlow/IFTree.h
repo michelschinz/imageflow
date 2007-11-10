@@ -33,6 +33,9 @@
 - (NSArray*)siblingsOfNode:(IFTreeNode*)node;
 - (NSArray*)dfsAncestorsOfNode:(IFTreeNode*)node;
 
+- (NSArray*)parentsOfSubtree:(IFSubtree*)subtree;
+- (IFTreeNode*)childOfSubtree:(IFSubtree*)subtree;
+
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
 
 #pragma mark Expression propagation
@@ -43,30 +46,34 @@
 #pragma mark Low level editing
 
 - (void)addNode:(IFTreeNode*)node;
+- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
+
 - (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
 
 #pragma mark High level editing
 
-- (BOOL)canReplaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
-- (void)replaceNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)tree;
-
-#pragma mark (obsolete)
-
 - (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
-
-- (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-
-- (BOOL)canInsertNode:(IFTreeNode*)node asParentOf:(IFTreeNode*)child;
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
-
-- (BOOL)canReplaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
-- (void)replaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
-
-- (BOOL)canReplaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
-
 - (void)deleteSubtree:(IFSubtree*)subtree;
+
+  // Copying trees inside the current tree
+- (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (void)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+
+- (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+
+- (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+
+  // Moving subtrees to some other location
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
+
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
+
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 
 #pragma mark Type checking
 

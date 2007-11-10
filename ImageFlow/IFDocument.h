@@ -53,23 +53,20 @@ extern NSString* IFTreeChangedNotification;
 - (float)resolutionY;
 - (void)setResolutionY:(float)newResolutionY;
 
-// Tree manipulations
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
-- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
-
-// obsolete
-- (void)addTree:(IFTreeNode*)newRoot;
-- (BOOL)canInsertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
-- (void)insertNode:(IFTreeNode*)parent asParentOf:(IFTreeNode*)child;
-- (BOOL)canInsertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-- (void)deleteNode:(IFTreeNode*)node;
-- (void)deleteSubtree:(IFSubtree*)subtree;
+#pragma mark Tree navigation
 
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
+
+#pragma mark Tree manipulations
+
+- (void)addTree:(IFTreeNode*)newRoot;
+- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+- (void)deleteSubtree:(IFSubtree*)subtree;
+- (void)deleteNode:(IFTreeNode*)node;
 
 @end
