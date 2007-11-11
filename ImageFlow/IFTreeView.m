@@ -18,7 +18,6 @@
 #import "IFHistogramInspectorWindowController.h"
 #import "IFTreeTemplate.h"
 #import "IFTreeTemplateManager.h"
-#import "IFTreeNodeProxy.h"
 #import "IFUtilities.h"
 
 @interface IFTreeView (Private)
@@ -48,8 +47,6 @@
 @implementation IFTreeView
 
 NSString* IFMarkPboardType = @"IFMarkPboardType";
-
-static NSString* IFTreeNodeArrayPboardType = @"IFTreeNodeArrayPboardType"; // TODO obsolete
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
 enum IFLayoutLayer {
@@ -90,7 +87,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   
   trackingRectTags = [NSMutableArray new];
 
-  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreeNodeArrayPboardType,IFMarkPboardType,nil]];
+  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
 
   [cursors addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
@@ -307,13 +304,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   IFTreeLayoutElement* elementUnderMouse = [self layoutElementAtPoint:localPoint];
 
   if ([elementUnderMouse node] == [self cursorNode]) {
-    NSPasteboard* pasteboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pasteboard declareTypes:[NSArray arrayWithObject:IFTreeNodeArrayPboardType] owner:self];
-    NSArray* nodes = [[IFTreeNodeProxy collect] proxyForNode:[[self selectedNodes] each] ofDocument:document];
-    NSData* data = [NSArchiver archivedDataWithRootObject:nodes];
-    [pasteboard setData:data forType:IFTreeNodeArrayPboardType];
+    NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
+    [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
   
-    [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pasteboard source:self slideBack:YES];    
+    [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
   }
 }
 
@@ -521,10 +516,8 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   if ([types containsObject:IFMarkPboardType]) {
     int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
     [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
-  } else if ([types containsObject:IFTreeNodeArrayPboardType]) {
-    NSArray* nodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
-    [document deleteSubtree:[IFSubtree subtreeOf:[document tree] includingNodes:[NSSet setWithArray:(NSArray*)[[nodeProxies collect] node]]]];
-  }
+  } else if ([types containsObject:IFTreePboardType])
+    [document deleteSubtree:[self selectedSubtree]];
 }
 
 // NSDraggingDestination methods
@@ -542,7 +535,7 @@ static enum {
     [[layoutStrategy layoutNodeForTreeNode:[self cursorNode]] deactivate];
 
   NSArray* types = [[sender draggingPasteboard] types];
-  if ([types containsObject:IFTreeNodeArrayPboardType])
+  if ([types containsObject:IFTreePboardType])
     dragKind = IFDragKindNode;
   else if ([types containsObject:NSFilenamesPboardType])
     dragKind = IFDragKindFileName; // TODO check that we can load the files being dragged
@@ -565,8 +558,8 @@ static enum {
   NSDragOperation allowedOperations;
   switch (dragKind) {
     case IFDragKindNode:
-      highlightTarget = YES;
-      allowedOperations = NSDragOperationEvery;
+      highlightTarget = YES; // TODO only highlight connectors and ghost nodes
+      allowedOperations = NSDragOperationEvery; // TODO only allow link for single nodes
       break;
     case IFDragKindFileName: {
       if (targetElement != nil) {
@@ -597,107 +590,69 @@ static enum {
   [self clearHighlighting];
 }
 
-#if 0
-
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
   [self clearHighlighting];
-
+  
   NSPoint targetLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
   IFTreeLayoutSingle* targetElement = (IFTreeLayoutSingle*)[self layoutElementAtPoint:targetLocation inLayerAtIndex:IFLayoutLayerTree];
   IFTreeNode* targetNode = [targetElement node];
-
+  
   NSPasteboard* pboard = [sender draggingPasteboard];
   switch (dragKind) {
     case IFDragKindNode: {
-      NSArray* draggedNodeProxies = [NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreeNodeArrayPboardType]];
-      NSSet* draggedNodes = [NSSet setWithArray:(NSArray*)[[draggedNodeProxies collect] node]];
-      NSDragOperation operation = [sender draggingSourceOperationMask];
-
-      if (targetNode == nil)
-        return NO;
+      NSAssert(targetNode != nil, @"nil target node");
       
-      if ((operation & (NSDragOperationCopy|NSDragOperationMove)) != 0) {
-        // Copy or move node
-        NSAssert([draggedNodes count] == 1, @"cannot drag multiple nodes (TODO)");
-        IFTreeNode* draggedMacro = [draggedNodes anyObject];
-        if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]]) {
-          if ([document canInsertNode:draggedMacro asParentOf:targetNode])
-            [document insertNode:draggedMacro asParentOf:targetNode];
-          else
+      enum { IFReplace, IFInsertAsChild, IFInsertAsParent } operationKind;
+      if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]])
+        operationKind = IFInsertAsParent;
+      else if ([targetElement isKindOfClass:[IFTreeLayoutOutputConnector class]])
+        operationKind = IFInsertAsChild;
+      else
+        operationKind = IFReplace;
+      NSDragOperation operation = [sender draggingSourceOperationMask];
+      
+      if ((operation & NSDragOperationMove) != 0) {
+        IFSubtree* subtree = [self selectedSubtree];
+        switch (operationKind) {
+          case IFReplace:
+            if ([document canMoveSubtree:subtree toReplaceGhostNode:targetNode]) {
+              [document moveSubtree:subtree toReplaceGhostNode:targetNode];
+              return YES;
+            } else
+              return NO;
+          case IFInsertAsChild:
             return NO;
-        } else if ([targetElement isKindOfClass:[IFTreeLayoutOutputConnector class]]) {
-          if ([document canInsertNode:draggedMacro asChildOf:targetNode])
-            [document insertNode:draggedMacro asChildOf:targetNode];
-          else
+          case IFInsertAsParent:
             return NO;
-        } else {
-          NSAssert1([targetElement isKindOfClass:[IFTreeLayoutSingle class]], @"unexpected target element %@",targetElement);
-          if ([targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:draggedMacro])
-            [document replaceGhostNode:targetNode usingNode:draggedMacro];
-          else
+          default:
+            NSAssert(NO, @"unexpected operation kind");
             return NO;
         }
-// TODO       if (([sender draggingSourceOperationMask] & NSDragOperationMove) != 0)
-//          [document deleteContiguousNodes:draggedNodes];
-        return YES;        
-      } else if ((operation & NSDragOperationLink) != 0) {
-        // Link: create node alias
-        IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[draggedNodes anyObject]];
-        if ([draggedNodes count] == 1 && [targetNode isGhost] && [document canReplaceGhostNode:targetNode usingNode:alias]) {
-          [document replaceGhostNode:targetNode usingNode:alias];
-          return YES;
-        } else
-          return NO;
-      } else
-        return NO;
-    }
-
-    case IFDragKindFileName: {
-      NSArray* fileNames = [pboard propertyListForType:NSFilenamesPboardType];
-      if (targetElement == nil) {
-        // Create new file source nodes for dragged files
-        IFTreeTemplate* loadTemplate = [[IFTreeTemplateManager sharedManager] loadFileTemplate];
-        IFTreeNode* loadNode = [loadTemplate node];
-        for (int i = 0; i < [fileNames count]; ++i) {
-          IFTreeNode* newNode = [loadNode cloneNode];
-          [[[newNode filter] environment] setValue:[fileNames objectAtIndex:i] forKey:@"fileName"];
-          [document addTree:newNode];
+      } else if ((operation & NSDragOperationCopy) != 0) {
+        // TODO also valid for inter-document moves.
+        IFTree* draggedTree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
+        switch (operationKind) {
+          case IFReplace:
+            if ([document canReplaceGhostNode:targetNode byCopyOfTree:draggedTree]) {
+              [document replaceGhostNode:targetNode byCopyOfTree:draggedTree];
+              return YES;
+            } else
+              return NO;
+          case IFInsertAsChild:
+            return NO; // TODO
+          case IFInsertAsParent:
+            return NO; // TODO
+          default:
+            NSAssert(NO, @"unexpected operation kind");
+            return NO;
         }
-        return YES;
-      } else if ([targetNode isGhost]) {
-        // Replace ghost node by "load" node
-        IFTreeTemplate* loadTemplate = [[IFTreeTemplateManager sharedManager] loadFileTemplate];
-        IFTreeNode* loadNode = [loadTemplate node];
-        [[[loadNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
-        if ([document canReplaceGhostNode:targetNode usingNode:loadNode]) {
-          [document replaceGhostNode:targetNode usingNode:[loadNode cloneNode]];
-          return YES;
-        } else
-          return NO;
-      } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
-        // Change "fileName" entry in environment to the dropped file name.
-        [[[targetNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
-        return YES;
       } else
-        return NO;
+        NSLog(@"TODO");
     }
-
-    case IFDragKindMark: {
-      if (targetElement == nil)
-        return NO;
-      int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:[targetElement node]];
-      return YES;
-    }
-
-    default:
-      NSAssert(NO,@"unexpected drag kind");
-      return NO;
   }
+  return NO;
 }
-
-#endif
 
 #pragma mark Layout
 

@@ -32,6 +32,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
 - (void)exchangeSubtree:(IFSubtree*)subtree withTreeRootedAt:(IFTreeNode*)root;
 - (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (BOOL)isTypeCorrect;
 
 - (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
 - (void)debugDump;
@@ -143,6 +144,18 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return YES;
 }
 
+- (unsigned)holesCount;
+{
+  unsigned count = 0;
+  NSEnumerator* nodesEnum = [[graph nodes] objectEnumerator];
+  IFTreeNode* node;
+  while (node = [nodesEnum nextObject]) {
+    if ([node isHole])
+      ++count;
+  }
+  return count;
+}
+
 #pragma mark Expression propagation
 
 - (BOOL)propagateNewParentExpressions;
@@ -239,6 +252,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 // Copying trees inside the current tree
 - (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
+  if ([self parentsCountOfNode:node] > [tree holesCount]) // TODO do not count rightmost ghost parents of node
+    return NO;
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone copyTree:tree toReplaceNode:node];
   return [clone isTypeCorrect];
@@ -253,6 +268,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
+  // TODO check arity
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone insertCopyOfTree:tree asChildOfNode:node];
   return [clone isTypeCorrect];
@@ -267,6 +283,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
+  // TODO check arity
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone insertCopyOfTree:tree asParentOfNode:node];
   return [clone isTypeCorrect];
@@ -280,8 +297,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   // Moving subtrees to some other location
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
 {
+  if ([self parentsCountOfNode:node] > [self arityOfSubtree:subtree]) // TODO do not count rightmost ghost parents of node
+    return NO;
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone moveSubtree:subtree toReplaceNode:node];
+  IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
+  [clone moveSubtree:cloneSubtree toReplaceNode:node];
   return [clone isTypeCorrect];
 }
 
@@ -296,7 +316,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
 {
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone moveSubtree:subtree asChildOfNode:node];
+  IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
+  [clone moveSubtree:cloneSubtree asChildOfNode:node];
   return [clone isTypeCorrect];
 }
 
@@ -308,7 +329,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 {
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone moveSubtree:subtree asParentOfNode:node];
+  IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
+  [clone moveSubtree:cloneSubtree asParentOfNode:node];
   return [clone isTypeCorrect];
 }
 
@@ -318,22 +340,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 }
 
 #pragma mark Type checking
-
-- (BOOL)isCyclic;
-{
-  return [graphCloneWithoutAliases(graph) isCyclic];
-}
-
-- (BOOL)isTypeCorrect;
-{
-  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
-  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
-  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
-  if (sortedNodes == nil)
-    return NO; // cyclic graph
-  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
-}
 
 - (void)configureNodes;
 {
@@ -524,6 +530,19 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
 {
   return [self replaceSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:toReplace]] byNode:replacement];
+}
+
+#pragma mark Type checking
+
+- (BOOL)isTypeCorrect;
+{
+  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
+  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
+  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
+  if (sortedNodes == nil)
+    return NO; // cyclic graph
+  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
+  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
 }
 
 #pragma mark -

@@ -239,6 +239,18 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self endTreeModification];
 }
 
+- (void)deleteSubtree:(IFSubtree*)subtree;
+{
+  [self beginTreeModification];
+  [tree deleteSubtree:subtree];
+  [self endTreeModification];
+}
+
+- (void)deleteNode:(IFTreeNode*)node;
+{
+  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
+}
+
 - (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
 {
   return [tree canCopyTree:replacement toReplaceNode:node];
@@ -251,16 +263,16 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self endTreeModification];
 }
 
-- (void)deleteSubtree:(IFSubtree*)subtree;
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
 {
-  [self beginTreeModification];
-  [tree deleteSubtree:subtree];
-  [self endTreeModification];
+  return [tree canMoveSubtree:subtree toReplaceNode:node];
 }
 
-- (void)deleteNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
 {
-  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
+  [self beginTreeModification];
+  [tree moveSubtree:subtree toReplaceNode:node];
+  [self endTreeModification];
 }
 
 #pragma mark loading and saving

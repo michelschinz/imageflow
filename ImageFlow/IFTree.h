@@ -38,6 +38,8 @@
 
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
 
+- (unsigned)holesCount;
+
 #pragma mark Expression propagation
 
 - (BOOL)propagateNewParentExpressions;
@@ -77,8 +79,6 @@
 
 #pragma mark Type checking
 
-- (BOOL)isCyclic;
-- (BOOL)isTypeCorrect;
 - (void)configureNodes;
 
 @end
