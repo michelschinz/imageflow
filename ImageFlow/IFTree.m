@@ -248,6 +248,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)deleteSubtree:(IFSubtree*)subtree;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
+
   // First replace all aliases to nodes about to be deleted by ghosts...
   NSEnumerator* allNodesEnum = [[self nodes] objectEnumerator];
   IFTreeNode* node;
@@ -263,8 +265,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 {
-  if ([self parentsCountOfNode:node] > 0)
-    return NO;
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone createAliasToNode:original toReplaceNode:node];
   return [clone isTypeCorrect];
@@ -272,6 +272,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
+
   IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:original];
   [self addNode:alias];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:alias];
@@ -281,8 +283,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 // Copying trees inside the current tree
 - (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
-  if ([self parentsCountOfNode:node] > [tree holesCount]) // TODO do not count rightmost ghost parents of node
-    return NO;
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone copyTree:tree toReplaceNode:node];
   return [clone isTypeCorrect];
@@ -290,6 +290,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
+
   IFTreeNode* copiedTreeRoot = [self addCopyOfTree:tree];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:copiedTreeRoot];
   [self removeTreeRootedAt:node];
@@ -297,7 +299,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
-  // TODO check arity
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone insertCopyOfTree:tree asChildOfNode:node];
   return [clone isTypeCorrect];
@@ -310,7 +311,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
-  // TODO check arity
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   [clone insertCopyOfTree:tree asParentOfNode:node];
   return [clone isTypeCorrect];
@@ -324,8 +324,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   // Moving subtrees to some other location
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
 {
-  if ([self parentsCountOfNode:node] > [self arityOfSubtree:subtree]) // TODO do not count rightmost ghost parents of node
-    return NO;
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
   [clone moveSubtree:cloneSubtree toReplaceNode:node];
@@ -334,6 +332,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)moveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
 {
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
+  
   IFTreeNode* ghost = [self addGhostTreeWithArity:[self arityOfSubtree:subtree]];
   [self exchangeSubtree:subtree withTreeRootedAt:ghost];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:[subtree root]];
@@ -557,14 +557,32 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   NSArray* subtreeParents = [self parentsOfSubtree:subtree];
   [[self do] detachNode:[subtreeParents each]];
+  const unsigned parentsCount = [subtreeParents count];
 
   NSArray* treeHoles = [self holesInSubtreeRootedAt:root];
-  for (int i = 0; i < [subtreeParents count]; ++i)
+  const unsigned holesCount = [treeHoles count];
+
+  for (int i = 0, minCount = parentsCount < holesCount ? parentsCount : holesCount; i < minCount; ++i)
     [self plugHole:[treeHoles objectAtIndex:i] withNode:[subtreeParents objectAtIndex:i]];
-  for (int i = [subtreeParents count]; i < [treeHoles count]; ++i) {
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
-    [self addNode:ghost];
-    [self plugHole:[treeHoles objectAtIndex:i] withNode:ghost];
+  
+  if (parentsCount > holesCount) {
+    // more parents than holes, attach remaining ones to new root (rightmost, ghost-only parents excepted).
+    BOOL active = NO;
+    for (int i = parentsCount - 1; i >= holesCount; --i) {
+      IFTreeNode* parent = [subtreeParents objectAtIndex:i];
+      active |= ![self isGhostSubtreeRoot:parent];
+      if (active)
+        [self addEdgeFromNode:parent toNode:root withIndex:[self parentsCountOfNode:root]];
+      else
+        [self removeTreeRootedAt:parent];
+    }
+  } else if (holesCount > parentsCount) {
+    // more holes than parents, plug them with ghosts
+    for (int i = parentsCount; i < holesCount; ++i) {
+      IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+      [self addNode:ghost];
+      [self plugHole:[treeHoles objectAtIndex:i] withNode:ghost];
+    }
   }
 }
 
