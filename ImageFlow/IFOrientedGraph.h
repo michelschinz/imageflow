@@ -14,9 +14,9 @@
   NSMutableDictionary* nodeToEdgeSet;
 }
 
-+ (id)graph;
++ (IFOrientedGraph*)graph;
 
-- (id)clone;
+- (IFOrientedGraph*)clone;
 
 - (NSSet*)nodes;
 

@@ -15,7 +15,7 @@
 
 @implementation IFOrientedGraph
 
-+ (id)graph;
++ (IFOrientedGraph*)graph;
 {
   return [[[self alloc] init] autorelease];
 }
@@ -33,7 +33,7 @@
   [super dealloc];
 }
 
-- (id)clone;
+- (IFOrientedGraph*)clone;
 {
   return [[[[self class] alloc] initWithNodes:nodes edgeToRealEdge:edgeToRealEdge nodeToEdgeSet:nodeToEdgeSet] autorelease];
 }
