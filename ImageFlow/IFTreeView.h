@@ -33,6 +33,8 @@ extern NSString* IFMarkPboardType;
   NSMutableArray* trackingRectTags;
   IFTreeLayoutElement* pointedElement;
   NSBezierPath* highlightingPath;
+  NSDragOperation currentDragOperation;
+  BOOL isCurrentDragLocal;
 }
 
 - (IFTreeLayoutStrategy*)layoutStrategy;

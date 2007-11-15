@@ -21,6 +21,7 @@
 #import "IFUtilities.h"
 
 @interface IFTreeView (Private)
+- (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
 - (NSRect)paddedBounds;
 - (void)updateBounds;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
@@ -307,7 +308,8 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
-  
+
+    isCurrentDragLocal = NO;
     [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
   }
 }
@@ -457,7 +459,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (IBAction)makeNodeAlias:(id)sender;
 {
-  [document addTree:[IFTreeNodeAlias nodeAliasWithOriginal:[self cursorNode]]];
+  [document addCopyOfTree:[IFTree treeWithNode:[IFTreeNodeAlias nodeAliasWithOriginal:[self cursorNode]]]];
 }
 
 #pragma mark Copy and paste
@@ -490,8 +492,8 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   }
   
   IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
-  if ([document canReplaceGhostNode:[self cursorNode] byCopyOfTree:tree])
-    [document replaceGhostNode:[self cursorNode] byCopyOfTree:tree];
+  if ([document canCopyTree:tree toReplaceGhostNode:[self cursorNode]])
+    [document copyTree:tree toReplaceGhostNode:[self cursorNode]];
   else
     NSBeep();
 }
@@ -502,22 +504,37 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 {
-  return isLocal ? NSDragOperationEvery : NSDragOperationDelete;
+  if (isLocal) {
+    NSSet* selected = [self selectedNodes];
+    return (([selected count] == 1) && ![[selected anyObject] isGhost])
+      ? NSDragOperationEvery
+      : NSDragOperationEvery & ~NSDragOperationLink;
+  } else
+    return NSDragOperationDelete;
 }
 
 - (void)draggedImage:(NSImage*)image endedAt:(NSPoint)point operation:(NSDragOperation)operation;
 {
-  if (operation != NSDragOperationDelete)
-    return;
-
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   NSArray* types = [pboard types];
-
-  if ([types containsObject:IFMarkPboardType]) {
-    int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-    [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
-  } else if ([types containsObject:IFTreePboardType])
-    [document deleteSubtree:[self selectedSubtree]];
+  
+  switch (operation) {
+    case NSDragOperationMove:
+      if (!isCurrentDragLocal)
+        [document deleteSubtree:[self selectedSubtree]];
+      break;
+      
+    case NSDragOperationDelete: {
+      if ([types containsObject:IFMarkPboardType]) {
+        int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
+        [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
+      } else if ([types containsObject:IFTreePboardType])
+        [document deleteSubtree:[self selectedSubtree]];
+    } break;
+      
+    default:
+      ; // do nothing
+  }
 }
 
 // NSDraggingDestination methods
@@ -548,30 +565,32 @@ static enum {
 
 - (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender;
 {
+  currentDragOperation = NSDragOperationNone;
   if (dragKind == IFDragKindUnknown)
     return NSDragOperationNone;
 
   NSPoint targetLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
   IFTreeLayoutSingle* targetElement = (IFTreeLayoutSingle*)[self layoutElementAtPoint:targetLocation inLayerAtIndex:IFLayoutLayerTree];
+  IFTreeNode* targetNode = targetElement == nil ? nil : [targetElement node];
   BOOL highlightTarget;
 
-  NSDragOperation allowedOperations;
+  NSDragOperation allowedOperationsMask;
   switch (dragKind) {
     case IFDragKindNode:
-      highlightTarget = YES; // TODO only highlight connectors and ghost nodes
-      allowedOperations = NSDragOperationEvery; // TODO only allow link for single nodes
+      highlightTarget = (targetNode != nil && ([targetNode isGhost] || [targetElement kind] == IFTreeLayoutElementKindInputConnector || [targetElement kind] == IFTreeLayoutElementKindOutputConnector));
+      allowedOperationsMask = NSDragOperationEvery;
       break;
     case IFDragKindFileName: {
       if (targetElement != nil) {
         IFTreeNode* node = [targetElement node];
         highlightTarget = [node isGhost] || ([[[node filter] environment] valueForKey:@"fileName"] != nil);
-        allowedOperations = highlightTarget ? (NSDragOperationLink | NSDragOperationCopy) : NSDragOperationNone;
+        allowedOperationsMask = highlightTarget ? NSDragOperationLink : NSDragOperationNone;
       } else
-        allowedOperations = NSDragOperationLink;
+        allowedOperationsMask = NSDragOperationLink;
     } break;
     case IFDragKindMark:
       highlightTarget = YES;
-      allowedOperations = NSDragOperationMove|NSDragOperationDelete;
+      allowedOperationsMask = NSDragOperationMove|NSDragOperationDelete;
       break;
     default:
       NSAssert(NO,@"unexpected drag kind");
@@ -582,7 +601,18 @@ static enum {
   else
     [self clearHighlighting];
 
-  return [sender draggingSourceOperationMask] & allowedOperations;
+  NSDragOperation operations = allowedOperationsMask & [sender draggingSourceOperationMask];
+  if ((operations & (NSDragOperationMove|NSDragOperationGeneric)) != 0)
+    currentDragOperation = NSDragOperationMove;
+  else if ((operations & NSDragOperationCopy) != 0)
+    currentDragOperation = NSDragOperationCopy;
+  else if ((operations & NSDragOperationLink) != 0)
+    currentDragOperation = NSDragOperationLink;
+  else {
+    NSAssert1(operations == 0, @"non-zero operations: %d", operations);
+    currentDragOperation = NSDragOperationNone;
+  }
+  return currentDragOperation;
 }
 
 - (void)draggingExited:(id<NSDraggingInfo>)sender;
@@ -593,6 +623,9 @@ static enum {
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
   [self clearHighlighting];
+
+  if ([sender draggingSource] == self)
+    isCurrentDragLocal = YES;
   
   NSPoint targetLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
   IFTreeLayoutSingle* targetElement = (IFTreeLayoutSingle*)[self layoutElementAtPoint:targetLocation inLayerAtIndex:IFLayoutLayerTree];
@@ -601,18 +634,18 @@ static enum {
   NSPasteboard* pboard = [sender draggingPasteboard];
   switch (dragKind) {
     case IFDragKindNode: {
-      NSAssert(targetNode != nil, @"nil target node");
+      if (targetNode == nil)
+        return NO;
       
       enum { IFReplace, IFInsertAsChild, IFInsertAsParent } operationKind;
-      if ([targetElement isKindOfClass:[IFTreeLayoutInputConnector class]])
+      if ([targetElement kind] == IFTreeLayoutElementKindInputConnector)
         operationKind = IFInsertAsParent;
-      else if ([targetElement isKindOfClass:[IFTreeLayoutOutputConnector class]])
+      else if ([targetElement kind] == IFTreeLayoutElementKindOutputConnector)
         operationKind = IFInsertAsChild;
       else
         operationKind = IFReplace;
-      NSDragOperation operation = [sender draggingSourceOperationMask];
       
-      if ((operation & NSDragOperationMove) != 0) {
+      if ((currentDragOperation == NSDragOperationMove) && isCurrentDragLocal) {
         IFSubtree* subtree = [self selectedSubtree];
         switch (operationKind) {
           case IFReplace:
@@ -622,36 +655,97 @@ static enum {
             } else
               return NO;
           case IFInsertAsChild:
-            return NO;
+            if ([document canMoveSubtree:subtree asChildOfNode:targetNode]) {
+              [document moveSubtree:subtree asChildOfNode:targetNode];
+              return YES;
+            } else
+              return NO;
           case IFInsertAsParent:
-            return NO;
+            if ([document canMoveSubtree:subtree asParentOfNode:targetNode]) {
+              [document moveSubtree:subtree asParentOfNode:targetNode];
+              return YES;
+            } else
+              return NO;
           default:
             NSAssert(NO, @"unexpected operation kind");
             return NO;
         }
-      } else if ((operation & NSDragOperationCopy) != 0) {
-        // TODO also valid for inter-document moves.
+      } else if ((currentDragOperation == NSDragOperationCopy) || (currentDragOperation == NSDragOperationMove)) {
         IFTree* draggedTree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
         switch (operationKind) {
           case IFReplace:
-            if ([document canReplaceGhostNode:targetNode byCopyOfTree:draggedTree]) {
-              [document replaceGhostNode:targetNode byCopyOfTree:draggedTree];
+            if ([document canCopyTree:draggedTree toReplaceGhostNode:targetNode]) {
+              [document copyTree:draggedTree toReplaceGhostNode:targetNode];
               return YES;
             } else
               return NO;
           case IFInsertAsChild:
-            return NO; // TODO
+            if ([document canInsertCopyOfTree:draggedTree asChildOfNode:targetNode]) {
+              [document insertCopyOfTree:draggedTree asChildOfNode:targetNode];
+              return YES;
+            } else
+              return NO;
           case IFInsertAsParent:
-            return NO; // TODO
+            if ([document canInsertCopyOfTree:draggedTree asParentOfNode:targetNode]) {
+              [document insertCopyOfTree:draggedTree asParentOfNode:targetNode];
+              return YES;
+            } else
+              return NO;
           default:
             NSAssert(NO, @"unexpected operation kind");
             return NO;
         }
+      } else if (currentDragOperation == NSDragOperationLink) {
+        if (isCurrentDragLocal && operationKind == IFReplace) {
+          NSSet* nodeSet = [self selectedNodes];
+          NSAssert([nodeSet count] == 1, @"unexpected number of selected nodes for link operation");
+          IFTreeNode* original = [nodeSet anyObject];
+          if ([document canCreateAliasToNode:original toReplaceGhostNode:targetNode]) {
+            [document createAliasToNode:original toReplaceGhostNode:targetNode];
+            return YES;
+          } else
+            return NO;
+        } else
+          return NO;
       } else
-        NSLog(@"TODO");
+        NSAssert1(NO, @"unexpected drag operation %d", currentDragOperation);
     }
+
+    case IFDragKindFileName: {
+      NSArray* fileNames = [pboard propertyListForType:NSFilenamesPboardType];
+      if (targetElement == nil) {
+        // Create new file source nodes for dragged files
+        for (int i = 0; i < [fileNames count]; ++i)
+          [document addCopyOfTree:[self newLoadTreeForFileNamed:[fileNames objectAtIndex:i]]];
+        return YES;
+      } else if ([targetNode isGhost]) {
+        // Replace ghost node by "load" node
+        IFTree* loadTree = [self newLoadTreeForFileNamed:[fileNames objectAtIndex:0]];
+        if ([document canCopyTree:loadTree toReplaceGhostNode:targetNode]) {
+          [document copyTree:loadTree toReplaceGhostNode:targetNode];
+          return YES;
+        } else
+          return NO;
+      } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
+        // Change "fileName" entry in environment to the dropped file name.
+        [[[targetNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
+        return YES;
+      } else
+        return NO;
+    }
+      
+    case IFDragKindMark: {
+      if (targetElement == nil)
+        return NO;
+      int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
+      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:[targetElement node]];
+      return YES;
+    }
+
+    default:
+      NSAssert(NO,@"unexpected drag kind");
+      return NO;
   }
-  return NO;
 }
 
 #pragma mark Layout
@@ -694,6 +788,32 @@ static enum {
 @end
 
 @implementation IFTreeView (Private)
+
+IFTreeNode* deepCloneSubtree(IFTree* tree, IFTree* clone, IFTreeNode* originalRoot) {
+  IFTreeNode* clonedRoot = [originalRoot cloneNode];
+  [clone addNode:clonedRoot];
+
+  NSArray* parents = [tree parentsOfNode:originalRoot];
+  for (int i = 0; i < [parents count]; ++i) {
+    IFTreeNode* originalParent = [parents objectAtIndex:i];
+    IFTreeNode* clonedParent = deepCloneSubtree(tree, clone, originalParent);
+    [clone addEdgeFromNode:clonedParent toNode:clonedRoot withIndex:i];
+  }
+  return clonedRoot;
+}
+
+IFTree* deepCloneTree(IFTree* tree) {
+  IFTree* clone = [IFTree tree];
+  deepCloneSubtree(tree, clone, [tree root]);
+  return clone;
+}
+
+- (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
+{
+  IFTree* tree = deepCloneTree([[[IFTreeTemplateManager sharedManager] loadFileTemplate] tree]);
+  [[[[tree root] filter] environment] setValue:fileName forKey:@"fileName"];
+  return tree;
+}
 
 - (void)documentTreeChanged:(NSNotification*)aNotification;
 {

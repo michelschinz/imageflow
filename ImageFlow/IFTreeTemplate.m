@@ -49,9 +49,4 @@
   return tree;
 }
 
-- (IFTreeNode*)node;
-{
-  return [tree root];
-}
-
 @end

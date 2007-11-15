@@ -11,6 +11,7 @@
 #import "IFTypeChecker.h"
 #import "IFSubtree.h"
 #import "IFTreeNodeHole.h"
+#import "IFTreeNodeAlias.h"
 
 static NSString* IFTreeNodeExpressionChangedContext = @"IFTreeNodeExpressionChangedContext";
 
@@ -26,6 +27,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (NSArray*)holesInSubtreeRootedAt:(IFTreeNode*)root;
 - (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
 - (IFTreeNode*)addGhostTreeWithArity:(unsigned)arity;
+- (IFTreeNode*)insertNewGhostNodeAsChildOf:(IFTreeNode*)node;
+- (IFTreeNode*)insertNewGhostNodeAsParentOf:(IFTreeNode*)node;
 - (IFTreeNode*)detachNode:(IFTreeNode*)node;
 - (void)removeNode:(IFTreeNode*)node;
 - (void)removeTreeRootedAt:(IFTreeNode*)node;
@@ -43,6 +46,26 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 + (id)tree;
 {
   return [[[self alloc] init] autorelease];
+}
+
++ (id)treeWithNode:(IFTreeNode*)node;
+{
+  IFTree* tree = [self tree];
+  [tree addNode:node];
+  return tree;
+}
+
++ (id)ghostTreeWithArity:(unsigned)arity;
+{
+  IFTree* tree = [self tree];
+  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:arity];
+  [tree addNode:ghost];
+  for (unsigned i = 0; i < arity; ++i) {
+    IFTreeNode* holeParent = [IFTreeNodeHole hole];
+    [tree addNode:holeParent];
+    [tree addEdgeFromNode:holeParent toNode:ghost withIndex:i];
+  }
+  return tree;
 }
 
 - (id)initWithGraph:(IFOrientedGraph*)theGraph propagateNewParentExpressions:(BOOL)thePropagateNewParentExpressions;
@@ -198,15 +221,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [graph addNode:node];
 }
 
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-{
-  [graph addNode:child];
-  IFTreeEdge* parentOutEdge = [self outgoingEdgeForNode:parent];
-  [graph addEdge:[parentOutEdge clone] fromNode:child toNode:[graph edgeTarget:parentOutEdge]];
-  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:parent toNode:child];
-  [graph removeEdge:parentOutEdge];
-}
-
 - (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
 {
   [graph addEdge:[IFTreeEdge edgeWithTargetIndex:index] fromNode:fromNode toNode:toNode];
@@ -214,13 +228,12 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 #pragma mark High level editing
 
-- (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
+- (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
   
-  NSSet* rootInEdgesCopy = [[graph incomingEdgesForNode:root] copy];
-  NSEnumerator* rootInEdgesEnum = [rootInEdgesCopy objectEnumerator];
+  NSEnumerator* rootInEdgesEnum = [[[[graph incomingEdgesForNode:root] copy] autorelease] objectEnumerator];
   IFTreeEdge* inEdge;
   while (inEdge = [rootInEdgesEnum nextObject]) {
     if ([inEdge targetIndex] >= index) {
@@ -228,10 +241,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
       [graph removeEdge:inEdge];
     }
   }
-  [rootInEdgesCopy release];
-  
-  [graph addNode:node];
-  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:index] fromNode:node toNode:root];
+
+  IFTreeNode* addedTreeRoot = [self addCopyOfTree:tree];
+  [self addEdgeFromNode:addedTreeRoot toNode:root withIndex:index];
 }
 
 - (void)deleteSubtree:(IFSubtree*)subtree;
@@ -247,6 +259,23 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   IFTreeNode* ghostRoot = [self addGhostTreeWithArity:[self arityOfSubtree:subtree]];
   [self exchangeSubtree:subtree withTreeRootedAt:ghostRoot];
   [self removeTreeRootedAt:[subtree root]];
+}
+
+- (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
+{
+  if ([self parentsCountOfNode:node] > 0)
+    return NO;
+  IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
+  [clone createAliasToNode:original toReplaceNode:node];
+  return [clone isTypeCorrect];
+}
+
+- (void)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
+{
+  IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:original];
+  [self addNode:alias];
+  [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:alias];
+  [self removeTreeRootedAt:node];
 }
 
 // Copying trees inside the current tree
@@ -276,9 +305,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:1];
-  [self insertNode:ghost asChildOf:node];
-  [self copyTree:tree toReplaceNode:ghost];
+  [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
 }
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
@@ -291,7 +318,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
-  // TODO
+  [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
 }
 
   // Moving subtrees to some other location
@@ -323,7 +350,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)moveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
 {
-  // TODO
+  [self moveSubtree:subtree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
 }
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
@@ -336,7 +363,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)moveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 {
-  // TODO
+  [self moveSubtree:subtree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
 }
 
 #pragma mark Type checking
@@ -455,6 +482,40 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     IFTreeNode* hole = [IFTreeNodeHole hole];
     [self addNode:hole];
     [self addEdgeFromNode:hole toNode:ghost withIndex:i];
+  }
+  return ghost;
+}
+
+- (IFTreeNode*)insertNewGhostNodeAsChildOf:(IFTreeNode*)node;
+{
+  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:1];
+  [graph addNode:ghost];
+
+  IFTreeEdge* parentOutEdge = [self outgoingEdgeForNode:node];
+  [graph addEdge:[parentOutEdge clone] fromNode:ghost toNode:[graph edgeTarget:parentOutEdge]];
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:node toNode:ghost];
+  [graph removeEdge:parentOutEdge];
+  return ghost;
+}
+
+- (IFTreeNode*)insertNewGhostNodeAsParentOf:(IFTreeNode*)node;
+{
+  NSSet* inEdges = [graph incomingEdgesForNode:node];
+  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[inEdges count]];
+  [graph addNode:ghost];
+
+  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
+  IFTreeEdge* inEdge;
+  while (inEdge = [inEdgesEnum nextObject]) {
+    [graph addEdge:[inEdge clone] fromNode:[graph edgeSource:inEdge] toNode:ghost];
+    [graph removeEdge:inEdge];
+  }
+
+  [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:ghost toNode:node];
+  for (int i = 1; i < [inEdges count]; ++i) {
+    IFTreeNode* ghostParent = [IFTreeNode ghostNodeWithInputArity:0];
+    [graph addNode:ghostParent];
+    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:ghostParent toNode:node];
   }
   return ghost;
 }

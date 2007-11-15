@@ -63,14 +63,25 @@ extern NSString* IFTreeChangedNotification;
 
 #pragma mark Tree manipulations
 
-- (void)addTree:(IFTreeNode*)newRoot;
+- (void)addCopyOfTree:(IFTree*)tree;
 - (void)deleteSubtree:(IFSubtree*)subtree;
 - (void)deleteNode:(IFTreeNode*)node;
 
-- (BOOL)canReplaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
-- (void)replaceGhostNode:(IFTreeNode*)node byCopyOfTree:(IFTree*)replacement;
+- (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (void)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
 - (void)moveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
+- (void)moveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
+
+- (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceGhostNode:(IFTreeNode*)node;
+- (void)createAliasToNode:(IFTreeNode*)original toReplaceGhostNode:(IFTreeNode*)node;
 
 @end

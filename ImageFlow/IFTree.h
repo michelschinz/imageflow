@@ -18,6 +18,8 @@
 }
 
 + (id)tree;
++ (id)treeWithNode:(IFTreeNode*)node;
++ (id)ghostTreeWithArity:(unsigned)arity;
 
 - (IFTree*)clone;
 - (IFTree*)cloneWithoutNewParentExpressionsPropagation;
@@ -48,14 +50,15 @@
 #pragma mark Low level editing
 
 - (void)addNode:(IFTreeNode*)node;
-- (void)insertNode:(IFTreeNode*)child asChildOf:(IFTreeNode*)parent;
-
 - (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
 
 #pragma mark High level editing
 
-- (void)addNode:(IFTreeNode*)node asNewRootAtIndex:(unsigned)index;
+- (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 - (void)deleteSubtree:(IFSubtree*)subtree;
+
+- (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
+- (void)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 
   // Copying trees inside the current tree
 - (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;

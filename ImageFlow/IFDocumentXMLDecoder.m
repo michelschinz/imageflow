@@ -80,8 +80,10 @@
   }
 
   // Third phase: add created roots to document.
-  for (int i = 0; i < [documentRootsIds count]; ++i)
-    [document addTree:[nodeMap objectForKey:[documentRootsIds objectAtIndex:i]]];
+  for (int i = 0; i < [documentRootsIds count]; ++i) {
+    NSLog(@"TODO");
+//    [document addCopyOfTree:[nodeMap objectForKey:[documentRootsIds objectAtIndex:i]]];
+  }
     
   return document;
 }

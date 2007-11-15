@@ -177,8 +177,8 @@ static NSMutableDictionary* filterArrayControllers = nil;
     if ([selected count] > 0) {
       IFDocument* doc = [containingView document];
       IFTree* templateTree = [[selected objectAtIndex:0] tree];
-      if ([doc canReplaceGhostNode:node byCopyOfTree:templateTree]) {
-        [doc replaceGhostNode:node byCopyOfTree:templateTree];
+      if ([doc canCopyTree:templateTree toReplaceGhostNode:node]) {
+        [doc copyTree:templateTree toReplaceGhostNode:node];
       } else
         NSBeep();
     }

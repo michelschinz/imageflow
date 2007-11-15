@@ -23,7 +23,4 @@
 - (NSString*)description;
 - (IFTree*)tree;
 
-#pragma mark obsolete
-- (IFTreeNode*)node;
-
 @end
