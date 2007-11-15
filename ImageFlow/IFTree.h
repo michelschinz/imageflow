@@ -55,6 +55,8 @@
 #pragma mark High level editing
 
 - (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
+
+- (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (void)deleteSubtree:(IFSubtree*)subtree;
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;

@@ -239,16 +239,16 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self endTreeModification];
 }
 
+- (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
+{
+  return [tree canDeleteSubtree:subtree];
+}
+
 - (void)deleteSubtree:(IFSubtree*)subtree;
 {
   [self beginTreeModification];
   [tree deleteSubtree:subtree];
   [self endTreeModification];
-}
-
-- (void)deleteNode:(IFTreeNode*)node;
-{
-  [self deleteSubtree:[IFSubtree subtreeOf:tree includingNodes:[NSSet setWithObject:node]]];
 }
 
 - (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;

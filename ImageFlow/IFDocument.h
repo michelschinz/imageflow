@@ -64,8 +64,9 @@ extern NSString* IFTreeChangedNotification;
 #pragma mark Tree manipulations
 
 - (void)addCopyOfTree:(IFTree*)tree;
+
+- (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (void)deleteSubtree:(IFSubtree*)subtree;
-- (void)deleteNode:(IFTreeNode*)node;
 
 - (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 - (void)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;

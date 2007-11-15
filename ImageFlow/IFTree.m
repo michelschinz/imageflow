@@ -30,11 +30,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (IFTreeNode*)insertNewGhostNodeAsChildOf:(IFTreeNode*)node;
 - (IFTreeNode*)insertNewGhostNodeAsParentOf:(IFTreeNode*)node;
 - (IFTreeNode*)detachNode:(IFTreeNode*)node;
-- (void)removeNode:(IFTreeNode*)node;
 - (void)removeTreeRootedAt:(IFTreeNode*)node;
 - (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
 - (void)exchangeSubtree:(IFSubtree*)subtree withTreeRootedAt:(IFTreeNode*)root;
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (BOOL)canDeleteNode:(IFTreeNode*)node;
+- (void)deleteNode:(IFTreeNode*)node;
 - (BOOL)isTypeCorrect;
 
 - (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
@@ -246,21 +246,23 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self addEdgeFromNode:addedTreeRoot toNode:root withIndex:index];
 }
 
+- (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
+{
+  return [[subtree includedNodes] count] > 1 || ![[subtree root] isGhost] || [self canDeleteNode:[subtree root]];
+}
+
 - (void)deleteSubtree:(IFSubtree*)subtree;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
 
-  // First replace all aliases to nodes about to be deleted by ghosts...
-  NSEnumerator* allNodesEnum = [[self nodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [allNodesEnum nextObject]) {
-    if ([node isAlias] && ![subtree containsNode:node] && [subtree containsNode:[node original]])
-      [self replaceNode:node byNode:[IFTreeNode ghostNodeWithInputArity:0]];
-  }
-  
+  // Replace subtree to delete by a single ghost.
   IFTreeNode* ghostRoot = [self addGhostTreeWithArity:[self arityOfSubtree:subtree]];
   [self exchangeSubtree:subtree withTreeRootedAt:ghostRoot];
   [self removeTreeRootedAt:[subtree root]];
+
+  // Try to delete the ghost too.
+  if ([self canDeleteNode:ghostRoot])
+    [self deleteNode:ghostRoot];
 }
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
@@ -530,16 +532,20 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return hole;
 }
 
-- (void)removeNode:(IFTreeNode*)node;
+- (void)removeTreeRootedAt:(IFTreeNode*)root;
 {
-  [graph removeNode:node];
-  // TODO remove aliases of node
-}
+  NSAssert([[graph outgoingEdgesForNode:root] count] == 0, @"trying to remove subtree");
+  NSSet* nodesToRemove = [NSSet setWithArray:[self dfsAncestorsOfNode:root]];
+  
+  // Replace all aliases to nodes about to be deleted by ghosts.
+  NSEnumerator* allNodesEnum = [[self nodes] objectEnumerator];
+  IFTreeNode* node;
+  while (node = [allNodesEnum nextObject]) {
+    if ([node isAlias] && ![nodesToRemove containsObject:node] && [nodesToRemove containsObject:[node original]])
+      [self copyTree:[IFTree ghostTreeWithArity:0] toReplaceNode:node];
+  }
 
-- (void)removeTreeRootedAt:(IFTreeNode*)node;
-{
-  NSAssert([[graph outgoingEdgesForNode:node] count] == 0, @"trying to remove subtree");
-  [[self do] removeNode:[[self dfsAncestorsOfNode:node] each]];
+  [[graph do] removeNode:[nodesToRemove each]];
 }
 
 - (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
@@ -547,7 +553,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSAssert([hole isHole], @"attempt to plug non-hole");
   IFTreeEdge* outEdge = [self outgoingEdgeForNode:hole];
   [graph addEdge:[outEdge clone] fromNode:node toNode:[graph edgeTarget:outEdge]];
-  [self removeNode:hole];
+  [graph removeNode:hole];
 }
 
 - (void)exchangeSubtree:(IFSubtree*)subtree withTreeRootedAt:(IFTreeNode*)root;
@@ -562,8 +568,13 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSArray* treeHoles = [self holesInSubtreeRootedAt:root];
   const unsigned holesCount = [treeHoles count];
 
-  for (int i = 0, minCount = parentsCount < holesCount ? parentsCount : holesCount; i < minCount; ++i)
-    [self plugHole:[treeHoles objectAtIndex:i] withNode:[subtreeParents objectAtIndex:i]];
+  for (int i = 0, minCount = parentsCount < holesCount ? parentsCount : holesCount; i < minCount; ++i) {
+    IFTreeNode* hole = [treeHoles objectAtIndex:i];
+    IFTreeNode* parent = [subtreeParents objectAtIndex:i];
+    [self plugHole:hole withNode:parent];
+    if (root == hole)
+      root = parent;
+  }
   
   if (parentsCount > holesCount) {
     // more parents than holes, attach remaining ones to new root (rightmost, ghost-only parents excepted).
@@ -586,29 +597,21 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   }
 }
 
-// TODO try to remove
-- (void)replaceSubtree:(IFSubtree*)toReplace byNode:(IFTreeNode*)replacement;
+- (BOOL)canDeleteNode:(IFTreeNode*)node;
 {
-  [graph addNode:replacement];
-  
-  // Create incoming edges
-  NSSet* includedNodes = [toReplace includedNodes];
-  NSArray* parentNodes = [self parentsOfSubtree:toReplace];
-  for (int i = 0; i < [parentNodes count]; ++i)
-    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:[parentNodes objectAtIndex:i] toNode:replacement];
-  
-  // Create outgoing edge
-  IFTreeEdge* edge = [self outgoingEdgeForNode:[toReplace root]];
-  [graph addEdge:[edge clone] fromNode:replacement toNode:[graph edgeTarget:edge]];
-  
-  // Remove nodes
-  [[graph do] removeNode:[includedNodes each]];
+  IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
+  [clone deleteNode:node];
+  return [clone isTypeCorrect];
 }
 
-// TODO try to remove
-- (void)replaceNode:(IFTreeNode*)toReplace byNode:(IFTreeNode*)replacement;
+- (void)deleteNode:(IFTreeNode*)node;
 {
-  return [self replaceSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:toReplace]] byNode:replacement];
+  NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
+  
+  IFTreeNode* hole = [IFTreeNodeHole hole];
+  [self addNode:hole];
+  [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:hole];
+  [self removeTreeRootedAt:node];
 }
 
 #pragma mark Type checking

@@ -423,7 +423,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)delete:(id)sender;
 {
-  [document deleteSubtree:[self selectedSubtree]];
+  IFSubtree* subtree = [self selectedSubtree];
+  if ([document canDeleteSubtree:subtree])
+    [document deleteSubtree:subtree];
+  else
+    NSBeep();
 }
 
 - (void)deleteBackward:(id)sender;
@@ -433,8 +437,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)deleteNodeUnderMouse:(id)sender;
 {
-  IFTreeNode* designatedNode = [[layoutStrategy deleteButtonCell] representedObject];
-  [document deleteNode:designatedNode];
+  IFSubtree* subtree = [IFSubtree subtreeOf:[document tree] includingNodes:[NSSet setWithObject:[[layoutStrategy deleteButtonCell] representedObject]]];
+  if ([document canDeleteSubtree:subtree])
+    [document deleteSubtree:subtree];
+  else
+    NSBeep();
 }
 
 - (void)insertNewline:(id)sender
