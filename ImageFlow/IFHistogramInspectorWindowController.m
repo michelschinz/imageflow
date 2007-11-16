@@ -23,7 +23,7 @@
 
 - (void)dealloc;
 {
-  [probe removeObserver:self forKeyPath:@"mark.node.expression"];
+//TODO  [probe removeObserver:self forKeyPath:@"mark.node.expression"];
   [super dealloc];
 }
 
@@ -35,7 +35,7 @@
 - (void)windowDidLoad;
 {
   [super windowDidLoad];
-  [probe addObserver:self forKeyPath:@"mark.node.expression" options:0 context:nil];
+//TODO  [probe addObserver:self forKeyPath:@"mark.node.expression" options:0 context:nil];
 }
 
 - (void)documentDidChange:(IFDocument*)newDocument;
@@ -71,7 +71,7 @@
 
 - (void)updateHistogram;
 {
-  IFTreeNode* node = [[probe mark] node];
+  IFTreeNode* node = nil; //TODO [[probe mark] node];
   NSArray* histogramRGB = nil;
   IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression histogramOf:[node expression]]];
   if (node != nil && ![evaluatedExpr isError]) {

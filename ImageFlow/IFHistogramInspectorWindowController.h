@@ -8,10 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFProbeWindowController.h"
+#import "IFInspectorWindowController.h"
 #import "IFHistogramView.h"
 
-@interface IFHistogramInspectorWindowController : IFProbeWindowController {
+@interface IFHistogramInspectorWindowController : IFInspectorWindowController {
   IBOutlet IFHistogramView* histogramView;
   IBOutlet NSProgressIndicator* progressIndicator;
   IFExpressionEvaluator* evaluator;

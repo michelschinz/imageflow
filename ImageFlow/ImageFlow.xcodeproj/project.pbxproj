@@ -101,7 +101,6 @@
 		FA8C858A08864ADD003A77FB /* IFTreeLayoutGhost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8C858908864ADD003A77FB /* IFTreeLayoutGhost.m */; };
 		FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */; };
 		FA92E81808B3448000E57EF7 /* IFImageView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA92E81708B3448000E57EF7 /* IFImageView.nib */; };
-		FA92E84108B3468500E57EF7 /* IFProbe.m in Sources */ = {isa = PBXBuildFile; fileRef = FA92E84008B3468500E57EF7 /* IFProbe.m */; };
 		FA9649760AEF81B700EC46A5 /* IFTreeLayoutStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */; };
 		FA9649870AEF892B00EC46A5 /* IFTreeLayoutParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9649850AEF892B00EC46A5 /* IFTreeLayoutParameters.m */; };
 		FA9CC2770948B6AC00F30C5A /* IFTreeLayoutInputConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9CC2750948B6AC00F30C5A /* IFTreeLayoutInputConnector.m */; };
@@ -124,7 +123,6 @@
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
 		FAD6A40A08879CE200D07873 /* IFTreeLayoutSingle.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD6A40908879CE200D07873 /* IFTreeLayoutSingle.m */; };
 		FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */; };
-		FAD7189F08B5DDFF00CF732B /* IFProbeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */; };
 		FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD887A20CD073D100D3DE7D /* IFTree.m */; };
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
 		FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */; };
@@ -404,8 +402,6 @@
 		FA9097CB0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCropImageWithMaskCIFilter.h; sourceTree = "<group>"; };
 		FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCropImageWithMaskCIFilter.m; sourceTree = "<group>"; };
 		FA92E81708B3448000E57EF7 /* IFImageView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFImageView.nib; sourceTree = "<group>"; };
-		FA92E83F08B3468500E57EF7 /* IFProbe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProbe.h; sourceTree = "<group>"; };
-		FA92E84008B3468500E57EF7 /* IFProbe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProbe.m; sourceTree = "<group>"; };
 		FA9649730AEF81B700EC46A5 /* IFTreeLayoutStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutStrategy.h; sourceTree = "<group>"; };
 		FA9649740AEF81B700EC46A5 /* IFTreeLayoutStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutStrategy.m; sourceTree = "<group>"; };
 		FA9649840AEF892B00EC46A5 /* IFTreeLayoutParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutParameters.h; sourceTree = "<group>"; };
@@ -441,8 +437,6 @@
 		FAD6A40808879CE200D07873 /* IFTreeLayoutSingle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutSingle.h; sourceTree = "<group>"; };
 		FAD6A40908879CE200D07873 /* IFTreeLayoutSingle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutSingle.m; sourceTree = "<group>"; };
 		FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGhostFilter.nib; sourceTree = "<group>"; };
-		FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProbeWindowController.h; sourceTree = "<group>"; };
-		FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProbeWindowController.m; sourceTree = "<group>"; };
 		FAD887A10CD073D100D3DE7D /* IFTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTree.h; sourceTree = "<group>"; };
 		FAD887A20CD073D100D3DE7D /* IFTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTree.m; sourceTree = "<group>"; };
 		FAD888F50CD0A83B00D3DE7D /* IFOrientedGraph.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFOrientedGraph.h; sourceTree = "<group>"; };
@@ -1147,15 +1141,6 @@
 			name = Document;
 			sourceTree = "<group>";
 		};
-		FA92E83E08B3457C00E57EF7 /* Probes */ = {
-			isa = PBXGroup;
-			children = (
-				FA92E83F08B3468500E57EF7 /* IFProbe.h */,
-				FA92E84008B3468500E57EF7 /* IFProbe.m */,
-			);
-			name = Probes;
-			sourceTree = "<group>";
-		};
 		FAAF1035090A5AE800479538 /* Filter */ = {
 			isa = PBXGroup;
 			children = (
@@ -1319,8 +1304,6 @@
 				FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */,
 				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
 				FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */,
-				FAD7189D08B5DDFF00CF732B /* IFProbeWindowController.h */,
-				FAD7189E08B5DDFF00CF732B /* IFProbeWindowController.m */,
 				FAF7F1170B08930500BF6B7A /* Dual window layout */,
 				FAE59F3D08F3D24B00EF20ED /* IFHistogramInspectorWindowController.h */,
 				FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */,
@@ -1500,7 +1483,6 @@
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
 				FAE0DE5208C3621500595ED4 /* Histograms */,
-				FA92E83E08B3457C00E57EF7 /* Probes */,
 				FA11DCCC08F23EB800A3AF61 /* Profiles */,
 			);
 			name = Model;
@@ -1688,8 +1670,6 @@
 				FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */,
 				FADDD4CD08B0AB7B000A1EBE /* IFTreeLayoutMark.m in Sources */,
 				FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */,
-				FA92E84108B3468500E57EF7 /* IFProbe.m in Sources */,
-				FAD7189F08B5DDFF00CF732B /* IFProbeWindowController.m in Sources */,
 				FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */,
 				FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */,
 				FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */,
