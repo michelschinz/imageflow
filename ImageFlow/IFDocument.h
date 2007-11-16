@@ -30,9 +30,12 @@ extern NSString* IFTreeChangedNotification;
   IFTree* tree;
 }
 
+#pragma mark Properties
+
 - (IFExpressionEvaluator*)evaluator;
 
 - (IFTree*)tree;
+- (void)setTree:(IFTree*)newTree;
 - (NSArray*)roots;
 
 - (NSString*)title;

@@ -15,8 +15,12 @@
 #import "IFTreeNodeFilter.h"
 #import "IFTreeNodeHole.h"
 #import "IFTreeNodeAlias.h"
+#import "IFObjectNumberer.h"
 
 @interface IFXMLCoder (Private)
+- (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
+- (NSXMLElement*)encodeFilterSettings:(IFEnvironment*)settings;
+
 - (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
 - (IFTreeNode*)decodeFilter:(NSXMLNode*)xml;
 - (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
@@ -38,15 +42,11 @@ static IFXMLCoder* sharedCoder = nil;
   if (![super init])
     return nil;
   typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"profile",@"expression",@"data",nil] retain];
-  numberFormatter = [NSNumberFormatter new];
-  [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-  [numberFormatter setNumberStyle:NSNumberFormatterScientificStyle];
   return self;
 }
 
 - (void) dealloc;
 {
-  OBJC_RELEASE(numberFormatter);
   OBJC_RELEASE(typeNames);
   [super dealloc];
 }
@@ -61,8 +61,10 @@ static IFXMLCoder* sharedCoder = nil;
       return IFXMLDataTypeInteger;
     else if (strcmp([numberData objCType], @encode(float)) == 0)
       return IFXMLDataTypeNumber;
+    else if (strcmp([numberData objCType], @encode(double)) == 0)
+      return IFXMLDataTypeNumber;
     else {
-      NSAssert1(NO, @"invalid type in NSNumber: %@", [numberData objCType]);
+      NSAssert1(NO, @"invalid type in NSNumber: %s", [numberData objCType]);
       return IFXMLDataTypeInvalid;
     }
   } else if ([data isKindOfClass:[NSValue class]]) {
@@ -94,15 +96,43 @@ static IFXMLCoder* sharedCoder = nil;
   return [typeNames objectAtIndex:[self typeForData:data]];
 }
 
+#pragma mark High-level encoding
+
+- (NSXMLDocument*)encodeDocument:(IFDocument*)document;
+{
+  NSXMLElement* xmlDocumentRoot = [NSXMLElement elementWithName:@"document"];
+  [xmlDocumentRoot setChildren:[NSArray arrayWithObjects:
+    [NSXMLElement elementWithName:@"title" stringValue:[document title]],    
+    [NSXMLElement elementWithName:@"author" stringValue:[document authorName]],
+    [NSXMLElement elementWithName:@"description" stringValue:[document documentDescription]],
+    [NSXMLElement elementWithName:@"resolution-x" stringValue:[self encodeFloat:[document resolutionX]]],
+    [NSXMLElement elementWithName:@"resolution-y" stringValue:[self encodeFloat:[document resolutionY]]],
+    [NSXMLElement elementWithName:@"canvas-bounds" stringValue:NSStringFromRect([document canvasBounds])],
+    [self encodeTree:[document tree]],
+    nil]];
+  
+  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:xmlDocumentRoot];
+  [xmlDocument setVersion:@"1.0"];
+  return xmlDocument;
+}
+
+- (NSXMLElement*)encodeTree:(IFTree*)tree;
+{
+  NSXMLElement* xmlTree = [NSXMLElement elementWithName:@"tree"];
+  IFObjectNumberer* numberer = [IFObjectNumberer numberer];
+  [xmlTree setChildren:[NSArray arrayWithObject:[self encodeTreeNode:[tree root] ofTree:tree numberer:numberer]]];
+  return xmlTree;
+}
+
 #pragma mark Low-level encoding
 
-- (NSString*)encodeData:(NSObject*)data;
+- (NSString*)encodeData:(id)data;
 {
   switch ([self typeForData:data]) {
     case IFXMLDataTypeString:
       return (NSString*)data;
     case IFXMLDataTypeNumber:
-      return [numberFormatter stringFromNumber:(NSNumber*)data];
+      return [NSString stringWithFormat:@"%lf",[data doubleValue]];
     case IFXMLDataTypeInteger:
       return [data description];
     case IFXMLDataTypePoint:
@@ -143,6 +173,34 @@ static IFXMLCoder* sharedCoder = nil;
 
 #pragma mark -
 #pragma mark High-level decoding
+
+- (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
+{
+  NSXMLElement* xmlRoot = [xmlDocument rootElement];
+  NSAssert([[xmlRoot name] isEqualToString:@"document"], @"invalid xml document");
+  
+  for (int i = 0; i < [xmlRoot childCount]; ++i) {
+    NSXMLNode* child = [xmlRoot childAtIndex:i];
+    NSString* childName = [child name];
+    
+    if ([childName isEqualToString:@"title"])
+      [document setTitle:[child stringValue]];
+    else if ([childName isEqualToString:@"author"])
+      [document setAuthorName:[child stringValue]];
+    else if ([childName isEqualToString:@"description"])
+      [document setDocumentDescription:[child stringValue]];
+    else if ([childName isEqualToString:@"resolution-x"])
+      [document setResolutionX:[[self decodeString:[child stringValue] type:IFXMLDataTypeNumber] floatValue]];
+    else if ([childName isEqualToString:@"resolution-y"])
+      [document setResolutionY:[[self decodeString:[child stringValue] type:IFXMLDataTypeNumber] floatValue]];
+    else if ([childName isEqualToString:@"canvas-bounds"])
+      [document setCanvasBounds:NSRectFromString([child stringValue])];
+    else if ([childName isEqualToString:@"tree"])
+      [document setTree:[self decodeTree:child]];
+    else
+      NSAssert(NO, @"invalid node %@");
+  }  
+}
 
 - (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
 {
@@ -222,20 +280,20 @@ static IFXMLCoder* sharedCoder = nil;
     case IFXMLDataTypeString:
       return string;
     case IFXMLDataTypeInteger:
-      return [NSNumber numberWithInt:[[numberFormatter numberFromString:string] intValue]];
+      return [NSNumber numberWithInt:(int)strtod([string UTF8String], NULL)];
     case IFXMLDataTypeNumber:
-      return [numberFormatter numberFromString:string];
+      return [NSNumber numberWithDouble:strtod([string UTF8String], NULL)];
     case IFXMLDataTypePoint:
       return [NSValue valueWithPoint:NSPointFromString(string)];
     case IFXMLDataTypeRectangle:
       return [NSValue valueWithRect:NSRectFromString(string)];
     case IFXMLDataTypeColor: {
-      NSArray* components = (NSArray*)[[numberFormatter collect] numberFromString:[[string componentsSeparatedByString:@" "] each]];
+      NSArray* componentStrs = [string componentsSeparatedByString:@" "];
       // TODO color space???
-      return [NSColor colorWithCalibratedRed:[[components objectAtIndex:0] floatValue]
-                                       green:[[components objectAtIndex:1] floatValue]
-                                        blue:[[components objectAtIndex:2] floatValue]
-                                       alpha:[[components objectAtIndex:3] floatValue]];
+      return [NSColor colorWithCalibratedRed:strtof([[componentStrs objectAtIndex:0] UTF8String], NULL)
+                                       green:strtof([[componentStrs objectAtIndex:1] UTF8String], NULL)
+                                        blue:strtof([[componentStrs objectAtIndex:2] UTF8String], NULL)
+                                       alpha:strtof([[componentStrs objectAtIndex:3] UTF8String], NULL)];
     }
     case IFXMLDataTypeExpression: {
       NSError* outError = nil; // TODO handle errors
@@ -273,6 +331,51 @@ static IFXMLCoder* sharedCoder = nil;
 @end
 
 @implementation IFXMLCoder (Private)
+
+#pragma mark encoding
+
+- (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
+{
+  NSXMLElement* xmlTreeNode;
+  if ([treeNode isAlias]) {
+    xmlTreeNode = [NSXMLElement elementWithName:@"alias"];
+    [xmlTreeNode addAttribute:[NSXMLNode attributeWithName:@"original-ref" stringValue:[self encodeUnsignedInt:[numberer uniqueNumberForObject:[treeNode original]]]]];
+  } else if ([treeNode isHole]) {
+    xmlTreeNode = [NSXMLElement elementWithName:@"hole"];
+  } else {
+    NSXMLElement* xmlParents = [NSXMLElement elementWithName:@"parents"];
+    NSArray* parents = [tree parentsOfNode:treeNode];
+    for (int i = 0; i < [parents count]; ++i)
+      [xmlParents addChild:[self encodeTreeNode:[parents objectAtIndex:i] ofTree:tree numberer:numberer]];
+    
+    xmlTreeNode = [NSXMLElement elementWithName:@"filter"];
+    [xmlTreeNode setChildren:[NSArray arrayWithObjects:
+      [NSXMLElement elementWithName:@"name" stringValue:NSStringFromClass([[treeNode filter] class])],
+      [self encodeFilterSettings:[[treeNode filter] environment]],
+      xmlParents,
+      nil]];
+  }
+  [xmlTreeNode addAttribute:[NSXMLNode attributeWithName:@"id" stringValue:[self encodeUnsignedInt:[numberer uniqueNumberForObject:treeNode]]]];
+  return xmlTreeNode;
+}
+
+- (NSXMLElement*)encodeFilterSettings:(IFEnvironment*)settings;
+{
+  NSXMLElement* xmlSettings = [NSXMLElement elementWithName:@"settings"];
+  NSDictionary* env = [settings asDictionary];
+  NSEnumerator* keysEnum = [env keyEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject]) {
+    NSObject* value = [env objectForKey:key];
+//    if ([value isKindOfClass:[IFExpression class]])
+//      continue;
+    [xmlSettings addChild:[NSXMLElement elementWithName:@"key" stringValue:key]];
+    [xmlSettings addChild:[NSXMLElement elementWithName:[self typeNameForData:value] stringValue:[self encodeData:value]]];
+  }
+  return xmlSettings;
+}
+
+#pragma mark decoding
 
 - (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
 {

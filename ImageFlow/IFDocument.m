@@ -5,10 +5,7 @@
 //  Copyright Michel Schinz 2005 . All rights reserved.
 
 #import "IFDocument.h"
-#import "IFTreeIdentifier.h"
 #import "IFXMLCoder.h"
-#import "IFDocumentXMLEncoder.h"
-#import "IFDocumentXMLDecoder.h"
 #import "IFTreeViewWindowController.h"
 #import "IFFilter.h"
 #import "IFExpressionEvaluator.h"
@@ -27,7 +24,6 @@
 - (void)ensureGhostNodes;;
 - (void)beginTreeModification;
 - (void)endTreeModification;
-- (void)overwriteWith:(IFDocument*)other;
 @end
 
 @implementation IFDocument
@@ -41,7 +37,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   evaluator = [IFExpressionEvaluator new];
 
   tree = [[IFTree tree] retain];
-  [tree addNode:[IFTreeNodeFilter nodeWithFilter:nil]];
+  [tree addNode:[IFTreeNode ghostNodeWithInputArity:0]];
   [self ensureGhostNodes];
   [tree setPropagateNewParentExpressions:YES];
   
@@ -57,15 +53,11 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)dealloc;
 {
   OBJC_RELEASE(tree);
-
   OBJC_RELEASE(workingSpaceProfile);
-  
   OBJC_RELEASE(documentDescription);
   OBJC_RELEASE(authorName);
   OBJC_RELEASE(title);
-  
   OBJC_RELEASE(evaluator);
-  
   [super dealloc];
 }
 
@@ -73,6 +65,8 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   [self addWindowController:[[[IFTreeViewWindowController alloc] init] autorelease]];
 }
+
+#pragma mark Properties
 
 - (IFExpressionEvaluator*)evaluator;
 {
@@ -84,12 +78,21 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return tree;
 }
 
+- (void)setTree:(IFTree*)newTree;
+{
+  if (newTree == tree)
+    return;
+
+  [self beginTreeModification];
+  [tree release];
+  tree = [newTree retain];
+  [self endTreeModification];
+}
+
 - (NSArray*)roots;
 {
   return [tree parentsOfNode:[tree root]];
 }
-
-#pragma mark meta-data
 
 - (NSString*)title;
 {
@@ -130,8 +133,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   documentDescription = [newDocumentDescription copy];
 }
 
-#pragma mask canvas
-
 - (NSRect)canvasBounds;
 {
   return canvasBounds;
@@ -141,8 +142,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   canvasBounds = newCanvasBounds;
 }
-
-#pragma mark color
 
 - (IFColorProfile*)workingSpaceProfile;
 {
@@ -158,8 +157,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   
   [evaluator setWorkingColorSpace:[workingSpaceProfile colorspace]];
 }
-
-#pragma mark resolution
 
 - (float)resolutionX;
 {
@@ -357,8 +354,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (NSFileWrapper*)fileWrapperOfType:(NSString*)typeName error:(NSError**)outError;
 {
-  NSDictionary* identities = [[IFTreeIdentifier treeIdentifier] identifyTree:tree startingAt:[tree root] hints:[NSDictionary dictionary]];
-  NSXMLDocument* xmlDoc = [[IFDocumentXMLEncoder encoder] documentToXML:self identities:identities];
+  NSXMLDocument* xmlDoc = [[IFXMLCoder sharedCoder] encodeDocument:self];
   NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
   return [[[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionaryWithObjectsAndKeys:
     [[[NSFileWrapper alloc] initRegularFileWithContents:xmlData] autorelease], @"tree.xml",
@@ -378,7 +374,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
                                                            options:NSXMLDocumentTidyXML
                                                              error:outError] autorelease];
       if (xmlDoc == nil) return NO;
-      [self overwriteWith:[[IFDocumentXMLDecoder decoder] documentFromXML:xmlDoc]];
+      [[IFXMLCoder sharedCoder] decodeDocument:xmlDoc into:self];
       [[self undoManager] removeAllActions];
     }
   }
@@ -418,21 +414,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [tree configureNodes];
   [tree setPropagateNewParentExpressions:YES];
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
-}
-
-- (void)overwriteWith:(IFDocument*)other;
-{
-  // Copy everything from other document
-  [self setAuthorName:[other authorName]];
-  [self setDocumentDescription:[other documentDescription]];
-  [self setWorkingSpaceProfile:[other workingSpaceProfile]];
-  [self setResolutionX:[other resolutionX]];
-  [self setResolutionY:[other resolutionY]];
-  
-  [tree release];
-  tree = [other->tree retain]; // HACK
-
-  // TODO copy marks
 }
 
 @end

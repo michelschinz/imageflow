@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFDocument.h"
 #import "IFTreeTemplate.h"
 #import "IFTree.h"
 #import "IFTreeNode.h"
@@ -28,7 +29,6 @@ typedef enum {
 
 @interface IFXMLCoder : NSObject {
   NSArray* typeNames;
-  NSNumberFormatter* numberFormatter;
 }
 
 + (IFXMLCoder*)sharedCoder;
@@ -36,9 +36,14 @@ typedef enum {
 - (IFXMLDataType)typeForData:(NSObject*)data;
 - (NSString*)typeNameForData:(NSObject*)data;
 
+#pragma mark High-level encoding
+
+- (NSXMLDocument*)encodeDocument:(IFDocument*)document;
+- (NSXMLElement*)encodeTree:(IFTree*)tree;
+
 #pragma mark Low-level encoding
 
-- (NSString*)encodeData:(NSObject*)data;
+- (NSString*)encodeData:(id)data;
 - (NSString*)encodeFloat:(float)data;
 - (NSString*)encodeInt:(int)data;
 - (NSString*)encodeUnsignedInt:(unsigned int)data;
@@ -46,6 +51,7 @@ typedef enum {
 #pragma mark -
 #pragma mark High-level decoding
 
+- (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
 - (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
 - (IFTree*)decodeTree:(NSXMLNode*)xml;
 
