@@ -446,7 +446,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
 - (void)insertNewline:(id)sender
 {
-//TODO  [document insertNode:[IFTreeNode ghostNodeWithInputArity:1] asChildOf:[self cursorNode]];
+  [document insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:[self cursorNode]];
   [self moveToNode:[self cursorNode] extendingSelection:NO];
 }
 
@@ -641,9 +641,6 @@ static enum {
   NSPasteboard* pboard = [sender draggingPasteboard];
   switch (dragKind) {
     case IFDragKindNode: {
-      if (targetNode == nil)
-        return NO;
-      
       enum { IFReplace, IFInsertAsChild, IFInsertAsParent } operationKind;
       if ([targetElement kind] == IFTreeLayoutElementKindInputConnector)
         operationKind = IFInsertAsParent;
@@ -651,6 +648,9 @@ static enum {
         operationKind = IFInsertAsChild;
       else
         operationKind = IFReplace;
+      
+      if (targetNode == nil || (operationKind == IFReplace && ![targetNode isGhost]))
+        return NO;
       
       if ((currentDragOperation == NSDragOperationMove) && isCurrentDragLocal) {
         IFSubtree* subtree = [self selectedSubtree];

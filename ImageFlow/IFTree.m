@@ -326,6 +326,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   // Moving subtrees to some other location
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
 {
+  if ([subtree containsNode:node])
+    return NO;
+
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
   [clone moveSubtree:cloneSubtree toReplaceNode:node];
@@ -344,6 +347,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
 {
+  if ([subtree containsNode:node] && [subtree containsNode:[self childOfNode:node]])
+    return NO;
+
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
   [clone moveSubtree:cloneSubtree asChildOfNode:node];
@@ -357,6 +363,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 {
+  NSSet* parentsSet = [NSSet setWithArray:[self parentsOfNode:node]];
+  if ([subtree containsNode:node] && [[subtree includedNodes] intersectsSet:parentsSet])
+    return NO;
+  
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
   [clone moveSubtree:cloneSubtree asParentOfNode:node];
@@ -579,7 +589,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   if (parentsCount > holesCount) {
     // more parents than holes, attach remaining ones to new root (rightmost, ghost-only parents excepted).
     BOOL active = NO;
-    for (int i = parentsCount - 1; i >= holesCount; --i) {
+    for (int i = parentsCount - 1; i >= (int)holesCount; --i) {
       IFTreeNode* parent = [subtreeParents objectAtIndex:i];
       active |= ![self isGhostSubtreeRoot:parent];
       if (active)
