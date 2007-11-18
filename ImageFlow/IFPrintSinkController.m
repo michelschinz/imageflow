@@ -7,7 +7,7 @@
 //
 
 #import "IFPrintSinkController.h"
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
 @implementation IFPrintSinkController
 
@@ -19,7 +19,7 @@
 
 - (IBAction)browseFile:(id)sender;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   
   NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
   NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];

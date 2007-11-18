@@ -46,15 +46,14 @@
 
 - (NSString*)label;
 {
-  NSRect r = [(NSValue*)[environment valueForKey:@"rectangle"] rectValue];
+  NSRect r = [(NSValue*)[settings valueForKey:@"rectangle"] rectValue];
   return [NSString stringWithFormat:@"crop (%d,%d) %dx%d",
     (int)floor(NSMinX(r)),(int)floor(NSMinY(r)),(int)floor(NSWidth(r)),(int)floor(NSHeight(r))];
 }
 
-- (NSArray*)editingAnnotationsForNode:(IFTreeNode*)node view:(NSView*)view;
+- (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
-  IFEnvironment* env = [[node filter] environment];
-  IFVariable* src = [IFVariableKVO variableWithKVOCompliantObject:env key:@"rectangle"];
+  IFVariable* src = [IFVariableKVO variableWithKVOCompliantObject:settings key:@"rectangle"];
   return [NSArray arrayWithObject:[IFAnnotationRect annotationRectWithView:view source:src]];
 }
 

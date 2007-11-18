@@ -29,13 +29,13 @@ static NSMutableDictionary* filterArrayControllers = nil;
   filterArrayControllers = [NSMutableDictionary new];
 }
 
-+ (NSArrayController*)arrayControllerForFilter:(IFFilter*)filter;
++ (NSArrayController*)arrayControllerForNode:(IFTreeNode*)node;
 {
-  NSArrayController* controller = [filterArrayControllers objectForKey:[NSValue valueWithNonretainedObject:filter]];
+  NSArrayController* controller = [filterArrayControllers objectForKey:[NSValue valueWithNonretainedObject:node]];
   if (controller == nil) {
     controller = [NSArrayController new];
     [controller setContent:[[IFTreeTemplateManager sharedManager] templates]];
-    [filterArrayControllers setObject:controller forKey:[NSValue valueWithNonretainedObject:filter]];
+    [filterArrayControllers setObject:controller forKey:[NSValue valueWithNonretainedObject:node]];
   }
   return controller;
 }
@@ -46,7 +46,7 @@ static NSMutableDictionary* filterArrayControllers = nil;
   
   activated = NO;
 
-  arrayController = [[IFTreeLayoutGhost arrayControllerForFilter:[theNode filter]] retain];
+  arrayController = [[IFTreeLayoutGhost arrayControllerForNode:[theNode original]] retain];
   
   textCell = [[NSTextFieldCell alloc] initTextCell:@""];
   [textCell setFont:[[theContainingView layoutParameters] labelFont]];

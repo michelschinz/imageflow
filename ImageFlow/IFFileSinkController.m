@@ -7,7 +7,7 @@
 //
 
 #import "IFFileSinkController.h"
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
 @implementation IFFileSinkController
 
@@ -44,18 +44,18 @@ static NSDictionary* fileTypesOptions = nil;
 - (void)awakeFromNib;
 {
   [fileTypesController setContent:fileTypesNames];
-  [filterController addObserver:self forKeyPath:@"content.environment.fileType" options:0 context:nil];
+  [filterController addObserver:self forKeyPath:@"content.settings.fileType" options:0 context:nil];
 }
 
 - (void) dealloc;
 {
-  [filterController removeObserver:self forKeyPath:@"content.environment.fileType"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.fileType"];
   [super dealloc];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"fileTypeIndex"];
   fileTypeIndex = [fileTypes indexOfObject:fileType];
@@ -75,7 +75,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)setFileTypeIndex:(int)newIndex;
 {
-  [[[filterController content] environment] setValue:[fileTypes objectAtIndex:newIndex] forKey:@"fileType"];
+  [[[filterController content] settings] setValue:[fileTypes objectAtIndex:newIndex] forKey:@"fileType"];
 }
 
 - (int)optionTabIndex;
@@ -85,7 +85,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (void)updateOptionTabIndex;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   NSString* fileType = [env valueForKey:@"fileType"];
   [self willChangeValueForKey:@"optionTabIndex"];
   NSNumber* boxedOptionTabIndex = [fileTypesOptions objectForKey:fileType];
@@ -95,7 +95,7 @@ static NSDictionary* fileTypesOptions = nil;
 
 - (IBAction)browseFile:(id)sender;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
 
   NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
   NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];

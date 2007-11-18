@@ -14,6 +14,7 @@
 #import "IFImageType.h"
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFThresholdFilter
 
@@ -51,7 +52,7 @@
 
 - (NSString*)label;
 {
-  return [NSString stringWithFormat:@"threshold %.2f", [(NSNumber*)[environment valueForKey:@"threshold"] floatValue]];
+  return [NSString stringWithFormat:@"threshold %.2f", [(NSNumber*)[settings valueForKey:@"threshold"] floatValue]];
 }
 
 @end

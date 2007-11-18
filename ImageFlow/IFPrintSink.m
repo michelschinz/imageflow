@@ -12,6 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFPrintSink
 
@@ -43,13 +44,13 @@
 // TODO obsolete
 - (void)exportImage:(IFImageConstantExpression*)imageExpr document:(IFDocument*)document;
 {
-  BOOL printToFile = [[environment valueForKey:@"printToFile"] boolValue];
+  BOOL printToFile = [[settings valueForKey:@"printToFile"] boolValue];
   
   NSPrintInfo* sharedPrintInfo = [NSPrintInfo sharedPrintInfo];
   NSMutableDictionary* printInfoDict = [NSMutableDictionary dictionaryWithDictionary:[sharedPrintInfo dictionary]];
   if (printToFile) {
     [printInfoDict setObject:NSPrintSaveJob forKey:NSPrintJobDisposition];
-    [printInfoDict setObject:[environment valueForKey:@"fileName"] forKey:NSPrintSavePath];
+    [printInfoDict setObject:[settings valueForKey:@"fileName"] forKey:NSPrintSavePath];
   } else
     [printInfoDict setObject:NSPrintSpoolJob forKey:NSPrintJobDisposition];
 

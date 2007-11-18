@@ -9,15 +9,23 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeNode.h"
-#import "IFFilter.h"
+#import "IFEnvironment.h"
 
 @interface IFTreeNodeFilter : IFTreeNode<NSCoding> {
+  IFEnvironment* settings;
   BOOL inReconfiguration;
+  int activeTypeIndex;
   NSMutableDictionary* parentExpressions;
-  IFFilter* filter;
+  NSNib* settingsNib;
 }
 
-+ (id)nodeWithFilter:(IFFilter*)theFilter;
-- (id)initWithFilter:(IFFilter*)theFilter;
++ (id)nodeWithFilterNamed:(NSString*)theFilterName settings:(IFEnvironment*)theSettings;
+- (id)initWithSettings:(IFEnvironment*)theSettings;
+
+- (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
+
+#pragma mark -
+#pragma mark protected
+- (NSArray*)potentialRawExpressions;
 
 @end

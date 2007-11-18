@@ -11,6 +11,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFFileSink
 
@@ -42,8 +43,8 @@
 // TODO obsolete
 - (void)exportImage:(IFImageConstantExpression*)imageExpr document:(IFDocument*)document;
 {
-  NSString* fileName = [environment valueForKey:@"fileName"];
-  NSString* fileType = [environment valueForKey:@"fileType"];
+  NSString* fileName = [settings valueForKey:@"fileName"];
+  NSString* fileType = [settings valueForKey:@"fileType"];
   NSURL* url = [NSURL fileURLWithPath:fileName];
   
   CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL((CFURLRef)url,(CFStringRef)fileType,1,NULL);
@@ -52,8 +53,8 @@
     NSMutableDictionary* imageProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithFloat:[document resolutionX]], kCGImagePropertyDPIWidth,
       [NSNumber numberWithFloat:[document resolutionY]], kCGImagePropertyDPIHeight,
-      [environment valueForKey:@"quality"], kCGImageDestinationLossyCompressionQuality,
-      [NSDictionary dictionaryWithObject:[environment valueForKey:@"TIFFCompression"]
+      [settings valueForKey:@"quality"], kCGImageDestinationLossyCompressionQuality,
+      [NSDictionary dictionaryWithObject:[settings valueForKey:@"TIFFCompression"]
                                   forKey:(id)kCGImagePropertyTIFFCompression], kCGImagePropertyTIFFDictionary,
       nil]; // TODO add other metadata
     CGImageDestinationAddImage(imageDestination,image,(CFDictionaryRef)imageProperties);
@@ -65,12 +66,12 @@
 
 - (NSString*)label;
 {
-  return [NSString stringWithFormat:@"save %@",[[environment valueForKey:@"fileName"] lastPathComponent]];
+  return [NSString stringWithFormat:@"save %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
 }
 
 - (NSString*)toolTip;
 {
-  return [NSString stringWithFormat:@"save %@",[environment valueForKey:@"fileName"]];
+  return [NSString stringWithFormat:@"save %@",[settings valueForKey:@"fileName"]];
 }
 
 @end

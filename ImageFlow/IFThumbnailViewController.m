@@ -8,6 +8,8 @@
 
 #import "IFThumbnailViewController.h"
 
+#import "IFOperatorExpression.h"
+
 @interface IFThumbnailViewController (Private)
 - (void)updateExpression;
 @end

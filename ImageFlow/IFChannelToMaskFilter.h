@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
-@interface IFChannelToMaskFilter : IFFilter {
+@interface IFChannelToMaskFilter : IFTreeNodeFilter {
 
 }
 

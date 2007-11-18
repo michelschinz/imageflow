@@ -13,6 +13,7 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFParentExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFInvertFilter
 

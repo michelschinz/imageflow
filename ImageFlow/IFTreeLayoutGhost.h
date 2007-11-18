@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeLayoutSingle.h"
+#import "IFTreeNodeFilter.h"
 
 @interface IFTreeLayoutGhost : IFTreeLayoutSingle {
   BOOL activated;
@@ -16,7 +17,7 @@
   NSTextFieldCell* textCell;
 }
 
-+ (NSArrayController*)arrayControllerForFilter:(IFFilter*)filter;
++ (NSArrayController*)arrayControllerForNode:(IFTreeNode*)filter;
 
 - (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 

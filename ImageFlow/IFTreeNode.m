@@ -10,6 +10,7 @@
 #import "IFTreeNodeFilter.h"
 #import "IFExpressionPlugger.h"
 #import "IFTreeMark.h"
+#import "IFType.h"
 
 @interface IFTreeNode (Private)
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded updateExpression:(BOOL)theUpdateExpression;
@@ -21,7 +22,7 @@
 {
   IFEnvironment* env = [IFEnvironment environment];
   [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
-  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:@"IFGhostFilter" environment:env]];
+  return [IFTreeNodeFilter nodeWithFilterNamed:@"IFGhostFilter" settings:env];
 }
 
 - (id)init;
@@ -34,12 +35,6 @@
   OBJC_RELEASE(expression);
   OBJC_RELEASE(name);
   [super dealloc];
-}
-
-- (IFTreeNode*)cloneNode;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
 }
 
 #pragma mark Attributes
@@ -87,9 +82,9 @@
   return self;
 }
 
-- (IFFilter*)filter;
+- (IFEnvironment*)settings;
 {
-  return nil;
+  return [IFEnvironment environment];
 }
 
 - (IFExpression*)expression;

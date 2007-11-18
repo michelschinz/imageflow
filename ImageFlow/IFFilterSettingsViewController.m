@@ -8,6 +8,8 @@
 
 #import "IFFilterSettingsViewController.h"
 
+#import "IFTreeNodeFilter.h"
+
 @interface IFFilterSettingsViewController (Private)
 - (void)updateSettingsView;
 - (NSObjectController*)filterControllerForName:(NSString*)filterName;
@@ -84,41 +86,41 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 
 - (void)updateSettingsView;
 {
-  IFTreeNode* nodeToEdit = [[cursors editMark] node];
-  if (nodeToEdit == nil || [nodeToEdit filter] == nil)
+  IFTreeNode* nodeToEdit = [[[cursors editMark] node] original];
+  if (nodeToEdit == nil)
     return;
   
-  IFFilter* filter = [nodeToEdit filter];
-  [self setFilterName:[filter name]];
+  [self setFilterName:[nodeToEdit label]];
   
-  NSObjectController* filterController = [self filterControllerForName:[filter name]];
-  [filterController setContent:filter];
+  NSString* nodeToEditClassName = [nodeToEdit className];
+  NSObjectController* filterController = [self filterControllerForName:nodeToEditClassName];
+  [filterController setContent:nodeToEdit];
   
   // Select appropriate tab
-  NSNumber* tabIndex = [tabIndices objectForKey:[filter name]];
+  NSNumber* tabIndex = [tabIndices objectForKey:nodeToEditClassName];
   if (tabIndex == nil) {
     // TODO when should the nib objects be deallocated? before the filterControllers are deleted (in dealloc), otherwise they still observe the deallocated filter controllers (see error message in log).
-    NSArray* nibObjects = [filter instantiateSettingsNibWithOwner:filterController];
+    NSArray* nibObjects = [(IFTreeNodeFilter*)nodeToEdit instantiateSettingsNibWithOwner:filterController];
     if (nibObjects == nil)
       tabIndex = [NSNumber numberWithInt:0];
     else {
       NSArray* nibViews = (NSArray*)[[nibObjects select] __isKindOfClass:[NSView class]];
-      NSAssert1([nibViews count] == 1, @"incorrect number of views in NIB file for filter %@", [filter name]);
+      NSAssert1([nibViews count] == 1, @"incorrect number of views in NIB file for filter %@", nodeToEditClassName);
       
       NSView* nibView = [nibViews objectAtIndex:0];
-      [panelSizes setObject:[NSValue valueWithSize:[nibView bounds].size] forKey:[filter name]];
+      [panelSizes setObject:[NSValue valueWithSize:[nibView bounds].size] forKey:nodeToEditClassName];
       NSTabViewItem* filterSettingsTabViewItem = [[[NSTabViewItem alloc] initWithIdentifier:nil] autorelease];
       [filterSettingsTabViewItem setView:nibView];
       tabIndex = [NSNumber numberWithInt:[tabView numberOfTabViewItems]];
       [tabView insertTabViewItem:filterSettingsTabViewItem atIndex:[tabIndex intValue]];
     }
-    [tabIndices setObject:tabIndex forKey:[filter name]];
+    [tabIndices setObject:tabIndex forKey:nodeToEditClassName];
   }
   
   NSTabViewItem* item = [tabView tabViewItemAtIndex:[tabIndex intValue]];
   if (item != [tabView selectedTabViewItem]) {
     [tabView selectTabViewItem:item];
-    [[self topLevelView] setFrameSize:[[panelSizes objectForKey:[filter name]] sizeValue]];
+    [[self topLevelView] setFrameSize:[[panelSizes objectForKey:nodeToEditClassName] sizeValue]];
   }
 }
 

@@ -8,6 +8,7 @@
 
 #import "IFHistogramInspectorWindowController.h"
 #import "IFHistogramConstantExpression.h"
+#import "IFOperatorExpression.h"
 
 @interface IFHistogramInspectorWindowController (Private)
 - (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;

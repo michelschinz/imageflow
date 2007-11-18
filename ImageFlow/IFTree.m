@@ -466,23 +466,22 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return holes;
 }
 
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree startingAtNode:(IFTreeNode*)root;
+- (void)addTree:(IFTree*)tree startingAtNode:(IFTreeNode*)root;
 {
-  IFTreeNode* copiedRoot = [root cloneNode];
-  [graph addNode:copiedRoot];
-
+  [graph addNode:root];
   NSArray* parents = [tree parentsOfNode:root];
   for (int i = 0; i < [parents count]; ++i) {
     IFTreeNode* parent = [parents objectAtIndex:i];
-    IFTreeNode* copiedParent = [self addCopyOfTree:tree startingAtNode:parent];
-    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:copiedParent toNode:copiedRoot];
+    [self addTree:tree startingAtNode:parent];
+    [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:parent toNode:root];
   }
-  return copiedRoot;
 }
 
 - (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
 {
-  return [self addCopyOfTree:tree startingAtNode:[tree root]]; 
+  IFTree* clone = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:tree]];
+  [self addTree:clone startingAtNode:[clone root]];
+  return [clone root];
 }
 
 - (IFTreeNode*)addGhostTreeWithArity:(unsigned)arity;
@@ -642,7 +641,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
 {
-  NSLog(@"%2d %@", indent, [[root filter] expression]);
+  NSLog(@"%2d %@", indent, [root expression]);
   NSArray* parents = [self parentsOfNode:root];
   for (int i = 0; i < [parents count]; ++i)
     [self debugDumpFrom:[parents objectAtIndex:i] indent:indent+1];

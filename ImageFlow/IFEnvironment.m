@@ -33,13 +33,6 @@
   [super dealloc];
 }
 
-- (IFEnvironment*)clone;
-{
-  IFEnvironment* clone = [IFEnvironment environment];
-  [clone setValuesForKeysWithDictionary:env];
-  return clone;
-}
-
 - (NSString*)description;
 {
   return [env description];

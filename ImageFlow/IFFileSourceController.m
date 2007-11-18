@@ -9,7 +9,7 @@
 #import "IFFileSourceController.h"
 #import "IFColorProfile.h"
 #import "IFColorProfileNamer.h"
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
 @interface IFFileSourceController (Private)
 - (NSString*)profileFileNameKey;
@@ -44,22 +44,22 @@ static NSString* kContextResolutionTag = @"resolutionTag";
 - (void)awakeFromNib;
 {
   [self updateResolutionTag];
-  [filterController addObserver:self forKeyPath:@"content.environment.fileName" options:0 context:kContextFileName];
-  [filterController addObserver:self forKeyPath:@"content.environment.defaultRGBProfileFileName" options:0 context:kContextProfileTag];
-  [filterController addObserver:self forKeyPath:@"content.environment.defaultGrayProfileFileName" options:0 context:kContextProfileTag];
-  [filterController addObserver:self forKeyPath:@"content.environment.defaultCMYKProfileFileName" options:0 context:kContextProfileTag];
-  [filterController addObserver:self forKeyPath:@"content.environment.useEmbeddedResolution" options:0 context:kContextResolutionTag];
-  [filterController addObserver:self forKeyPath:@"content.environment.useDocumentResolutionAsDefault" options:0 context:kContextResolutionTag];
+  [filterController addObserver:self forKeyPath:@"content.settings.fileName" options:0 context:kContextFileName];
+  [filterController addObserver:self forKeyPath:@"content.settings.defaultRGBProfileFileName" options:0 context:kContextProfileTag];
+  [filterController addObserver:self forKeyPath:@"content.settings.defaultGrayProfileFileName" options:0 context:kContextProfileTag];
+  [filterController addObserver:self forKeyPath:@"content.settings.defaultCMYKProfileFileName" options:0 context:kContextProfileTag];
+  [filterController addObserver:self forKeyPath:@"content.settings.useEmbeddedResolution" options:0 context:kContextResolutionTag];
+  [filterController addObserver:self forKeyPath:@"content.settings.useDocumentResolutionAsDefault" options:0 context:kContextResolutionTag];
 }
 
 - (void) dealloc;
 {
-  [filterController removeObserver:self forKeyPath:@"content.environment.defaultCMYKProfileFileName"];
-  [filterController removeObserver:self forKeyPath:@"content.environment.defaultGrayProfileFileName"];
-  [filterController removeObserver:self forKeyPath:@"content.environment.defaultRGBProfileFileName"];
-  [filterController removeObserver:self forKeyPath:@"content.environment.useDocumentResolutionAsDefault"];
-  [filterController removeObserver:self forKeyPath:@"content.environment.useEmbeddedResolution"];
-  [filterController removeObserver:self forKeyPath:@"content.environment.fileName"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.defaultCMYKProfileFileName"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.defaultGrayProfileFileName"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.defaultRGBProfileFileName"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.useDocumentResolutionAsDefault"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.useEmbeddedResolution"];
+  [filterController removeObserver:self forKeyPath:@"content.settings.fileName"];
   [self flushProperties];
   [super dealloc];
 }
@@ -103,7 +103,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   NSString* key = [self profileFileNameKey];
   if (key == nil)
     return;
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   [env setValue:[[IFColorProfileNamer sharedNamer] pathForProfileWithUniqueName:newSelectedProfileName] forKey:key];
 }
 
@@ -151,7 +151,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
 
 - (void)setResolutionTag:(int)newTag;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
 
   switch (newTag) {
     case 0:
@@ -181,7 +181,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   NSOpenPanel* panel = [NSOpenPanel openPanel];
   [panel setCanChooseDirectories:NO];
   [panel setAllowsMultipleSelection:NO];
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   if ([panel runModalForDirectory:nil file:[env valueForKey:@"fileName"]] != NSOKButton)
     return;
 
@@ -219,7 +219,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   if (key == nil)
     path = nil;
   else {
-    IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+    IFEnvironment* env = [[filterController content] settings];
     path = [env valueForKey:key];
   }
 
@@ -233,7 +233,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
 
 - (void)updateResolutionTag;
 {
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   if ([[env valueForKey:@"useEmbeddedResolution"] boolValue])
     [self reallySetResolutionTag:2];
   else if ([[env valueForKey:@"useDocumentResolutionAsDefault"] boolValue])
@@ -256,7 +256,7 @@ static NSString* kContextResolutionTag = @"resolutionTag";
   if (fileProperties != nil)
     return;
   
-  IFEnvironment* env = [(IFFilter*)[filterController content] environment];
+  IFEnvironment* env = [[filterController content] settings];
   NSString* fileName = [env valueForKey:@"fileName"];
 
   NSURL* url = [NSURL fileURLWithPath:(fileName == nil ? @"" : fileName)];

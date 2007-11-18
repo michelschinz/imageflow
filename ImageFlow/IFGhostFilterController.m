@@ -18,7 +18,7 @@
 - (void)awakeFromNib;
 {
   [filterController addObserver:self forKeyPath:@"content" options:0 context:nil];
-  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController content]]];
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForNode:[filterController content]]];
 }
 
 - (void) dealloc;
@@ -30,7 +30,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 {
-  [self setArrayController:[IFTreeLayoutGhost arrayControllerForFilter:[filterController content]]];
+  [self setArrayController:[IFTreeLayoutGhost arrayControllerForNode:[filterController content]]];
 }
 
 - (NSArrayController*)arrayController;

@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
-@interface IFGaussianBlurFilter : IFFilter {
+@interface IFGaussianBlurFilter : IFTreeNodeFilter {
 
 }
 

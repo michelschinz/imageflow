@@ -6,9 +6,10 @@
 //  Copyright 2006 Michel Schinz. All rights reserved.
 //
 
+#import "IFDocument.h"
 #import "IFBlendFilterAnnotationSource.h"
 #import "IFExpressionEvaluator.h"
-#import "IFDocument.h"
+#import "IFOperatorExpression.h"
 
 static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
@@ -46,7 +47,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   NSPoint newOrigin = [(NSValue*)newValue rectValue].origin;
   NSPoint fgOrigin = [self foregroundExtent].origin;
   NSPoint newTranslation = NSMakePoint(newOrigin.x - fgOrigin.x,newOrigin.y - fgOrigin.y);
-  [[[node filter] environment] setValue:[NSValue valueWithPoint:newTranslation] forKey:@"translation"];
+  [[node settings] setValue:[NSValue valueWithPoint:newTranslation] forKey:@"translation"];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
@@ -81,7 +82,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 - (NSRect)rect;
 {
-  NSPoint translation = [[[[node filter] environment] valueForKey:@"translation"] pointValue];
+  NSPoint translation = [[[node settings] valueForKey:@"translation"] pointValue];
   return NSOffsetRect([self foregroundExtent],translation.x,translation.y);
 }
 

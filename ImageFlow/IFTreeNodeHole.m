@@ -16,11 +16,6 @@
   return [[[self alloc] init] autorelease];
 }
 
-- (IFTreeNode*)cloneNode;
-{
-  return [IFTreeNodeHole hole];
-}
-
 - (BOOL)isHole;
 {
   return YES;

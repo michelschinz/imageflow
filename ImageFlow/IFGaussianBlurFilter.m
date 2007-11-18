@@ -15,6 +15,7 @@
 #import "IFTypeVar.h"
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFGaussianBlurFilter
 
@@ -44,7 +45,7 @@
 
 - (NSString*)label;
 {
-  return [NSString stringWithFormat:@"blur (%.1f gaussian)", [(NSNumber*)[environment valueForKey:@"radius"] floatValue]];
+  return [NSString stringWithFormat:@"blur (%.1f gaussian)", [(NSNumber*)[settings valueForKey:@"radius"] floatValue]];
 }
 
 @end

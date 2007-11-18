@@ -7,7 +7,6 @@
 #import "IFDocument.h"
 #import "IFXMLCoder.h"
 #import "IFTreeViewWindowController.h"
-#import "IFFilter.h"
 #import "IFExpressionEvaluator.h"
 #import "IFDirectoryManager.h"
 #import "IFTreeNodeFilter.h"

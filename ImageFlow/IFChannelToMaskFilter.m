@@ -14,6 +14,7 @@
 #import "IFImageType.h"
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFChannelToMaskFilter
 
@@ -43,7 +44,7 @@
 - (NSString*)label;
 {
   char* channelInitials = "rgbal";
-  return [NSString stringWithFormat:@"%c to mask", channelInitials[[[environment valueForKey:@"channel"] intValue]]];
+  return [NSString stringWithFormat:@"%c to mask", channelInitials[[[settings valueForKey:@"channel"] intValue]]];
 }
 
 - (NSArray*)channels;

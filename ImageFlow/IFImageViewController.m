@@ -10,6 +10,7 @@
 
 #import "NSAffineTransformIFAdditions.h"
 #import "IFErrorConstantExpression.h"
+#import "IFOperatorExpression.h"
 
 typedef enum {
   IFFilterDelegateHasMouseDown    = 1<<0,

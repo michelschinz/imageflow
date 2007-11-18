@@ -590,7 +590,7 @@ static enum {
     case IFDragKindFileName: {
       if (targetElement != nil) {
         IFTreeNode* node = [targetElement node];
-        highlightTarget = [node isGhost] || ([[[node filter] environment] valueForKey:@"fileName"] != nil);
+        highlightTarget = [node isGhost] || ([[node settings] valueForKey:@"fileName"] != nil);
         allowedOperationsMask = highlightTarget ? NSDragOperationLink : NSDragOperationNone;
       } else
         allowedOperationsMask = NSDragOperationLink;
@@ -733,9 +733,9 @@ static enum {
           return YES;
         } else
           return NO;
-      } else if ([[[targetNode filter] environment] valueForKey:@"fileName"] != nil) {
+      } else if ([[targetNode settings] valueForKey:@"fileName"] != nil) {
         // Change "fileName" entry in environment to the dropped file name.
-        [[[targetNode filter] environment] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
+        [[targetNode settings] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
         return YES;
       } else
         return NO;
@@ -796,30 +796,12 @@ static enum {
 
 @implementation IFTreeView (Private)
 
-IFTreeNode* deepCloneSubtree(IFTree* tree, IFTree* clone, IFTreeNode* originalRoot) {
-  IFTreeNode* clonedRoot = [originalRoot cloneNode];
-  [clone addNode:clonedRoot];
-
-  NSArray* parents = [tree parentsOfNode:originalRoot];
-  for (int i = 0; i < [parents count]; ++i) {
-    IFTreeNode* originalParent = [parents objectAtIndex:i];
-    IFTreeNode* clonedParent = deepCloneSubtree(tree, clone, originalParent);
-    [clone addEdgeFromNode:clonedParent toNode:clonedRoot withIndex:i];
-  }
-  return clonedRoot;
-}
-
-IFTree* deepCloneTree(IFTree* tree) {
-  IFTree* clone = [IFTree tree];
-  deepCloneSubtree(tree, clone, [tree root]);
-  return clone;
-}
-
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
 {
-  IFTree* tree = deepCloneTree([[[IFTreeTemplateManager sharedManager] loadFileTemplate] tree]);
-  [[[[tree root] filter] environment] setValue:fileName forKey:@"fileName"];
-  return tree;
+  NSData* archivedClone = [NSKeyedArchiver archivedDataWithRootObject:[[[IFTreeTemplateManager sharedManager] loadFileTemplate] tree]];
+  IFTree* clonedTree = [NSKeyedUnarchiver unarchiveObjectWithData:archivedClone];
+  [[[clonedTree root] settings] setValue:fileName forKey:@"fileName"];
+  return clonedTree;
 }
 
 - (void)documentTreeChanged:(NSNotification*)aNotification;

@@ -14,6 +14,7 @@
 #import "IFImageType.h"
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFUnsharpMaskFilter
 
@@ -43,7 +44,7 @@
 
 - (NSString*)label;
 {
-  return [NSString stringWithFormat:@"USM (%.1f int, %.1f rad)", [(NSNumber*)[environment valueForKey:@"intensity"] floatValue], [(NSNumber*)[environment valueForKey:@"radius"] floatValue]];
+  return [NSString stringWithFormat:@"USM (%.1f int, %.1f rad)", [(NSNumber*)[settings valueForKey:@"intensity"] floatValue], [(NSNumber*)[settings valueForKey:@"radius"] floatValue]];
 }
 
 @end

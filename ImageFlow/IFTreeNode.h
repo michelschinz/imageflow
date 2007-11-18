@@ -8,8 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilter.h"
-#import "IFType.h"
+#import "IFExpression.h"
+#import "IFImageView.h"
 
 @interface IFTreeNode : NSObject<NSCoding> {
   NSString* name;
@@ -20,18 +20,20 @@
 
 + (id)ghostNodeWithInputArity:(int)inputArity;
 
-- (IFTreeNode*)cloneNode;
-
 #pragma mark Attributes
+
 - (void)setName:(NSString*)newName;
 - (NSString*)name;
+
 - (void)setIsFolded:(BOOL)newIsFolded;
 - (BOOL)isFolded;
+
 - (BOOL)isGhost;
 - (BOOL)isAlias;
 - (BOOL)isHole;
+
 - (IFTreeNode*)original;
-- (IFFilter*)filter;
+- (IFEnvironment*)settings;
 - (IFExpression*)expression;
 
 - (int)inputArity;

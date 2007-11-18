@@ -18,6 +18,7 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFParentExpression.h"
+#import "IFOperatorExpression.h"
 #import "IFVariableExpression.h"
 
 @implementation IFBlendFilter
@@ -68,21 +69,21 @@ static NSArray* parentNames = nil;
 
 - (NSString*)label;
 {
-  return NSStringFromBlendMode([[environment valueForKey:@"mode"] intValue]);
+  return NSStringFromBlendMode([[settings valueForKey:@"mode"] intValue]);
 }
 
 - (NSString*)toolTip;
 {
-  NSPoint translation = [[environment valueForKey:@"translation"] pointValue];
+  NSPoint translation = [[settings valueForKey:@"translation"] pointValue];
   return [NSString stringWithFormat:@"blend\nmode: %@\nforeground opacity: %d%%\nforeground translation: (%d,%d)",
-    NSStringFromBlendMode([[environment valueForKey:@"mode"] intValue]),
-    (int)floor(100.0 * [[environment valueForKey:@"alpha"] floatValue]),
+    NSStringFromBlendMode([[settings valueForKey:@"mode"] intValue]),
+    (int)floor(100.0 * [[settings valueForKey:@"alpha"] floatValue]),
     (int)translation.x, (int)translation.y];
 }
 
-- (NSArray*)editingAnnotationsForNode:(IFTreeNode*)node view:(NSView*)view;
+- (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
-  IFVariable* source = [IFBlendFilterAnnotationSource blendAnnotationSourceForNode:node];
+  IFVariable* source = [IFBlendFilterAnnotationSource blendAnnotationSourceForNode:self];
   return [NSArray arrayWithObject:[IFAnnotationRect annotationRectWithView:view source:source]];
 }
 
@@ -92,7 +93,7 @@ static NSArray* parentNames = nil;
     case 0:
       return [NSAffineTransform transform];
     case 1: {
-      NSPoint translation = [[environment valueForKey:@"translation"] pointValue];
+      NSPoint translation = [[settings valueForKey:@"translation"] pointValue];
       NSAffineTransform* transform = [NSAffineTransform transform];
       [transform translateXBy:translation.x yBy:translation.y];
       return transform;

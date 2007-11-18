@@ -350,8 +350,8 @@ static IFXMLCoder* sharedCoder = nil;
     
     xmlTreeNode = [NSXMLElement elementWithName:@"filter"];
     [xmlTreeNode setChildren:[NSArray arrayWithObjects:
-      [NSXMLElement elementWithName:@"name" stringValue:NSStringFromClass([[treeNode filter] class])],
-      [self encodeFilterSettings:[[treeNode filter] environment]],
+      [NSXMLElement elementWithName:@"name" stringValue:NSStringFromClass([treeNode class])],
+      [self encodeFilterSettings:[treeNode settings]],
       xmlParents,
       nil]];
   }
@@ -402,7 +402,7 @@ static IFXMLCoder* sharedCoder = nil;
       NSAssert1(NO, @"invalid node: %@", child);
   }
 
-  return [IFTreeNodeFilter nodeWithFilter:[IFFilter filterWithName:filterName environment:filterSettings]];  
+  return [IFTreeNodeFilter nodeWithFilterNamed:filterName settings:filterSettings];
 }
 
 - (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;

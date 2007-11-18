@@ -9,57 +9,69 @@
 #import "IFTreeNodeFilter.h"
 #import "IFExpressionPlugger.h"
 
+@interface IFTreeNodeFilter (Private)
+- (void)startObservingSettingsKeys:(NSSet*)keys;
+- (void)stopObservingSettingsKeys:(NSSet*)keys;
+@end
+
 @implementation IFTreeNodeFilter
 
-static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedContext";
+static NSString* IFSettingsKeySetDidChangeContext = @"IFSettingsKeySetDidChangeContext";
+static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeContext";
 
-+ (id)nodeWithFilter:(IFFilter*)theFilter;
++ (id)nodeWithFilterNamed:(NSString*)theFilterName settings:(IFEnvironment*)theSettings;
 {
-  return [[[IFTreeNodeFilter alloc] initWithFilter:theFilter] autorelease];
+  Class cls = [[NSBundle mainBundle] classNamed:theFilterName];
+  NSAssert1(cls != nil, @"cannot find class for filter named '%@'", theFilterName);
+  return [[[cls alloc] initWithSettings:theSettings] autorelease];
 }
 
-- (id)initWithFilter:(IFFilter*)theFilter;
+- (id)initWithSettings:(IFEnvironment*)theSettings;
 {
-  if (![super init]) return nil;
+  if (![super init])
+    return nil;
+  settings = [theSettings retain];
   inReconfiguration = NO;
+  activeTypeIndex = 0;
   parentExpressions = [[NSMutableDictionary dictionary] retain];
-  filter = [theFilter retain];
-  [filter addObserver:self forKeyPath:@"expression" options:0 context:IFFilterExpressionChangedContext];
+  expression = nil;
+  settingsNib = nil;
+
+  [self startObservingSettingsKeys:[settings keys]];
+  [settings addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFSettingsKeySetDidChangeContext];
+
   return self;
 }
 
 - (void)dealloc;
 {
-  [filter removeObserver:self forKeyPath:@"expression"];  
-  OBJC_RELEASE(filter);
+  [settings removeObserver:self forKeyPath:@"keys"];
+  [self stopObservingSettingsKeys:[settings keys]];
+  
+  OBJC_RELEASE(settingsNib);
+  OBJC_RELEASE(expression);
   OBJC_RELEASE(parentExpressions);
+  OBJC_RELEASE(settings);
   [super dealloc];
 }
 
-- (IFTreeNode*)cloneNode;
+- (IFEnvironment*)settings;
 {
-  NSAssert([self class] == [IFTreeNodeFilter class], @"missing redefiniton of <clone> method");
-  return [IFTreeNodeFilter nodeWithFilter:[filter clone]];
-}
-
-- (BOOL)isGhost;
-{
-  return [filter isGhost];
-}
-
-- (IFFilter*)filter;
-{
-  return filter;
+  return settings;
 }
 
 - (NSArray*)potentialTypes;
 {
-  return [filter potentialTypes];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (void)setActiveTypeIndex:(unsigned)newIndex;
 {
-  [filter setActiveTypeIndex:newIndex];
+  if (newIndex == activeTypeIndex)
+    return;
+  activeTypeIndex = newIndex;
+  [self updateExpression];
 }
 
 - (void)setParentExpression:(IFExpression*)parentExpression atIndex:(unsigned)index;
@@ -70,68 +82,86 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 
 - (void)updateExpression;
 {
-  if (filter == nil)
-    return;
-  [self setExpression:[IFExpressionPlugger plugValuesInExpression:[filter expression] withValuesFromParentsEnvironment:parentExpressions]];
+  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:activeTypeIndex] withValuesFromVariablesEnvironment:[settings asDictionary]];
+  IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:parentExpressions];
+  [self setExpression:expr2];
+}
+
+#pragma mark Filter settings view support
+
+- (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
+{
+  if (settingsNib == nil) {
+    settingsNib = [[NSNib alloc] initWithNibNamed:[self className] bundle:nil];
+    if (settingsNib == nil)
+      return nil; // Nib file does not exist
+  }
+  
+  NSArray* topLevelObjects = nil;
+  BOOL nibOk = [settingsNib instantiateNibWithOwner:owner topLevelObjects:&topLevelObjects];
+  NSAssert1(nibOk, @"error during nib instantiation %@", settingsNib);
+  
+  return topLevelObjects;
 }
 
 #pragma mark Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
-  return [filter nameOfParentAtIndex:index];
+  return [NSString stringWithFormat:@"parent %d",index];
 }
 
 - (NSString*)label;
 {
-  return [filter label];
+  return [self className];
 }
 
 - (NSString*)toolTip;
 {
-  return [filter toolTip];
+  return [self label];
 }
 
 #pragma mark Image view support
 
 - (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
-  return [filter editingAnnotationsForNode:self view:view];
+  return [NSArray array];
 }
 
 - (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
 {
-  return [filter mouseDown:event inView:imageView viewFilterTransform:viewFilterTransform];
+  // do nothing by default
 }
 
 - (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
 {
-  return [filter mouseDragged:event inView:imageView viewFilterTransform:viewFilterTransform];
+  // do nothing by default
 }
 
 - (void)mouseUp:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
 {
-  return [filter mouseUp:event inView:imageView viewFilterTransform:viewFilterTransform];
+  // do nothing by default
 }
 
 - (NSArray*)variantNamesForViewing;
 {
-  return [filter variantNamesForViewing];
+  return [NSArray arrayWithObject:@""];
 }
 
 - (NSArray*)variantNamesForEditing;
 {
-  return [filter variantNamesForEditing];
+  return [NSArray arrayWithObject:@""];  
 }
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
-  return [filter variantNamed:variantName ofExpression:originalExpression];
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (NSAffineTransform*)transformForParentAtIndex:(int)index;
 {
-  return [filter transformForParentAtIndex:index];
+  return [NSAffineTransform transform];
 }
 
 #pragma NSCoding protocol
@@ -139,10 +169,15 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 - (id)initWithCoder:(NSCoder*)decoder;
 {
   [super initWithCoder:decoder];
+  settings = [[decoder decodeObjectForKey:@"settings"] retain];
   inReconfiguration = NO;
+  activeTypeIndex = 0;
   parentExpressions = [[NSMutableDictionary dictionary] retain];
-  filter = [[decoder decodeObjectForKey:@"filter"] retain];
-  [filter addObserver:self forKeyPath:@"expression" options:0 context:IFFilterExpressionChangedContext];
+  settingsNib = nil;
+  
+  [self startObservingSettingsKeys:[settings keys]];
+  [settings addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFSettingsKeySetDidChangeContext];
+
   return self;
 }
 
@@ -150,7 +185,7 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 {
   NSAssert(!inReconfiguration, @"internal error");
   [super encodeWithCoder:encoder];
-  [encoder encodeObject:filter forKey:@"filter"];
+  [encoder encodeObject:settings forKey:@"settings"];
 }
 
 #pragma mark Debugging
@@ -161,16 +196,55 @@ static NSString* IFFilterExpressionChangedContext = @"IFFilterExpressionChangedC
 }
 
 #pragma mark -
-#pragma mark (protected)
+#pragma mark protected
+
+- (NSArray*)potentialRawExpressions;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if (context == IFFilterExpressionChangedContext)
+  if (context == IFSettingsKeySetDidChangeContext) {
+    NSSet* oldKeys = [change objectForKey:NSKeyValueChangeOldKey];
+    NSSet* newKeys = [change objectForKey:NSKeyValueChangeNewKey];
+    int changeKind = [(NSNumber*)[change objectForKey:NSKeyValueChangeKindKey] intValue];
+    switch (changeKind) {
+      case NSKeyValueChangeInsertion:
+        [self startObservingSettingsKeys:newKeys];
+        break;
+      case NSKeyValueChangeRemoval:
+        [self stopObservingSettingsKeys:oldKeys];
+        break;
+      default:
+        NSAssert(NO, @"unexpected change kind");
+        break;
+    }
+  } else if (context == IFSettingsValueDidChangeContext)
     [self maybeUpdateExpression];
-  else {
-    if (!inReconfiguration)
-      [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-  }
+  else
+    NSAssert1(NO, @"unexpected context %@", context);
+}
+
+@end
+
+@implementation IFTreeNodeFilter (Private)
+
+- (void)startObservingSettingsKeys:(NSSet*)keys;
+{
+  NSEnumerator* keysEnum = [keys objectEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject])
+    [settings addObserver:self forKeyPath:key options:0 context:IFSettingsValueDidChangeContext];
+}
+
+- (void)stopObservingSettingsKeys:(NSSet*)keys;
+{
+  NSEnumerator* keysEnum = [keys objectEnumerator];
+  NSString* key;
+  while (key = [keysEnum nextObject])
+    [settings removeObserver:self forKeyPath:key];
 }
 
 @end

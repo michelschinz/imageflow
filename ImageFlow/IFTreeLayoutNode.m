@@ -9,6 +9,7 @@
 #import "IFTreeLayoutNode.h"
 #import "IFNodesView.h"
 #import "IFErrorConstantExpression.h"
+#import "IFOperatorExpression.h"
 
 @interface IFTreeLayoutNode (Private)
 - (void)updateInternalLayout;

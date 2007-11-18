@@ -14,6 +14,7 @@
 #import "IFImageType.h"
 #import "IFParentExpression.h"
 #import "IFVariableExpression.h"
+#import "IFOperatorExpression.h"
 
 @implementation IFColorControlsFilter
 

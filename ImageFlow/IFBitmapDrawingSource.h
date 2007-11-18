@@ -8,9 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFFilter.h"
+#import "IFTreeNodeFilter.h"
 
-@interface IFBitmapDrawingSource : IFFilter {
+@interface IFBitmapDrawingSource : IFTreeNodeFilter {
 
 }
 

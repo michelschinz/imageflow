@@ -8,6 +8,7 @@
 
 #import "IFTreeNodeAlias.h"
 #import "IFXMLCoder.h"
+#import "IFType.h"
 
 @implementation IFTreeNodeAlias
 
@@ -37,11 +38,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   [super dealloc];
 }
 
-- (IFTreeNode*)cloneNode;
-{
-  return [IFTreeNodeAlias nodeAliasWithOriginal:original];
-}
-
 - (BOOL)isAlias;
 {
   return YES;
@@ -65,11 +61,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 - (IFTreeNode*)original;
 {
   return original;
-}
-
-- (IFFilter*)filter;
-{
-  return [original filter];
 }
 
 - (int)inputArity

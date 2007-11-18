@@ -12,6 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
+#import "IFOperatorExpression.h"
 #import "IFVariableExpression.h"
 
 @implementation IFFileSource
@@ -47,12 +48,12 @@
 
 - (NSString*)label;
 {
-  return [NSString stringWithFormat:@"load %@",[[environment valueForKey:@"fileName"] lastPathComponent]];
+  return [NSString stringWithFormat:@"load %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
 }
 
 - (NSString*)toolTip;
 {
-  return [NSString stringWithFormat:@"load %@",[environment valueForKey:@"fileName"]];
+  return [NSString stringWithFormat:@"load %@",[settings valueForKey:@"fileName"]];
 }
 
 @end

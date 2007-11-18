@@ -15,7 +15,6 @@
 }
 
 + (id)environment;
-- (IFEnvironment*)clone;
 
 - (void)setValue:(id)value forKey:(NSString*)key;
 - (id)valueForKey:(NSString*)key;

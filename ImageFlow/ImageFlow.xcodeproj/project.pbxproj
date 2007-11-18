@@ -108,7 +108,6 @@
 		FA9E24590B03B10F001EC346 /* locked_view.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E24580B03B10F001EC346 /* locked_view.png */; };
 		FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */; };
 		FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */; };
-		FAAF1034090A5ADD00479538 /* IFFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF1032090A5ADD00479538 /* IFFilter.m */; };
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
 		FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC3D52088AD689007E8691 /* IFTreeMark.m */; };
 		FABD2BDD0862E2A300D9A92D /* IFTreeLayoutElement.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD2BDC0862E2A300D9A92D /* IFTreeLayoutElement.m */; };
@@ -414,8 +413,6 @@
 		FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSavePanelController.m; sourceTree = "<group>"; };
 		FAA2AFA108FFAB710055AFDD /* IFDirectoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDirectoryManager.h; sourceTree = "<group>"; };
 		FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDirectoryManager.m; sourceTree = "<group>"; };
-		FAAF1031090A5ADD00479538 /* IFFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFilter.h; sourceTree = "<group>"; };
-		FAAF1032090A5ADD00479538 /* IFFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFilter.m; sourceTree = "<group>"; };
 		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
 		FABC3D51088AD689007E8691 /* IFTreeMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeMark.h; sourceTree = "<group>"; };
 		FABC3D52088AD689007E8691 /* IFTreeMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeMark.m; sourceTree = "<group>"; };
@@ -1141,15 +1138,6 @@
 			name = Document;
 			sourceTree = "<group>";
 		};
-		FAAF1035090A5AE800479538 /* Filter */ = {
-			isa = PBXGroup;
-			children = (
-				FAAF1031090A5ADD00479538 /* IFFilter.h */,
-				FAAF1032090A5ADD00479538 /* IFFilter.m */,
-			);
-			name = Filter;
-			sourceTree = "<group>";
-		};
 		FAB2CDCE08A8DC2600558619 /* Settings panels */ = {
 			isa = PBXGroup;
 			children = (
@@ -1478,7 +1466,6 @@
 				FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */,
 				FA690ACF090527250096B97D /* Document */,
 				FA690ACE090525750096B97D /* Language */,
-				FAAF1035090A5AE800479538 /* Filter */,
 				FA1EB1FF086AAB35007FD6AF /* Tree */,
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
@@ -1689,7 +1676,6 @@
 				FAEFA87A09062A9C00F76B8A /* IFOperatorExpression.m in Sources */,
 				FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */,
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
-				FAAF1034090A5ADD00479538 /* IFFilter.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
 				FAE54F74090D1400000DC147 /* IFGhostFilterController.m in Sources */,
 				FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */,
