@@ -13,7 +13,7 @@
 #import "IFType.h"
 
 @interface IFTreeNode (Private)
-- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded updateExpression:(BOOL)theUpdateExpression;
+- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 @end
 
 @implementation IFTreeNode
@@ -27,7 +27,7 @@
 
 - (id)init;
 {
-  return [self initWithName:nil isFolded:NO updateExpression:NO];
+  return [self initWithName:nil isFolded:NO];
 }
 
 - (void)dealloc;
@@ -100,23 +100,12 @@
   return nil;
 }
 
-- (void)stopUpdatingExpression;
-{
-  updateExpression = NO;
-}
-
-- (void)startUpdatingExpression;
-{
-  updateExpression = YES;
-  [self maybeUpdateExpression];
-}
-
-- (void)setActiveTypeIndex:(unsigned)newIndex;
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 {
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
+- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
 }
@@ -203,24 +192,17 @@
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
-  return [self initWithName:[decoder decodeObjectForKey:@"name"] isFolded:[decoder decodeBoolForKey:@"isFolded"] updateExpression:[decoder decodeBoolForKey:@"updateExpression"]];
+  return [self initWithName:[decoder decodeObjectForKey:@"name"] isFolded:[decoder decodeBoolForKey:@"isFolded"]];
 }
 
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
   [encoder encodeObject:name forKey:@"name"];
   [encoder encodeBool:isFolded forKey:@"isFolded"];
-  [encoder encodeBool:updateExpression forKey:@"updateExpression"];
 }
 
 #pragma mark -
 #pragma mark (protected)
-
-- (void)maybeUpdateExpression;
-{
-  if (updateExpression)
-    [self updateExpression];
-}
 
 - (void)updateExpression;
 {
@@ -239,13 +221,12 @@
 
 @implementation IFTreeNode (Private)
 
-- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded updateExpression:(BOOL)theUpdateExpression;
+- (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 {
   if (![super init])
     return nil;
   name = (theName == nil) ? nil : [theName retain];
   isFolded = theIsFolded;
-  updateExpression = theUpdateExpression;
   expression = nil;
   return self;
 }

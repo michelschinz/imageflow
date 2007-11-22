@@ -188,14 +188,12 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   if (newValue == propagateNewParentExpressions)
     return;
 
-  NSEnumerator* nodesEnum = [[graph nodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [nodesEnum nextObject]) {
-    if (newValue)
-      [node addObserver:self forKeyPath:@"expression" options:0 context:IFTreeNodeExpressionChangedContext];
-    else
-      [node removeObserver:self forKeyPath:@"expression"];
-  }
+  NSMutableSet* nodes = [NSMutableSet setWithSet:[graph nodes]];
+  [nodes removeObject:[self root]];
+  if (newValue)
+    [[nodes do] addObserver:self forKeyPath:@"expression" options:0 context:IFTreeNodeExpressionChangedContext];
+  else
+    [[nodes do] removeObserver:self forKeyPath:@"expression"];
   propagateNewParentExpressions = newValue;
 }
 
@@ -388,12 +386,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   for (int i = 0; i < [config count]; ++i) {
     IFTreeNode* node = [sortedNodesNoRoot objectAtIndex:i];
-    [node stopUpdatingExpression];
-    NSArray* parents = [self parentsOfNode:node];
-    for (int i = 0; i < [parents count]; ++i)
-      [node setParentExpression:[[parents objectAtIndex:i] expression] atIndex:i];
-    [node setActiveTypeIndex:[[config objectAtIndex:i] unsignedIntValue]];
-    [node startUpdatingExpression];
+    NSArray* parentExpressions = (NSArray*)[[[self parentsOfNode:node] collect] expression];
+    unsigned activeTypeIndex = [[config objectAtIndex:i] unsignedIntValue];
+    [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
   }
 }
 

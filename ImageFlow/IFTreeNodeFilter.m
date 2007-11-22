@@ -65,18 +65,19 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return nil;
 }
 
-- (void)setActiveTypeIndex:(unsigned)newIndex;
-{
-  if (newIndex == activeTypeIndex)
-    return;
-  activeTypeIndex = newIndex;
-  [self updateExpression];
-}
-
 - (void)setParentExpression:(IFExpression*)parentExpression atIndex:(unsigned)index;
 {
   [parentExpressions setObject:parentExpression forKey:[NSNumber numberWithUnsignedInt:index]];
-  [self maybeUpdateExpression];
+  [self updateExpression];
+}
+
+- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
+{
+  [parentExpressions removeAllObjects];
+  for (int i = 0; i < [expressions count]; ++i)
+    [parentExpressions setObject:[expressions objectAtIndex:i] forKey:[NSNumber numberWithInt:i]];
+  activeTypeIndex = newActiveTypeIndex;
+  [self updateExpression];
 }
 
 - (void)updateExpression;
@@ -219,7 +220,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
         break;
     }
   } else if (context == IFSettingsValueDidChangeContext)
-    [self maybeUpdateExpression];
+    [self updateExpression];
   else
     NSAssert1(NO, @"unexpected context %@", context);
 }

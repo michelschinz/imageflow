@@ -14,7 +14,6 @@
 @interface IFTreeNode : NSObject<NSCoding> {
   NSString* name;
   BOOL isFolded;
-  BOOL updateExpression;
   IFExpression* expression;
 }
 
@@ -40,10 +39,8 @@
 - (int)outputArity;
 - (NSArray*)potentialTypes;
 
-- (void)stopUpdatingExpression;
-- (void)startUpdatingExpression;
-- (void)setActiveTypeIndex:(unsigned)newIndex;
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
+- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;
 
 #pragma mark Tree view support
 - (NSString*)nameOfParentAtIndex:(int)index;
@@ -62,7 +59,6 @@
 
 #pragma mark -
 #pragma mark (protected)
-- (void)maybeUpdateExpression;
 - (void)updateExpression;
 - (void)setExpression:(IFExpression*)newExpression;
 
