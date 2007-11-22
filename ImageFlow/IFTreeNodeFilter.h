@@ -13,7 +13,6 @@
 
 @interface IFTreeNodeFilter : IFTreeNode<NSCoding> {
   IFEnvironment* settings;
-  BOOL inReconfiguration;
   int activeTypeIndex;
   NSMutableDictionary* parentExpressions;
   NSNib* settingsNib;

@@ -31,7 +31,6 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   if (![super init])
     return nil;
   settings = [theSettings retain];
-  inReconfiguration = NO;
   activeTypeIndex = 0;
   parentExpressions = [[NSMutableDictionary dictionary] retain];
   expression = nil;
@@ -170,7 +169,6 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 {
   [super initWithCoder:decoder];
   settings = [[decoder decodeObjectForKey:@"settings"] retain];
-  inReconfiguration = NO;
   activeTypeIndex = 0;
   parentExpressions = [[NSMutableDictionary dictionary] retain];
   settingsNib = nil;
@@ -183,7 +181,6 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
-  NSAssert(!inReconfiguration, @"internal error");
   [super encodeWithCoder:encoder];
   [encoder encodeObject:settings forKey:@"settings"];
 }
