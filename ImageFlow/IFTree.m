@@ -36,9 +36,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (BOOL)canDeleteNode:(IFTreeNode*)node;
 - (void)deleteNode:(IFTreeNode*)node;
 - (BOOL)isTypeCorrect;
-
-- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
-- (void)debugDump;
 @end
 
 @implementation IFTree
@@ -634,22 +631,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     return NO; // cyclic graph
   NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
   return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
-}
-
-#pragma mark -
-#pragma mark Debugging
-
-- (void)debugDumpFrom:(IFTreeNode*)root indent:(unsigned)indent;
-{
-  NSLog(@"%2d %@", indent, [root expression]);
-  NSArray* parents = [self parentsOfNode:root];
-  for (int i = 0; i < [parents count]; ++i)
-    [self debugDumpFrom:[parents objectAtIndex:i] indent:indent+1];
-}
-
-- (void)debugDump;
-{
-  [self debugDumpFrom:[self root] indent:0];
 }
 
 @end
