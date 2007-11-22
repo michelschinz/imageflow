@@ -134,7 +134,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return [original variantNamed:variantName ofExpression:originalExpression];
 }
 
-#pragma NSCoding protocol
+#pragma mark NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {

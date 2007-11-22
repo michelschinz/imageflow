@@ -49,7 +49,7 @@
   return data;
 }
 
-#pragma NSCoding protocol
+#pragma mark NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {

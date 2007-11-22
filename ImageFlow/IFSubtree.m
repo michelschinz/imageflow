@@ -87,7 +87,7 @@
   return tree;
 }
 
-#pragma NSCoding protocol
+#pragma mark NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {

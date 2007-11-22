@@ -164,7 +164,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return [NSAffineTransform transform];
 }
 
-#pragma NSCoding protocol
+#pragma mark NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
