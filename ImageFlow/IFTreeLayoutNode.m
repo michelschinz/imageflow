@@ -347,27 +347,21 @@ static int countAncestors(IFTree* tree, IFTreeNode* node) {
   IFExpression* nodeExpression = [node expression];
   if (nodeExpression == nil)
     return;
-  IFConstantExpression* extentExpr = [evaluator evaluateExpression:[IFOperatorExpression extentOf:nodeExpression]];
-  if (![extentExpr isError]) {
-    NSRect extent = [extentExpr rectValueNS];
+  IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
+  if (![basicExpression isError]) {
     NSRect canvasBounds = [[containingView document] canvasBounds]; // TODO observe
-    NSRect croppedExtent = NSIntersectionRect(extent, canvasBounds);
     float maxSide = [[containingView layoutParameters] columnWidth] - 2.0 * margin;
-    float scaling = maxSide / fmax(NSWidth(croppedExtent), NSHeight(croppedExtent));
-    IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
-    isMask = ![basicExpression isError] && ([[(IFImageConstantExpression*)basicExpression image] kind] == IFImageKindMask);
+    float scaling = maxSide / fmax(NSWidth(canvasBounds), NSHeight(canvasBounds));
+    isMask = [[(IFImageConstantExpression*)basicExpression image] kind] == IFImageKindMask;
     IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:basicExpression];
-    IFExpression* croppedExpression = NSContainsRect(canvasBounds, extent)
-      ? imageExpression
-      : [IFOperatorExpression crop:imageExpression along:canvasBounds];
+    IFExpression* croppedExpression = [IFOperatorExpression crop:imageExpression along:canvasBounds];
     IFExpression* scaledCroppedExpression = [IFOperatorExpression resample:croppedExpression by:scaling];
     [self setEvaluatedExpression:[evaluator evaluateExpression:scaledCroppedExpression]];
-    expressionExtent = NSRectScale(croppedExtent, scaling);
+    expressionExtent = NSRectScale(canvasBounds, scaling);
     showsErrorSign = NO;
-    [self setThumbnailAspectRatio:NSIsEmptyRect(croppedExtent) ? 0.0 : NSWidth(croppedExtent) / NSHeight(croppedExtent)];
+    [self setThumbnailAspectRatio:NSIsEmptyRect(canvasBounds) ? 0.0 : NSWidth(canvasBounds) / NSHeight(canvasBounds)];
   } else {
-    IFErrorConstantExpression* errorExpr = (IFErrorConstantExpression*)[evaluator evaluateExpression:nodeExpression];
-    NSAssert1([errorExpr isError], @"error expected, got %@",errorExpr);
+    IFErrorConstantExpression* errorExpr = (IFErrorConstantExpression*)basicExpression;
     [self setEvaluatedExpression:errorExpr];
     showsErrorSign = ([errorExpr message] != nil);
     [self setThumbnailAspectRatio:0.0];
