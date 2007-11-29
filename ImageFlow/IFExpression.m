@@ -32,7 +32,6 @@
   [super dealloc];
 }
 
-
 - (void)accept:(IFExpressionVisitor*)visitor;
 {
   [self doesNotRecognizeSelector:_cmd];

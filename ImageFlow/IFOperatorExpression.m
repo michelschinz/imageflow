@@ -160,6 +160,19 @@
   return root;
 }
 
+#pragma mark NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithOperator:[decoder decodeObjectForKey:@"operator"] operands:[decoder decodeObjectForKey:@"operands"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:operator forKey:@"operator"];
+  [encoder encodeObject:operands forKey:@"operands"];
+}
+
 #pragma mark Caml representation
 
 static value operandAsCaml(const char* operand) {

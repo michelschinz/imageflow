@@ -167,9 +167,17 @@
 {
   NSMutableDictionary* combinedDict = [NSMutableDictionary dictionary];
   [combinedDict addEntriesFromDictionary:[decoder decodeObjectForKey:@"generalDictionary"]];
-  NSDictionary* pointsDict = [decoder decodeObjectForKey:@"pointsDictionary"];
-  NSEnumerator* keysEnum = [pointsDict keyEnumerator];
+
+  NSEnumerator* keysEnum;
   NSString* key;
+  
+  NSDictionary* rectsDict = [decoder decodeObjectForKey:@"rectsDictionary"];
+  keysEnum = [rectsDict keyEnumerator];
+  while (key = [keysEnum nextObject])
+    [combinedDict setObject:[NSValue valueWithRect:NSRectFromString([rectsDict objectForKey:key])] forKey:key];
+  
+  NSDictionary* pointsDict = [decoder decodeObjectForKey:@"pointsDictionary"];
+  keysEnum = [pointsDict keyEnumerator];
   while (key = [keysEnum nextObject])
     [combinedDict setObject:[NSValue valueWithPoint:NSPointFromString([pointsDict objectForKey:key])] forKey:key];
 
@@ -179,6 +187,7 @@
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
   NSMutableDictionary* generalDict = [NSMutableDictionary dictionary];
+  NSMutableDictionary* rectsDict = [NSMutableDictionary dictionary];
   NSMutableDictionary* pointsDict = [NSMutableDictionary dictionary];
   
   NSEnumerator* keysEnum = [env keyEnumerator];
@@ -189,12 +198,15 @@
       const char* type = [value objCType];
       if (strcmp(type, @encode(NSPoint)) == 0)
         [pointsDict setObject:NSStringFromPoint([value pointValue]) forKey:key];
-      else
+      else if (strcmp(type, @encode(NSRect)) == 0) {
+        [rectsDict setObject:NSStringFromRect([value rectValue]) forKey:key];
+      } else
         NSAssert1(NO, @"unexpected type during archival: %s", type);
     } else
       [generalDict setObject:value forKey:key];
   }
   [encoder encodeObject:generalDict forKey:@"generalDictionary"];
+  [encoder encodeObject:rectsDict forKey:@"rectsDictionary"];
   [encoder encodeObject:pointsDict forKey:@"pointsDictionary"];
 }
 

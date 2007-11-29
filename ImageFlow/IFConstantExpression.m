@@ -190,6 +190,18 @@
   return elem;
 }
 
+#pragma mark NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithObject:[decoder decodeObjectForKey:@"object"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:object forKey:@"object"];
+}
+
 #pragma mark Caml representation
 
 static void expressionWithCamlValue(value camlValue, IFConstantExpression** result) {

@@ -73,6 +73,18 @@
   return elem;
 }
 
+#pragma mark NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithName:[decoder decodeObjectForKey:@"name"]];
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:name forKey:@"name"];
+}
+
 #pragma mark Caml representation
 
 - (value)camlRepresentation;

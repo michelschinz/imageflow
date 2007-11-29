@@ -87,6 +87,25 @@ static NSDictionary* allOperatorsByName;
   return name;
 }
 
+#pragma mark NSCoding protocol
+
+- (id)initWithCoder:(NSCoder*)decoder;
+{
+  return [self initWithName:[decoder decodeObjectForKey:@"name"]];
+}
+
+- (id)awakeAfterUsingCoder:(NSCoder*)decoder;
+{
+  IFOperator* replacement = [IFOperator operatorForName:name];
+  [self release];
+  return replacement;
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder;
+{
+  [encoder encodeObject:name forKey:@"name"];
+}
+
 @end
 
 @implementation IFOperator (Private)
