@@ -8,12 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef enum {
-  IFTreeModificationInsertNode,
-  IFTreeModificationDeleteNode,
-  IFTreeModificationReplaceGhost,
-} IFTreeModification;
-
 @interface IFTypeChecker : NSObject {
 
 }
