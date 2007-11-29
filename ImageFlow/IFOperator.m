@@ -54,7 +54,7 @@ static NSDictionary* allOperatorsByName;
     [[[self alloc] initWithName:@"rect-translate"] autorelease],
     [[[self alloc] initWithName:@"rect-union"] autorelease],
     [[[self alloc] initWithName:@"resample"] autorelease],
-    [[[self alloc] initWithName:@"save-file"] autorelease],
+    [[[self alloc] initWithName:@"save"] autorelease],
     [[[self alloc] initWithName:@"opacity"] autorelease],
     [[[self alloc] initWithName:@"single-color"] autorelease],
     [[[self alloc] initWithName:@"threshold"] autorelease],

@@ -30,7 +30,7 @@
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"crop" operands:nil]] retain];
+    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"save" operands:nil]] retain];
   }
   return exprs;
 }
