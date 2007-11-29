@@ -204,6 +204,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   IFTreeNode* node = object;
   IFTreeEdge* outEdge = [self outgoingEdgeForNode:node];
+  NSAssert(outEdge != nil, @"internal error");
   IFTreeNode* child = [graph edgeTarget:outEdge];
   [child setParentExpression:[node expression] atIndex:[outEdge targetIndex]];
 }
@@ -381,11 +382,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
   NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
-  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodes) withPotentialTypes:[[sortedNodes collect] potentialTypes]];
 
   for (int i = 0; i < [config count]; ++i) {
-    IFTreeNode* node = [sortedNodesNoRoot objectAtIndex:i];
+    IFTreeNode* node = [sortedNodes objectAtIndex:i];
     NSArray* parentExpressions = (NSArray*)[[[self parentsOfNode:node] collect] expression];
     unsigned activeTypeIndex = [[config objectAtIndex:i] unsignedIntValue];
     [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
@@ -437,8 +437,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (IFTreeEdge*)outgoingEdgeForNode:(IFTreeNode*)node;
 {
   NSSet* outEdges = [graph outgoingEdgesForNode:node];
-  NSAssert([outEdges count] == 1, @"more than one outgoing edge for tree node");
-  return [outEdges anyObject];
+  NSAssert([outEdges count] <= 1, @"more than one outgoing edge for tree node");
+  return [outEdges count] == 0 ? nil : [outEdges anyObject];
 }
 
 #pragma mark Low level editing
@@ -495,9 +495,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [graph addNode:ghost];
 
   IFTreeEdge* parentOutEdge = [self outgoingEdgeForNode:node];
-  [graph addEdge:[parentOutEdge clone] fromNode:ghost toNode:[graph edgeTarget:parentOutEdge]];
+  if (parentOutEdge != nil) {
+    [graph addEdge:[parentOutEdge clone] fromNode:ghost toNode:[graph edgeTarget:parentOutEdge]];
+    [graph removeEdge:parentOutEdge];
+  }
   [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:node toNode:ghost];
-  [graph removeEdge:parentOutEdge];
   return ghost;
 }
 
@@ -528,8 +530,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   IFTreeNode* hole = [IFTreeNodeHole hole];
   [graph addNode:hole];
   IFTreeEdge* outEdge = [self outgoingEdgeForNode:node];
-  [graph addEdge:[outEdge clone] fromNode:hole toNode:[graph edgeTarget:outEdge]];
-  [graph removeEdge:outEdge];
+  if (outEdge != nil) {
+    [graph addEdge:[outEdge clone] fromNode:hole toNode:[graph edgeTarget:outEdge]];
+    [graph removeEdge:outEdge];
+  }
   return hole;
 }
 
@@ -553,7 +557,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   NSAssert([hole isHole], @"attempt to plug non-hole");
   IFTreeEdge* outEdge = [self outgoingEdgeForNode:hole];
-  [graph addEdge:[outEdge clone] fromNode:node toNode:[graph edgeTarget:outEdge]];
+  if (outEdge != nil)
+    [graph addEdge:[outEdge clone] fromNode:node toNode:[graph edgeTarget:outEdge]];
   [graph removeNode:hole];
 }
 
