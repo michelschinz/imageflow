@@ -17,7 +17,8 @@
   IFExpression* expression;
 }
 
-+ (id)ghostNodeWithInputArity:(int)inputArity;
++ (IFTreeNode*)ghostNodeWithInputArity:(int)inputArity;
++ (IFTreeNode*)universalSourceWithIndex:(unsigned)index;
 
 #pragma mark Attributes
 

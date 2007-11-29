@@ -173,6 +173,7 @@
 		FAF0D9CD090E66AE00A9788A /* IFParentExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0D9CB090E66AE00A9788A /* IFParentExpression.m */; };
 		FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */; };
 		FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */; };
+		FAF4A5740CF6E0F3001274E9 /* IFUniversalSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4A5720CF6E0F3001274E9 /* IFUniversalSource.m */; };
 		FAF4D62F0ABAEC55000F98B0 /* IFCursorRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */; };
 		FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */; };
 		FAF7F1160B088E0700BF6B7A /* IFTreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */; };
@@ -524,6 +525,8 @@
 		FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBlendFilterAnnotationSource.m; sourceTree = "<group>"; };
 		FAF470B90AA6C81B005F5617 /* IFCursorRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCursorRect.h; sourceTree = "<group>"; };
 		FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCursorRect.m; sourceTree = "<group>"; };
+		FAF4A5710CF6E0F3001274E9 /* IFUniversalSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUniversalSource.h; sourceTree = "<group>"; };
+		FAF4A5720CF6E0F3001274E9 /* IFUniversalSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUniversalSource.m; sourceTree = "<group>"; };
 		FAF4D62C0ABAEC55000F98B0 /* IFCursorRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCursorRepository.h; sourceTree = "<group>"; };
 		FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCursorRepository.m; sourceTree = "<group>"; };
 		FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeCursorPair.h; sourceTree = "<group>"; };
@@ -1281,6 +1284,15 @@
 			name = Plugins;
 			sourceTree = "<group>";
 		};
+		FAF4A5750CF6E0FE001274E9 /* Universal */ = {
+			isa = PBXGroup;
+			children = (
+				FAF4A5710CF6E0F3001274E9 /* IFUniversalSource.h */,
+				FAF4A5720CF6E0F3001274E9 /* IFUniversalSource.m */,
+			);
+			name = Universal;
+			sourceTree = "<group>";
+		};
 		FAF7F1100B088D8F00BF6B7A /* Window controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1387,6 +1399,7 @@
 				FA0AA6CD091F8208005F5DD9 /* Bitmap */,
 				FA43286E0ADA8D4300109D58 /* Circle */,
 				FA33FB0D08B60B290013AA0E /* File */,
+				FAF4A5750CF6E0FE001274E9 /* Universal */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -1778,6 +1791,7 @@
 				FA8492B00CDA23E700F78F29 /* IFSubtree.m in Sources */,
 				FADFB0E10CE3578E00F14E3F /* IFTreeNodeHole.m in Sources */,
 				FADF57A70CECD29B009EE47D /* IFObjectNumberer.m in Sources */,
+				FAF4A5740CF6E0F3001274E9 /* IFUniversalSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

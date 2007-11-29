@@ -18,11 +18,18 @@
 
 @implementation IFTreeNode
 
-+ (id)ghostNodeWithInputArity:(int)inputArity;
++ (IFTreeNode*)ghostNodeWithInputArity:(int)inputArity;
 {
   IFEnvironment* env = [IFEnvironment environment];
   [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
   return [IFTreeNodeFilter nodeWithFilterNamed:@"IFGhostFilter" settings:env];
+}
+
++ (IFTreeNode*)universalSourceWithIndex:(unsigned)index;
+{
+  IFEnvironment* env = [IFEnvironment environment];
+  [env setValue:[NSNumber numberWithUnsignedInt:index] forKey:@"index"];
+  return [IFTreeNodeFilter nodeWithFilterNamed:@"IFUniversalSource" settings:env];
 }
 
 - (id)init;
