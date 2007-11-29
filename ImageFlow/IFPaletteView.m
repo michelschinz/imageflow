@@ -11,36 +11,37 @@
 #import "IFTreeLayoutNode.h"
 #import "IFTreeLayoutComposite.h"
 #import "IFVariableExpression.h"
+#import "IFTreeTemplateManager.h"
 
 @interface IFPaletteView (Private)
-+ (NSArray*)surrogateFilters;
-+ (NSArray*)templateNodesWithSurrogateParentFilters:(NSArray*)surrogateFilters;
+- (NSArray*)normalModeTrees;
+- (void)setNormalModeTrees:(NSArray*)newNormalModeTrees;
+- (NSArray*)computeNormalModeTrees;
+
 - (void)updateBounds;
 - (IFTreeLayoutElement*)layoutForNode:(IFTreeNode*)node;
-- (IFTreeLayoutElement*)layoutForNodes:(NSArray*)allNodes;
+- (IFTreeLayoutElement*)layoutForTrees:(NSArray*)allTrees;
 @end
 
 @implementation IFPaletteView
 
 enum IFLayoutLayer {
-  IFLayoutLayerNodes,
-  IFLayoutLayer
+  IFLayoutLayerNodes
 };
 
 - (id)initWithFrame:(NSRect)frame;
 {
   if (![super initWithFrame:frame layersCount:1])
     return nil;
-  surrogateParentFilters = [[[self class] surrogateFilters] retain];
-  templateNodes = [[[self class] templateNodesWithSurrogateParentFilters:surrogateParentFilters] retain];
+  normalModeTrees = nil;
   [self updateBounds];
   return self;
 }
 
 - (void)dealloc;
 {
-  OBJC_RELEASE(templateNodes);
-  OBJC_RELEASE(surrogateParentFilters);
+  if (normalModeTrees != nil)
+    OBJC_RELEASE(normalModeTrees);
   [super dealloc];
 }
 
@@ -59,7 +60,7 @@ enum IFLayoutLayer {
 {
   switch (layer) {
     case IFLayoutLayerNodes:
-      return [self layoutForNodes:templateNodes];
+      return [self layoutForTrees:[self normalModeTrees]];
     default:
       NSAssert(NO, @"unexpected layer");
       return nil;
@@ -70,21 +71,44 @@ enum IFLayoutLayer {
 
 @implementation IFPaletteView (Private)
 
-+ (NSArray*)surrogateFilters;
+- (NSArray*)normalModeTrees;
 {
-  NSMutableArray* surrogates = [NSMutableArray array];
-  for (int i = 0; /*no condition*/; ++i) {
-    NSString* fileName = [NSString stringWithFormat:@"surrogate_parent_%d",(i+1)];
-    NSString* maybeSurrogatePath = [[NSBundle mainBundle] pathForImageResource:fileName];
-    if (maybeSurrogatePath == nil)
-      break;
-  }
-  return surrogates;
+  if (normalModeTrees == nil)
+    [self setNormalModeTrees:[self computeNormalModeTrees]];
+  return normalModeTrees;
 }
 
-+ (NSArray*)templateNodesWithSurrogateParentFilters:(NSArray*)surrogateFilters;
+- (void)setNormalModeTrees:(NSArray*)newNormalModeTrees;
 {
-  return nil; // TODO
+  if (newNormalModeTrees == normalModeTrees)
+    return;
+  [normalModeTrees release];
+  normalModeTrees = [newNormalModeTrees retain];
+}
+
+- (NSArray*)computeNormalModeTrees;
+{
+  NSArray* templates = [[IFTreeTemplateManager sharedManager] templates];
+  NSMutableArray* trees = [NSMutableArray arrayWithCapacity:[templates count]];
+  for (int i = 0; i < [templates count]; ++i) {
+    IFTree* templateTree = [[templates objectAtIndex:i] tree];
+    unsigned parentsCount = [templateTree holesCount];
+    IFTree* hostTree = [IFTree tree];
+    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:parentsCount];
+    [hostTree addNode:ghost];
+    for (int j = 0; j < parentsCount; ++j) {
+      IFTreeNode* parent = [IFTreeNode universalSourceWithIndex:j];
+      [hostTree addNode:parent];
+      [hostTree addEdgeFromNode:parent toNode:ghost withIndex:j];
+    }
+    [hostTree copyTree:templateTree toReplaceNode:ghost];
+    
+    [hostTree configureNodes];
+    [hostTree setPropagateNewParentExpressions:YES];
+    
+    [trees addObject:hostTree];
+  }
+  return trees;
 }
 
 - (void)updateBounds;
@@ -101,9 +125,9 @@ enum IFLayoutLayer {
   return [IFTreeLayoutNode layoutNodeWithNode:node containingView:self];
 }
 
-- (IFTreeLayoutElement*)layoutForNodes:(NSArray*)allNodes;
+- (IFTreeLayoutElement*)layoutForTrees:(NSArray*)allTrees;
 {
-  if ([allNodes count] == 0)
+  if ([allTrees count] == 0)
     return [IFTreeLayoutComposite layoutComposite];
 
   float columnWidth = [layoutParameters columnWidth];
@@ -117,8 +141,8 @@ enum IFLayoutLayer {
   NSMutableSet* rows = [NSMutableSet set];
   float x = gutter, y = 0, maxHeight = 0.0;
   NSMutableSet* currentRow = [NSMutableSet new];
-  for (int i = 0, count = [allNodes count]; i < count; ++i) {
-    IFTreeLayoutElement* layoutElement = [self layoutForNode:[allNodes objectAtIndex:i]];
+  for (int i = 0, count = [allTrees count]; i < count; ++i) {
+    IFTreeLayoutElement* layoutElement = [self layoutForNode:[[allTrees objectAtIndex:i] root]];
     [layoutElement translateBy:NSMakePoint(x,0)];
     [currentRow addObject:layoutElement];
     maxHeight = fmax(maxHeight, NSHeight([layoutElement frame]));

@@ -220,6 +220,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     
     case IFExpressionTag_Color: {
       NSLog(@"TODO color");
+      *result = nil;
     } break;
       
     case IFExpressionTag_Rect: {
@@ -252,6 +253,10 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       break;
     case IFExpressionTag_Bool:
       *result = [IFConstantExpression expressionWithInt:Bool_val(Field(camlValue, 0))];
+      break;
+    case IFExpressionTag_Action:
+      NSLog(@"TODO action");
+      *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:@"not implemented yet"];
       break;
     case IFExpressionTag_Error: {
       NSString* msg = (Field(camlValue, 0) == Val_int(0/*None*/))
