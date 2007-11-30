@@ -98,7 +98,7 @@ static NSDictionary* allOperatorsByName;
 {
   IFOperator* replacement = [IFOperator operatorForName:name];
   [self release];
-  return replacement;
+  return [replacement retain];
 }
 
 - (void)encodeWithCoder:(NSCoder*)encoder;
@@ -118,7 +118,8 @@ static NSDictionary* allOperatorsByName;
   return self;
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
   OBJC_RELEASE(name);
   [super dealloc];
 }
