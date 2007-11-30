@@ -14,6 +14,7 @@
 #import "IFTreeTemplateManager.h"
 
 @interface IFPaletteView (Private)
+- (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
 - (NSArray*)normalModeTrees;
 - (void)setNormalModeTrees:(NSArray*)newNormalModeTrees;
 - (NSArray*)computeNormalModeTrees;
@@ -67,9 +68,37 @@ enum IFLayoutLayer {
   }
 }
 
+#pragma mark Event handling
+
+- (void)mouseDragged:(NSEvent*)event;
+{
+  if ([grabableViewMixin handlesMouseDragged:event])
+    return;
+  
+  NSPoint localPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+  IFTreeLayoutElement* elementUnderMouse = [self layoutElementAtPoint:localPoint];
+  
+  IFTreeTemplate* template = [self templateContainingNode:[elementUnderMouse node]];
+  NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+  [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
+  [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[template tree]] forType:IFTreePboardType];
+
+  [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+}
+
 @end
 
 @implementation IFPaletteView (Private)
+
+- (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
+{
+  for (int i = 0; i < [normalModeTrees count]; ++i) {
+    IFTree* tree = [normalModeTrees objectAtIndex:i];
+    if ([tree root] == node)
+      return [[[IFTreeTemplateManager sharedManager] templates] objectAtIndex:i];
+  }
+  return nil;
+}
 
 - (NSArray*)normalModeTrees;
 {

@@ -47,9 +47,6 @@
 
 @implementation IFTreeView
 
-NSString* IFMarkPboardType = @"IFMarkPboardType";
-static NSString* IFTreePboardType = @"IFTreePboardType";
-
 enum IFLayoutLayer {
   IFLayoutLayerTree,
   IFLayoutLayerSidePane,
@@ -631,8 +628,7 @@ static enum {
 {
   [self clearHighlighting];
 
-  if ([sender draggingSource] == self)
-    isCurrentDragLocal = YES;
+  isCurrentDragLocal = ([sender draggingSource] == self);
   
   NSPoint targetLocation = [self convertPoint:[sender draggingLocation] fromView:nil];
   IFTreeLayoutSingle* targetElement = (IFTreeLayoutSingle*)[self layoutElementAtPoint:targetLocation inLayerAtIndex:IFLayoutLayerTree];

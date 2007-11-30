@@ -13,6 +13,9 @@
 #import "IFDocument.h"
 #import "IFTreeLayoutElement.h"
 
+extern NSString* IFMarkPboardType;
+extern NSString* IFTreePboardType;
+
 @interface IFNodesView : NSControl {
   IFGrabableViewMixin* grabableViewMixin;
 

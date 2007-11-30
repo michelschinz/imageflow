@@ -18,8 +18,6 @@
 #import "IFTreeLayoutParameters.h"
 #import "IFTreeCursorPair.h"
 
-extern NSString* IFMarkPboardType;
-
 @interface IFTreeView : IFNodesView {
   IFTreeLayoutStrategy* layoutStrategy;
 

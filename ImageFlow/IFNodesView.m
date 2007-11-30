@@ -16,6 +16,9 @@
 
 @implementation IFNodesView
 
+NSString* IFMarkPboardType = @"IFMarkPboardType";
+NSString* IFTreePboardType = @"IFTreePboardType";
+
 static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 
