@@ -125,15 +125,17 @@ let infer paramsCount preds types =
                                res_type (Mlist.last conf)))
       (valid_types preds types)
 
-let first_valid_configuration preds types =
-  match valid_types preds types with
+let first_valid_configuration preds possible_types =
+  match valid_types preds possible_types with
     [] ->
       None
-  | fst :: _ ->
-      Some (List.map2
-              (fun tp tps -> Mlist.index (can_unify tp) tps)
-              fst
-              types)
+  | types ->
+      let make_config types = (List.map2
+                                 (fun tp tps -> Mlist.index (can_unify tp) tps)
+                                 types
+                                 possible_types) in
+      (* TODO sort configs. according to their histogram? *)
+      Some (List.hd (List.sort compare (List.map make_config types)))
 
 (* Debugging *)
 
