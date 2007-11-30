@@ -339,6 +339,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self exchangeSubtree:subtree withTreeRootedAt:ghost];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:[subtree root]];
   [self removeTreeRootedAt:node];
+
+  // Try to delete the ghost too.
+  if ([self canDeleteNode:ghost])
+    [self deleteNode:ghost];
 }
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asChildOfNode:(IFTreeNode*)node;
