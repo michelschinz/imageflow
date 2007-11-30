@@ -16,7 +16,7 @@
 extern NSString* IFMarkPboardType;
 extern NSString* IFTreePboardType;
 
-@interface IFNodesView : NSControl {
+@interface IFNodesView : NSView {
   IFGrabableViewMixin* grabableViewMixin;
 
   IBOutlet IFTreeLayoutParameters* layoutParameters;
