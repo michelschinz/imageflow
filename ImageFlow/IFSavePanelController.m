@@ -28,8 +28,6 @@
   directoryIndex = newIndex;
   if (directoryIndex == 1)
     [panel setDirectory:[[IFDirectoryManager sharedDirectoryManager] documentTemplatesDirectory]];
-  else if (directoryIndex == 2)
-    [panel setDirectory:[[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectory]];
 }
 
 - (void)panel:(id)sender directoryDidChange:(NSString *)path;

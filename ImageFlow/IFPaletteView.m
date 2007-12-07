@@ -14,6 +14,10 @@
 #import "IFTreeTemplateManager.h"
 
 @interface IFPaletteView (Private)
+- (NSArray*)computeTemplates;
+- (NSArray*)templates;
+- (void)setTemplates:(NSArray*)newTemplates;
+
 - (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
 - (NSArray*)normalModeTrees;
 - (void)setNormalModeTrees:(NSArray*)newNormalModeTrees;
@@ -26,6 +30,8 @@
 
 @implementation IFPaletteView
 
+static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeContext";
+
 enum IFLayoutLayer {
   IFLayoutLayerNodes
 };
@@ -34,8 +40,12 @@ enum IFLayoutLayer {
 {
   if (![super initWithFrame:frame layersCount:1])
     return nil;
+  templates = [[self computeTemplates] retain];
   normalModeTrees = nil;
+
   [self updateBounds];
+  [self registerForDraggedTypes:[NSArray arrayWithObject:IFTreePboardType]];
+  [[IFTreeTemplateManager sharedManager] addObserver:self forKeyPath:@"templates" options:0 context:IFTreeTemplatesDidChangeContext];
   return self;
 }
 
@@ -43,6 +53,7 @@ enum IFLayoutLayer {
 {
   if (normalModeTrees != nil)
     OBJC_RELEASE(normalModeTrees);
+  OBJC_RELEASE(templates);
   [super dealloc];
 }
 
@@ -78,6 +89,9 @@ enum IFLayoutLayer {
   NSPoint localPoint = [self convertPoint:[event locationInWindow] fromView:nil];
   IFTreeLayoutElement* elementUnderMouse = [self layoutElementAtPoint:localPoint];
   
+  if (elementUnderMouse == nil)
+    return;
+
   IFTreeTemplate* template = [self templateContainingNode:[elementUnderMouse node]];
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
@@ -86,16 +100,83 @@ enum IFLayoutLayer {
   [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
 }
 
+#pragma mark Drag & drop
+
+// Dragging source
+
+- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
+{
+  return NSDragOperationCopy; // TODO add NSDragOperationDelete, which implies implementing imageEndedAt...
+}
+
+// Dragging destination
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
+{
+  if ([sender draggingSource] == self)
+    return NSDragOperationNone;
+  return NSDragOperationCopy;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
+{
+  IFTreeTemplateManager* templateManager = [IFTreeTemplateManager sharedManager];
+  NSPasteboard* pboard = [sender draggingPasteboard];
+  IFTree* draggedTree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
+  IFTreeTemplate* newTemplate = [IFTreeTemplate templateWithName:@"template" description:@"" tree:draggedTree];
+  [templateManager addTemplate:newTemplate];
+  return YES;
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void *)context;
+{
+  if (context == IFTreeTemplatesDidChangeContext) {
+    [self setTemplates:[self computeTemplates]];
+    if (normalModeTrees != nil) {
+      [normalModeTrees release];
+      normalModeTrees = nil;
+    }
+    [self invalidateLayoutLayer:IFLayoutLayerNodes];
+  } else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
 @end
 
 @implementation IFPaletteView (Private)
+
+- (NSArray*)computeTemplates;
+{
+  NSSet* templateSet = [[IFTreeTemplateManager sharedManager] templates];
+  NSMutableArray* allTemplates = [NSMutableArray arrayWithCapacity:[templateSet count]];
+  NSEnumerator* templatesEnum = [templateSet objectEnumerator];
+  IFTreeTemplate* treeTemplate;
+  while (treeTemplate = [templatesEnum nextObject])
+    [allTemplates addObject:treeTemplate];
+  return allTemplates;
+}
+
+- (NSArray*)templates;
+{
+  return templates;
+}
+
+- (void)setTemplates:(NSArray*)newTemplates;
+{
+  if (newTemplates == templates)
+    return;
+  [templates release];
+  templates = [newTemplates retain];
+}
 
 - (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
 {
   for (int i = 0; i < [normalModeTrees count]; ++i) {
     IFTree* tree = [normalModeTrees objectAtIndex:i];
     if ([tree root] == node)
-      return [[[IFTreeTemplateManager sharedManager] templates] objectAtIndex:i];
+      return [templates objectAtIndex:i];
   }
   return nil;
 }
@@ -117,7 +198,6 @@ enum IFLayoutLayer {
 
 - (NSArray*)computeNormalModeTrees;
 {
-  NSArray* templates = [[IFTreeTemplateManager sharedManager] templates];
   NSMutableArray* trees = [NSMutableArray arrayWithCapacity:[templates count]];
   for (int i = 0; i < [templates count]; ++i) {
     IFTree* templateTree = [[templates objectAtIndex:i] tree];

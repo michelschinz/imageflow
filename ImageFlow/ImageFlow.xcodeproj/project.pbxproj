@@ -131,6 +131,7 @@
 		FADF1C2808B1C4AF00364634 /* IFTreeLayoutCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF1C2708B1C4AF00364634 /* IFTreeLayoutCursor.m */; };
 		FADF57A70CECD29B009EE47D /* IFObjectNumberer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF57A50CECD29B009EE47D /* IFObjectNumberer.m */; };
 		FADFB0E10CE3578E00F14E3F /* IFTreeNodeHole.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFB0DF0CE3578E00F14E3F /* IFTreeNodeHole.m */; };
+		FADFF82B0D07E6A60023B7BF /* IFTreeTemplateCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */; };
 		FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */; };
 		FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0DF2308C3876C00595ED4 /* Accelerate.framework */; };
 		FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */; };
@@ -453,6 +454,8 @@
 		FADF57A50CECD29B009EE47D /* IFObjectNumberer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFObjectNumberer.m; sourceTree = "<group>"; };
 		FADFB0DE0CE3578E00F14E3F /* IFTreeNodeHole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeHole.h; sourceTree = "<group>"; };
 		FADFB0DF0CE3578E00F14E3F /* IFTreeNodeHole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeHole.m; sourceTree = "<group>"; };
+		FADFF8280D07E6A60023B7BF /* IFTreeTemplateCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeTemplateCollection.h; sourceTree = "<group>"; };
+		FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeTemplateCollection.m; sourceTree = "<group>"; };
 		FAE0DE4E08C361AD00595ED4 /* IFHistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramView.h; sourceTree = "<group>"; };
 		FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramView.m; sourceTree = "<group>"; };
 		FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHistogramView.nib; sourceTree = "<group>"; };
@@ -1192,10 +1195,12 @@
 		FAE531EF0CD2135200B39F8F /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				FAE531E00CD210C200B39F8F /* IFTreeTemplate.h */,
-				FAE531E10CD210C200B39F8F /* IFTreeTemplate.m */,
 				FAE531F00CD2138800B39F8F /* IFTreeTemplateManager.h */,
 				FAE531F10CD2138800B39F8F /* IFTreeTemplateManager.m */,
+				FADFF8280D07E6A60023B7BF /* IFTreeTemplateCollection.h */,
+				FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */,
+				FAE531E00CD210C200B39F8F /* IFTreeTemplate.h */,
+				FAE531E10CD210C200B39F8F /* IFTreeTemplate.m */,
 			);
 			name = Templates;
 			sourceTree = "<group>";
@@ -1792,6 +1797,7 @@
 				FADFB0E10CE3578E00F14E3F /* IFTreeNodeHole.m in Sources */,
 				FADF57A70CECD29B009EE47D /* IFObjectNumberer.m in Sources */,
 				FAF4A5740CF6E0F3001274E9 /* IFUniversalSource.m in Sources */,
+				FADFF82B0D07E6A60023B7BF /* IFTreeTemplateCollection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

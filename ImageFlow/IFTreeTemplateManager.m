@@ -11,71 +11,152 @@
 #import "IFXMLCoder.h"
 
 @interface IFTreeTemplateManager (Private)
-- (IFTreeTemplate*)templateFromXMLFileNamed:(NSString*)fileName;
-- (IFTreeTemplate*)templateWithName:(NSString*)name;
+- (id)initWithCollections:(NSSet*)theCollections;
+- (void)setTemplates:(NSSet*)newTemplates;
+- (NSSet*)computeTemplates;
 @end
 
 @implementation IFTreeTemplateManager
+
+static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attributes);
 
 static IFTreeTemplateManager* sharedManager;
 
 + (IFTreeTemplateManager*)sharedManager;
 {
-  if (sharedManager == nil)
-    sharedManager = [[IFTreeTemplateManager alloc] initWithDirectory:[[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectory]];
+  if (sharedManager == nil) {
+    NSSet* dirs = [[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectories];
+    
+    NSEnumerator* dirsEnum = [dirs objectEnumerator];
+    NSString* dir;
+    while (dir = [dirsEnum nextObject]) {
+      NSFileManager* fileMgr = [NSFileManager defaultManager];
+      if (![fileMgr fileExistsAtPath:dir]) {
+        BOOL ok = createDirectoryAndParentsAtPath(dir, nil);
+        NSAssert1(ok, @"unable to create directory %@",dir);
+      }
+    }
+
+    sharedManager = [[IFTreeTemplateManager alloc] initWithCollections:[[IFTreeTemplateCollection collect] treeTemplateCollectionWithDirectory:[dirs each]]];
+  }
   return sharedManager;
 }
 
-- (id)initWithDirectory:(NSString*)theDirectory;
+- (void)dealloc;
 {
-  if (![super init])
-    return nil;
-  directory = [theDirectory copy];
-  templates = nil;
-  return self;
-}
-
-- (void) dealloc {
-  OBJC_RELEASE(directory);
+  loadFileTemplate = nil;
+  defaultModifiableCollection = nil;
   OBJC_RELEASE(templates);
+  OBJC_RELEASE(collections);
   [super dealloc];
 }
 
-- (NSArray*)templates;
+- (NSSet*)collections;
 {
-  if (templates == nil) {
-    NSArray* relFileNames = [[NSFileManager defaultManager] directoryContentsAtPath:directory];
-    NSArray* absFileNames = (NSArray*)[[directory collect] stringByAppendingPathComponent:[relFileNames each]];
-    templates = [[[self collect] templateFromXMLFileNamed:[absFileNames each]] retain];
+  return collections;
+}
+
+- (IFTreeTemplateCollection*)collectionContainingTemplate:(IFTreeTemplate*)treeTemplate;
+{
+  NSEnumerator* collectionEnum = [collections objectEnumerator];
+  IFTreeTemplateCollection* collection;
+  while (collection = [collectionEnum nextObject]) {
+    if ([collection containsTemplate:treeTemplate])
+      return collection;
   }
+  return nil;
+}
+
+- (NSSet*)templates;
+{
   return templates;
+}
+
+- (void)addTemplate:(IFTreeTemplate*)treeTemplate;
+{
+  [defaultModifiableCollection addTemplate:treeTemplate];
+  [self setTemplates:[self computeTemplates]];
+}
+
+- (BOOL)canMoveTemplate:(IFTreeTemplate*)treeTemplate toCollection:(IFTreeTemplateCollection*)targetCollection;
+{
+  return [[self collectionContainingTemplate:treeTemplate] isModifiable];
+}
+
+- (void)moveTemplate:(IFTreeTemplate*)treeTemplate toCollection:(IFTreeTemplateCollection*)targetCollection;
+{
+  NSAssert([self canMoveTemplate:treeTemplate toCollection:targetCollection], @"cannot move template");
+  IFTreeTemplateCollection* sourceCollection = [self collectionContainingTemplate:treeTemplate];
+  // TODO ideally, this should be done atomically
+  [targetCollection addTemplate:treeTemplate];
+  [sourceCollection removeTemplate:treeTemplate];
 }
 
 - (IFTreeTemplate*)loadFileTemplate;
 {
-  IFTreeTemplate* template = [self templateWithName:@"Load file"];
-  NSAssert(template != nil, @"no 'Load file' template found");
-  return template;
+  if (loadFileTemplate == nil) {
+    NSEnumerator* templatesEnum = [templates objectEnumerator];
+    IFTreeTemplate* template;
+    while (template = [templatesEnum nextObject]) {
+      if ([[template tag] isEqualToString:@"load"])
+        loadFileTemplate = template; // not retained
+    }
+    NSAssert(loadFileTemplate != nil, @"no load template found");
+  }
+  return loadFileTemplate;
 }
 
 @end
 
-@implementation IFTreeTemplateManager (Private)
-
-- (IFTreeTemplate*)templateFromXMLFileNamed:(NSString*)fileName;
-{
-  NSError* error;
-  NSXMLDocument* xmlDoc = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL fileURLWithPath:fileName] options:NSXMLDocumentTidyXML error:&error] autorelease];
-  NSAssert(xmlDoc != nil, @"I/O error");
-  // TODO handle errors
-  return [[IFXMLCoder sharedCoder] decodeTreeTemplate:[xmlDoc rootElement]];
+static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attributes) {
+  NSFileManager* fileMgr = [NSFileManager defaultManager];
+  NSString* parentPath = [path stringByDeletingLastPathComponent];
+  if (![fileMgr fileExistsAtPath:parentPath]) {
+    if (!createDirectoryAndParentsAtPath(parentPath, attributes))
+      return NO;
+  }
+  return [fileMgr createDirectoryAtPath:path attributes:attributes];
 }
 
-- (IFTreeTemplate*)templateWithName:(NSString*)name;
+
+@implementation IFTreeTemplateManager (Private)
+
+- (id)initWithCollections:(NSSet*)theCollections;
 {
-  NSArray* allTemplates = [self templates];
-  NSArray* filteredTemplates = [allTemplates selectWhereValueForKey:@"name" isEqual:name];
-  return ([filteredTemplates count] > 0) ? [filteredTemplates objectAtIndex:0] : nil;
+  if (![super init])
+    return nil;
+  collections = [theCollections retain];
+  templates = [[self computeTemplates] retain];
+  
+  NSEnumerator* collectionsEnum = [collections objectEnumerator];
+  IFTreeTemplateCollection* collection;
+  while (collection = [collectionsEnum nextObject]) {
+    if ([[collection directory] isEqualToString:[[IFDirectoryManager sharedDirectoryManager] userFilterTemplateDirectory]]) {
+      defaultModifiableCollection = collection;
+      break;
+    }
+  }
+  NSAssert(defaultModifiableCollection != nil, @"cannot find default modifiable collection");
+  
+  return self;
+}
+
+- (void)setTemplates:(NSSet*)newTemplates;
+{
+  if (newTemplates == templates)
+    return;
+  [templates release];
+  templates = [newTemplates retain];
+}
+
+- (NSSet*)computeTemplates;
+{
+  NSMutableSet* allTemplates = [[NSMutableSet set] retain];
+  NSEnumerator* collectionsEnum = [collections objectEnumerator];
+  IFTreeTemplateCollection* collection;
+  while (collection = [collectionsEnum nextObject])
+    [allTemplates unionSet:[collection templates]];
+  return allTemplates;
 }
 
 @end

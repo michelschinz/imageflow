@@ -39,6 +39,7 @@ typedef enum {
 #pragma mark High-level encoding
 
 - (NSXMLDocument*)encodeDocument:(IFDocument*)document;
+- (NSXMLDocument*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
 - (NSXMLElement*)encodeTree:(IFTree*)tree;
 
 #pragma mark Low-level encoding
@@ -52,7 +53,7 @@ typedef enum {
 #pragma mark High-level decoding
 
 - (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
-- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
+- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLDocument*)xml;
 - (IFTree*)decodeTree:(NSXMLNode*)xml;
 
 #pragma mark Low-level decoding

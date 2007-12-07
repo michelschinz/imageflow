@@ -13,7 +13,10 @@
 @interface IFTreeTemplate : NSObject {
   NSString* name;
   NSString* description;
-  IFTree* tree;  
+  IFTree* tree;
+
+  NSString* fileName;
+  NSString* tag;
 }
 
 + (id)templateWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
@@ -22,5 +25,11 @@
 - (NSString*)name;
 - (NSString*)description;
 - (IFTree*)tree;
+
+- (NSString*)fileName;
+- (void)setFileName:(NSString*)newFileName;
+
+- (NSString*)tag;
+- (void)setTag:(NSString*)theTag;
 
 @end

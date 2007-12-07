@@ -9,18 +9,24 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeTemplate.h"
+#import "IFTreeTemplateCollection.h"
 
 @interface IFTreeTemplateManager : NSObject {
-  NSString* directory;
-  NSArray* templates;
-
+  NSSet* collections;
+  NSSet* templates;
+  IFTreeTemplateCollection* defaultModifiableCollection; // not retained
+  IFTreeTemplate* loadFileTemplate; // not retained
 }
 
 + (IFTreeTemplateManager*)sharedManager;
 
-- (id)initWithDirectory:(NSString*)theDirectory;
+- (NSSet*)collections;
+- (IFTreeTemplateCollection*)collectionContainingTemplate:(IFTreeTemplate*)treeTemplate;
 
-- (NSArray*)templates;
+- (NSSet*)templates;
+- (void)addTemplate:(IFTreeTemplate*)treeTemplate;
+- (BOOL)canMoveTemplate:(IFTreeTemplate*)treeTemplate toCollection:(IFTreeTemplateCollection*)targetCollection;
+- (void)moveTemplate:(IFTreeTemplate*)treeTemplate toCollection:(IFTreeTemplateCollection*)targetCollection;
 
 - (IFTreeTemplate*)loadFileTemplate;
 

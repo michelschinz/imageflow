@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <tree-template>
+  <tag>load</tag>
   <name>Load file</name>
   <description>Load image from file</description>
   <tree>

@@ -8,6 +8,10 @@
 
 #import "IFDirectoryManager.h"
 
+@interface IFDirectoryManager (Private)
+- (NSString*)filterTemplateSubdirectoryOf:(NSString*)directory;
+- (NSString*)applicationSupportDirectory;
+@end
 
 @implementation IFDirectoryManager
 
@@ -16,57 +20,43 @@ static IFDirectoryManager* sharedDirectoryManager = nil;
 + (IFDirectoryManager*)sharedDirectoryManager;
 {
   if (sharedDirectoryManager == nil)
-    sharedDirectoryManager = [self new];
+    sharedDirectoryManager = [[IFDirectoryManager alloc] init];
   return sharedDirectoryManager;
-}
-
-- (id)init;
-{
-  if (![super init])
-    return nil;
-  applicationSupportDirectory = nil;
-  return self;
-}
-
-- (void) dealloc {
-  OBJC_RELEASE(applicationSupportDirectory);
-  [super dealloc];
-}
-
-- (NSString*)sourceTemplatesDirectory;
-{
-  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Templates"];
-}
-
-- (NSString*)applicationSupportDirectory;
-{
-  if (applicationSupportDirectory == nil) {
-    NSFileManager* fileMgr = [NSFileManager defaultManager];
-
-    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,YES);
-    NSAssert([paths count] == 1, @"unexpected number of paths");
-    NSAssert([fileMgr fileExistsAtPath:[paths objectAtIndex:0]], @"no Application Support directory");
-    applicationSupportDirectory = [[[paths objectAtIndex:0] stringByAppendingPathComponent:@"ImageFlow"] copy];
-
-    if (![fileMgr fileExistsAtPath:applicationSupportDirectory])
-      [fileMgr createDirectoryAtPath:applicationSupportDirectory attributes:nil];
-  }
-  return applicationSupportDirectory;
-}
-
-- (NSString*)templatesDirectory;
-{
-  return [[self applicationSupportDirectory] stringByAppendingPathComponent:@"Templates"];
-}
-
-- (NSString*)filterTemplatesDirectory;
-{
-  return [[self templatesDirectory] stringByAppendingPathComponent:@"Filters"];
 }
 
 - (NSString*)documentTemplatesDirectory;
 {
-  return [[self templatesDirectory] stringByAppendingPathComponent:@"Documents"];
+  NSString* templateSubPath = [NSString pathWithComponents:[NSArray arrayWithObjects:@"Templates",@"Documents",nil]];
+  return [[self applicationSupportDirectory] stringByAppendingPathComponent:templateSubPath];
+}
+
+- (NSString*)userFilterTemplateDirectory;
+{
+  return [self filterTemplateSubdirectoryOf:[self applicationSupportDirectory]];
+}
+
+- (NSSet*)filterTemplatesDirectories;
+{
+  return [NSSet setWithObjects:
+    [self filterTemplateSubdirectoryOf:[[NSBundle mainBundle] resourcePath]],
+    [self userFilterTemplateDirectory],
+    nil];
+}
+
+@end
+
+@implementation IFDirectoryManager (Private)
+
+- (NSString*)filterTemplateSubdirectoryOf:(NSString*)directory;
+{
+  return [[directory stringByAppendingPathComponent:@"Templates"] stringByAppendingPathComponent:@"Filters"];
+}
+
+- (NSString*)applicationSupportDirectory;
+{
+  NSArray* dirs = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,YES);
+  NSAssert([dirs count] == 1, @"unexpected number of directories");
+  return [[dirs objectAtIndex:0] stringByAppendingPathComponent:@"ImageFlow"];
 }
 
 @end

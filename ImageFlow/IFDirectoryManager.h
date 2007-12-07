@@ -10,16 +10,12 @@
 
 
 @interface IFDirectoryManager : NSObject {
-  NSString* applicationSupportDirectory;
 }
 
 + (IFDirectoryManager*)sharedDirectoryManager;
 
-- (NSString*)sourceTemplatesDirectory;
-
-- (NSString*)applicationSupportDirectory;
-- (NSString*)templatesDirectory;
-- (NSString*)filterTemplatesDirectory;
 - (NSString*)documentTemplatesDirectory;
+- (NSString*)userFilterTemplateDirectory;
+- (NSSet*)filterTemplatesDirectories;
 
 @end

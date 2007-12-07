@@ -88,12 +88,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFDirectoryManager* dirMgr = [IFDirectoryManager sharedDirectoryManager];
-  
-  // Setup template directory, if needed
-  NSString* templatesPath = [[IFDirectoryManager sharedDirectoryManager] templatesDirectory];
-  if (![fileMgr fileExistsAtPath:templatesPath])
-    [fileMgr copyPath:[dirMgr sourceTemplatesDirectory] toPath:templatesPath handler:nil];
-  
+
   // Setup templates menu
   NSString* docTemplatesPath = [dirMgr documentTemplatesDirectory];
   NSArray* templateFiles = [fileMgr directoryContentsAtPath:docTemplatesPath];

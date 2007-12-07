@@ -116,6 +116,20 @@ static IFXMLCoder* sharedCoder = nil;
   return xmlDocument;
 }
 
+- (NSXMLDocument*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
+{
+  NSXMLElement* xmlDocumentRoot = [NSXMLElement elementWithName:@"tree-template"];
+  [xmlDocumentRoot setChildren:[NSArray arrayWithObjects:
+    [NSXMLElement elementWithName:@"name" stringValue:[treeTemplate name]],
+    [NSXMLElement elementWithName:@"description" stringValue:[treeTemplate description]],
+    [self encodeTree:[treeTemplate tree]],
+    nil]];
+  
+  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:xmlDocumentRoot];
+  [xmlDocument setVersion:@"1.0"];
+  return xmlDocument;
+}
+
 - (NSXMLElement*)encodeTree:(IFTree*)tree;
 {
   NSXMLElement* xmlTree = [NSXMLElement elementWithName:@"tree"];
@@ -202,12 +216,15 @@ static IFXMLCoder* sharedCoder = nil;
   }  
 }
 
-- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLNode*)xml;
+- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLDocument*)xmlDocument;
 {
+  NSXMLNode* xml = [xmlDocument rootElement];
   NSAssert([[xml name] isEqualToString:@"tree-template"], @"invalid XML document");
+
   NSString* name = nil;
   NSString* description = nil;
   IFTree* tree = nil;
+  NSString* tag = nil;
   
   for (int i = 0; i < [xml childCount]; ++i) {
     NSXMLNode* child = [xml childAtIndex:i];
@@ -219,11 +236,16 @@ static IFXMLCoder* sharedCoder = nil;
       description = [child stringValue];
     else if ([childName isEqualToString:@"tree"])
       tree = [self decodeTree:child];
+    else if ([childName isEqualToString:@"tag"])
+      tag = [child stringValue];
     else
       NSAssert1(NO, @"invalid node: %@", child);
   }
-  
-  return [IFTreeTemplate templateWithName:name description:description tree:tree];
+
+  IFTreeTemplate* treeTemplate = [IFTreeTemplate templateWithName:name description:description tree:tree];
+  if (tag != nil)
+    [treeTemplate setTag:tag];
+  return treeTemplate;
 }
 
 - (IFTree*)decodeTree:(NSXMLNode*)xml;

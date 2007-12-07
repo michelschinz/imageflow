@@ -23,11 +23,18 @@
   name = [theName copy];
   description = [theDescription copy];
   tree = [theTree retain];
+  fileName = nil;
+  tag = nil;
   return self;
 }
 
 - (void) dealloc;
 {
+  if (tag != nil)
+    OBJC_RELEASE(tag);
+  if (fileName != nil)
+    OBJC_RELEASE(fileName);
+
   OBJC_RELEASE(tree);
   OBJC_RELEASE(description);
   OBJC_RELEASE(name);
@@ -47,6 +54,30 @@
 - (IFTree*)tree;
 {
   return tree;
+}
+
+- (NSString*)fileName;
+{
+  return fileName;
+}
+
+- (void)setFileName:(NSString*)newFileName;
+{
+  if (newFileName == fileName)
+    return;
+  [fileName release];
+  fileName = [newFileName retain];
+}
+
+- (NSString*)tag;
+{
+  return tag;
+}
+
+- (void)setTag:(NSString*)theTag;
+{
+  NSAssert(tag == nil, @"tag can only be set once");
+  tag = [theTag retain];
 }
 
 @end
