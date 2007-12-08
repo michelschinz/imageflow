@@ -16,12 +16,10 @@
 @interface IFThumbnailViewController : IFViewController {
   IBOutlet IFImageView* imageView;
 
-  IFExpressionEvaluator* evaluator;
   IFTreeCursorPair* cursors;
   IFExpression* expression;
 }
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 
 @end

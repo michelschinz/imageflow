@@ -11,14 +11,12 @@
 #import "IFTreeNode.h"
 #import "IFTreeMark.h"
 #import "IFColorProfile.h"
-#import "IFExpressionEvaluator.h"
 #import "IFTypeChecker.h"
 
 extern NSString* IFTreeChangedNotification;
 
 @interface IFDocument : NSDocument {
   IFTypeChecker* typeChecker;
-  IFExpressionEvaluator* evaluator;
 
   NSString* title;
   NSString* authorName;
@@ -31,8 +29,6 @@ extern NSString* IFTreeChangedNotification;
 }
 
 #pragma mark Properties
-
-- (IFExpressionEvaluator*)evaluator;
 
 - (IFTree*)tree;
 - (void)setTree:(IFTree*)newTree;

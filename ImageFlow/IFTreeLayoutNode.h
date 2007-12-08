@@ -21,7 +21,6 @@
 
   CGLayerRef imageLayer;
   
-  IFExpressionEvaluator* evaluator;
   BOOL isViewLocked, isUnreachable, isMask;
   IFConstantExpression* evaluatedExpression;
   NSRect expressionExtent;

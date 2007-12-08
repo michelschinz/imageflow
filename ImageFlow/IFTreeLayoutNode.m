@@ -51,13 +51,11 @@ static NSImage* lockedViewImage = nil;
 - (id)initWithNode:(IFTreeNode*)theNode containingView:(IFNodesView*)theContainingView;
 {
   if (![super initWithNode:theNode containingView:theContainingView]) return nil;
-  evaluator = [[theContainingView document] evaluator];
   isViewLocked = isUnreachable = isMask = NO;
   [self updateExpression];
   [self updateInternalLayout];
 
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
-  [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:IFExpressionChangedContext];
   [[containingView layoutParameters] addObserver:self forKeyPath:@"columnWidth" options:0 context:IFLayoutChangedContext];
   [node addObserver:self forKeyPath:@"isFolded" options:0 context:IFLayoutChangedContext];
   return self;
@@ -67,7 +65,6 @@ static NSImage* lockedViewImage = nil;
 {
   [node removeObserver:self forKeyPath:@"isFolded"];
   [[containingView layoutParameters] removeObserver:self forKeyPath:@"columnWidth"];
-  [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
   [node removeObserver:self forKeyPath:@"expression"];
   node = nil;
   [self setEvaluatedExpression:nil];
@@ -347,6 +344,7 @@ static int countAncestors(IFTree* tree, IFTreeNode* node) {
   IFExpression* nodeExpression = [node expression];
   if (nodeExpression == nil)
     return;
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
   if (![basicExpression isError]) {
     NSRect canvasBounds = [[containingView document] canvasBounds]; // TODO observe

@@ -66,7 +66,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   if (![expression isKindOfClass:[IFOperatorExpression class]])
     return NSZeroRect;
   
-  IFExpressionEvaluator* evaluator = [(IFDocument*)[[[[NSApplication sharedApplication] mainWindow] windowController] document] evaluator];
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFOperatorExpression* blendExpression = (IFOperatorExpression*)expression;
   NSAssert([blendExpression isKindOfClass:[IFOperatorExpression class]]
            && [blendExpression operator]  == [IFOperator operatorForName:@"blend"], @"unexpected operator");

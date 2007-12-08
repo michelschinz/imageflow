@@ -41,7 +41,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   if (![super initWithViewNibName:@"IFImageView"])
     return nil;
   mode = IFImageViewModeView;
-  evaluator = nil;
   expression = nil;
   errorMessage = nil;
   editViewTransform = [[NSAffineTransform transform] retain];
@@ -67,7 +66,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   OBJC_RELEASE(editViewTransform);
   OBJC_RELEASE(errorMessage);
   OBJC_RELEASE(expression);
-  OBJC_RELEASE(evaluator);
   activeView = nil;
   OBJC_RELEASE(imageView);
   OBJC_RELEASE(imageOrErrorTabView);
@@ -94,14 +92,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (NSView*)activeView;
 {
   return activeView;
-}
-
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
-{
-  if (newEvaluator == evaluator)
-    return;
-  [evaluator release];
-  evaluator = [newEvaluator retain];
 }
 
 - (void)setTree:(IFTree*)newTree;
@@ -300,6 +290,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   if (newExpression == expression)
     return;
 
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   NSRect dirtyRect = (expression == nil || newExpression == nil)
     ? NSRectInfinite()
     : [editViewTransform transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];

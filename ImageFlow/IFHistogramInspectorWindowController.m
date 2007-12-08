@@ -11,7 +11,6 @@
 #import "IFOperatorExpression.h"
 
 @interface IFHistogramInspectorWindowController (Private)
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
 - (void)updateHistogram;
 @end
 
@@ -42,7 +41,6 @@
 - (void)documentDidChange:(IFDocument*)newDocument;
 {
   [super documentDidChange:newDocument];
-  [self setEvaluator:[newDocument evaluator]];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
@@ -56,24 +54,11 @@
 
 @implementation IFHistogramInspectorWindowController (Private)
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
-{
-  if (newEvaluator == evaluator)
-    return;
-  
-  if (evaluator != nil)
-    [evaluator removeObserver:self forKeyPath:@"workingColorSpace"];
-  evaluator = newEvaluator;
-  if (evaluator != nil)
-    [evaluator addObserver:self forKeyPath:@"workingColorSpace" options:0 context:nil];
-  
-  [self updateHistogram];
-}
-
 - (void)updateHistogram;
 {
   IFTreeNode* node = nil; //TODO [[probe mark] node];
   NSArray* histogramRGB = nil;
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression histogramOf:[node expression]]];
   if (node != nil && ![evaluatedExpr isError]) {
     IFHistogramConstantExpression* histogram = (IFHistogramConstantExpression*)evaluatedExpr;

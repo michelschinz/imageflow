@@ -24,7 +24,6 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 {
   if (![super initWithViewNibName:@"IFThumbnailView"])
     return nil;
-  evaluator = nil;
   cursors = nil;
   expression = nil;
   return self;
@@ -34,16 +33,7 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 {
   OBJC_RELEASE(expression);
   OBJC_RELEASE(cursors);
-  OBJC_RELEASE(evaluator);
   [super dealloc];
-}
-
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
-{
-  if (newEvaluator == evaluator)
-    return;
-  [evaluator release];
-  evaluator = [newEvaluator retain];
 }
 
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
@@ -75,7 +65,8 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 {
   if (newExpression == expression)
     return;
-  
+
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   NSRect dirtyRect = (expression == nil || newExpression == nil)
     ? NSRectInfinite()
     : [evaluator deltaFromOld:expression toNew:newExpression];

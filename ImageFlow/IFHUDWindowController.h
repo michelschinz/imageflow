@@ -26,7 +26,6 @@
 - (void)setUnderlyingWindow:(NSWindow*)newUnderlyingWindow;
 - (void)setUnderlyingView:(NSView*)newUnderlyingView;
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 
 - (void)setVisible:(BOOL)shouldBeVisible;

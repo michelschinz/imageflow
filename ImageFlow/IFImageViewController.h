@@ -27,7 +27,6 @@ typedef enum {
 
   IFImageViewMode mode;
 
-  IFExpressionEvaluator* evaluator;
   IFExpression* expression;
   NSString* errorMessage;
   NSAffineTransform* editViewTransform;
@@ -48,7 +47,6 @@ typedef enum {
 - (IFImageView*)imageView;
 - (NSView*)activeView;
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
 - (void)setTree:(IFTree*)newTree;
 
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;

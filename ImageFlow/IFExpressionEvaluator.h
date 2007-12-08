@@ -16,6 +16,8 @@
   value cache;
 }
 
++ (IFExpressionEvaluator*)sharedEvaluator;
+
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 - (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
 - (IFConstantExpression*)evaluateExpressionAsMaskedImage:(IFExpression*)expression cutout:(NSRect)cutoutRect;

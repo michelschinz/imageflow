@@ -217,10 +217,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   if (newDocument != nil) {
     [newDocument retain];
     
-    IFExpressionEvaluator* evaluator = [newDocument evaluator];
-    [hudWindowController setEvaluator:evaluator];
-    [imageViewController setEvaluator:evaluator];
-    
     [imageViewController setTree:[newDocument tree]];
 
     NSArray* controllers = [newDocument windowControllers];
@@ -229,8 +225,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     
     [imageViewController setCanvasBounds:[IFVariableKVO variableWithKVOCompliantObject:newDocument key:@"canvasBounds"]];
   } else {
-    [hudWindowController setEvaluator:nil];
-    [imageViewController setEvaluator:nil];
     [self setCursorPair:nil];
   }
   currentDocument = newDocument;

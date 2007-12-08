@@ -14,7 +14,6 @@
 @interface IFHistogramInspectorWindowController : IFInspectorWindowController {
   IBOutlet IFHistogramView* histogramView;
   IBOutlet NSProgressIndicator* progressIndicator;
-  IFExpressionEvaluator* evaluator;
 }
 
 @end

@@ -33,7 +33,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   if (![super init]) return nil;
   typeChecker = [IFTypeChecker sharedInstance];
-  evaluator = [IFExpressionEvaluator new];
 
   tree = [[IFTree tree] retain];
   [tree addNode:[IFTreeNode ghostNodeWithInputArity:0]];
@@ -56,7 +55,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   OBJC_RELEASE(documentDescription);
   OBJC_RELEASE(authorName);
   OBJC_RELEASE(title);
-  OBJC_RELEASE(evaluator);
   [super dealloc];
 }
 
@@ -66,11 +64,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 }
 
 #pragma mark Properties
-
-- (IFExpressionEvaluator*)evaluator;
-{
-  return evaluator;
-}
 
 - (IFTree*)tree;
 {

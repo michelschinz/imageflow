@@ -14,6 +14,15 @@
 
 @implementation IFExpressionEvaluator
 
+static IFExpressionEvaluator* sharedEvaluator = nil;
+
++ (IFExpressionEvaluator*)sharedEvaluator;
+{
+  if (sharedEvaluator == nil)
+    sharedEvaluator = [[self alloc] init];
+  return sharedEvaluator;
+}
+
 - (id)init;
 {
   if (![super init])

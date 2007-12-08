@@ -85,11 +85,6 @@
   [self updateWindowFrame];
 }
 
-- (void)setEvaluator:(IFExpressionEvaluator*)newEvaluator;
-{
-  [thumbnailViewController setEvaluator:newEvaluator];
-}
-
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 {
   [filterSettingsViewController setCursorPair:newCursors];
