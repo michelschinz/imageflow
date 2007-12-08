@@ -13,17 +13,11 @@
 
 @interface IFExpressionEvaluator : NSObject {
   CGColorSpaceRef workingColorSpace;
-  float resolutionX, resolutionY;
   value cache;
 }
 
 - (CGColorSpaceRef)workingColorSpace;
 - (void)setWorkingColorSpace:(CGColorSpaceRef)newWorkingColorSpace;
-
-- (float)resolutionX;
-- (void)setResolutionX:(float)newResolution;
-- (float)resolutionY;
-- (void)setResolutionY:(float)newResolution;
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
 - (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;

@@ -165,7 +165,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)setResolutionX:(float)newResolutionX;
 {
   resolutionX = newResolutionX;
-  [evaluator setResolutionX:resolutionX];
 }
 
 - (float)resolutionY;
@@ -176,7 +175,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)setResolutionY:(float)newResolutionY;
 {
   resolutionY = newResolutionY;
-  [evaluator setResolutionY:resolutionY];
 }
 
 #pragma mark Tree navigation

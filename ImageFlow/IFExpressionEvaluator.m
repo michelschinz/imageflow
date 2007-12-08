@@ -23,7 +23,6 @@
   if (![super init])
     return nil;
   workingColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-  resolutionX = resolutionY = 300;
   caml_register_global_root(&cache);
   cache = caml_callback(*caml_named_value("Cache.make"), Val_int(100000000));
   return self;
@@ -49,28 +48,6 @@
   [self clearCache];
   CGColorSpaceRelease(workingColorSpace);
   workingColorSpace = CGColorSpaceRetain(newWorkingColorSpace);
-}
-
-- (float)resolutionX;
-{
-  return resolutionX;
-}
-
-- (void)setResolutionX:(float)newResolution;
-{
-  [self clearCache];
-  resolutionX = newResolution;
-}
-
-- (float)resolutionY;
-{
-  return resolutionY;
-}
-
-- (void)setResolutionY:(float)newResolution;
-{
-  [self clearCache];
-  resolutionY = newResolution;
 }
 
 static void camlEval(value* closurePtr, value cache, IFExpression* expression, IFConstantExpression** result) {
