@@ -18,7 +18,6 @@
 {
   if (![super init])
     return nil;
-  workingColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
   caml_register_global_root(&cache);
   cache = caml_callback(*caml_named_value("Cache.make"), Val_int(100000000));
   return self;
@@ -27,22 +26,7 @@
 - (void)dealloc;
 {
   caml_remove_global_root(&cache);
-  CGColorSpaceRelease(workingColorSpace);
-  workingColorSpace = NULL;
   [super dealloc];
-}
-
-- (CGColorSpaceRef)workingColorSpace;
-{
-  return workingColorSpace;
-}
-
-- (void)setWorkingColorSpace:(CGColorSpaceRef)newWorkingColorSpace;
-{
-  if (newWorkingColorSpace == workingColorSpace)
-    return;
-  CGColorSpaceRelease(workingColorSpace);
-  workingColorSpace = CGColorSpaceRetain(newWorkingColorSpace);
 }
 
 static void camlEval(value* closurePtr, value cache, IFExpression* expression, IFConstantExpression** result) {

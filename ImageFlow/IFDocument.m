@@ -153,8 +153,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     return;
   [workingSpaceProfile release];
   workingSpaceProfile = [newProfile retain];
-  
-  [evaluator setWorkingColorSpace:[workingSpaceProfile colorspace]];
 }
 
 - (float)resolutionX;
