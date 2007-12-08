@@ -36,6 +36,7 @@
 - (IFSubtree*)selectedSubtree;
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 - (IFTreeNode*)cursorNode;
+- (void)updateCursorsEditViewTransform;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)layoutNodes;
@@ -960,11 +961,30 @@ static enum {
 
   [self clearSelectedNodes];
   [cursors moveToNode:newCursorNode];
+  if ([cursors isViewLocked])
+    [self updateCursorsEditViewTransform];
 }
 
 - (IFTreeNode*)cursorNode;
 {
   return [[cursors editMark] node];
+}
+
+- (void)updateCursorsEditViewTransform;
+{
+  NSAffineTransform* evTransform = [NSAffineTransform transform];
+  
+  IFTreeNode* nodeToEdit = [[cursors editMark] node];
+  IFTreeNode* nodeToView = [[cursors viewMark] node];
+
+  NSAssert(nodeToEdit != nil && nodeToView != nil, @"internal error");
+  IFTree* tree = [document tree];
+  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [tree childOfNode:node]) {
+    IFTreeNode* child = [tree childOfNode:node];
+    [evTransform appendTransform:[child transformForParentAtIndex:[[tree parentsOfNode:child] indexOfObject:node]]];
+  }
+
+  [cursors setEditViewTransform:evTransform];
 }
 
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;

@@ -216,8 +216,6 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     [currentDocument release];
   if (newDocument != nil) {
     [newDocument retain];
-    
-    [imageViewController setTree:[newDocument tree]];
 
     NSArray* controllers = [newDocument windowControllers];
     NSAssert([controllers count] == 1, @"unexpected number of controllers");

@@ -29,12 +29,9 @@ typedef enum {
 
   IFExpression* expression;
   NSString* errorMessage;
-  NSAffineTransform* editViewTransform;
-  NSAffineTransform* viewEditTransform;
   NSArray* variants;
   NSString* activeVariant;
   
-  IFTree* tree;
   IFTreeCursorPair* cursors;
   IFTreeNode* viewedNode;
   IFTreeNode* editedNode;
@@ -46,8 +43,6 @@ typedef enum {
 
 - (IFImageView*)imageView;
 - (NSView*)activeView;
-
-- (void)setTree:(IFTree*)newTree;
 
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 - (IFTreeCursorPair*)cursorPair;

@@ -14,6 +14,8 @@
   IFTreeMark* viewMark;
   IFTreeMark* editMark;
   BOOL isViewLocked;
+  NSAffineTransform* editViewTransform;
+  NSAffineTransform* viewEditTransform;
 }
 
 + (id)treeCursorPairWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
@@ -28,5 +30,9 @@
 - (BOOL)isViewLocked;
 
 - (IFTreeNode*)viewLockedNode;
+
+- (void)setEditViewTransform:(NSAffineTransform*)newTransform;
+- (NSAffineTransform*)editViewTransform;
+- (NSAffineTransform*)viewEditTransform;
 
 @end

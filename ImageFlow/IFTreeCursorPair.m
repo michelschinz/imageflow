@@ -7,7 +7,7 @@
 //
 
 #import "IFTreeCursorPair.h"
-
+#import "NSAffineTransformIFAdditions.h"
 
 @implementation IFTreeCursorPair
 
@@ -30,11 +30,15 @@
     return nil;
   editMark = [theEditMark retain];
   viewMark = [theViewMark retain];
+  editViewTransform = [[NSAffineTransform transform] retain];
+  viewEditTransform = [[NSAffineTransform transform] retain];
   return self;
 }
 
 - (void)dealloc;
 {
+  OBJC_RELEASE(viewEditTransform);
+  OBJC_RELEASE(editViewTransform);
   OBJC_RELEASE(viewMark);
   OBJC_RELEASE(editMark);
   [super dealloc];
@@ -60,8 +64,11 @@
 - (void)setIsViewLocked:(BOOL)newValue;
 {
   isViewLocked = newValue;
-  if (!isViewLocked)
+  if (!isViewLocked) {
     [viewMark setLikeMark:editMark];
+    [editViewTransform setToIdentity];
+    [viewEditTransform setToIdentity];
+  }
 }
 
 - (BOOL)isViewLocked;
@@ -72,6 +79,23 @@
 - (IFTreeNode*)viewLockedNode;
 {
   return isViewLocked ? [viewMark node] : nil;
+}
+
+- (void)setEditViewTransform:(NSAffineTransform*)newTransform;
+{
+  [editViewTransform setTransformStruct:[newTransform transformStruct]];
+  [viewEditTransform setTransformStruct:[newTransform transformStruct]];
+  [viewEditTransform invert];
+}
+
+- (NSAffineTransform*)editViewTransform;
+{
+  return editViewTransform;
+}
+
+- (NSAffineTransform*)viewEditTransform;
+{
+  return viewEditTransform;
 }
 
 @end

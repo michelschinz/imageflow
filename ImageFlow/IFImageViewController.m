@@ -8,9 +8,9 @@
 
 #import "IFImageViewController.h"
 
-#import "NSAffineTransformIFAdditions.h"
 #import "IFErrorConstantExpression.h"
 #import "IFOperatorExpression.h"
+#import "NSAffineTransformIFAdditions.h"
 
 typedef enum {
   IFFilterDelegateHasMouseDown    = 1<<0,
@@ -27,7 +27,6 @@ typedef enum {
 - (void)updateExpression;
 - (void)updateAnnotations;
 - (void)updateVariants;
-- (void)updateEditViewTransform;
 @end
 
 @implementation IFImageViewController
@@ -43,8 +42,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   mode = IFImageViewModeView;
   expression = nil;
   errorMessage = nil;
-  editViewTransform = [[NSAffineTransform transform] retain];
-  viewEditTransform = [[NSAffineTransform transform] retain];
   variants = [[NSArray array] retain];
   activeVariant = nil;
   cursors = nil;
@@ -62,8 +59,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [self setCursorPair:nil];
   OBJC_RELEASE(activeVariant);
   OBJC_RELEASE(variants);
-  OBJC_RELEASE(viewEditTransform);
-  OBJC_RELEASE(editViewTransform);
   OBJC_RELEASE(errorMessage);
   OBJC_RELEASE(expression);
   activeView = nil;
@@ -92,14 +87,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (NSView*)activeView;
 {
   return activeView;
-}
-
-- (void)setTree:(IFTree*)newTree;
-{
-  if (newTree == tree)
-    return;
-  [tree release];
-  tree = [newTree retain];
 }
 
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
@@ -226,17 +213,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)handleMouseDown:(NSEvent*)event;
 {
-  [editedNode mouseDown:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseDown:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
 }
 
 - (void)handleMouseDragged:(NSEvent*)event;
 {
-  [editedNode mouseDragged:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseDragged:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
 }
 
 - (void)handleMouseUp:(NSEvent*)event;
 {
-  [editedNode mouseUp:event inView:imageView viewFilterTransform:viewEditTransform];
+  [editedNode mouseUp:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
 }
 
 @end
@@ -248,13 +235,11 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   if (context == IFViewedExpressionDidChange) {
     if ([[cursors viewMark] node] != viewedNode) {
       [self updateVariants];
-      [self updateEditViewTransform];
       [self updateAnnotations];
       [self setViewedNode:[[cursors viewMark] node]];
     }
     [self updateExpression];
   } else if (context == IFEditedNodeDidChange) {
-    [self updateEditViewTransform];
     [self updateAnnotations];
 
     editedNode = [[cursors editMark] node];
@@ -293,7 +278,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   NSRect dirtyRect = (expression == nil || newExpression == nil)
     ? NSRectInfinite()
-    : [editViewTransform transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
+    : [[cursors editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
 
   [expression release];
   expression = [newExpression retain];
@@ -366,28 +351,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [self setVariants:(mode == IFImageViewModeView
                      ? [[[cursors viewMark] node] variantNamesForViewing]
                      : [[[cursors viewMark] node] variantNamesForEditing])];
-}
-
-- (void)updateEditViewTransform;
-{
-  NSAffineTransform* evTransform = [NSAffineTransform transform];
-  [editViewTransform setToIdentity];
-  [viewEditTransform setToIdentity];
-
-  IFTreeNode* nodeToEdit = [[cursors editMark] node];
-  if (nodeToEdit == nil) return;
-  IFTreeNode* nodeToView = [[cursors viewMark] node];
-  if (nodeToView == nil) return;
-  
-  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [tree childOfNode:node]) {
-    if (node == nil) return;
-    IFTreeNode* child = [tree childOfNode:node];
-    [evTransform appendTransform:[child transformForParentAtIndex:[[tree parentsOfNode:child] indexOfObject:node]]];
-  }
-
-  [editViewTransform setTransformStruct:[evTransform transformStruct]];
-  [viewEditTransform setTransformStruct:[evTransform transformStruct]];
-  [viewEditTransform invert];
 }
 
 @end
