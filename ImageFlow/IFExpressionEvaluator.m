@@ -12,10 +12,6 @@
 #import <caml/alloc.h>
 #import <caml/callback.h>
 
-@interface IFExpressionEvaluator (Private)
-- (void)clearCache;
-@end
-
 @implementation IFExpressionEvaluator
 
 - (id)init;
@@ -45,7 +41,6 @@
 {
   if (newWorkingColorSpace == workingColorSpace)
     return;
-  [self clearCache];
   CGColorSpaceRelease(workingColorSpace);
   workingColorSpace = CGColorSpaceRetain(newWorkingColorSpace);
 }
@@ -137,15 +132,6 @@ static void camlDelta(value cache, IFExpression* oldExpression, IFExpression* ne
   NSRect result = NSZeroRect;
   camlDelta(cache, oldExpression, newExpression, &result);
   return result;
-}
-
-@end
-
-@implementation IFExpressionEvaluator (Private)
-
-- (void)clearCache;
-{
-  // TODO
 }
 
 @end
