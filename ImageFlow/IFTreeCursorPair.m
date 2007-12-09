@@ -9,6 +9,10 @@
 #import "IFTreeCursorPair.h"
 #import "NSAffineTransformIFAdditions.h"
 
+@interface IFTreeCursorPair (Private)
+- (void)updateTransforms;
+@end
+
 @implementation IFTreeCursorPair
 
 + (void)initialize;
@@ -19,19 +23,24 @@
   [self setKeys:[NSArray arrayWithObject:@"isViewLocked"] triggerChangeNotificationsForDependentKey:@"viewLockedNode"];
 }
 
-+ (id)treeCursorPairWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
++ (IFTreeCursorPair*)treeCursorPairWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
 {
-  return [[[self alloc] initWithEditMark:theEditMark viewMark:theViewMark] autorelease];
+  return [[[self alloc] initWithTree:theTree editMark:theEditMark viewMark:theViewMark] autorelease];
 }
 
-- (id)initWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
+- (IFTreeCursorPair*)initWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
 {
   if (![super init])
     return nil;
+  tree = [theTree retain];
   editMark = [theEditMark retain];
   viewMark = [theViewMark retain];
   editViewTransform = [[NSAffineTransform transform] retain];
   viewEditTransform = [[NSAffineTransform transform] retain];
+  
+  if ([editMark node] != [viewMark node])
+    [self updateTransforms];
+
   return self;
 }
 
@@ -41,6 +50,7 @@
   OBJC_RELEASE(editViewTransform);
   OBJC_RELEASE(viewMark);
   OBJC_RELEASE(editMark);
+  OBJC_RELEASE(tree);
   [super dealloc];
 }
 
@@ -57,7 +67,9 @@
 - (void)moveToNode:(IFTreeNode*)newNode;
 {
   [editMark setNode:newNode];
-  if (!isViewLocked)
+  if (isViewLocked)
+    [self updateTransforms];
+  else
     [viewMark setNode:newNode];
 }
 
@@ -68,7 +80,8 @@
     [viewMark setLikeMark:editMark];
     [editViewTransform setToIdentity];
     [viewEditTransform setToIdentity];
-  }
+  } else
+    NSAssert([viewMark node] == [editMark node], @"internal error");
 }
 
 - (BOOL)isViewLocked;
@@ -81,13 +94,6 @@
   return isViewLocked ? [viewMark node] : nil;
 }
 
-- (void)setEditViewTransform:(NSAffineTransform*)newTransform;
-{
-  [editViewTransform setTransformStruct:[newTransform transformStruct]];
-  [viewEditTransform setTransformStruct:[newTransform transformStruct]];
-  [viewEditTransform invert];
-}
-
 - (NSAffineTransform*)editViewTransform;
 {
   return editViewTransform;
@@ -96,6 +102,27 @@
 - (NSAffineTransform*)viewEditTransform;
 {
   return viewEditTransform;
+}
+
+@end
+
+@implementation IFTreeCursorPair (Private)
+
+- (void)updateTransforms;
+{
+  [editViewTransform setToIdentity];
+  
+  IFTreeNode* nodeToEdit = [editMark node];
+  IFTreeNode* nodeToView = [viewMark node];
+  
+  NSAssert(nodeToEdit != nil && nodeToView != nil, @"internal error");
+  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [tree childOfNode:node]) {
+    IFTreeNode* child = [tree childOfNode:node];
+    [editViewTransform appendTransform:[child transformForParentAtIndex:[[tree parentsOfNode:child] indexOfObject:node]]];
+  }
+
+  [viewEditTransform setTransformStruct:[editViewTransform transformStruct]];
+  [viewEditTransform invert];
 }
 
 @end

@@ -36,7 +36,6 @@
 - (IFSubtree*)selectedSubtree;
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 - (IFTreeNode*)cursorNode;
-- (void)updateCursorsEditViewTransform;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)layoutNodes;
@@ -76,10 +75,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     [IFTreeMark mark],
     [IFTreeMark mark],
     nil] retain];
-  IFTreeMark* cursorMark = [IFTreeMark mark];
-  IFTreeMark* viewMark = [IFTreeMark mark];
-  allMarks = [[marks arrayByAddingObjectsFromArray:[NSArray arrayWithObjects:cursorMark,viewMark,nil]] retain];
-  cursors = [[IFTreeCursorPair treeCursorPairWithEditMark:cursorMark viewMark:viewMark] retain];
   unreachableNodes = [NSSet new];
   selectedNodes = [NSMutableSet new];
   copiedNode = nil;
@@ -88,7 +83,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
 
-  [cursors addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedChangedContext];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:nil];
   
   return self;
@@ -97,7 +91,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 - (void)dealloc;
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [cursors removeObserver:self forKeyPath:@"isViewLocked"];
 
   [self unregisterDraggedTypes];
 
@@ -110,8 +103,10 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   OBJC_RELEASE(copiedNode);
   OBJC_RELEASE(selectedNodes);
   OBJC_RELEASE(unreachableNodes);
-  OBJC_RELEASE(cursors);
-  OBJC_RELEASE(allMarks);
+  if (cursors != nil) {
+    [cursors removeObserver:self forKeyPath:@"isViewLocked"];
+    OBJC_RELEASE(cursors);
+  }
   OBJC_RELEASE(marks);
 
   [super dealloc];
@@ -123,6 +118,15 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
   [super awakeFromNib];
   layoutStrategy = [[IFTreeLayoutStrategy alloc] initWithView:self parameters:layoutParameters];
+}
+
+- (void)setDocument:(IFDocument*)theDocument;
+{
+  [super setDocument:theDocument];
+
+  NSAssert(cursors == nil, @"cursors already set!");
+  cursors = [[IFTreeCursorPair treeCursorPairWithTree:[theDocument tree] editMark:[IFTreeMark mark] viewMark:[IFTreeMark mark]] retain];
+  [cursors addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedChangedContext];
 }
 
 - (IFTreeLayoutStrategy*)layoutStrategy;
@@ -961,30 +965,11 @@ static enum {
 
   [self clearSelectedNodes];
   [cursors moveToNode:newCursorNode];
-  if ([cursors isViewLocked])
-    [self updateCursorsEditViewTransform];
 }
 
 - (IFTreeNode*)cursorNode;
 {
   return [[cursors editMark] node];
-}
-
-- (void)updateCursorsEditViewTransform;
-{
-  NSAffineTransform* evTransform = [NSAffineTransform transform];
-  
-  IFTreeNode* nodeToEdit = [[cursors editMark] node];
-  IFTreeNode* nodeToView = [[cursors viewMark] node];
-
-  NSAssert(nodeToEdit != nil && nodeToView != nil, @"internal error");
-  IFTree* tree = [document tree];
-  for (IFTreeNode* node = nodeToEdit; node != nodeToView; node = [tree childOfNode:node]) {
-    IFTreeNode* child = [tree childOfNode:node];
-    [evTransform appendTransform:[child transformForParentAtIndex:[[tree parentsOfNode:child] indexOfObject:node]]];
-  }
-
-  [cursors setEditViewTransform:evTransform];
 }
 
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;

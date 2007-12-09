@@ -8,9 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFTree.h"
 #import "IFTreeMark.h"
 
 @interface IFTreeCursorPair : NSObject {
+  IFTree* tree;
   IFTreeMark* viewMark;
   IFTreeMark* editMark;
   BOOL isViewLocked;
@@ -18,8 +20,8 @@
   NSAffineTransform* viewEditTransform;
 }
 
-+ (id)treeCursorPairWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
-- (id)initWithEditMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
++ (IFTreeCursorPair*)treeCursorPairWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
+- (IFTreeCursorPair*)initWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
 
 - (IFTreeMark*)viewMark;
 - (IFTreeMark*)editMark;
@@ -31,7 +33,6 @@
 
 - (IFTreeNode*)viewLockedNode;
 
-- (void)setEditViewTransform:(NSAffineTransform*)newTransform;
 - (NSAffineTransform*)editViewTransform;
 - (NSAffineTransform*)viewEditTransform;
 

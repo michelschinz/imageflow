@@ -22,7 +22,6 @@
   IFTreeLayoutStrategy* layoutStrategy;
 
   NSArray* marks;
-  NSArray* allMarks;
   IFTreeCursorPair* cursors;
   NSSet* unreachableNodes;
   NSMutableSet* selectedNodes;

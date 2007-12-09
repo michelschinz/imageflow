@@ -12,7 +12,7 @@
 
 - (void)setToIdentity;
 {
-  NSAffineTransformStruct ts = { 1, 0, 1, 0, 0, 0 };
+  NSAffineTransformStruct ts = { 1, 0, 0, 1, 0, 0 };
   [self setTransformStruct:ts];
 }
 
