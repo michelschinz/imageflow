@@ -672,17 +672,18 @@ static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNode
 static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph)
 {
   IFOrientedGraph* clone = [graph clone];
-  NSEnumerator* cloneNodesEnum = [[clone nodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [cloneNodesEnum nextObject]) {
+  NSMutableSet* nodesToRemove = [NSMutableSet set];
+  for (IFTreeNode* node in [clone nodes]) {
     if ([node isAlias]) {
       NSSet* outEdges = [clone outgoingEdgesForNode:node];
       NSCAssert([outEdges count] == 1, @"internal error");
       IFTreeEdge* outEdge = [outEdges anyObject];
       [clone addEdge:[IFTreeEdge edgeWithTargetIndex:[outEdge targetIndex]] fromNode:[node original] toNode:[clone edgeTarget:outEdge]];
-      [clone removeNode:node];
+      [nodesToRemove addObject:node];
     }
   }
+  for (IFTreeNode* node in nodesToRemove)
+    [clone removeNode:node];
   return clone;
 }
 
