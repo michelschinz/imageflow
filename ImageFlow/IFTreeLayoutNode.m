@@ -145,7 +145,7 @@ static int countAncestors(IFTree* tree, IFTreeNode* node) {
     CGContextSaveGState(currCtx);
     CGContextSetAlpha(currCtx, 0.2);
   }
-  CGContextDrawLayerInRect(currCtx, CGRectFromNSRect([self bounds]), imageLayer);
+  CGContextDrawLayerInRect(currCtx, NSRectToCGRect([self bounds]), imageLayer);
   if (isUnreachable)
     CGContextRestoreGState(currCtx);
 }
@@ -296,7 +296,7 @@ static int countAncestors(IFTree* tree, IFTreeNode* node) {
     float resizing = fmax(NSWidth(targetRect) / NSWidth(sourceRect), NSHeight(targetRect) / NSHeight(sourceRect));
     sourceRect.size.width = floor(NSWidth(targetRect) / resizing);
     sourceRect.size.height = floor(NSHeight(targetRect) / resizing);
-    [ctx drawImage:image inRect:CGRectFromNSRect(targetRect) fromRect:CGRectFromNSRect(sourceRect)];
+    [ctx drawImage:image inRect:NSRectToCGRect(targetRect) fromRect:NSRectToCGRect(sourceRect)];
 
     // Draw tag, if needed
     if (isMask) {

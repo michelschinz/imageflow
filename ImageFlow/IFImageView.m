@@ -117,7 +117,7 @@ typedef enum {
 
   CIContext* ctx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                            options:[NSDictionary dictionary]]; // TODO working color space
-  CGRect dirtyRectCG = CGRectFromNSRect(dirtyRect);
+  CGRect dirtyRectCG = NSRectToCGRect(dirtyRect);
   [ctx drawImage:[image imageCI] atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
   
   // Draw annotations

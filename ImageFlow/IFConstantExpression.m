@@ -114,7 +114,7 @@
 
 - (CGRect)rectValueCG;
 {
-  return CGRectFromNSRect([self rectValueNS]);
+  return NSRectToCGRect([self rectValueNS]);
 }
 
 - (NSColor*)colorValueNS;

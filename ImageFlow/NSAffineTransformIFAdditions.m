@@ -20,7 +20,7 @@
 {
   NSAffineTransformStruct m = [self transformStruct];
   CGAffineTransform cgTransform = CGAffineTransformMake(m.m11,m.m12,m.m21,m.m22,m.tX,m.tY);
-  return NSRectFromCGRect(CGRectApplyAffineTransform(CGRectFromNSRect(rect),cgTransform));
+  return NSRectFromCGRect(CGRectApplyAffineTransform(NSRectToCGRect(rect), cgTransform));
 }
 
 @end

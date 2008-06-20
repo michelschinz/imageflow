@@ -30,22 +30,6 @@ NSMutableDictionary* createMutableDictionaryWithRetainedKeys()
   return (NSMutableDictionary*)CFDictionaryCreateMutable(NULL,0,&keyCallbacks,&valueCallbacks);
 }
 
-CGSize CGSizeFromNSSize(NSSize s) {
-  return CGSizeMake(s.width,s.height);
-}
-
-NSSize NSSizeFromCGSize(CGSize s) {
-  return NSMakeSize(s.width,s.height);
-}
-
-CGRect CGRectFromNSRect(NSRect r) {
-  return CGRectMake(NSMinX(r),NSMinY(r),NSWidth(r),NSHeight(r));
-}
-
-NSRect NSRectFromCGRect(CGRect r) {
-  return NSMakeRect(CGRectGetMinX(r),CGRectGetMinY(r),CGRectGetWidth(r),CGRectGetHeight(r));
-}
-
 NSRect NSRectFromCIVector(CIVector* v) {
   return NSMakeRect([v X],[v Y],[v Z],[v W]);
 }

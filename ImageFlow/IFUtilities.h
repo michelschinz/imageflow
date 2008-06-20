@@ -14,12 +14,6 @@ typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 
 NSMutableDictionary* createMutableDictionaryWithRetainedKeys();
 
-CGSize CGSizeFromNSSize(NSSize s);
-NSSize NSSizeFromCGSize(CGSize s);
-
-CGRect CGRectFromNSRect(NSRect r);
-NSRect NSRectFromCGRect(CGRect r);
-
 NSRect NSRectFromCIVector(CIVector* v);
 
 NSRect NSRectInfinite();
