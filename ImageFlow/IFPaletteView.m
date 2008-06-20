@@ -151,9 +151,7 @@ enum IFLayoutLayer {
 {
   NSSet* templateSet = [[IFTreeTemplateManager sharedManager] templates];
   NSMutableArray* allTemplates = [NSMutableArray arrayWithCapacity:[templateSet count]];
-  NSEnumerator* templatesEnum = [templateSet objectEnumerator];
-  IFTreeTemplate* treeTemplate;
-  while (treeTemplate = [templatesEnum nextObject])
+  for (IFTreeTemplate* treeTemplate in templateSet)
     [allTemplates addObject:treeTemplate];
   return allTemplates;
 }

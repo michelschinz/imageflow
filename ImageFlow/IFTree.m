@@ -167,9 +167,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (unsigned)holesCount;
 {
   unsigned count = 0;
-  NSEnumerator* nodesEnum = [[graph nodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [nodesEnum nextObject]) {
+  for (IFTreeNode* node in [graph nodes]) {
     if ([node isHole])
       ++count;
   }
@@ -229,9 +227,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
   
-  NSEnumerator* rootInEdgesEnum = [[[[graph incomingEdgesForNode:root] copy] autorelease] objectEnumerator];
-  IFTreeEdge* inEdge;
-  while (inEdge = [rootInEdgesEnum nextObject]) {
+  for (IFTreeEdge* inEdge in [[[graph incomingEdgesForNode:root] copy] autorelease]) {
     if ([inEdge targetIndex] >= index) {
       [graph addEdge:[IFTreeEdge edgeWithTargetIndex:[inEdge targetIndex] + 1] fromNode:[graph edgeSource:inEdge] toNode:root];
       [graph removeEdge:inEdge];
@@ -513,9 +509,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[inEdges count]];
   [graph addNode:ghost];
 
-  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
-  IFTreeEdge* inEdge;
-  while (inEdge = [inEdgesEnum nextObject]) {
+  for (IFTreeEdge* inEdge in inEdges) {
     [graph addEdge:[inEdge clone] fromNode:[graph edgeSource:inEdge] toNode:ghost];
     [graph removeEdge:inEdge];
   }
@@ -547,9 +541,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSSet* nodesToRemove = [NSSet setWithArray:[self dfsAncestorsOfNode:root]];
   
   // Replace all aliases to nodes about to be deleted by ghosts.
-  NSEnumerator* allNodesEnum = [[self nodes] objectEnumerator];
-  IFTreeNode* node;
-  while (node = [allNodesEnum nextObject]) {
+  for (IFTreeNode* node in [self nodes]) {
     if ([node isAlias] && ![nodesToRemove containsObject:node] && [nodesToRemove containsObject:[node original]])
       [self copyTree:[IFTree ghostTreeWithArity:0] toReplaceNode:node];
   }
@@ -643,9 +635,7 @@ static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node)
 {
   NSSet* inEdges = [graph incomingEdgesForNode:node];
   NSMutableArray* parents = [NSMutableArray arrayWithCapacity:[inEdges count]];
-  NSEnumerator* inEdgesEnum = [inEdges objectEnumerator];
-  IFTreeEdge* inEdge;
-  while (inEdge = [inEdgesEnum nextObject]) {
+  for (IFTreeEdge* inEdge in inEdges) {
     while ([parents count] < [inEdge targetIndex] + 1)
       [parents addObject:[NSNull null]];
     [parents replaceObjectAtIndex:[inEdge targetIndex] withObject:[graph edgeSource:inEdge]];

@@ -231,17 +231,13 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 - (void)startObservingSettingsKeys:(NSSet*)keys;
 {
-  NSEnumerator* keysEnum = [keys objectEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject])
+  for (NSString* key in keys)
     [settings addObserver:self forKeyPath:key options:0 context:IFSettingsValueDidChangeContext];
 }
 
 - (void)stopObservingSettingsKeys:(NSSet*)keys;
 {
-  NSEnumerator* keysEnum = [keys objectEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject])
+  for (NSString* key in keys)
     [settings removeObserver:self forKeyPath:key];
 }
 

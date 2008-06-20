@@ -168,17 +168,12 @@
   NSMutableDictionary* combinedDict = [NSMutableDictionary dictionary];
   [combinedDict addEntriesFromDictionary:[decoder decodeObjectForKey:@"generalDictionary"]];
 
-  NSEnumerator* keysEnum;
-  NSString* key;
-  
   NSDictionary* rectsDict = [decoder decodeObjectForKey:@"rectsDictionary"];
-  keysEnum = [rectsDict keyEnumerator];
-  while (key = [keysEnum nextObject])
+  for (NSString* key in rectsDict)
     [combinedDict setObject:[NSValue valueWithRect:NSRectFromString([rectsDict objectForKey:key])] forKey:key];
   
   NSDictionary* pointsDict = [decoder decodeObjectForKey:@"pointsDictionary"];
-  keysEnum = [pointsDict keyEnumerator];
-  while (key = [keysEnum nextObject])
+  for (NSString* key in pointsDict)
     [combinedDict setObject:[NSValue valueWithPoint:NSPointFromString([pointsDict objectForKey:key])] forKey:key];
 
   return [self initWithContentsOfDictionary:combinedDict];
@@ -189,10 +184,8 @@
   NSMutableDictionary* generalDict = [NSMutableDictionary dictionary];
   NSMutableDictionary* rectsDict = [NSMutableDictionary dictionary];
   NSMutableDictionary* pointsDict = [NSMutableDictionary dictionary];
-  
-  NSEnumerator* keysEnum = [env keyEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject]) {
+
+  for (NSString* key in [env keyEnumerator]) {
     id value = [env valueForKey:key];
     if ([value isKindOfClass:[NSValue class]] && ![value isKindOfClass:[NSNumber class]]) {
       const char* type = [value objCType];

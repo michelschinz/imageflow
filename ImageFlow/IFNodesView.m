@@ -93,9 +93,7 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)point;
 {
-  NSEnumerator* layerEnum = [layoutLayers reverseObjectEnumerator];
-  IFTreeLayoutElement* layer;
-  while (layer = [layerEnum nextObject]) {
+  for (IFTreeLayoutElement* layer in [layoutLayers reverseObjectEnumerator]) {
     IFTreeLayoutElement* maybeElement = [layer layoutElementAtPoint:point];
     if (maybeElement != nil)
       return maybeElement;

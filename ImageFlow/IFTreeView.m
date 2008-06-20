@@ -926,9 +926,7 @@ static enum {
     return;
   
   NSMutableSet* expandedNodes = [NSMutableSet set];
-  NSEnumerator* nodesEnum = [newSelectedNodes objectEnumerator];
-  IFTreeNode* node;
-  while (node = [nodesEnum nextObject]) {
+  for (IFTreeNode* node in newSelectedNodes) {
     if ([node isFolded])
       [expandedNodes unionSet:[document ancestorsOfNode:node]];
     else
@@ -1013,9 +1011,7 @@ static enum {
 
 - (void)addToolTipsForLayoutNodes:(NSSet*)nodes;
 {
-  NSEnumerator* nodesEnum = [nodes objectEnumerator];
-  IFTreeLayoutNode* layoutNode;
-  while (layoutNode = [nodesEnum nextObject])
+  for (IFTreeLayoutNode* layoutNode in nodes)
     [self addToolTipRect:[layoutNode frame] owner:self userData:layoutNode];
 }
 
@@ -1037,9 +1033,7 @@ static enum {
 
 - (void)addTrackingRectsForLayoutNodes:(NSSet*)nodes;
 {
-  NSEnumerator* nodesEnum = [nodes objectEnumerator];
-  IFTreeLayoutNode* layoutNode;
-  while (layoutNode = [nodesEnum nextObject]) {
+  for (IFTreeLayoutNode* layoutNode in nodes) {
     NSRect frame = [layoutNode frame];
     NSRect rect = NSMakeRect(NSMinX(frame) - 14.0,NSMinY(frame),NSWidth(frame) + 14.0,NSHeight(frame));
     NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:layoutNode assumeInside:NO];
@@ -1171,11 +1165,9 @@ IFInterval IFProjectRect(NSRect r, IFDirection projectionDirection) {
     IFInterval refProjectionPar = IFProjectRect(refRect, direction);
     IFInterval refProjectionPer = IFProjectRect(refRect, perDirection);
     
-    NSEnumerator* candidatesEnum = [candidates objectEnumerator];
-    IFTreeLayoutElement* candidate;
     IFTreeLayoutElement* bestCandidate = nil;
     float bestCandidateDistancePar = searchDistance, bestCandidateDistancePer = searchDistance;
-    while (candidate = [candidatesEnum nextObject]) {
+    for (IFTreeLayoutElement* candidate in candidates) {
       NSRect r = [candidate frame];
       
       float dPer = IFIntervalDistance(refProjectionPar,IFProjectRect(r,direction));

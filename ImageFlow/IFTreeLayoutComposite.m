@@ -28,9 +28,7 @@
 
   elements = [theElements retain];
   NSRect myBounds = NSZeroRect;
-  NSEnumerator* elemsEnum = [elements objectEnumerator];
-  IFTreeLayoutElement* elem;
-  while (elem = [elemsEnum nextObject])
+  for (IFTreeLayoutElement* elem in elements)
     myBounds = NSUnionRect(myBounds, [elem frame]);
   [self setBounds:myBounds];
   return self;
@@ -53,9 +51,7 @@
 
 - (void)drawForRect:(NSRect)rect;
 {
-  NSEnumerator* elemsEnum = [elements objectEnumerator];
-  IFTreeLayoutElement* elem;
-  while (elem = [elemsEnum nextObject]) {
+  for (IFTreeLayoutElement* elem in elements) {
     if (NSIntersectsRect([elem frame], rect))
       [elem drawForRect:rect];
   }
@@ -64,18 +60,14 @@
 - (NSSet*)leavesOfKind:(IFTreeLayoutElementKind)kind;
 {
   NSMutableSet* leaves = [NSMutableSet set];
-  NSEnumerator* elemsEnum = [elements objectEnumerator];
-  IFTreeLayoutElement* elem;
-  while (elem = [elemsEnum nextObject])
+  for (IFTreeLayoutElement* elem in elements)
     [leaves unionSet:[elem leavesOfKind:kind]];
   return leaves;
 }
 
 - (IFTreeLayoutSingle*)layoutElementForNode:(IFTreeNode*)node kind:(IFTreeLayoutElementKind)kind;
 {
-  NSEnumerator* elemsEnum = [elements objectEnumerator];
-  IFTreeLayoutElement* elem;
-  while (elem = [elemsEnum nextObject]) {
+  for (IFTreeLayoutElement* elem in elements) {
     IFTreeLayoutSingle* elemForNode = [elem layoutElementForNode:node kind:kind];
     if (elemForNode != nil)
       return elemForNode;
@@ -85,9 +77,7 @@
 
 - (IFTreeLayoutElement*)layoutElementAtPoint:(NSPoint)thePoint;
 {
-  NSEnumerator* elemsEnum = [elements objectEnumerator];
-  IFTreeLayoutElement* elem;
-  while (elem = [elemsEnum nextObject]) {
+  for (IFTreeLayoutElement* elem in elements) {
     if (NSPointInRect(thePoint, [elem frame]))
       return [elem layoutElementAtPoint:thePoint];
   }
@@ -98,9 +88,7 @@
 {
   NSMutableSet* result = [NSMutableSet set];
   if (NSIntersectsRect([self frame],rect)) {
-    NSEnumerator* elemsEnum = [elements objectEnumerator];
-    IFTreeLayoutElement* elem;
-    while (elem = [elemsEnum nextObject])
+    for (IFTreeLayoutElement* elem in elements)
       [result unionSet:[elem layoutElementsIntersectingRect:rect kind:kind]];
   }
   return result;

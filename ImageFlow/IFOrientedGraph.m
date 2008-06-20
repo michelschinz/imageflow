@@ -66,9 +66,7 @@
 - (NSSet*)predecessorsOfNode:(id)node;
 {
   NSMutableSet* preds = [NSMutableSet set];
-  NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-  IFOrientedGraphEdge* edge;
-  while (edge = [edgesEnum nextObject]) {
+  for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
     if ([edge toNode] == node)
       [preds addObject:[edge fromNode]];
   }
@@ -78,9 +76,7 @@
 - (NSSet*)successorsOfNode:(id)node;
 {
   NSMutableSet* succs = [NSMutableSet set];
-  NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-  IFOrientedGraphEdge* edge;
-  while (edge = [edgesEnum nextObject]) {
+  for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
     if ([edge fromNode] == node)
       [succs addObject:[edge toNode]];
   }
@@ -90,12 +86,8 @@
 - (NSSet*)sourceNodes;
 {
   NSMutableSet* sourceNodes = [NSMutableSet setWithSet:nodes];
-  NSEnumerator* nodesEnum = [nodeToEdgeSet keyEnumerator];
-  id node;
-  while (node = [nodesEnum nextObject]) {
-    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-    IFOrientedGraphEdge* edge;
-    while (edge = [edgesEnum nextObject]) {
+  for (id node in nodeToEdgeSet) {
+    for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
       if ([edge toNode] == node) {
         [sourceNodes removeObject:node];
         break;
@@ -108,12 +100,8 @@
 - (NSSet*)sinkNodes;
 {
   NSMutableSet* sinkNodes = [NSMutableSet setWithSet:nodes];
-  NSEnumerator* nodesEnum = [nodeToEdgeSet keyEnumerator];
-  id node;
-  while (node = [nodesEnum nextObject]) {
-    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-    IFOrientedGraphEdge* edge;
-    while (edge = [edgesEnum nextObject]) {
+  for (id node in nodeToEdgeSet) {
+    for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
       if ([edge fromNode] == node) {
         [sinkNodes removeObject:node];
         break;
@@ -164,9 +152,7 @@
 - (NSSet*)incomingEdgesForNode:(id)node;
 {
   NSMutableSet* inEdges = [NSMutableSet set];
-  NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-  IFOrientedGraphEdge* edge;
-  while (edge = [edgesEnum nextObject]) {
+  for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
     if ([edge toNode] == node)
       [inEdges addObject:[edge data]];
   }
@@ -181,9 +167,7 @@
 - (NSSet*)outgoingEdgesForNode:(id)node;
 {
   NSMutableSet* outEdges = [NSMutableSet set];
-  NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-  IFOrientedGraphEdge* edge;
-  while (edge = [edgesEnum nextObject]) {
+  for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
     if ([edge fromNode] == node)
       [outEdges addObject:[edge data]];
   }
@@ -201,8 +185,7 @@
   NSMutableSet* nodesToSort = [NSMutableSet setWithSet:nodes];
   while ([nodesToSort count] > 0) {
     id nextNode;
-    NSEnumerator* nodesToSortEnum = [nodesToSort objectEnumerator];
-    while (nextNode = [nodesToSortEnum nextObject]) {
+    for (nextNode in nodesToSort) {
       if (![nodesToSort intersectsSet:[self predecessorsOfNode:nextNode]])
         break;
     }
@@ -265,21 +248,16 @@
 - (void)debugDumpAsDot;
 {
   NSMutableArray* nodesArray = [NSMutableArray array];
-  NSEnumerator* nodesEnum = [nodes objectEnumerator];
-  id nodeToAdd;
-  while (nodeToAdd = [nodesEnum nextObject])
+  for (id nodeToAdd in nodes)
     [nodesArray addObject:nodeToAdd];
 
-  NSLog(@"%d nodes", [nodes count]);
   fprintf(stderr, "digraph dumpedGraph {\n");
   for (int i = 0; i < [nodesArray count]; ++i) {
     id node = [nodesArray objectAtIndex:i];
 
     fprintf(stderr, "  n%d [label=\"%s\"];\n", i, [[node description] UTF8String]);
 
-    NSEnumerator* edgesEnum = [[nodeToEdgeSet objectForKey:node] objectEnumerator];
-    IFOrientedGraphEdge* edge;
-    while (edge = [edgesEnum nextObject]) {
+    for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
       if ([edge fromNode] == node)
         fprintf(stderr, "  n%d -> n%d;\n", i, [nodesArray indexOfObject:[edge toNode]]);
     }
@@ -298,17 +276,12 @@
     return nil;
   nodes = [[NSMutableSet setWithSet:theNodes] retain];
 
-  NSEnumerator* keyEnum;
-  id key;
-
   edgeToRealEdge = createMutableDictionaryWithRetainedKeys();
-  keyEnum = [theEdgeToRealEdge keyEnumerator];
-  while (key = [keyEnum nextObject])
+  for (id key in theEdgeToRealEdge)
     CFDictionarySetValue((CFMutableDictionaryRef)edgeToRealEdge,key,[theEdgeToRealEdge objectForKey:key]);
   
   nodeToEdgeSet = createMutableDictionaryWithRetainedKeys();
-  keyEnum = [theNodeToEdgeSet keyEnumerator];
-  while (key = [keyEnum nextObject])
+  for (id key in theNodeToEdgeSet)
     CFDictionarySetValue((CFMutableDictionaryRef)nodeToEdgeSet,key,[NSMutableSet setWithSet:[theNodeToEdgeSet objectForKey:key]]);
 
   return self;

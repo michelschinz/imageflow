@@ -41,9 +41,7 @@
 - (IFTreeNode*)root;
 {
   IFTreeNode* root = nil;
-  NSEnumerator* nodesEnum = [includedNodes objectEnumerator];
-  IFTreeNode* node;
-  while (node = [nodesEnum nextObject]) {
+  for (IFTreeNode* node in includedNodes) {
     if ([includedNodes containsObject:[baseTree childOfNode:node]])
       continue;
     NSAssert(root == nil, @"invalid subtree (more than one root)");

@@ -385,9 +385,7 @@ static IFXMLCoder* sharedCoder = nil;
 {
   NSXMLElement* xmlSettings = [NSXMLElement elementWithName:@"settings"];
   NSDictionary* env = [settings asDictionary];
-  NSEnumerator* keysEnum = [env keyEnumerator];
-  NSString* key;
-  while (key = [keysEnum nextObject]) {
+  for (NSString* key in env) {
     NSObject* value = [env objectForKey:key];
 //    if ([value isKindOfClass:[IFExpression class]])
 //      continue;

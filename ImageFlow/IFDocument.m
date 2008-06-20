@@ -353,10 +353,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   NSAssert1([dirWrapper isDirectory], @"wrapper is not a directory: %@", dirWrapper);
   
-  NSDictionary* fileWrappers = [dirWrapper fileWrappers];
-  NSEnumerator* fileEnum = [fileWrappers objectEnumerator];
-  NSFileWrapper* fileWrapper;
-  while (fileWrapper = [fileEnum nextObject]) {
+  for (NSFileWrapper* fileWrapper in [[dirWrapper fileWrappers] objectEnumerator]) {
     if ([[fileWrapper filename] isEqualToString:@"tree.xml"]) {
       NSXMLDocument* xmlDoc = [[[NSXMLDocument alloc] initWithData:[fileWrapper regularFileContents]
                                                            options:NSXMLDocumentTidyXML

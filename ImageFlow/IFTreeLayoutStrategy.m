@@ -149,11 +149,8 @@
                               forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 {
   NSMutableSet* result = [NSMutableSet set];
-  NSSet* elements = [rootLayout layoutElementsForNodes:nodes kind:IFTreeLayoutElementKindNode];
-  NSEnumerator* elemsEnumerator = [elements objectEnumerator];
-  IFTreeLayoutSingle* element;
   const float cursorWidth = [layoutParams cursorWidth], selectionWidth = [layoutParams selectionWidth];
-  while (element = [elemsEnumerator nextObject]) {
+  for (IFTreeLayoutSingle* element in [rootLayout layoutElementsForNodes:nodes kind:IFTreeLayoutElementKindNode]) {
     BOOL isCursor = [element node] == cursorNode;
     [result addObject:[IFTreeLayoutCursor layoutCursorWithBase:element pathWidth:(isCursor ? cursorWidth : selectionWidth)]];
   }

@@ -27,9 +27,7 @@ static IFTreeTemplateManager* sharedManager;
   if (sharedManager == nil) {
     NSSet* dirs = [[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectories];
     
-    NSEnumerator* dirsEnum = [dirs objectEnumerator];
-    NSString* dir;
-    while (dir = [dirsEnum nextObject]) {
+    for (NSString* dir in dirs) {
       NSFileManager* fileMgr = [NSFileManager defaultManager];
       if (![fileMgr fileExistsAtPath:dir]) {
         BOOL ok = createDirectoryAndParentsAtPath(dir, nil);
@@ -58,9 +56,7 @@ static IFTreeTemplateManager* sharedManager;
 
 - (IFTreeTemplateCollection*)collectionContainingTemplate:(IFTreeTemplate*)treeTemplate;
 {
-  NSEnumerator* collectionEnum = [collections objectEnumerator];
-  IFTreeTemplateCollection* collection;
-  while (collection = [collectionEnum nextObject]) {
+  for (IFTreeTemplateCollection* collection in collections) {
     if ([collection containsTemplate:treeTemplate])
       return collection;
   }
@@ -95,9 +91,7 @@ static IFTreeTemplateManager* sharedManager;
 - (IFTreeTemplate*)loadFileTemplate;
 {
   if (loadFileTemplate == nil) {
-    NSEnumerator* templatesEnum = [templates objectEnumerator];
-    IFTreeTemplate* template;
-    while (template = [templatesEnum nextObject]) {
+    for (IFTreeTemplate* template in templates) {
       if ([[template tag] isEqualToString:@"load"])
         loadFileTemplate = template; // not retained
     }
@@ -128,9 +122,7 @@ static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attrib
   collections = [theCollections retain];
   templates = [[self computeTemplates] retain];
   
-  NSEnumerator* collectionsEnum = [collections objectEnumerator];
-  IFTreeTemplateCollection* collection;
-  while (collection = [collectionsEnum nextObject]) {
+  for (IFTreeTemplateCollection* collection in collections) {
     if ([[collection directory] isEqualToString:[[IFDirectoryManager sharedDirectoryManager] userFilterTemplateDirectory]]) {
       defaultModifiableCollection = collection;
       break;
@@ -151,10 +143,8 @@ static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attrib
 
 - (NSSet*)computeTemplates;
 {
-  NSMutableSet* allTemplates = [[NSMutableSet set] retain];
-  NSEnumerator* collectionsEnum = [collections objectEnumerator];
-  IFTreeTemplateCollection* collection;
-  while (collection = [collectionsEnum nextObject])
+  NSMutableSet* allTemplates = [NSMutableSet set];
+  for (IFTreeTemplateCollection* collection in collections)
     [allTemplates unionSet:[collection templates]];
   return allTemplates;
 }
