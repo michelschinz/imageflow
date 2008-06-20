@@ -26,8 +26,6 @@
 - (void)updateBounds;
 - (void)highlightElement:(IFTreeLayoutSingle*)element;
 - (void)clearHighlighting;
-- (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
-- (IFTreeNode*)copiedNode;
 - (void)updateUnreachableNodes;
 - (void)setUnreachableNodes:(NSSet*)newUnreachableNodes;
 - (void)clearSelectedNodes;
@@ -77,7 +75,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
     nil] retain];
   unreachableNodes = [NSSet new];
   selectedNodes = [NSMutableSet new];
-  copiedNode = nil;
   
   trackingRectTags = [NSMutableArray new];
 
@@ -100,7 +97,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
   OBJC_RELEASE(trackingRectTags);
 
-  OBJC_RELEASE(copiedNode);
   OBJC_RELEASE(selectedNodes);
   OBJC_RELEASE(unreachableNodes);
   if (cursors != nil) {
@@ -863,21 +859,6 @@ static enum {
     OBJC_RELEASE(highlightingPath);
     pointedElement = nil;
   }
-}
-
-#pragma mark Copy and paste
-
-- (void)setCopiedNode:(IFTreeNode*)newCopiedNode;
-{
-  if (newCopiedNode == copiedNode)
-    return;
-  [copiedNode release];
-  copiedNode = [newCopiedNode retain];
-}
-
-- (IFTreeNode*)copiedNode;
-{
-  return copiedNode;
 }
 
 #pragma mark View locking

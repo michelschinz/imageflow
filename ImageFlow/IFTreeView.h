@@ -25,7 +25,6 @@
   IFTreeCursorPair* cursors;
   NSSet* unreachableNodes;
   NSMutableSet* selectedNodes;
-  IFTreeNode* copiedNode;
 
   NSMutableArray* trackingRectTags;
   IFTreeLayoutElement* pointedElement;
