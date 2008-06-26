@@ -102,12 +102,12 @@ static IFXMLCoder* sharedCoder = nil;
 {
   NSXMLElement* xmlDocumentRoot = [NSXMLElement elementWithName:@"document"];
   [xmlDocumentRoot setChildren:[NSArray arrayWithObjects:
-    [NSXMLElement elementWithName:@"title" stringValue:[document title]],    
-    [NSXMLElement elementWithName:@"author" stringValue:[document authorName]],
-    [NSXMLElement elementWithName:@"description" stringValue:[document documentDescription]],
-    [NSXMLElement elementWithName:@"resolution-x" stringValue:[self encodeFloat:[document resolutionX]]],
-    [NSXMLElement elementWithName:@"resolution-y" stringValue:[self encodeFloat:[document resolutionY]]],
-    [NSXMLElement elementWithName:@"canvas-bounds" stringValue:NSStringFromRect([document canvasBounds])],
+    [NSXMLElement elementWithName:@"title" stringValue:document.title],    
+    [NSXMLElement elementWithName:@"author" stringValue:document.authorName],
+    [NSXMLElement elementWithName:@"description" stringValue:document.documentDescription],
+    [NSXMLElement elementWithName:@"resolution-x" stringValue:[self encodeFloat:document.resolutionX]],
+    [NSXMLElement elementWithName:@"resolution-y" stringValue:[self encodeFloat:document.resolutionY]],
+    [NSXMLElement elementWithName:@"canvas-bounds" stringValue:NSStringFromRect(document.canvasBounds)],
     [self encodeTree:[document tree]],
     nil]];
   

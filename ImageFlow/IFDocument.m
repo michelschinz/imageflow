@@ -86,87 +86,10 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [tree parentsOfNode:[tree root]];
 }
 
-- (NSString*)title;
-{
-  return title;
-}
-
-- (void)setTitle:(NSString*)newTitle;
-{
-  if ([newTitle isEqualToString:title])
-    return;
-  [title release];
-  title = [newTitle retain];
-}
-
-- (NSString*)authorName;
-{
-  return authorName;
-}
-
-- (void)setAuthorName:(NSString*)newAuthorName;
-{
-  if ([newAuthorName isEqualToString:authorName])
-    return;
-  [authorName release];
-  authorName = [newAuthorName copy];
-}
-
-- (NSString*)documentDescription;
-{
-  return documentDescription;
-}
-
-- (void)setDocumentDescription:(NSString*)newDocumentDescription;
-{
-  if (newDocumentDescription == documentDescription)
-    return;
-  [documentDescription release];
-  documentDescription = [newDocumentDescription copy];
-}
-
-- (NSRect)canvasBounds;
-{
-  return canvasBounds;
-}
-
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
-{
-  canvasBounds = newCanvasBounds;
-}
-
-- (IFColorProfile*)workingSpaceProfile;
-{
-  return workingSpaceProfile;
-}
-
-- (void)setWorkingSpaceProfile:(IFColorProfile*)newProfile;
-{
-  if (newProfile == workingSpaceProfile)
-    return;
-  [workingSpaceProfile release];
-  workingSpaceProfile = [newProfile retain];
-}
-
-- (float)resolutionX;
-{
-  return resolutionX;
-}
-
-- (void)setResolutionX:(float)newResolutionX;
-{
-  resolutionX = newResolutionX;
-}
-
-- (float)resolutionY;
-{
-  return resolutionY;
-}
-
-- (void)setResolutionY:(float)newResolutionY;
-{
-  resolutionY = newResolutionY;
-}
+@synthesize title, authorName, documentDescription;
+@synthesize canvasBounds;
+@synthesize workingSpaceProfile;
+@synthesize resolutionX, resolutionY;
 
 #pragma mark Tree navigation
 

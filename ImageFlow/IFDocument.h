@@ -30,27 +30,16 @@ extern NSString* IFTreeChangedNotification;
 
 #pragma mark Properties
 
-- (IFTree*)tree;
-- (void)setTree:(IFTree*)newTree;
-- (NSArray*)roots;
+@property(retain) IFTree* tree;
+@property(readonly) NSArray* roots;
 
-- (NSString*)title;
-- (void)setTitle:(NSString*)newTitle;
-- (NSString*)authorName;
-- (void)setAuthorName:(NSString*)newAuthorName;
-- (NSString*)documentDescription;
-- (void)setDocumentDescription:(NSString*)newDocumentDescription;
+@property(copy) NSString* title;
+@property(copy) NSString* authorName;
+@property(copy) NSString* documentDescription;
 
-- (NSRect)canvasBounds;
-- (void)setCanvasBounds:(NSRect)newCanvasBounds;
-
-- (IFColorProfile*)workingSpaceProfile;
-- (void)setWorkingSpaceProfile:(IFColorProfile*)newProfile;
-
-- (float)resolutionX;
-- (void)setResolutionX:(float)newResolutionX;
-- (float)resolutionY;
-- (void)setResolutionY:(float)newResolutionY;
+@property NSRect canvasBounds;
+@property(retain) IFColorProfile* workingSpaceProfile;
+@property float resolutionX, resolutionY;
 
 #pragma mark Tree navigation
 
