@@ -43,7 +43,7 @@
 
 - (IFTreeLayoutElement*)layoutTree:(IFTreeNode*)root;
 {
-  const float columnWidth = [layoutParams columnWidth];
+  const float columnWidth = layoutParams.columnWidth;
   NSMutableSet* layoutElems = [NSMutableSet set];
   
   // Layout all parents
@@ -52,7 +52,7 @@
   NSMutableArray* directParentsLayout = [NSMutableArray arrayWithCapacity:parentsCount];
   float x = 0.0;
   for (int i = 0; i < parentsCount; i++) {
-    if (i > 0) x += [layoutParams gutterWidth];
+    if (i > 0) x += layoutParams.gutterWidth;
     IFTreeNode* parent = [parents objectAtIndex:i];
     
     IFTreeLayoutElement* parentLayout = [self layoutTree:parent];
@@ -149,7 +149,7 @@
                               forTreeLayout:(IFTreeLayoutElement*)rootLayout;
 {
   NSMutableSet* result = [NSMutableSet set];
-  const float cursorWidth = [layoutParams cursorWidth], selectionWidth = [layoutParams selectionWidth];
+  const float cursorWidth = layoutParams.cursorWidth, selectionWidth = layoutParams.selectionWidth;
   for (IFTreeLayoutSingle* element in [rootLayout layoutElementsForNodes:nodes kind:IFTreeLayoutElementKindNode]) {
     BOOL isCursor = [element node] == cursorNode;
     [result addObject:[IFTreeLayoutCursor layoutCursorWithBase:element pathWidth:(isCursor ? cursorWidth : selectionWidth)]];
@@ -184,9 +184,9 @@
 - (NSBezierPath*)sidePanePath;
 {
   if (sidePanePath == nil) {
-    const NSSize sidePaneSize = [layoutParams sidePaneSize];
-    const float sidePaneCornerRadius = [layoutParams sidePaneCornerRadius];
-    const float externalMargin = [layoutParams nodeInternalMargin];
+    const NSSize sidePaneSize = layoutParams.sidePaneSize;
+    const float sidePaneCornerRadius = layoutParams.sidePaneCornerRadius;
+    const float externalMargin = layoutParams.nodeInternalMargin;
     
     sidePanePath = [[NSBezierPath bezierPath] retain];
     [sidePanePath moveToPoint:NSMakePoint(0,externalMargin)];

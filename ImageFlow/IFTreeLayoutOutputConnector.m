@@ -65,12 +65,12 @@
 - (void)drawForLocalRect:(NSRect)rect;
 {
   IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
-  [[layoutParams connectorColor] set];
+  [layoutParams.connectorColor set];
   [[self outlinePath] fill];
 
   if (tag != nil) {
-    float textHeight = [layoutParams labelFontHeight];
-    [tag drawWithRect:NSMakeRect(0,-(textHeight + 1.0),[layoutParams columnWidth],textHeight) options:0];
+    float textHeight = layoutParams.labelFontHeight;
+    [tag drawWithRect:NSMakeRect(0,-(textHeight + 1.0),layoutParams.columnWidth,textHeight) options:0];
   }
 }
 
@@ -84,11 +84,11 @@
   NSBezierPath* outline = [NSBezierPath bezierPath];
 
   IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
-  const float margin = [layoutParams nodeInternalMargin];
-  const float arrowSize = [layoutParams connectorArrowSize];
-  const float columnWidth = [layoutParams columnWidth];
+  const float margin = layoutParams.nodeInternalMargin;
+  const float arrowSize = layoutParams.connectorArrowSize;
+  const float columnWidth = layoutParams.columnWidth;
   const float internalWidth = columnWidth - 2.0 * margin;
-  const float textHeight = [layoutParams labelFontHeight];
+  const float textHeight = layoutParams.labelFontHeight;
 
   // Build the path in a clockwise direction, starting from the top-left part of the top arrow
   [outline moveToPoint:NSMakePoint(margin,0)];

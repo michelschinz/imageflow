@@ -237,8 +237,8 @@ enum IFLayoutLayer {
   if ([allTrees count] == 0)
     return [IFTreeLayoutComposite layoutComposite];
 
-  float columnWidth = [layoutParameters columnWidth];
-  float minGutter = [layoutParameters gutterWidth];
+  float columnWidth = layoutParameters.columnWidth;
+  float minGutter = layoutParameters.gutterWidth;
 
   float totalWidth = NSWidth([[self superview] frame]);
   float columns = (int)floor((totalWidth - minGutter) / (columnWidth + minGutter));

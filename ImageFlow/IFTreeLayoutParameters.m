@@ -59,10 +59,7 @@
   columnWidth = roundedNewColumnWidth;
 }
 
-- (NSColor*)backgroundColor;
-{
-  return backgroundColor;
-}
+@synthesize backgroundColor;
 
 - (float)nodeInternalMargin;
 {
@@ -74,50 +71,25 @@
   return sidePaneSize.width + 4.0;
 }
 
-- (NSFont*)labelFont;
-{
-  return labelFont;
-}
-
-- (float)labelFontHeight;
-{
-  return labelFontHeight;
-}
-
-- (NSColor*)sidePaneColor;
-{
-  return sidePaneColor;
-}
-
-- (NSSize)sidePaneSize;
-{
-  return sidePaneSize;
-}
+@synthesize labelFont;
+@synthesize labelFontHeight;
+@synthesize sidePaneColor;
+@synthesize sidePaneSize;
 
 - (float)sidePaneCornerRadius;
 {
   return 4.0;
 }
 
-- (NSColor*)connectorColor;
-{
-  return connectorColor;
-}
-
-- (NSColor*)connectorLabelColor;
-{
-  return connectorLabelColor;
-}
+@synthesize connectorColor;
+@synthesize connectorLabelColor;
 
 - (float)connectorArrowSize;
 {
   return 4.0;
 }
 
-- (NSColor*)cursorColor;
-{
-  return cursorColor;
-}
+@synthesize cursorColor;
 
 - (float)cursorWidth;
 {
@@ -129,10 +101,7 @@
   return 1.0;
 }
 
-- (NSColor*)markBackgroundColor;
-{
-  return markBackgroundColor;
-}
+@synthesize markBackgroundColor;
 
 - (NSColor*)highlightingColor;
 {

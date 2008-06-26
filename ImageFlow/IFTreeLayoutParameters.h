@@ -26,29 +26,27 @@
   NSColor* highlightingColor;
 }
 
-- (float)columnWidth;
-- (void)setColumnWidth:(float)theColumnWidth;
+@property float columnWidth;
 
-- (NSColor*)backgroundColor;
+@property(readonly, retain) NSColor* backgroundColor;
+@property(readonly) float nodeInternalMargin;
+@property(readonly) float gutterWidth;
+@property(readonly, retain) NSFont* labelFont;
+@property(readonly) float labelFontHeight;
 
-- (float)nodeInternalMargin;
-- (float)gutterWidth;
-- (NSFont*)labelFont;
-- (float)labelFontHeight;
+@property(readonly, retain) NSColor* sidePaneColor;
+@property(readonly) NSSize sidePaneSize;
+@property(readonly) float sidePaneCornerRadius;
 
-- (NSColor*)sidePaneColor;
-- (NSSize)sidePaneSize;
-- (float)sidePaneCornerRadius;
+@property(readonly, retain) NSColor* connectorColor;
+@property(readonly, retain) NSColor* connectorLabelColor;
+@property(readonly) float connectorArrowSize;
 
-- (NSColor*)connectorColor;
-- (NSColor*)connectorLabelColor;
-- (float)connectorArrowSize;
+@property(readonly, retain) NSColor* cursorColor;
+@property(readonly) float cursorWidth;
+@property(readonly) float selectionWidth;
 
-- (NSColor*)cursorColor;
-- (float)cursorWidth;
-- (float)selectionWidth;
-
-- (NSColor*)markBackgroundColor;
-- (NSColor*)highlightingColor;
+@property(readonly, retain) NSColor* markBackgroundColor;
+@property(readonly, retain) NSColor* highlightingColor;
 
 @end

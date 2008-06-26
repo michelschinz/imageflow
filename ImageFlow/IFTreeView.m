@@ -172,7 +172,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   [super drawRect:rect];
   
   if (highlightingPath != nil) {
-    [[layoutParameters highlightingColor] set];
+    [layoutParameters.highlightingColor set];
     [highlightingPath fill];
     [highlightingPath stroke];
   }
@@ -762,7 +762,7 @@ static enum {
       
       NSArray* roots = (NSArray*)[[layoutStrategy collect] layoutTree:[[document roots] each]];
       for (int i = 1; i < [roots count]; ++i)
-        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + [layoutParameters gutterWidth],0)];
+        [[roots objectAtIndex:i] translateBy:NSMakePoint(NSMaxX([[roots objectAtIndex:i-1] frame]) + layoutParameters.gutterWidth,0)];
       IFTreeLayoutElement* layer = [IFTreeLayoutComposite layoutCompositeWithElements:[NSSet setWithArray:roots] containingView:self];
       
       // Now that all elements are at their final position, establish tool tips and tracking rects
@@ -808,7 +808,7 @@ static enum {
 - (NSRect)paddedBounds;
 {
   NSRect unpaddedBounds = [[self layoutLayerAtIndex:IFLayoutLayerTree] frame];
-  return NSInsetRect(unpaddedBounds,-[layoutParameters gutterWidth],-3.0);
+  return NSInsetRect(unpaddedBounds,-layoutParameters.gutterWidth,-3.0);
 }
 
 - (void)updateBounds;

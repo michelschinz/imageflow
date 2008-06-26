@@ -48,9 +48,9 @@
   NSBezierPath* outline = [NSBezierPath bezierPath];
   
   IFTreeLayoutParameters* layoutParams = [containingView layoutParameters];
-  const float margin = [layoutParams nodeInternalMargin];
-  const float arrowSize = [layoutParams connectorArrowSize];
-  const float internalWidth = [layoutParams columnWidth] - 2.0 * margin;
+  const float margin = layoutParams.nodeInternalMargin;
+  const float arrowSize = layoutParams.connectorArrowSize;
+  const float internalWidth = layoutParams.columnWidth - 2.0 * margin;
   
   // Build the path in a clockwise direction, starting from the top-left part of the "arrow"
   [outline moveToPoint:NSMakePoint(margin,0)];

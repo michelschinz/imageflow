@@ -75,7 +75,7 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 
 - (void)drawRect:(NSRect)rect;
 {
-  [[layoutParameters backgroundColor] set];
+  [layoutParameters.backgroundColor set];
   [NSBezierPath fillRect:rect];
   
   for (int i = 0; i < [layoutLayers count]; ++i) {
