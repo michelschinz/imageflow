@@ -74,6 +74,7 @@
 		FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A80AD2B5560097C977 /* IFImageCIImage.m */; };
 		FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
+		FA4D6F160E13716300344CC8 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15AC360486D014006FF6A4 /* Info.plist */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6101BF0B592BEA00841DCE /* IFImageType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6101BD0B592BEA00841DCE /* IFImageType.m */; };
 		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
@@ -1574,9 +1575,11 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = FAFDC53C086009B500DABA6F /* Build configuration list for PBXProject "ImageFlow" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* ImageFlow */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* ImageFlow */,
 				FA447E170ACD07E6001C9718 /* OCaml evaluator */,
@@ -1651,6 +1654,7 @@
 				FA07FECE0B318D5800057249 /* surrogate_parent_4.jpg in Resources */,
 				FAFCF7C60C9AB9B600B69055 /* IFChannelToMaskFilter.nib in Resources */,
 				FAFCF84B0C9ABA3100B69055 /* IFBitmapDrawingSource.nib in Resources */,
+				FA4D6F160E13716300344CC8 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1873,6 +1877,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ImageFlow_Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1899,6 +1904,7 @@
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ImageFlow_Prefix.pch;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
