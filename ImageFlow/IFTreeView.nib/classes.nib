@@ -1,0 +1,24 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = IFNodesView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {layoutParameters = IFTreeLayoutParameters; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                goToBookmark = id; 
+                makeNodeAlias = id; 
+                removeBookmark = id; 
+                setBookmark = id; 
+                toggleNodeFoldingState = id; 
+            }; 
+            CLASS = IFTreeView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = IFNodesView; 
+        }
+    ); 
+    IBVersion = 1; 
+}
