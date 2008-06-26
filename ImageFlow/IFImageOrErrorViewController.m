@@ -1,12 +1,12 @@
 //
-//  IFImageViewController.m
+//  IFImageOrErrorViewController.m
 //  ImageFlow
 //
 //  Created by Michel Schinz on 13.11.06.
 //  Copyright 2006 Michel Schinz. All rights reserved.
 //
 
-#import "IFImageViewController.h"
+#import "IFImageOrErrorViewController.h"
 
 #import "IFErrorConstantExpression.h"
 #import "IFOperatorExpression.h"
@@ -18,7 +18,7 @@ typedef enum {
   IFFilterDelegateHasMouseUp      = 1<<2
 } IFFilterDelegateCapabilities;
 
-@interface IFImageViewController (Private)
+@interface IFImageOrErrorViewController (Private)
 - (void)setActiveView:(NSView*)newActiveView;
 - (void)setErrorMessage:(NSString*)newErrorMessage;
 - (void)setViewedNode:(IFTreeNode*)newViewedNode;
@@ -29,7 +29,7 @@ typedef enum {
 - (void)updateVariants;
 @end
 
-@implementation IFImageViewController
+@implementation IFImageOrErrorViewController
 
 static NSString* IFViewedExpressionDidChange = @"IFViewedExpressionDidChange";
 static NSString* IFEditedNodeDidChange = @"IFEditedNodeDidChange";
@@ -228,7 +228,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 @end
 
-@implementation IFImageViewController (Private)
+@implementation IFImageOrErrorViewController (Private)
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {

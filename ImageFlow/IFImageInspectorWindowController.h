@@ -9,14 +9,14 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFDocument.h"
-#import "IFImageViewController.h"
+#import "IFImageOrErrorViewController.h"
 #import "IFHUDWindowController.h"
 #import "IFUtilities.h"
 
 @interface IFImageInspectorWindowController : NSWindowController {
   IFDocument* currentDocument;
   IFTreeCursorPair* cursorPair;
-  IFImageViewController* imageViewController;
+  IFImageOrErrorViewController* imageViewController;
   IFHUDWindowController* hudWindowController;
 
   // Toolbar
@@ -27,6 +27,6 @@
   NSToolbarItem* lockedToolbarItem;
 }
 
-- (IFImageViewController*)imageViewController;
+- (IFImageOrErrorViewController*)imageViewController;
 
 @end

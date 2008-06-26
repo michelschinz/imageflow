@@ -1,5 +1,5 @@
 //
-//  IFImageViewController.h
+//  IFImageOrErrorViewController.h
 //  ImageFlow
 //
 //  Created by Michel Schinz on 13.11.06.
@@ -20,7 +20,7 @@ typedef enum {
   IFImageViewModeEdit,
 } IFImageViewMode;
 
-@interface IFImageViewController : IFViewController<IFImageViewDelegate> {
+@interface IFImageOrErrorViewController : IFViewController<IFImageViewDelegate> {
   IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
   NSView* activeView; // not retained, either imageOrErrorTabView or imageView

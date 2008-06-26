@@ -35,7 +35,7 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
     return nil;
   currentDocument = nil;
   cursorPair = nil;
-  imageViewController = [IFImageViewController new];
+  imageViewController = [IFImageOrErrorViewController new];
   hudWindowController = [IFHUDWindowController new];
   
   proxy = [[NSValue valueWithNonretainedObject:self] retain];
@@ -95,7 +95,7 @@ static NSString* IFToolbarLockedItemIdentifier = @"IFToolbarLockedItemIdentifier
   [[self window] setToolbar:toolbar];
 }
 
-- (IFImageViewController*)imageViewController;
+- (IFImageOrErrorViewController*)imageViewController;
 {
   return imageViewController;
 }
