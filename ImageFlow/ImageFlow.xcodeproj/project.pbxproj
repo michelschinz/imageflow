@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		775DFF38067A968500C5B868 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
-		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
-		8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */; };
-		8D15AC2E0486D014006FF6A4 /* IFTreeView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */; };
-		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
 		8D15AC310486D014006FF6A4 /* IFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* IFDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		FA0079E80CA53D9900E7B2D0 /* IFTreeNodeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */; };
@@ -75,6 +71,10 @@
 		FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA4D6F160E13716300344CC8 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15AC360486D014006FF6A4 /* Info.plist */; };
+		FA4E20480E138237002A3CDF /* IFTreeView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B5FDCFA73011CA2CEA /* IFTreeView.nib */; };
+		FA4E206F0E13831B002A3CDF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1660FE840EACC02AAC07 /* InfoPlist.strings */; };
+		FA4E20700E138370002A3CDF /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B7FDCFA73011CA2CEA /* MainMenu.nib */; };
+		FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4BAFDCFA73011CA2CEA /* Credits.rtf */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6101BF0B592BEA00841DCE /* IFImageType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6101BD0B592BEA00841DCE /* IFImageType.m */; };
 		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
@@ -254,14 +254,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		089C1660FE840EACC02AAC07 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		2A37F4ACFDCFA73011CA2CEA /* IFDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDocument.m; sourceTree = "<group>"; };
 		2A37F4AEFDCFA73011CA2CEA /* IFDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDocument.h; sourceTree = "<group>"; };
 		2A37F4B0FDCFA73011CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2A37F4B5FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/IFTreeView.nib; sourceTree = "<group>"; };
-		2A37F4B7FDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		2A37F4BAFDCFA73011CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
+		2A37F4B5FDCFA73011CA2CEA /* IFTreeView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFTreeView.nib; sourceTree = "<group>"; };
+		2A37F4B7FDCFA73011CA2CEA /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainMenu.nib; sourceTree = "<group>"; };
+		2A37F4BAFDCFA73011CA2CEA /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32DBCF750370BD2300C91783 /* ImageFlow_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFlow_Prefix.pch; sourceTree = "<group>"; };
@@ -714,10 +714,10 @@
 			children = (
 				FA68E173092E04EF009D02CB /* Images */,
 				FAE8749F0908C2B800E856B9 /* Templates */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				2A37F4BAFDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
-				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
+				089C1660FE840EACC02AAC07 /* InfoPlist.strings */,
+				2A37F4B7FDCFA73011CA2CEA /* MainMenu.nib */,
 				FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */,
 				FA11DD2608F245E500A3AF61 /* IFPreferences.nib */,
 				FAF90B900B099C0700AC8472 /* Windows */,
@@ -1359,7 +1359,7 @@
 		FAF90B810B099BE000AC8472 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */,
+				2A37F4B5FDCFA73011CA2CEA /* IFTreeView.nib */,
 				FA92E81708B3448000E57EF7 /* IFImageView.nib */,
 				FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */,
 				FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */,
@@ -1592,10 +1592,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
-				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
-				8D15AC2E0486D014006FF6A4 /* IFTreeView.nib in Resources */,
-				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
+				FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */,
+				FA4E20700E138370002A3CDF /* MainMenu.nib in Resources */,
+				FA4E20480E138237002A3CDF /* IFTreeView.nib in Resources */,
+				FA4E206F0E13831B002A3CDF /* InfoPlist.strings in Resources */,
 				FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */,
 				FA38ACF508AB1D0B00D0292A /* IFFileSource.nib in Resources */,
 				FA92E81808B3448000E57EF7 /* IFImageView.nib in Resources */,
@@ -1806,41 +1806,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C1660FE840EACC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		2A37F4B4FDCFA73011CA2CEA /* IFTreeView.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2A37F4B5FDCFA73011CA2CEA /* English */,
-			);
-			name = IFTreeView.nib;
-			sourceTree = "<group>";
-		};
-		2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2A37F4B7FDCFA73011CA2CEA /* English */,
-			);
-			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2A37F4BAFDCFA73011CA2CEA /* English */,
-			);
-			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		FA447E190ACD0805001C9718 /* Debug */ = {
