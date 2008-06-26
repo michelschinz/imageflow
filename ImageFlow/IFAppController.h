@@ -26,7 +26,6 @@ extern NSString* IFNewDocumentKey;
 - (IFInspectorWindowController*)newInspectorOfClass:(Class)class sender:(id)sender;
 
 - (IBAction)newDocumentSettingsInspector:(id)sender;
-- (IBAction)newImageInspector:(id)sender;
 - (IBAction)newHistogramInspector:(id)sender;
 
 @end

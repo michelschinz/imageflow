@@ -14,7 +14,6 @@
 #import "IFTreeLayoutInputConnector.h"
 #import "IFTreeLayoutOutputConnector.h"
 #import "IFTreeLayoutComposite.h"
-#import "IFImageInspectorWindowController.h"
 #import "IFHistogramInspectorWindowController.h"
 #import "IFTreeTemplate.h"
 #import "IFTreeTemplateManager.h"

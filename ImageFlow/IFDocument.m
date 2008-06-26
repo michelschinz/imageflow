@@ -6,7 +6,7 @@
 
 #import "IFDocument.h"
 #import "IFXMLCoder.h"
-#import "IFTreeViewWindowController.h"
+#import "IFSingleWindowController.h"
 #import "IFExpressionEvaluator.h"
 #import "IFDirectoryManager.h"
 #import "IFTreeNodeFilter.h"
@@ -60,7 +60,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (void)makeWindowControllers;
 {
-  [self addWindowController:[[[IFTreeViewWindowController alloc] init] autorelease]];
+  [self addWindowController:[[[IFSingleWindowController alloc] init] autorelease]];
 }
 
 #pragma mark Properties

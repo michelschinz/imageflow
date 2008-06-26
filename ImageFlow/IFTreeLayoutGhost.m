@@ -8,9 +8,10 @@
 
 #import "IFDocument.h"
 #import "IFTreeLayoutGhost.h"
-#import "IFTreeViewWindowController.h"
 #import "IFDirectoryManager.h"
 #import "IFTreeTemplateManager.h"
+#import "IFTreeView.h"
+#import "IFTreeLayoutParameters.h"
 
 @interface IFTreeLayoutGhost (Private)
 - (void)updateLayout;

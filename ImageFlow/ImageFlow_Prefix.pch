@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Accelerate/Accelerate.h>
 
-#import <RBSplitView/RBSplitView.h>
 #import <MPWFoundation/MPWFoundation.h>
 
 #import "IFUtilities.h"
