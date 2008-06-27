@@ -18,7 +18,7 @@ static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
 {
   if (![super initWithWindowNibName:@"IFSingleWindow"])
     return nil;
-  treeViewController = [IFTreeViewController new];
+  treeViewController = [IFTreePaletteViewController new];
   imageViewController = [IFImageOrErrorViewController new];
   hudWindowController = [IFHUDWindowController new];
 

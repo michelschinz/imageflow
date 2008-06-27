@@ -6,9 +6,9 @@
 //  Copyright 2006 Michel Schinz. All rights reserved.
 //
 
-#import "IFTreeViewController.h"
+#import "IFTreePaletteViewController.h"
 
-@implementation IFTreeViewController
+@implementation IFTreePaletteViewController
 
 - (id)init;
 {

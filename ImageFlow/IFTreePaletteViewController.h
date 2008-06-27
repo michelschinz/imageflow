@@ -13,7 +13,7 @@
 #import "IFPaletteView.h"
 #import "IFTreeLayoutParameters.h"
 
-@interface IFTreeViewController : IFViewController {
+@interface IFTreePaletteViewController : IFViewController {
   IBOutlet IFTreeLayoutParameters* layoutParameters;
   IBOutlet IFTreeView* treeView;
   IBOutlet IFPaletteView* paletteView;

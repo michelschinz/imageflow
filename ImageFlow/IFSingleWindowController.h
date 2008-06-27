@@ -8,12 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFTreeViewController.h"
+#import "IFTreePaletteViewController.h"
 #import "IFImageOrErrorViewController.h"
 #import "IFHUDWindowController.h"
 
 @interface IFSingleWindowController : NSWindowController {
-  IFTreeViewController* treeViewController;
+  IFTreePaletteViewController* treeViewController;
 
   IFImageOrErrorViewController* imageViewController;
   IFHUDWindowController* hudWindowController;

@@ -180,7 +180,7 @@
 		FAF4A5740CF6E0F3001274E9 /* IFUniversalSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4A5720CF6E0F3001274E9 /* IFUniversalSource.m */; };
 		FAF4D62F0ABAEC55000F98B0 /* IFCursorRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */; };
 		FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */; };
-		FAF7F1160B088E0700BF6B7A /* IFTreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */; };
+		FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */; };
 		FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */; };
 		FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */; };
 		FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */; };
@@ -535,8 +535,8 @@
 		FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCursorRepository.m; sourceTree = "<group>"; };
 		FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeCursorPair.h; sourceTree = "<group>"; };
 		FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeCursorPair.m; sourceTree = "<group>"; };
-		FAF7F1130B088E0700BF6B7A /* IFTreeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeViewController.h; sourceTree = "<group>"; };
-		FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeViewController.m; sourceTree = "<group>"; };
+		FAF7F1130B088E0700BF6B7A /* IFTreePaletteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreePaletteViewController.h; sourceTree = "<group>"; };
+		FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreePaletteViewController.m; sourceTree = "<group>"; };
 		FAF7F2500B08A93D00BF6B7A /* IFHUDWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHUDWindowController.h; sourceTree = "<group>"; };
 		FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHUDWindowController.m; sourceTree = "<group>"; };
 		FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHUDWindow.nib; sourceTree = "<group>"; };
@@ -1335,8 +1335,8 @@
 			children = (
 				FAF90B6E0B09958400AC8472 /* IFViewController.h */,
 				FAF90B6F0B09958400AC8472 /* IFViewController.m */,
-				FAF7F1130B088E0700BF6B7A /* IFTreeViewController.h */,
-				FAF7F1140B088E0700BF6B7A /* IFTreeViewController.m */,
+				FAF7F1130B088E0700BF6B7A /* IFTreePaletteViewController.h */,
+				FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */,
 				FA1323570E0BECF600328ED9 /* IFImageOrErrorViewController.h */,
 				FA1323580E0BECF600328ED9 /* IFImageOrErrorViewController.m */,
 				FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */,
@@ -1739,7 +1739,7 @@
 				FA9649760AEF81B700EC46A5 /* IFTreeLayoutStrategy.m in Sources */,
 				FA9649870AEF892B00EC46A5 /* IFTreeLayoutParameters.m in Sources */,
 				FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */,
-				FAF7F1160B088E0700BF6B7A /* IFTreeViewController.m in Sources */,
+				FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */,
 				FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */,
 				FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */,
 				FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */,
