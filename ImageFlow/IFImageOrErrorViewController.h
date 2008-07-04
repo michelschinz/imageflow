@@ -32,35 +32,21 @@ typedef enum {
   NSArray* variants;
   NSString* activeVariant;
   
-  IFTreeCursorPair* cursors;
+  IFVariable* cursorsVar;
   IFTreeNode* viewedNode;
   IFTreeNode* editedNode;
 
-  IFVariable* canvasBounds;
-  float marginSize;
-  IFDirection marginDirection;
+  IFVariable* canvasBoundsVar;
 }
 
-- (IFImageView*)imageView;
-- (NSView*)activeView;
+- (id)init;
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar;
 
-- (void)setCursorPair:(IFTreeCursorPair*)newCursors;
-- (IFTreeCursorPair*)cursorPair;
-
-- (void)setMode:(IFImageViewMode)newMode;
-- (IFImageViewMode)mode;
-
-- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
-- (void)setMarginSize:(float)newMarginSize;
-- (float)marginSize;
-- (void)setMarginDirection:(IFDirection)newDirection;
-- (IFDirection)marginDirection;
-
-- (NSString*)errorMessage;
-
-- (NSArray*)variants;
-- (void)setVariants:(NSArray*)newVariants;
-- (NSString*)activeVariant;
-- (void)setActiveVariant:(NSString*)newActiveVariant;
+@property(readonly, assign) IFImageView* imageView;
+@property(readonly, assign) NSView* activeView;
+@property IFImageViewMode mode;
+@property(readonly, assign) NSString* errorMessage;
+@property(retain) NSArray* variants;
+@property(retain) NSString* activeVariant;
 
 @end

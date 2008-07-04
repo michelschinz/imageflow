@@ -12,15 +12,21 @@
 #import "IFTreeView.h"
 #import "IFPaletteView.h"
 #import "IFTreeLayoutParameters.h"
+#import "IFVariable.h"
 
-@interface IFTreePaletteViewController : IFViewController {
+@interface IFTreePaletteViewController : IFViewController<IFNodesViewDelegate> {
   IBOutlet IFTreeLayoutParameters* layoutParameters;
   IBOutlet IFTreeView* treeView;
   IBOutlet IFPaletteView* paletteView;
+  
+  IFVariable* cursorsVar;
 }
 
 - (void)setDocument:(IFDocument*)document;
 
-- (IFTreeCursorPair*)cursors;
+@property(readonly, assign) IFVariable* cursorsVar;
+
+// delegate methods
+- (void)willBecomeActive:(IFNodesView*)nodesView;
 
 @end

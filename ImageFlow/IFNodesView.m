@@ -41,7 +41,11 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 {
   [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-
+  
+  if (document != nil)
+    document = nil;
+  if (cursors != nil)
+    OBJC_RELEASE(cursors);
   OBJC_RELEASE(layoutLayers);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
@@ -55,6 +59,7 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 - (void)setDocument:(IFDocument*)newDocument {
   NSAssert(document == nil, @"document already set");
   document = newDocument;  // don't retain, to avoid cycles.
+  cursors = [[IFTreeCursorPair treeCursorPairWithTree:[newDocument tree] editMark:[IFTreeMark mark] viewMark:[IFTreeMark mark]] retain];
 }
 
 - (IFDocument*)document;
@@ -62,16 +67,36 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
   return document;
 }
 
+@synthesize cursors;
+
 - (IFTree*)tree;
 {
   NSAssert(document != nil, @"document not set");
   return [document tree];
 }
 
-- (IFTreeLayoutParameters*)layoutParameters;
+#pragma mark NSView/NSResponder methods
+
+- (BOOL)acceptsFirstResponder;
 {
-  return layoutParameters;
+  return YES;
 }
+
+- (BOOL)becomeFirstResponder;
+{
+  if (delegate != nil)
+    [delegate willBecomeActive:self];
+  return YES;
+}
+
+- (BOOL)resignFirstResponder;
+{
+  return YES;
+}
+
+#pragma mark Layout
+
+@synthesize layoutParameters;
 
 - (void)drawRect:(NSRect)rect;
 {
@@ -128,6 +153,10 @@ static NSString* IFNodesViewNeedsLayout = @"IFNodesViewNeedsLayout";
 {
   // do nothing by default (meant to be overridden)
 }
+
+#pragma mark Misc.
+
+@synthesize delegate;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object 

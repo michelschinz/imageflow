@@ -29,16 +29,12 @@ typedef enum {
 
 - (IFNodesView*)containingView;
 
-- (void)setBounds:(NSRect)newBounds;
-- (NSRect)bounds;
-
-- (void)setTranslation:(NSPoint)thePoint;
-- (NSPoint)translation;
+@property NSRect bounds;
+@property NSPoint translation;
 - (void)translateBy:(NSPoint)thePoint;
+@property(readonly) NSRect frame;
 
-- (NSRect)frame;
-
-- (IFTreeNode*)node;
+@property(readonly, assign) IFTreeNode* node;
 
 - (void)activate;
 - (void)activateWithMouseDown:(NSEvent*)event;

@@ -9,6 +9,7 @@
 #import "IFPaletteView.h"
 #import "IFTreeNodeFilter.h"
 #import "IFTreeLayoutNode.h"
+#import "IFTreeLayoutCursor.h"
 #import "IFTreeLayoutComposite.h"
 #import "IFVariableExpression.h"
 #import "IFTreeTemplateManager.h"
@@ -26,6 +27,7 @@
 - (void)updateBounds;
 - (IFTreeLayoutElement*)layoutForNode:(IFTreeNode*)node;
 - (IFTreeLayoutElement*)layoutForTrees:(NSArray*)allTrees;
+- (IFTreeLayoutElement*)layoutForCursor:(IFTreeNode*)cursorNode treeLayout:(IFTreeLayoutElement*)rootLayout;
 @end
 
 @implementation IFPaletteView
@@ -33,15 +35,17 @@
 static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeContext";
 
 enum IFLayoutLayer {
-  IFLayoutLayerNodes
+  IFLayoutLayerNodes,
+  IFLayoutLayerCursor
 };
 
 - (id)initWithFrame:(NSRect)frame;
 {
-  if (![super initWithFrame:frame layersCount:1])
+  if (![super initWithFrame:frame layersCount:2])
     return nil;
   templates = [[self computeTemplates] retain];
   normalModeTrees = nil;
+  acceptFirstResponder = NO;
 
   [self updateBounds];
   [self registerForDraggedTypes:[NSArray arrayWithObject:IFTreePboardType]];
@@ -73,6 +77,8 @@ enum IFLayoutLayer {
   switch (layer) {
     case IFLayoutLayerNodes:
       return [self layoutForTrees:[self normalModeTrees]];
+    case IFLayoutLayerCursor:
+      return [self layoutForCursor:cursors.viewMark.node treeLayout:[self layoutLayerAtIndex:IFLayoutLayerNodes]];
     default:
       NSAssert(NO, @"unexpected layer");
       return nil;
@@ -80,6 +86,12 @@ enum IFLayoutLayer {
 }
 
 #pragma mark Event handling
+
+- (void)mouseDown:(NSEvent*)event;
+{
+  if ([grabableViewMixin handlesMouseDown:event])
+    return;
+}
 
 - (void)mouseDragged:(NSEvent*)event;
 {
@@ -98,6 +110,38 @@ enum IFLayoutLayer {
   [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[template tree]] forType:IFTreePboardType];
 
   [self dragImage:[elementUnderMouse dragImage] at:[elementUnderMouse frame].origin offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+}
+
+- (void)mouseUp:(NSEvent*)event;
+{
+  if ([grabableViewMixin handlesMouseUp:event])
+    return;
+  
+  acceptFirstResponder = YES;
+  [self.window makeFirstResponder:self];
+
+  NSPoint localPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+  IFTreeLayoutElement* elementUnderMouse = [self layoutElementAtPoint:localPoint];
+  if (elementUnderMouse == nil)
+    return;
+  [cursors moveToNode:elementUnderMouse.node];
+  [self invalidateLayoutLayer:IFLayoutLayerCursor];
+}
+
+- (BOOL)becomeFirstResponder;
+{
+  if (acceptFirstResponder) {
+    [self invalidateLayoutLayer:IFLayoutLayerCursor];
+    return [super becomeFirstResponder];
+  } else
+    return NO;
+}
+
+- (BOOL)resignFirstResponder;
+{
+  acceptFirstResponder = NO;
+  [self invalidateLayoutLayer:IFLayoutLayerCursor];
+  return [super resignFirstResponder];
 }
 
 #pragma mark Drag & drop
@@ -237,16 +281,16 @@ enum IFLayoutLayer {
   if ([allTrees count] == 0)
     return [IFTreeLayoutComposite layoutComposite];
 
-  float columnWidth = layoutParameters.columnWidth;
-  float minGutter = layoutParameters.gutterWidth;
+  const float columnWidth = layoutParameters.columnWidth;
+  const float minGutter = layoutParameters.gutterWidth;
 
-  float totalWidth = NSWidth([[self superview] frame]);
-  float columns = (int)floor((totalWidth - minGutter) / (columnWidth + minGutter));
-  float gutter = round((totalWidth - (columns * columnWidth)) / (columns + 1));
+  const float totalWidth = NSWidth([[self superview] frame]);
+  const float columns = (int)floor((totalWidth - minGutter) / (columnWidth + minGutter));
+  const float gutter = round((totalWidth - (columns * columnWidth)) / (columns + 1));
   const float yMargin = 4.0;
 
   NSMutableSet* rows = [NSMutableSet set];
-  float x = gutter, y = 0, maxHeight = 0.0;
+  float x = gutter, maxHeight = 0.0;
   NSMutableSet* currentRow = [NSMutableSet new];
   for (int i = 0, count = [allTrees count]; i < count; ++i) {
     IFTreeLayoutElement* layoutElement = [self layoutForNode:[[allTrees objectAtIndex:i] root]];
@@ -260,7 +304,6 @@ enum IFLayoutLayer {
       currentRow = [NSMutableSet set];
   
       x = gutter;
-      y += maxHeight;
       maxHeight = 0.0;
     } else {
       x += columnWidth + gutter;
@@ -268,6 +311,13 @@ enum IFLayoutLayer {
   }
   
   return [IFTreeLayoutComposite layoutCompositeWithElements:rows containingView:self];
+}
+
+- (IFTreeLayoutElement*)layoutForCursor:(IFTreeNode*)cursorNode treeLayout:(IFTreeLayoutElement*)rootLayout;
+{
+  return self.window.firstResponder == self
+  ? [IFTreeLayoutCursor layoutCursorWithBase:[rootLayout layoutElementForNode:cursorNode kind:IFTreeLayoutElementKindNode] pathWidth:layoutParameters.cursorWidth]
+  : [IFTreeLayoutComposite layoutComposite];
 }
 
 @end

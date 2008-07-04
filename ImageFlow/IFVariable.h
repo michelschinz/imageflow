@@ -8,14 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface IFVariable : NSObject {
   id value;
 }
 
 + (id)variable;
 
-- (id)value;
-- (void)setValue:(id)newValue;
+@property(retain) id value;
 
 @end

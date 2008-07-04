@@ -10,9 +10,24 @@
 
 @implementation IFTreePaletteViewController
 
++ (void)initialize {
+  if (self != [IFTreePaletteViewController class])
+    return; // avoid repeated initialisation
+
+  [self setKeys:[NSArray arrayWithObject:@"activeView"] triggerChangeNotificationsForDependentKey:@"cursors"];
+}
+
 - (id)init;
 {
-  return [super initWithViewNibName:@"IFTreeView"];
+  if (![super initWithViewNibName:@"IFTreeView"])
+    return nil;
+  cursorsVar = [IFVariable variable];
+  return self;
+}
+
+- (void)awakeFromNib;
+{
+  cursorsVar.value = treeView.cursors;
 }
 
 - (void)setDocument:(IFDocument*)document;
@@ -21,9 +36,11 @@
   [paletteView setDocument:document];
 }
 
-- (IFTreeCursorPair*)cursors;
+@synthesize cursorsVar;
+
+- (void)willBecomeActive:(IFNodesView*)nodesView;
 {
-  return [treeView cursors];
+  cursorsVar.value = nodesView.cursors;
 }
 
 @end

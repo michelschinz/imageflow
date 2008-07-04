@@ -39,28 +39,50 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 {
   if (![super initWithViewNibName:@"IFImageView"])
     return nil;
+  activeView = nil;
   mode = IFImageViewModeView;
   expression = nil;
   errorMessage = nil;
   variants = [[NSArray array] retain];
   activeVariant = nil;
-  cursors = nil;
   viewedNode = nil;
-  canvasBounds = nil;
-  marginSize = 200;
-  marginDirection = IFDown;
   return self;
+}
+
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar;
+{
+  NSAssert(cursorsVar == nil && canvasBoundsVar == nil, @"duplicate post-initialisation");
+
+  cursorsVar = [theCursorsVar retain];
+  canvasBoundsVar = [theCanvasBoundsVar retain];
+  
+  [cursorsVar addObserver:self forKeyPath:@"value.viewMark.node.expression" options:0 context:IFViewedExpressionDidChange];
+  [cursorsVar addObserver:self forKeyPath:@"value.editMark.node" options:0 context:IFEditedNodeDidChange];
+  [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
+  
+  [imageView setCanvasBounds:canvasBoundsVar];
+  
+  [self updateImageViewVisibleBounds];
 }
 
 - (void)dealloc;
 {
-  OBJC_RELEASE(viewedNode);
-  [self setCanvasBounds:nil];
-  [self setCursorPair:nil];
-  OBJC_RELEASE(activeVariant);
+  NSAssert(cursorsVar != nil && canvasBoundsVar != nil, @"post-initialisation not done");
+  [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
+  OBJC_RELEASE(canvasBoundsVar);
+  [cursorsVar removeObserver:self forKeyPath:@"value.editMark.node"];
+  [cursorsVar removeObserver:self forKeyPath:@"value.viewMark.node.expression"];
+  OBJC_RELEASE(cursorsVar);
+
+  if (viewedNode != nil)
+    OBJC_RELEASE(viewedNode);
+  if (activeVariant != nil)
+    OBJC_RELEASE(activeVariant);
   OBJC_RELEASE(variants);
-  OBJC_RELEASE(errorMessage);
-  OBJC_RELEASE(expression);
+  if (errorMessage != nil)
+    OBJC_RELEASE(errorMessage);
+  if (expression != nil)
+    OBJC_RELEASE(expression);
   activeView = nil;
   OBJC_RELEASE(imageView);
   OBJC_RELEASE(imageOrErrorTabView);
@@ -74,6 +96,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [scrollView setHasVerticalRuler:YES];
   [scrollView setRulersVisible:YES];
 
+  [scrollView.horizontalRulerView setReservedThicknessForMarkers:0.0];
+  
   [imageView setDelegate:self];
   
   [self setActiveView:imageOrErrorTabView];
@@ -87,29 +111,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (NSView*)activeView;
 {
   return activeView;
-}
-
-- (void)setCursorPair:(IFTreeCursorPair*)newCursors;
-{
-  if (newCursors == cursors)
-    return;
-  
-  if (cursors != nil) {
-    [[cursors viewMark] removeObserver:self forKeyPath:@"node.expression"];
-    [[cursors editMark] removeObserver:self forKeyPath:@"node"];
-    [cursors release];
-  }
-  if (newCursors != nil) {
-    [[newCursors viewMark] addObserver:self forKeyPath:@"node.expression" options:0 context:IFViewedExpressionDidChange];
-    [[newCursors editMark] addObserver:self forKeyPath:@"node" options:0 context:IFEditedNodeDidChange];
-    [newCursors retain];
-  }
-  cursors = newCursors;
-}
-
-- (IFTreeCursorPair*)cursorPair;
-{
-  return cursors;
 }
 
 - (void)setMode:(IFImageViewMode)newMode;
@@ -128,55 +129,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   return mode;
 }
 
-- (void)setCanvasBounds:(IFVariable*)newCanvasBounds;
-{
-  if (newCanvasBounds == canvasBounds)
-    return;
-  
-  if (canvasBounds != nil) {
-    [canvasBounds removeObserver:self forKeyPath:@"value"];
-    [canvasBounds release];
-  }
-  canvasBounds = newCanvasBounds;
-  if (canvasBounds != nil) {
-    [canvasBounds addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
-    [canvasBounds retain];
-  }
-  
-  [imageView setCanvasBounds:canvasBounds];
-  [self updateImageViewVisibleBounds];
-}
-
-- (void)setMarginSize:(float)newMarginSize;
-{
-  if (newMarginSize == marginSize)
-    return;
-  marginSize = newMarginSize;
-  [self updateImageViewVisibleBounds];
-}
-
-- (float)marginSize;
-{
-  return marginSize;
-}
-
-- (void)setMarginDirection:(IFDirection)newMarginDirection;
-{
-  if (newMarginDirection == marginDirection)
-    return;
-  marginDirection = newMarginDirection;
-  [self updateImageViewVisibleBounds];
-}
-
-- (IFDirection)marginDirection;
-{
-  return marginDirection;
-}
-
-- (NSString*)errorMessage;
-{
-  return errorMessage;
-}
+@synthesize errorMessage;
 
 - (NSArray*)variants;
 {
@@ -213,17 +166,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)handleMouseDown:(NSEvent*)event;
 {
-  [editedNode mouseDown:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
+  [editedNode mouseDown:event inView:imageView viewFilterTransform:[cursorsVar.value viewEditTransform]];
 }
 
 - (void)handleMouseDragged:(NSEvent*)event;
 {
-  [editedNode mouseDragged:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
+  [editedNode mouseDragged:event inView:imageView viewFilterTransform:[cursorsVar.value viewEditTransform]];
 }
 
 - (void)handleMouseUp:(NSEvent*)event;
 {
-  [editedNode mouseUp:event inView:imageView viewFilterTransform:[cursors viewEditTransform]];
+  [editedNode mouseUp:event inView:imageView viewFilterTransform:[cursorsVar.value viewEditTransform]];
 }
 
 @end
@@ -233,16 +186,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFViewedExpressionDidChange) {
-    if ([[cursors viewMark] node] != viewedNode) {
+    IFTreeNode* currViewedNode = [[cursorsVar.value viewMark] node];
+    if (currViewedNode != viewedNode) {
       [self updateVariants];
       [self updateAnnotations];
-      [self setViewedNode:[[cursors viewMark] node]];
+      [self setViewedNode:currViewedNode];
     }
     [self updateExpression];
   } else if (context == IFEditedNodeDidChange) {
     [self updateAnnotations];
 
-    editedNode = [[cursors editMark] node];
+    editedNode = [[cursorsVar.value editMark] node];
   } else if (context == IFCanvasBoundsDidChange) {
     [self updateImageViewVisibleBounds];
   } else
@@ -278,13 +232,13 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   NSRect dirtyRect = (expression == nil || newExpression == nil)
     ? NSRectInfinite()
-    : [[cursors editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
+    : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
 
   [expression release];
   expression = [newExpression retain];
 
   IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression
-                                                                            cutout:[[canvasBounds value] rectValue]];
+                                                                            cutout:[canvasBoundsVar.value rectValue]];
 
   if ([evaluatedExpr isError]) {
     [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
@@ -302,25 +256,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)updateImageViewVisibleBounds;
 {
-  NSRect realCanvasBounds = NSInsetRect([[canvasBounds value] rectValue],-20,-20);
-  NSRect marginRect = NSZeroRect;
-  switch (marginDirection) {
-    case IFUp:
-      marginRect = NSMakeRect(NSMinX(realCanvasBounds),NSMaxY(realCanvasBounds),NSWidth(realCanvasBounds),marginSize);
-      break;
-    case IFRight:
-      marginRect = NSMakeRect(NSMaxX(realCanvasBounds),NSMinY(realCanvasBounds),marginSize,NSHeight(realCanvasBounds));
-      break;
-    case IFDown:
-      marginRect = NSMakeRect(NSMinX(realCanvasBounds),NSMinY(realCanvasBounds) - marginSize,NSWidth(realCanvasBounds),marginSize);
-      break;
-    case IFLeft:
-      marginRect = NSMakeRect(NSMinX(realCanvasBounds) - marginSize,NSMinY(realCanvasBounds),marginSize,NSHeight(realCanvasBounds));
-      break;
-    default:
-      NSAssert(NO, @"internal error");
-  }
-  [imageView setVisibleBounds:NSUnionRect(realCanvasBounds, marginRect)];
+  NSRect realCanvasBounds = NSInsetRect([canvasBoundsVar.value rectValue], -20, -20);
+  [imageView setVisibleBounds:realCanvasBounds];
   
   // HACK should avoid this, to prevent redrawing of the whole image!
   [self setExpression:[IFOperatorExpression nop]];
@@ -329,7 +266,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)updateExpression;
 {
-  IFTreeNode* node = [[cursors viewMark] node];
+  IFTreeNode* node = [[cursorsVar.value viewMark] node];
   IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
     expr = [node variantNamed:[self activeVariant] ofExpression:expr];
@@ -341,7 +278,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   if (mode == IFImageViewModeView)
     [imageView setAnnotations:nil];
   else {
-    IFTreeNode* nodeToEdit = [[cursors editMark] node];
+    IFTreeNode* nodeToEdit = [[cursorsVar.value editMark] node];
     [imageView setAnnotations:[nodeToEdit editingAnnotationsForView:imageView]];
   }
 }
@@ -349,8 +286,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)updateVariants;
 {
   [self setVariants:(mode == IFImageViewModeView
-                     ? [[[cursors viewMark] node] variantNamesForViewing]
-                     : [[[cursors viewMark] node] variantNamesForEditing])];
+                     ? [[[cursorsVar.value viewMark] node] variantNamesForViewing]
+                     : [[[cursorsVar.value viewMark] node] variantNamesForEditing])];
 }
 
 @end

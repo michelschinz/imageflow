@@ -218,7 +218,7 @@ typedef enum {
     finalSize.width = minSize.width;
   }
   if (minSize.height > finalSize.height) {
-    finalOrigin.x -= floor((minSize.height - finalSize.height) / 2.0);
+    finalOrigin.y -= floor((minSize.height - finalSize.height) / 2.0);
     finalSize.height = minSize.height;
   }
   

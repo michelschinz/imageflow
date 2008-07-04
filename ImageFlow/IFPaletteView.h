@@ -14,6 +14,8 @@
 @interface IFPaletteView : IFNodesView {
   NSMutableArray* templates;
   NSArray* normalModeTrees;
+
+  BOOL acceptFirstResponder;
 }
 
 - (IFTreeLayoutParameters*)layoutParameters;

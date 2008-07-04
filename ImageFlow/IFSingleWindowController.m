@@ -30,6 +30,9 @@ static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
 
 - (void)dealloc;
 {
+  [imageViewController removeObserver:self forKeyPath:@"activeView"];
+  [imageViewController removeObserver:self forKeyPath:@"mode"];
+  
   OBJC_RELEASE(hudWindowController);
   OBJC_RELEASE(imageViewController);
   OBJC_RELEASE(treeViewController);
@@ -41,6 +44,8 @@ static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
   NSWindow* window = [self window];
   [window setDisplaysWhenScreenProfileChanges:YES];
 
+  [imageViewController postInitWithCursorsVar:[treeViewController cursorsVar] canvasBoundsVar:[IFVariableKVO variableWithKVOCompliantObject:self.document key:@"canvasBounds"]];
+  
   NSArray* views = [[window contentView] subviews];
   NSAssert([views count] == 1, @"unexpected number of sub-views");
   NSSplitView* splitView = [views objectAtIndex:0];
@@ -48,23 +53,20 @@ static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
   [splitView replaceSubview:[[splitView subviews] objectAtIndex:0] with:[treeViewController topLevelView]];
   [splitView replaceSubview:[[splitView subviews] objectAtIndex:1] with:[imageViewController topLevelView]];
 
-  [treeViewController setDocument:[self document]];
+  [treeViewController setDocument:self.document];
 }
 
 - (void)windowDidLoad;
-{
-  [imageViewController setCanvasBounds:[IFVariableKVO variableWithKVOCompliantObject:[self document] key:@"canvasBounds"]];
-  [imageViewController setCursorPair:[treeViewController cursors]];
-  
-  [hudWindowController setCursorPair:[treeViewController cursors]];
-  [hudWindowController setUnderlyingWindow:[self window]];
-  [hudWindowController setUnderlyingView:[imageViewController activeView]];
+{  
+  [hudWindowController setCursorPair:treeViewController.cursorsVar.value];
+  [hudWindowController setUnderlyingWindow:self.window];
+  [hudWindowController setUnderlyingView:imageViewController.activeView];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFActiveViewDidChange) {
-    [hudWindowController setUnderlyingView:[imageViewController activeView]];
+    [hudWindowController setUnderlyingView:imageViewController.activeView];
   } else if (context == IFImageViewModeDidChange) {
     [hudWindowController setVisible:([imageViewController mode] == IFImageViewModeEdit)];
   } else

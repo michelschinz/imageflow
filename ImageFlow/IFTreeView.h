@@ -16,13 +16,11 @@
 #import "IFTreeMark.h"
 #import "IFTreeLayoutStrategy.h"
 #import "IFTreeLayoutParameters.h"
-#import "IFTreeCursorPair.h"
 
 @interface IFTreeView : IFNodesView {
   IFTreeLayoutStrategy* layoutStrategy;
 
   NSArray* marks;
-  IFTreeCursorPair* cursors;
   NSSet* unreachableNodes;
   NSMutableSet* selectedNodes;
 
@@ -39,8 +37,6 @@
 
 - (IBAction)makeNodeAlias:(id)sender;
 - (IBAction)toggleNodeFoldingState:(id)sender;
-
-- (IFTreeCursorPair*)cursors;
 
 - (IBAction)setBookmark:(id)sender;
 - (IBAction)removeBookmark:(id)sender;

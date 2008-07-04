@@ -8,7 +8,6 @@
 
 #import "IFVariable.h"
 
-
 @implementation IFVariable
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString*)key;

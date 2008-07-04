@@ -98,12 +98,11 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 
   OBJC_RELEASE(selectedNodes);
   OBJC_RELEASE(unreachableNodes);
-  if (cursors != nil) {
-    [cursors removeObserver:self forKeyPath:@"isViewLocked"];
-    OBJC_RELEASE(cursors);
-  }
   OBJC_RELEASE(marks);
 
+  if (cursors != nil)
+    [cursors removeObserver:self forKeyPath:@"isViewLocked"];
+  
   [super dealloc];
 }
 
@@ -119,8 +118,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 {
   [super setDocument:theDocument];
 
-  NSAssert(cursors == nil, @"cursors already set!");
-  cursors = [[IFTreeCursorPair treeCursorPairWithTree:[theDocument tree] editMark:[IFTreeMark mark] viewMark:[IFTreeMark mark]] retain];
+  NSAssert(cursors != nil, @"cursors not set!");
   [cursors addObserver:self forKeyPath:@"viewLockedNode" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFViewLockedChangedContext];
 }
 
@@ -135,11 +133,6 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
 }
 
 #pragma mark NSView methods
-
--(BOOL)acceptsFirstResponder;
-{
-  return YES;
-}
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent;
 {
@@ -178,12 +171,7 @@ static NSString* IFViewLockedChangedContext = @"IFViewLockedChangedContext";
   }
 }
 
-#pragma mark Cursors and bookmarks
-
-- (IFTreeCursorPair*)cursors;
-{
-  return cursors;
-}
+#pragma mark Bookmarks
 
 - (IBAction)setBookmark:(id)sender;
 {
