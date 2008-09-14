@@ -46,6 +46,8 @@
   [super dealloc];
 }
 
+@synthesize canvasBounds;
+
 - (float)columnWidth;
 {
   return columnWidth;
@@ -68,7 +70,7 @@
 
 - (float)gutterWidth;
 {
-  return sidePaneSize.width + 4.0;
+  return 30;
 }
 
 @synthesize labelFont;
@@ -86,7 +88,7 @@
 
 - (float)connectorArrowSize;
 {
-  return 4.0;
+  return 5.0;
 }
 
 @synthesize cursorColor;

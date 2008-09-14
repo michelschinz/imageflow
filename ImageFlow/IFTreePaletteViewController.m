@@ -27,20 +27,20 @@
 
 - (void)awakeFromNib;
 {
-  cursorsVar.value = treeView.cursors;
+  cursorsVar.value = forestView.cursors;
 }
 
 - (void)setDocument:(IFDocument*)document;
 {
-  [treeView setDocument:document];
+  [forestView setDocument:document];
   [paletteView setDocument:document];
 }
 
 @synthesize cursorsVar;
 
-- (void)willBecomeActive:(IFNodesView*)nodesView;
+- (void)willBecomeActive:(IFForestView*)newForestView;
 {
-  cursorsVar.value = nodesView.cursors;
+  cursorsVar.value = newForestView.cursors;
 }
 
 @end

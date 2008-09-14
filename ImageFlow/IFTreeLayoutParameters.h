@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 
 @interface IFTreeLayoutParameters : NSObject {
+  CGRect canvasBounds;
+  
   NSColor* backgroundColor;
   float columnWidth;
   
@@ -26,6 +28,7 @@
   NSColor* highlightingColor;
 }
 
+@property CGRect canvasBounds;
 @property float columnWidth;
 
 @property(readonly, retain) NSColor* backgroundColor;

@@ -9,14 +9,15 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFViewController.h"
+#import "IFForestView.h"
 #import "IFTreeView.h"
 #import "IFPaletteView.h"
 #import "IFTreeLayoutParameters.h"
 #import "IFVariable.h"
 
-@interface IFTreePaletteViewController : IFViewController<IFNodesViewDelegate> {
+@interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate> {
   IBOutlet IFTreeLayoutParameters* layoutParameters;
-  IBOutlet IFTreeView* treeView;
+  IBOutlet IFForestView* forestView;
   IBOutlet IFPaletteView* paletteView;
   
   IFVariable* cursorsVar;
@@ -27,6 +28,6 @@
 @property(readonly, assign) IFVariable* cursorsVar;
 
 // delegate methods
-- (void)willBecomeActive:(IFNodesView*)nodesView;
+- (void)willBecomeActive:(IFForestView*)nodesView;
 
 @end
