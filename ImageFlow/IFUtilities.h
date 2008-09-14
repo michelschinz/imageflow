@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#define OBJC_RELEASE(o) { [o release]; o = nil; }
+#define OBJC_RELEASE(o) { if (o != nil) { [o release]; o = nil; } }
 
 typedef enum { IFUp, IFDown, IFLeft, IFRight } IFDirection;
 
