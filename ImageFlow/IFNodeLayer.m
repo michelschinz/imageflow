@@ -76,49 +76,22 @@ static NSImage* aliasImage = nil;
 
 - (NSImage*)dragImage;
 {
-  [NSGraphicsContext saveGraphicsState];
+  size_t width = round(CGRectGetWidth(self.bounds));
+  size_t height = round(CGRectGetHeight(self.bounds));
   
-  CGRect enclosingRect = { CGPointZero, [self bounds].size };
-  NSBitmapImageRep* opaqueImageRep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-                                                                              pixelsWide:CGRectGetWidth(enclosingRect)
-                                                                              pixelsHigh:CGRectGetHeight(enclosingRect)
-                                                                           bitsPerSample:8
-                                                                         samplesPerPixel:4
-                                                                                hasAlpha:YES
-                                                                                isPlanar:NO
-                                                                          colorSpaceName:NSCalibratedRGBColorSpace
-                                                                             bytesPerRow:0
-                                                                            bitsPerPixel:0] autorelease];
-  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:opaqueImageRep]];
-  [[NSColor clearColor] set];
-  NSRectFillUsingOperation(NSRectFromCGRect(enclosingRect), NSCompositeClear);
-  NSAffineTransform* transform = [NSAffineTransform transform];
-  [transform translateXBy:-CGRectGetMinX(self.bounds) yBy:-CGRectGetMinY(self.bounds)];
-  [transform concat];
-  [self drawInCurrentNSGraphicsContext];
-  NSImage* opaqueImage = [[NSImage new] autorelease];
-  [opaqueImage addRepresentation:opaqueImageRep];
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+  CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedFirst);
+  CGContextSetAlpha(ctx, 0.6);
+  [self drawInContext:ctx];
+  CGImageRef cgDragImage = CGBitmapContextCreateImage(ctx);
+  NSImageRep* imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:cgDragImage] autorelease];
+  CGImageRelease(cgDragImage);
+  CGContextRelease(ctx);
+  CGColorSpaceRelease(colorSpace);
   
-  NSBitmapImageRep* transparentImageRep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-                                                                                   pixelsWide:CGRectGetWidth(enclosingRect)
-                                                                                   pixelsHigh:CGRectGetHeight(enclosingRect)
-                                                                                bitsPerSample:8
-                                                                              samplesPerPixel:4
-                                                                                     hasAlpha:YES
-                                                                                     isPlanar:NO
-                                                                               colorSpaceName:NSCalibratedRGBColorSpace
-                                                                                  bytesPerRow:0
-                                                                                 bitsPerPixel:0] autorelease];
-  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:transparentImageRep]];
-  [[NSColor clearColor] set];
-  NSRectFillUsingOperation(NSRectFromCGRect(enclosingRect), NSCompositeClear);
-  [opaqueImage dissolveToPoint:NSZeroPoint fraction:0.6];
-  NSImage* transparentImage = [[NSImage new] autorelease];
-  [transparentImage addRepresentation:transparentImageRep];
-  
-  [NSGraphicsContext restoreGraphicsState];
-  
-  return transparentImage;
+  NSImage* dragImage = [[[NSImage alloc] init] autorelease];
+  [dragImage addRepresentation:imageRep];
+  return dragImage;
 }
 
 // MARK: misc.
