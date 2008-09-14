@@ -20,21 +20,17 @@
 + (IFTreeNode*)ghostNodeWithInputArity:(int)inputArity;
 + (IFTreeNode*)universalSourceWithIndex:(unsigned)index;
 
-#pragma mark Attributes
+// MARK: Properties
 
-- (void)setName:(NSString*)newName;
-- (NSString*)name;
+@property(retain) NSString* name;
+@property BOOL isFolded;
+@property(readonly) BOOL isGhost;
+@property(readonly) BOOL isAlias;
+@property(readonly) BOOL isHole;
 
-- (void)setIsFolded:(BOOL)newIsFolded;
-- (BOOL)isFolded;
-
-- (BOOL)isGhost;
-- (BOOL)isAlias;
-- (BOOL)isHole;
-
-- (IFTreeNode*)original;
-- (IFEnvironment*)settings;
-- (IFExpression*)expression;
+@property(readonly, retain) IFTreeNode* original;
+@property(readonly, retain) IFEnvironment* settings;
+@property(readonly, retain) IFExpression* expression;
 
 - (int)inputArity;
 - (int)outputArity;
@@ -43,12 +39,14 @@
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 - (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;
 
-#pragma mark Tree view support
-- (NSString*)nameOfParentAtIndex:(int)index;
-- (NSString*)label;
-- (NSString*)toolTip;
+// MARK: Tree view support
 
-#pragma mark Image view support
+- (NSString*)nameOfParentAtIndex:(int)index;
+@property(readonly, retain) NSString* label;
+@property(readonly, retain) NSString* toolTip;
+
+// MARK: Image view support
+
 - (NSArray*)editingAnnotationsForView:(NSView*)view;
 - (void)mouseDown:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
 - (void)mouseDragged:(NSEvent*)event inView:(IFImageView*)imageView viewFilterTransform:(NSAffineTransform*)viewFilterTransform;
@@ -58,8 +56,7 @@
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 - (NSAffineTransform*)transformForParentAtIndex:(int)index;
 
-#pragma mark -
-#pragma mark (protected)
+// MARK: (protected)
 - (void)updateExpression;
 - (void)setExpression:(IFExpression*)newExpression;
 

@@ -44,30 +44,10 @@
   [super dealloc];
 }
 
-#pragma mark Attributes
+// MARK: Properties
 
-- (void)setName:(NSString*)newName;
-{
-  if (name == newName)
-    return;
-  [name release];
-  name = [newName retain];
-}
-
-- (NSString*)name;
-{
-  return name;
-}
-
-- (void)setIsFolded:(BOOL)newIsFolded;
-{
-  isFolded = newIsFolded;
-}
-
-- (BOOL)isFolded;
-{
-  return isFolded;
-}
+@synthesize name;
+@synthesize isFolded;
 
 - (BOOL)isGhost;
 {
@@ -128,7 +108,7 @@
   return 1;
 }
 
-#pragma mark Tree view support
+// MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
@@ -148,7 +128,7 @@
   return nil;
 }
 
-#pragma mark Image view support
+// MARK: Image view support
 
 - (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
@@ -195,7 +175,7 @@
   return nil;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -208,8 +188,7 @@
   [encoder encodeBool:isFolded forKey:@"isFolded"];
 }
 
-#pragma mark -
-#pragma mark (protected)
+// MARK: (protected)
 
 - (void)updateExpression;
 {
