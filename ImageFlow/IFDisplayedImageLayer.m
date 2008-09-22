@@ -21,14 +21,14 @@ static NSImage* lockUnlockedImage;
   lockUnlockedImage = [NSImage imageNamed:NSImageNameLockUnlockedTemplate];
 }
 
-+ (id)displayedImageLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)displayedImageLayer;
 {
-  return [[[self alloc] initWithLayoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] init] autorelease];
 }
 
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)init;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
+  if (![super init])
     return nil;
   self.backgroundColor = CGColorCreateGenericGray(0.75, 1.0);
   

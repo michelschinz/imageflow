@@ -13,6 +13,7 @@
 #import "IFLayerSetExplicit.h"
 #import "IFLayerSubsetComposites.h"
 #import "IFOutputConnectorLayer.h"
+#import "IFLayoutParameters.h"
 
 @interface IFForestLayoutManager (Private)
 - (BOOL)checkLayersStartingAt:(IFTreeNode*)root withNodeLayers:(NSDictionary*)nodeLayers inConnectorLayers:(NSDictionary*)inConnectorLayers outConnectorLayers:(NSDictionary*)outConnectorLayers;
@@ -35,23 +36,9 @@
   return answer;
 }
 
-+ (id)forestLayoutManagerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)forestLayoutManager;
 {
-  return [[[self alloc] initWithLayoutParameters:theLayoutParameters] autorelease];
-}
-
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-{
-  if (![super init])
-    return nil;
-  layoutParameters = [theLayoutParameters retain];
-  return self;
-}
-
-- (void) dealloc;
-{
-  OBJC_RELEASE(layoutParameters);
-  [super dealloc];
+  return [[[self alloc] init] autorelease];
 }
 
 @synthesize tree;
@@ -60,6 +47,8 @@
 
 - (void)layoutSublayersOfLayer:(CALayer*)parentLayer;
 {
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  
   // Find all layers and associate them with their node
   NSMutableDictionary* nodeLayers = createMutableDictionaryWithRetainedKeys();
   NSMutableDictionary* inConnectorLayers = createMutableDictionaryWithRetainedKeys();
@@ -125,6 +114,8 @@
 
 - (IFLayerSet*)layoutTreeStartingAt:(IFTreeNode*)root usingNodeLayers:(NSDictionary*)nodeLayers inConnectorLayers:(NSDictionary*)inConnectorLayers outConnectorLayers:(NSDictionary*)outConnectorLayers inFoldedSubtree:(BOOL)inFoldedSubtree;
 {
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+
   BOOL parentsInFoldedSubtree = (inFoldedSubtree || root.isFolded);
   IFLayerSetExplicit* allLayers = [IFLayerSetExplicit layerSet];
 
@@ -193,7 +184,7 @@
   }
   
   // Layout root
-  IFLayer* rootLayer = [nodeLayers objectForKey:root];
+  CALayer* rootLayer = [nodeLayers objectForKey:root];
   rootLayer.hidden = inFoldedSubtree;
   rootLayer.bounds = (CGRect){ CGPointZero, [rootLayer preferredFrameSize] };
   if (parentsWidth == 0)

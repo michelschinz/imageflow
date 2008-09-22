@@ -8,13 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFLayer.h"
-
-@interface IFDisplayedImageLayer : IFLayer {
+@interface IFDisplayedImageLayer : CALayer {
   CALayer* lockLayer; // not retained
 }
 
-+ (id)displayedImageLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)displayedImageLayer;
 
 @end

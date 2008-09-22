@@ -12,7 +12,7 @@
 #import "IFConstantExpression.h"
 #import "IFThumbnailLayer.h"
 
-@interface IFNodeLayer : IFLayer {
+@interface IFNodeLayer : CALayer {
   IFTreeNode* node;
 
   // Component layers (not retained)
@@ -21,15 +21,15 @@
   CATextLayer* nameLayer;
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
+- (id)initWithNode:(IFTreeNode*)theNode;
 
-@property(readonly, assign) IFTreeNode* node;
+@property(readonly) IFTreeNode* node;
 
-@property(readonly, assign) CATextLayer* labelLayer;
-@property(readonly, assign) IFThumbnailLayer* thumbnailLayer;
-@property(readonly, assign) CATextLayer* nameLayer;
+@property(readonly) CATextLayer* labelLayer;
+@property(readonly) IFThumbnailLayer* thumbnailLayer;
+@property(readonly) CATextLayer* nameLayer;
 
-@property(readonly, retain) NSImage* dragImage;
+@property(readonly) NSImage* dragImage;
 
 @end

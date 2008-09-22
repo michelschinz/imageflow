@@ -17,6 +17,7 @@
 #import "IFLayerSubsetComposites.h"
 #import "IFDocument.h"
 #import "IFTreeTemplateManager.h"
+#import "IFLayoutParameters.h"
 
 @interface IFForestView (Private)
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
@@ -80,7 +81,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   rootLayer.backgroundColor = grayColor;
   CGColorRelease(grayColor);
   
-  IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManagerWithLayoutParameters:layoutParameters];
+  IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManager];
   rootLayoutManager.delegate = self;
   rootLayer.layoutManager = rootLayoutManager;
 
@@ -114,7 +115,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   }
 
   document = newDocument;
-  layoutParameters.canvasBounds = NSRectToCGRect(document.canvasBounds);
   [self syncLayersWithTree];
 }
 
@@ -140,7 +140,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
   if (context == IFCanvasBoundsDidChange)
-    layoutParameters.canvasBounds = NSRectToCGRect(document.canvasBounds);
+    NSLog(@"canvas bounds changed");
   else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
@@ -685,21 +685,21 @@ static enum {
     if ([existingNodeLayers objectForKey:node] != nil)
       [existingNodeLayers removeObjectForKey:node];
     else
-      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node layoutParameters:layoutParameters]];
+      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node]];
     
     IFLayerNeededMask layersNeeded = [IFForestLayoutManager layersNeededFor:node inTree:tree];
     if (layersNeeded & IFLayerNeededIn) {
       if ([existingInConnectorLayers objectForKey:node] != nil)
         [existingInConnectorLayers removeObjectForKey:node];
       else
-        [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindInput layoutParameters:layoutParameters]];
+        [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindInput]];
     }
     
     if (layersNeeded & IFLayerNeededOut) {
       if ([existingOutConnectorLayers objectForKey:node] != nil)
         [existingOutConnectorLayers removeObjectForKey:node];
       else 
-        [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindOutput layoutParameters:layoutParameters]];
+        [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindOutput]];
     }
   }
 
@@ -755,7 +755,7 @@ static enum {
   [textField setImportsGraphics:NO];
   [textField setDrawsBackground:NO];
   [textField setBordered:NO];
-  [textField setFont:layoutParameters.labelFont];
+  [textField setFont:[IFLayoutParameters sharedLayoutParameters].labelFont];
   [textField setFrame:NSRectFromCGRect([ghostCompositeLayer convertRect:ghostCompositeLayer.baseLayer.frame toLayer:self.layer])];
   [textField setDelegate:self];
   
@@ -870,7 +870,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 {
   const float searchDistance = 1000;
 
-  IFLayer* refLayer = [self compositeLayerForNode:self.cursorNode];
+  CALayer* refLayer = [self compositeLayerForNode:self.cursorNode];
   CGRect refRect = [refLayer convertRect:refLayer.bounds toLayer:self.layer];
   
   CGPoint refMidPoint = IFFaceMidPoint(refRect, direction);
@@ -932,6 +932,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 
 - (void)updateCursorLayers;
 {
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   IFTreeNode* cursorNode = self.cursorNode;
   NSSet* selNodes = self.selectedNodes;
   
@@ -939,7 +940,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
     if (!nodeLayer.isNode)
       continue;
     
-    IFLayer* displayedImageLayer = nodeLayer.displayedImageLayer;
+    CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
     CALayer* cursorLayer = nodeLayer.cursorLayer;
     IFTreeNode* node = nodeLayer.node;
 

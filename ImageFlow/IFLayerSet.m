@@ -11,24 +11,24 @@
 
 @implementation IFLayerSet
 
-- (IFLayer*)firstLayer;
+- (CALayer*)firstLayer;
 {
-  for (IFLayer* layer in self)
+  for (CALayer* layer in self)
     return layer;
   return nil;
 }
 
-- (IFLayer*)lastLayer;
+- (CALayer*)lastLayer;
 {
-  IFLayer* last = nil;
-  for (IFLayer* layer in self)
+  CALayer* last = nil;
+  for (CALayer* layer in self)
     last = layer;
   return last;
 }
 
-- (IFLayer*)layerAtIndex:(int)index;
+- (CALayer*)layerAtIndex:(int)index;
 {
-  for (IFLayer* layer in self) {
+  for (CALayer* layer in self) {
     if (index-- == 0)
       return layer;
   }
@@ -38,22 +38,22 @@
 - (CGRect)boundingBox;
 {
   CGRect bbox = CGRectNull;
-  for (IFLayer* layer in self)
+  for (CALayer* layer in self)
     bbox = CGRectIsNull(bbox) ? layer.frame : CGRectUnion(bbox, layer.frame);
   return bbox;
 }
 
 - (void)translateByX:(float)dx Y:(float)dy;
 {
-  for (IFLayer* layer in self) {
+  for (CALayer* layer in self) {
     CGPoint currPos = layer.position;
     layer.position = CGPointMake(currPos.x + dx, currPos.y + dy);
   }
 }
 
-- (IFLayer*)hitTest:(CGPoint)point;
+- (CALayer*)hitTest:(CGPoint)point;
 {
-  for (IFLayer* layer in self) {
+  for (CALayer* layer in self) {
     if ([layer hitTest:point])
       return layer;
   }

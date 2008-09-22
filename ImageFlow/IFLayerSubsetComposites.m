@@ -17,7 +17,7 @@
   return [[(IFLayerSubset*)[self alloc] initWithSet:theSet] autorelease];
 }
 
-- (BOOL)shouldContain:(IFLayer*)layerCandidate;
+- (BOOL)shouldContain:(CALayer*)layerCandidate;
 {
   return [layerCandidate isKindOfClass:[IFCompositeLayer class]];
 }

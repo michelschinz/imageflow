@@ -16,6 +16,6 @@
 
 - (id)initWithSet:(IFLayerSet*)theSet;
 
-- (BOOL)shouldContain:(IFLayer*)layerCandidate; // abstract
+- (BOOL)shouldContain:(CALayer*)layerCandidate; // abstract
 
 @end

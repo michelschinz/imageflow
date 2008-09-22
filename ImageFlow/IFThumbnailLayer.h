@@ -8,9 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFLayer.h"
+#import "IFTreeNode.h"
+#import "IFConstantExpression.h"
 
-@interface IFThumbnailLayer : IFLayer {
+@interface IFThumbnailLayer : CALayer {
   IFTreeNode* node;
   
   IFConstantExpression* evaluatedExpression;
@@ -20,7 +21,7 @@
   CALayer* maskIndicatorLayer; // not retained
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
+- (id)initForNode:(IFTreeNode*)theNode;
 
 @end

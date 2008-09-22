@@ -29,7 +29,7 @@
 {
   if (state->state == 0) {
     NSMutableArray* filteredSet = [NSMutableArray array];
-    for (IFLayer* candidate in set) {
+    for (CALayer* candidate in set) {
       if ([self shouldContain:candidate])
         [filteredSet addObject:candidate];
     }
@@ -37,7 +37,7 @@
   }
   
   NSEnumerator* enumerator = (NSEnumerator*)state->state;
-  IFLayer* layer;
+  CALayer* layer;
   NSUInteger count = 0;
   while ((count < len) && (layer = [enumerator nextObject]))
       stackbuf[count++] = layer;
@@ -51,7 +51,7 @@
   return count;
 }
 
-- (BOOL)shouldContain:(IFLayer*)layerCandidate;
+- (BOOL)shouldContain:(CALayer*)layerCandidate;
 {
   [self doesNotRecognizeSelector:_cmd];
   return NO;

@@ -9,17 +9,12 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFCompositeLayer.h"
-
-typedef enum {
-  IFConnectorKindInput,
-  IFConnectorKindOutput
-} IFConnectorKind;
+#import "IFConnectorLayer.h"
 
 @interface IFConnectorCompositeLayer : IFCompositeLayer {
-  IFConnectorKind kind;
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
+- (id)initWithNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 
 @end

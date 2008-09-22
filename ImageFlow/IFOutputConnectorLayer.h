@@ -11,11 +11,9 @@
 #import "IFConnectorLayer.h"
 
 @interface IFOutputConnectorLayer : IFConnectorLayer {
-  NSString* label;
+  CATextLayer* labelLayer; // not retained
   float leftReach, rightReach;
 }
-
-+ (id)outputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 
 @property(retain) NSString* label;
 @property float leftReach, rightReach;

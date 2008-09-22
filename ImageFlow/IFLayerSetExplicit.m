@@ -40,29 +40,29 @@
   [super dealloc];
 }
 
-- (IFLayer*)firstLayer;
+- (CALayer*)firstLayer;
 {
   return [layers count] > 0 ? [layers objectAtIndex:0] : nil;
 }
 
-- (IFLayer*)lastLayer;
+- (CALayer*)lastLayer;
 {
   return [layers lastObject];
 }
 
-- (IFLayer*)layerAtIndex:(int)index;
+- (CALayer*)layerAtIndex:(int)index;
 {
   return [layers objectAtIndex:index];
 }
 
-- (void)addLayer:(IFLayer*)layer;
+- (void)addLayer:(CALayer*)layer;
 {
   [layers addObject:layer];
 }
 
 - (void)addLayersFromGroup:(IFLayerSet*)group;
 {
-  for (IFLayer* layer in group)
+  for (CALayer* layer in group)
     [layers addObject:layer];
 }
 

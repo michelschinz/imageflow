@@ -12,7 +12,6 @@
 #import "IFDocument.h"
 #import "IFTreeLayoutParameters.h"
 #import "IFTreeCursorPair.h"
-#import "IFLayer.h"
 #import "IFCompositeLayer.h"
 #import "IFLayerSet.h"
 #import "IFForestLayoutManager.h"
@@ -26,7 +25,6 @@
   IFGrabableViewMixin* grabableViewMixin;
   
   IFDocument* document;
-  IBOutlet IFTreeLayoutParameters* layoutParameters;
 
   // Cursors and selection
   IFTreeCursorPair* cursors;

@@ -2,43 +2,28 @@
 //  IFInputConnectorLayer.m
 //  ImageFlow
 //
-//  Created by Michel Schinz on 04.09.08.
+//  Created by Michel Schinz on 22.09.08.
 //  Copyright 2008 Michel Schinz. All rights reserved.
 //
 
 #import "IFInputConnectorLayer.h"
+#import "IFLayoutParameters.h"
 
 @implementation IFInputConnectorLayer
 
-+ (id)inputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (CGPathRef)createOutlinePath;
 {
-  return [[[self alloc] initForNode:theNode layoutParameters:theLayoutParameters] autorelease];
-}
-
-- (CGSize)preferredFrameSize;
-{
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float arrowSize = layoutParameters.connectorArrowSize;
   
-  NSBezierPath* outline = [NSBezierPath bezierPath];
-  [outline moveToPoint:NSMakePoint(arrowSize, 0)];
-  [outline relativeLineToPoint:NSMakePoint(-arrowSize, arrowSize)];
-  [outline relativeLineToPoint:NSMakePoint(layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin, 0)];
-  [outline relativeLineToPoint:NSMakePoint(-arrowSize, -arrowSize)];
-  [outline closePath];
-  self.outlinePath = outline;
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathMoveToPoint(path, NULL, arrowSize, 0);
+  CGPathAddLineToPoint(path, NULL, 0, arrowSize);
+  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - layoutParameters.nodeInternalMargin, arrowSize);
+  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - layoutParameters.nodeInternalMargin - arrowSize, 0);
+  CGPathCloseSubpath(path);
   
-  return NSSizeToCGSize(outlinePath.bounds.size);
-}
-
-- (void)drawInContext:(CGContextRef)context;
-{
-  [NSGraphicsContext saveGraphicsState];
-  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
-  
-  [layoutParameters.connectorColor set];
-  [self.outlinePath fill];
-  
-  [NSGraphicsContext restoreGraphicsState];
+  return path;
 }
 
 @end

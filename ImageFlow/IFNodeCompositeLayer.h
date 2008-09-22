@@ -9,12 +9,11 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFCompositeLayer.h"
-#import "IFNodeLayer.h"
 
 @interface IFNodeCompositeLayer : IFCompositeLayer {
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
+- (id)initWithNode:(IFTreeNode*)theNode;
 
 @end

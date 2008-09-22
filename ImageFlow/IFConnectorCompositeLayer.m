@@ -9,8 +9,6 @@
 #import "IFConnectorCompositeLayer.h"
 
 #import "IFConnectorHighlightLayer.h"
-#import "IFInputConnectorLayer.h"
-#import "IFOutputConnectorLayer.h"
 
 typedef enum {
   IFCompositeSublayerBase,
@@ -19,22 +17,19 @@ typedef enum {
 
 @implementation IFConnectorCompositeLayer
 
-+ (id)layerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 {
-  return [[[self alloc] initWithNode:theNode kind:theKind layoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] initWithNode:theNode kind:theKind] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)initWithNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
+  if (![super init])
     return nil;
   
-  kind = theKind;
-  IFLayer* baseLayer = (theKind == IFConnectorKindInput
-                        ? [IFInputConnectorLayer inputConnectorLayerForNode:theNode layoutParameters:theLayoutParameters]
-                        : [IFOutputConnectorLayer outputConnectorLayerForNode:theNode layoutParameters:theLayoutParameters]);
+  CALayer* baseLayer = [IFConnectorLayer connectorLayerForNode:theNode kind:theKind];
 
-  IFLayer* highlightLayer = [IFConnectorHighlightLayer highlightLayerWithLayoutParameters:theLayoutParameters];
+  CALayer* highlightLayer = [IFConnectorHighlightLayer highlightLayer];
   highlightLayer.frame = baseLayer.frame;
   highlightLayer.hidden = YES;
   highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
@@ -47,20 +42,20 @@ typedef enum {
 
 - (BOOL)isInputConnector;
 {
-  return kind == IFConnectorKindInput;
+  return ((IFConnectorLayer*)self.baseLayer).kind == IFConnectorKindInput;
 }
 
 - (BOOL)isOutputConnector;
 {
-  return kind == IFConnectorKindOutput;
+  return ((IFConnectorLayer*)self.baseLayer).kind == IFConnectorKindOutput;
 }
 
-- (IFLayer*)baseLayer;
+- (CALayer*)baseLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
 }
 
-- (IFLayer*)highlightLayer;
+- (CALayer*)highlightLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
 }

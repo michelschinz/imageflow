@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFLayerSet.h"
-#import "IFLayer.h"
 
 @interface IFLayerSetExplicit : IFLayerSet {
   NSMutableArray* layers;
@@ -20,7 +19,7 @@
 
 - (id)initWithLayers:(NSArray*)theLayers;
 
-- (void)addLayer:(IFLayer*)layer;
+- (void)addLayer:(CALayer*)layer;
 - (void)addLayersFromGroup:(IFLayerSet*)group;
 
 @end

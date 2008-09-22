@@ -11,6 +11,7 @@
 #import "IFOperatorExpression.h"
 #import "IFErrorConstantExpression.h"
 #import "IFImageConstantExpression.h"
+#import "IFLayoutParameters.h"
 
 @interface IFThumbnailLayer (Private)
 @property(retain) IFConstantExpression* evaluatedExpression;
@@ -49,16 +50,17 @@ static CGImageRef imageNamed(NSString* imageName) {
   maskImage = imageNamed(@"mask_tag");
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
 {
-  return [[[self alloc] initForNode:theNode layoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] initForNode:theNode] autorelease];
 }
 
-- (id)initForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)initForNode:(IFTreeNode*)theNode;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
+  if (![super init])
     return nil;
 
+  NSAssert(theNode != nil, @"nil node");
   node = [theNode retain];
   
   self.needsDisplayOnBoundsChange = YES;
@@ -82,21 +84,23 @@ static CGImageRef imageNamed(NSString* imageName) {
   
   [self updateEvaluatedExpression];
   
-  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
-  [layoutParameters addObserver:self forKeyPath:@"canvasBounds" options:0 context:IFCanvasBoundsChangedContext];
+  [[IFLayoutParameters sharedLayoutParameters] addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
+  // TODO: observe canvas bounds
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
-  
+
   return self;
 }
 
 - (void)dealloc;
 {
-  [node removeObserver:self forKeyPath:@"expression"];
-  [layoutParameters removeObserver:self forKeyPath:@"canvasBounds"];
-  [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
+  // If node is nil, this is a presentation layer (there doesn't seem to be a better way to know this currently)
+  if (node != nil) {
+    [node removeObserver:self forKeyPath:@"expression"];
+    [[IFLayoutParameters sharedLayoutParameters] removeObserver:self forKeyPath:@"columnWidth"];
   
-  OBJC_RELEASE(node);
-  OBJC_RELEASE(evaluatedExpression);
+    OBJC_RELEASE(node);
+    OBJC_RELEASE(evaluatedExpression);
+  }
   [super dealloc];
 }
 
@@ -105,6 +109,7 @@ static CGImageRef imageNamed(NSString* imageName) {
   if (aspectRatio == 0.0)
     return CGSizeZero;
   else {
+    const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
     const float width = layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin;
     return CGSizeMake(width, width / aspectRatio);
   }
@@ -173,6 +178,7 @@ static CGImageRef imageNamed(NSString* imageName) {
 
 - (void)updateEvaluatedExpression;
 {
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float margin = layoutParameters.nodeInternalMargin;
   
   IFExpression* nodeExpression = node.expression;

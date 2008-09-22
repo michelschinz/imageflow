@@ -10,6 +10,14 @@
 
 @implementation IFCompositeLayer
 
+- (id)init;
+{
+  if (![super init])
+    return nil;
+  self.anchorPoint = CGPointZero;
+  return self;
+}
+
 - (BOOL)isNode;
 {
   return NO;
@@ -25,12 +33,12 @@
   return NO;
 }
 
-- (IFLayer*)displayedImageLayer;
+- (CALayer*)displayedImageLayer;
 {
   return nil;
 }
 
-- (IFLayer*)baseLayer;
+- (CALayer*)baseLayer;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;

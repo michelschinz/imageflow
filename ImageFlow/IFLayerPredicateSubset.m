@@ -30,7 +30,7 @@
   [super dealloc];
 }
 
-- (BOOL)shouldContain:(IFLayer*)layerCandidate;
+- (BOOL)shouldContain:(CALayer*)layerCandidate;
 {
   return [predicate evaluateWithObject:layerCandidate];
 }

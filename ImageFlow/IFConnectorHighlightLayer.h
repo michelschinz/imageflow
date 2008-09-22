@@ -8,14 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFLayer.h"
-
-@interface IFConnectorHighlightLayer : IFLayer {
-  NSBezierPath* outlinePath;
+@interface IFConnectorHighlightLayer : CALayer {
+  CGPathRef outlinePath;
 }
 
-+ (id)highlightLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)highlightLayer;
 
-@property(retain) NSBezierPath* outlinePath;
+@property CGPathRef outlinePath;
 
 @end

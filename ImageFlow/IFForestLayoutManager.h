@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTree.h"
-#import "IFTreeLayoutParameters.h"
 
 typedef enum {
   IFLayerNeededIn  = 0x1,
@@ -22,15 +21,13 @@ typedef enum {
 @end
 
 @interface IFForestLayoutManager : NSObject {
-  IFTreeLayoutParameters* layoutParameters;
   IFTree* tree; // not retained
   id<IFForestLayoutManagerDelegate> delegate; // not retained
 }
 
 + (IFLayerNeededMask)layersNeededFor:(IFTreeNode*)node inTree:(IFTree*)tree;
 
-+ (id)forestLayoutManagerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)forestLayoutManager;
 
 @property(assign) IFTree* tree;
 @property(assign) id<IFForestLayoutManagerDelegate> delegate;

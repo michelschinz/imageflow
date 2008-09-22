@@ -8,20 +8,18 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFLayer.h"
-
 @interface IFLayerSet : NSObject<NSFastEnumeration> {
 
 }
 
-@property(readonly, retain) IFLayer* firstLayer;
-@property(readonly, retain) IFLayer* lastLayer;
-- (IFLayer*)layerAtIndex:(int)index;
+@property(readonly, retain) CALayer* firstLayer;
+@property(readonly, retain) CALayer* lastLayer;
+- (CALayer*)layerAtIndex:(int)index;
 
 - (CGRect)boundingBox;
 - (void)translateByX:(float)dx Y:(float)dy;
 
-- (IFLayer*)hitTest:(CGPoint)point;
+- (CALayer*)hitTest:(CGPoint)point;
 
 // NSFastEnumeration protocol
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState*)state objects:(id*)stackbuf count:(NSUInteger)len;

@@ -8,16 +8,28 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFLayer.h"
+#import "IFTreeNode.h"
 
-@interface IFConnectorLayer : IFLayer {
+typedef enum {
+  IFConnectorKindInput,
+  IFConnectorKindOutput
+} IFConnectorKind;
+
+@interface IFConnectorLayer : CALayer {
   IFTreeNode* node;
-  NSBezierPath* outlinePath;
+  IFConnectorKind kind;
+  CGPathRef outlinePath;
 }
 
-- (id)initForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)connectorLayerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
+- (id)initForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 
-@property(readonly, retain) IFTreeNode* node;
-@property(retain) NSBezierPath* outlinePath;
+@property(readonly) IFTreeNode* node;
+@property(readonly) IFConnectorKind kind;
+
+@property CGPathRef outlinePath;
+
+// MARK: (protected)
+- (CGPathRef)createOutlinePath; // abstract
 
 @end

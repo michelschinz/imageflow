@@ -7,30 +7,38 @@
 //
 
 #import "IFOutputConnectorLayer.h"
+#import "IFLayoutParameters.h"
 
 @implementation IFOutputConnectorLayer
 
-+ (id)outputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)initForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 {
-  return [[[self alloc] initForNode:theNode layoutParameters:theLayoutParameters] autorelease];
+  if (![super initForNode:theNode kind:theKind])
+    return nil;
+  
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  labelLayer = [CATextLayer layer];
+  labelLayer.anchorPoint = CGPointZero;
+  labelLayer.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame) + 1.0, CGRectGetWidth(self.frame), layoutParameters.labelFontHeight);
+  labelLayer.autoresizingMask = kCALayerWidthSizable;
+  labelLayer.font = layoutParameters.labelFont;
+  labelLayer.fontSize = layoutParameters.labelFont.pointSize;
+  labelLayer.foregroundColor = layoutParameters.connectorLabelColor;
+  labelLayer.alignmentMode = kCAAlignmentCenter;
+  labelLayer.truncationMode = kCATruncationMiddle;
+  [self addSublayer:labelLayer];
+  
+  return self;
 }
 
-- (void)dealloc;
+- (NSString*)label;
 {
-  OBJC_RELEASE(label);
-  [super dealloc];
+  return labelLayer.string;
 }
-
-@synthesize label;
 
 - (void)setLabel:(NSString*)newLabel;
 {
-  if (newLabel == label)
-    return;
-  if (![newLabel isEqualToString:label])
-    [self setNeedsDisplay];
-  [label release];
-  label = [newLabel retain];
+  labelLayer.string = newLabel;
 }
 
 @synthesize leftReach;
@@ -38,7 +46,7 @@
 - (void)setLeftReach:(float)newLeftReach;
 {
   if (newLeftReach != leftReach)
-    [self.superlayer setNeedsLayout];
+    [self setNeedsDisplay];
   leftReach = newLeftReach;
 }
 
@@ -47,64 +55,34 @@
 - (void)setRightReach:(float)newRightReach;
 {
   if (newRightReach != rightReach)
-    [self.superlayer setNeedsLayout];
+    [self setNeedsDisplay];
   rightReach = newRightReach;
 }
 
-- (CGSize)preferredFrameSize;
+- (CGPathRef)createOutlinePath;
 {
-  NSBezierPath* outline = [NSBezierPath bezierPath];
-  
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float margin = layoutParameters.nodeInternalMargin;
   const float arrowSize = layoutParameters.connectorArrowSize;
   const float internalWidth = layoutParameters.columnWidth - 2.0 * margin;
-  const float textHeight = layoutParameters.labelFontHeight;
+  const float textHeight = [labelLayer preferredFrameSize].height;
   
   float totalLeftLength = arrowSize + margin + leftReach;
   float totalRightLength = arrowSize + margin + rightReach;
   
   // Build the path in a clockwise direction, starting from the bottom-left corner (put at the origin)
-  [outline moveToPoint:NSZeroPoint];
-  [outline relativeLineToPoint:NSMakePoint(0, textHeight + 2.0)];
-  [outline relativeLineToPoint:NSMakePoint(totalLeftLength, 0)];
-  
-  [outline relativeLineToPoint:NSMakePoint(-arrowSize, arrowSize)];
-  [outline relativeLineToPoint:NSMakePoint(internalWidth, 0)];
-  [outline relativeLineToPoint:NSMakePoint(-arrowSize, -arrowSize)];
-  
-  [outline relativeLineToPoint:NSMakePoint(totalRightLength, 0)];
-  [outline relativeLineToPoint:NSMakePoint(0, -(textHeight + 2.0))];
-  
-  [outline closePath];
-  
-  self.outlinePath = outline;
-  
-  return NSSizeToCGSize(outlinePath.bounds.size);
-}
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathMoveToPoint(path, NULL, 0, 0);
+  CGPathAddLineToPoint(path, NULL, 0, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - arrowSize, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - arrowSize + internalWidth, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - 2.0 * arrowSize + internalWidth, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, 0);
+  CGPathCloseSubpath(path);
 
-- (void)drawInContext:(CGContextRef)context;
-{
-  [NSGraphicsContext saveGraphicsState];
-  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
-  
-  [layoutParameters.connectorColor set];
-  [self.outlinePath fill];
-  
-  if (label != nil) {
-    // TODO: replace with a text layer
-    NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
-    [parStyle setAlignment:NSCenterTextAlignment];
-    NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                parStyle, NSParagraphStyleAttributeName,
-                                layoutParameters.labelFont, NSFontAttributeName,
-                                layoutParameters.connectorLabelColor, NSForegroundColorAttributeName,
-                                nil];
-    NSAttributedString* attributedLabel = [[NSMutableAttributedString alloc] initWithString:label attributes:attributes];
-    float textHeight = layoutParameters.labelFontHeight;
-    [attributedLabel drawWithRect:NSMakeRect(leftReach, 2.0, layoutParameters.columnWidth, textHeight) options:0];
-  }
-  
-  [NSGraphicsContext restoreGraphicsState];
+  return path;
 }
 
 @end

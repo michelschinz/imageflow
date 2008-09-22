@@ -8,36 +8,48 @@
 
 #import "IFConnectorHighlightLayer.h"
 
+#import "IFLayoutParameters.h"
 
 @implementation IFConnectorHighlightLayer
 
-+ (id)highlightLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)highlightLayer;
 {
-  return [[[self alloc] initWithLayoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] init] autorelease];
 }
 
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (void)dealloc;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
-    return nil;
-  self.needsDisplayOnBoundsChange = YES;
-  return self;
+  CGPathRelease(outlinePath);
+  [super dealloc];
 }
 
-@synthesize outlinePath;
+- (CGPathRef)outlinePath;
+{
+  return outlinePath;
+}
+
+- (void)setOutlinePath:(CGPathRef)newOutlinePath;
+{
+  if (newOutlinePath == outlinePath)
+    return;
+  CGPathRelease(outlinePath);
+  outlinePath = CGPathRetain(newOutlinePath);
+  
+  [self setNeedsDisplay];
+}
 
 - (void)drawInContext:(CGContextRef)context;
 {
-  NSGraphicsContext *nsGraphicsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
-  [NSGraphicsContext saveGraphicsState];
-  [NSGraphicsContext setCurrentContext:nsGraphicsContext];
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
-  [layoutParameters.highlightingColor set];
-  [outlinePath setLineWidth:layoutParameters.selectionWidth];
-  [outlinePath fill];
-  [outlinePath stroke];
+  CGContextAddPath(context, outlinePath);
   
-  [NSGraphicsContext restoreGraphicsState];
+  CGContextSetFillColorWithColor(context, layoutParameters.highlightColor);
+  CGContextFillPath(context);
+  
+  CGContextSetStrokeColorWithColor(context, layoutParameters.highlightColor);
+  CGContextSetLineWidth(context, layoutParameters.selectionWidth);
+  CGContextStrokePath(context);
 }
 
 @end

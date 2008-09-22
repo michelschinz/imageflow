@@ -8,6 +8,8 @@
 
 #import "IFNodeCompositeLayer.h"
 #import "IFDisplayedImageLayer.h"
+#import "IFNodeLayer.h"
+#import "IFLayoutParameters.h"
 
 typedef enum {
   IFCompositeSublayerDisplayedImage,
@@ -18,21 +20,23 @@ typedef enum {
 
 @implementation IFNodeCompositeLayer
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
 {
-  return [[[self alloc] initWithNode:theNode layoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] initWithNode:theNode] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)initWithNode:(IFTreeNode*)theNode;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
+  if (![super init])
     return nil;
 
   self.zPosition = 1.0;
   
-  IFLayer* baseLayer = [IFNodeLayer layerForNode:theNode layoutParameters:layoutParameters];
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
-  IFLayer* displayedImageLayer = [IFDisplayedImageLayer displayedImageLayerWithLayoutParameters:layoutParameters];
+  CALayer* baseLayer = [IFNodeLayer layerForNode:theNode];
+  
+  CALayer* displayedImageLayer = [IFDisplayedImageLayer displayedImageLayer];
   displayedImageLayer.frame = CGRectInset(baseLayer.frame, -25, 0); // TODO: use a parameter in the layout parameters
   displayedImageLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   displayedImageLayer.hidden = YES;
@@ -76,7 +80,7 @@ typedef enum {
   return YES;
 }
 
-- (IFLayer*)displayedImageLayer;
+- (CALayer*)displayedImageLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerDisplayedImage];
 }
@@ -91,7 +95,7 @@ typedef enum {
   return [self.sublayers objectAtIndex:IFCompositeSublayerCursor];
 }
 
-- (IFLayer*)highlightLayer;
+- (CALayer*)highlightLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
 }

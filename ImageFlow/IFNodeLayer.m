@@ -9,6 +9,7 @@
 #import "IFNodeLayer.h"
 #import "IFOperatorExpression.h"
 #import "IFErrorConstantExpression.h"
+#import "IFLayoutParameters.h"
 
 @interface IFNodeLayer (Private)
 - (void)setupComponentLayers;
@@ -23,20 +24,20 @@
 static NSString* IFNodeLabelChangedContext = @"IFNodeLabelChangedContext";
 static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
-+ (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)layerForNode:(IFTreeNode*)theNode;
 {
-  return [[[self alloc] initWithNode:theNode layoutParameters:theLayoutParameters] autorelease];
+  return [[[self alloc] initWithNode:theNode] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+- (id)initWithNode:(IFTreeNode*)theNode;
 {
-  if (![super initWithLayoutParameters:theLayoutParameters])
+  if (![super init])
     return nil;
 
   node = [theNode retain];
   
   self.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-  self.cornerRadius = layoutParameters.nodeInternalMargin;
+  self.cornerRadius = [IFLayoutParameters sharedLayoutParameters].nodeInternalMargin;
   CGColorRef whiteColor = CGColorCreateGenericRGB(1, 1, 1, 1);
   self.backgroundColor = whiteColor;
   CGColorRelease(whiteColor);
@@ -59,6 +60,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
 - (CGSize)preferredFrameSize;
 {
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   float height;
   if (node.isGhost) {
     height = 20.0;  // TODO: use size obtained from NSCell's methods
@@ -75,6 +77,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
 - (void)layoutSublayers;
 {
+  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float internalMargin = layoutParameters.nodeInternalMargin;
   const float internalWidth = layoutParameters.columnWidth - 2.0 * internalMargin;
   
@@ -136,6 +139,8 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   if (node.isGhost)
     return;
   
+  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  
   // Create component layers
   labelLayer = [CATextLayer layer];
   labelLayer.font = layoutParameters.labelFont;
@@ -149,7 +154,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   [self updateLabel];
   [self addSublayer:labelLayer];
   
-  thumbnailLayer = [IFThumbnailLayer layerForNode:node layoutParameters:layoutParameters];
+  thumbnailLayer = [IFThumbnailLayer layerForNode:node];
   [self addSublayer:thumbnailLayer];
   
   nameLayer = [CATextLayer layer];
