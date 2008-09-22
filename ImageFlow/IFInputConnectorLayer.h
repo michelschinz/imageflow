@@ -8,12 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFBaseLayer.h"
+#import "IFConnectorLayer.h"
 
-@interface IFInputConnectorLayer : IFBaseLayer {
+@interface IFInputConnectorLayer : IFConnectorLayer {
 
 }
 
-+ (id)inputConnectorLayerWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)inputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 
 @end

@@ -8,14 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFBaseLayer.h"
+#import "IFConnectorLayer.h"
 
-@interface IFOutputConnectorLayer : IFBaseLayer {
+@interface IFOutputConnectorLayer : IFConnectorLayer {
   NSString* label;
   float leftReach, rightReach;
 }
 
-+ (id)outputConnectorLayerWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)outputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 
 @property(retain) NSString* label;
 @property float leftReach, rightReach;

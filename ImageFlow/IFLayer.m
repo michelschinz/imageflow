@@ -25,18 +25,4 @@
   [super dealloc];
 }
 
-- (void)drawInContext:(CGContextRef)context;
-{
-  NSGraphicsContext *nsGraphicsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
-  [NSGraphicsContext saveGraphicsState];
-  [NSGraphicsContext setCurrentContext:nsGraphicsContext];
-  [self drawInCurrentNSGraphicsContext];
-  [NSGraphicsContext restoreGraphicsState];
-}
-
-- (void)drawInCurrentNSGraphicsContext;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
 @end

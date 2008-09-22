@@ -31,7 +31,7 @@
 
 - (value)asCaml;
 
-// protected
+// MARK: (protected)
 - (id)initWithXML:(NSXMLElement*)xml;
 - (value)camlRepresentation;
 

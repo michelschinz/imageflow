@@ -10,7 +10,7 @@
 
 @implementation IFInputConnectorLayer
 
-+ (id)inputConnectorLayerWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)inputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 {
   return [[[self alloc] initForNode:theNode layoutParameters:theLayoutParameters] autorelease];
 }
@@ -30,10 +30,15 @@
   return NSSizeToCGSize(outlinePath.bounds.size);
 }
 
-- (void)drawInCurrentNSGraphicsContext;
+- (void)drawInContext:(CGContextRef)context;
 {
+  [NSGraphicsContext saveGraphicsState];
+  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+  
   [layoutParameters.connectorColor set];
   [self.outlinePath fill];
+  
+  [NSGraphicsContext restoreGraphicsState];
 }
 
 @end

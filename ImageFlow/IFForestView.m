@@ -10,7 +10,6 @@
 #import "IFNodeCompositeLayer.h"
 #import "IFConnectorCompositeLayer.h"
 #import "IFNodeLayer.h"
-#import "IFGhostNodeLayer.h"
 #import "IFDisplayedImageLayer.h"
 #import "IFForestLayoutManager.h"
 #import "IFLayerSetExplicit.h"
@@ -48,7 +47,6 @@ static NSString* IFTreePboardType = @"IFTreePboardType";
 static NSString* IFMarkPboardType = @"IFMarkPboardType";
 
 static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
-static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
 
 - (id)initWithFrame:(NSRect)theFrame;
 {
@@ -63,8 +61,6 @@ static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
 
 - (void)dealloc;
 {
-  [layoutParameters removeObserver:self forKeyPath:@"columnWidth"];
-
   if (document != nil) {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:IFTreeChangedNotification object:document];
     [document removeObserver:self forKeyPath:@"canvasBounds"];
@@ -79,7 +75,11 @@ static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
 - (void)awakeFromNib;
 {
   CALayer* rootLayer = [CALayer layer];
-  rootLayer.backgroundColor = CGColorCreateGenericRGB(0.5, 0.5, 0.5, 1.0); // TODO: use a converted version of layoutParameters.backgroundColor
+  
+  CGColorRef grayColor = CGColorCreateGenericRGB(0.5, 0.5, 0.5, 1.0); // TODO: use a converted version of layoutParameters.backgroundColor
+  rootLayer.backgroundColor = grayColor;
+  CGColorRelease(grayColor);
+  
   IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManagerWithLayoutParameters:layoutParameters];
   rootLayoutManager.delegate = self;
   rootLayer.layoutManager = rootLayoutManager;
@@ -89,8 +89,6 @@ static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
 
   self.enclosingScrollView.wantsLayer = YES;
   self.enclosingScrollView.contentView.wantsLayer = YES;
-  
-  [layoutParameters addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthDidChange];
 }
 
 @synthesize document;
@@ -143,8 +141,6 @@ static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
 {
   if (context == IFCanvasBoundsDidChange)
     layoutParameters.canvasBounds = NSRectToCGRect(document.canvasBounds);
-  else if (context == IFColumnWidthDidChange)
-    [self.layer setNeedsLayout];
   else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
@@ -335,7 +331,8 @@ static NSString* IFColumnWidthDidChange = @"IFColumnWidthDidChange";
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
     
     isCurrentDragLocal = NO;
-    [self dragImage:draggedLayer.baseLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+    IFNodeLayer* nodeLayer = (IFNodeLayer*)draggedLayer.baseLayer;
+    [self dragImage:nodeLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
   }
 }
 
@@ -943,13 +940,13 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
       continue;
     
     IFLayer* displayedImageLayer = nodeLayer.displayedImageLayer;
-    IFCursorLayer* cursorLayer = nodeLayer.cursorLayer;
+    CALayer* cursorLayer = nodeLayer.cursorLayer;
     IFTreeNode* node = nodeLayer.node;
 
     displayedImageLayer.hidden = (node != cursorNode);
     if ([selNodes containsObject:node]) {
       cursorLayer.hidden = NO;
-      cursorLayer.isCursor = (node == cursorNode);
+      cursorLayer.borderWidth = (node == cursorNode) ? layoutParameters.cursorWidth : layoutParameters.selectionWidth;
     } else
       cursorLayer.hidden = YES;
   }

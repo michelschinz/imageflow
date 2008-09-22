@@ -9,9 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFLayer.h"
-#import "IFBaseLayer.h"
-#import "IFCursorLayer.h"
-#import "IFHighlightLayer.h"
 #import "IFTreeNode.h"
 
 @interface IFCompositeLayer : IFLayer {
@@ -23,9 +20,9 @@
 @property(readonly) BOOL isOutputConnector;
 
 @property(readonly, assign) IFLayer* displayedImageLayer; // optional (can be nil)
-@property(readonly, assign) IFBaseLayer* baseLayer;
-@property(readonly, assign) IFCursorLayer* cursorLayer; // optional (can be nil)
-@property(readonly, assign) IFHighlightLayer* highlightLayer;
+@property(readonly, assign) IFLayer* baseLayer;
+@property(readonly, assign) CALayer* cursorLayer; // optional (can be nil)
+@property(readonly, assign) CALayer* highlightLayer;
 
 @property(readonly, assign) IFTreeNode* node;
 

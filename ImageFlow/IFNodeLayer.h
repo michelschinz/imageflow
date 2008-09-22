@@ -8,23 +8,28 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFBaseLayer.h"
 #import "IFTreeNode.h"
 #import "IFConstantExpression.h"
+#import "IFThumbnailLayer.h"
 
-@interface IFNodeLayer : IFBaseLayer {
-  BOOL isSource, isSink, isMask;
-  
-  // Internal layout state (set by updateInternalLayout)
-  BOOL showsErrorSign;
-  float thumbnailAspectRatio;
-  CGRect labelFrame;
-  CGRect thumbnailFrame;
-  CGRect nameFrame;
-  IFConstantExpression* evaluatedExpression;
+@interface IFNodeLayer : IFLayer {
+  IFTreeNode* node;
+
+  // Component layers (not retained)
+  CATextLayer* labelLayer;
+  IFThumbnailLayer* thumbnailLayer;
+  CATextLayer* nameLayer;
 }
 
 + (id)layerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 - (id)initWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
+
+@property(readonly, assign) IFTreeNode* node;
+
+@property(readonly, assign) CATextLayer* labelLayer;
+@property(readonly, assign) IFThumbnailLayer* thumbnailLayer;
+@property(readonly, assign) CATextLayer* nameLayer;
+
+@property(readonly, retain) NSImage* dragImage;
 
 @end

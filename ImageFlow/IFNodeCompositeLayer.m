@@ -7,10 +7,7 @@
 //
 
 #import "IFNodeCompositeLayer.h"
-#import "IFGhostNodeLayer.h"
-#import "IFCompositeLayoutManager.h"
 #import "IFDisplayedImageLayer.h"
-#import "IFHighlightLayer.h"
 
 typedef enum {
   IFCompositeSublayerDisplayedImage,
@@ -33,17 +30,43 @@ typedef enum {
 
   self.zPosition = 1.0;
   
-  [self addSublayer:[IFDisplayedImageLayer displayedImageLayerWithLayoutParameters:theLayoutParameters]];
-  [self addSublayer:([theNode isGhost]
-                     ? [IFGhostNodeLayer ghostLayerForNode: theNode layoutParameters:theLayoutParameters]
-                     : [IFNodeLayer layerForNode:theNode layoutParameters:theLayoutParameters])];
-  [self addSublayer:[IFCursorLayer cursorLayerWithLayoutParameters:theLayoutParameters]];
-  [self addSublayer:[IFHighlightLayer highlightLayerWithLayoutParameters:theLayoutParameters]];
+  IFLayer* baseLayer = [IFNodeLayer layerForNode:theNode layoutParameters:layoutParameters];
+  
+  IFLayer* displayedImageLayer = [IFDisplayedImageLayer displayedImageLayerWithLayoutParameters:layoutParameters];
+  displayedImageLayer.frame = CGRectInset(baseLayer.frame, -25, 0); // TODO: use a parameter in the layout parameters
+  displayedImageLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+  displayedImageLayer.hidden = YES;
+  
+  // Cursor / selection indicator
+  CALayer* cursorLayer = [CALayer layer];
+  cursorLayer.anchorPoint = CGPointZero;
+  cursorLayer.frame = baseLayer.frame;
+  cursorLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+  cursorLayer.cornerRadius = baseLayer.cornerRadius;
+  cursorLayer.hidden = YES;
+  CGColorRef redColor = CGColorCreateGenericRGB(1, 0, 0, 1); // TODO: use cursorColor from layout parameters
+  cursorLayer.borderColor = redColor;
+  CGColorRelease(redColor);
+  
+  // Highlight (used for drag&drop)
+  CALayer* highlightLayer = [CALayer layer];
+  highlightLayer.anchorPoint = CGPointZero;
+  highlightLayer.frame = baseLayer.frame;
+  highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+  highlightLayer.cornerRadius = baseLayer.cornerRadius;
+  highlightLayer.hidden = YES;
+  CGColorRef transparentBlueColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
+  highlightLayer.backgroundColor = transparentBlueColor;
+  CGColorRelease(transparentBlueColor);
+  CGColorRef opaqueBlueColor = CGColorCreateGenericRGB(0, 0, 1, 1);
+  highlightLayer.borderColor = opaqueBlueColor;
+  CGColorRelease(opaqueBlueColor);
+  highlightLayer.borderWidth = layoutParameters.selectionWidth;
 
-  // Hide all layers but the base
-  self.displayedImageLayer.hidden = YES;
-  self.cursorLayer.hidden = YES;
-  self.highlightLayer.hidden = YES;
+  [self addSublayer:displayedImageLayer];
+  [self addSublayer:baseLayer];
+  [self addSublayer:cursorLayer];
+  [self addSublayer:highlightLayer];
 
   return self;
 }
@@ -63,7 +86,7 @@ typedef enum {
   return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
 }
 
-- (IFCursorLayer*)cursorLayer;
+- (CALayer*)cursorLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerCursor];
 }
@@ -72,5 +95,5 @@ typedef enum {
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
 }
-  
+ 
 @end

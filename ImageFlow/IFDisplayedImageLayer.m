@@ -8,7 +8,6 @@
 
 #import "IFDisplayedImageLayer.h"
 
-
 @implementation IFDisplayedImageLayer
 
 static NSImage* lockLockedImage;
@@ -22,7 +21,6 @@ static NSImage* lockUnlockedImage;
   lockUnlockedImage = [NSImage imageNamed:NSImageNameLockUnlockedTemplate];
 }
 
-
 + (id)displayedImageLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 {
   return [[[self alloc] initWithLayoutParameters:theLayoutParameters] autorelease];
@@ -34,26 +32,18 @@ static NSImage* lockUnlockedImage;
     return nil;
   self.backgroundColor = CGColorCreateGenericGray(0.75, 1.0);
   
-  // Setup a fake frame to make the placement of sublayers possible
-  self.frame = CGRectMake(0, 0, 100, 100);
-  
   NSSize lockSize = [lockLockedImage size];
   float lockMaxSize = fmax(lockSize.width, lockSize.height) + 4.0;
   
   // Create sublayers, whose contents is provided by this layer (which is the sublayers' delegate)
   lockLayer = [CALayer layer];
-  lockLayer.frame = CGRectMake(3, 87, lockMaxSize, lockMaxSize);
+  lockLayer.frame = CGRectMake(3, CGRectGetHeight(self.bounds) - 15, lockMaxSize, lockMaxSize); // TODO: use image size to place lock correctly
   lockLayer.autoresizingMask = kCALayerMaxXMargin | kCALayerMinYMargin;
   lockLayer.delegate = self;
   [self addSublayer:lockLayer];
   [lockLayer setNeedsDisplay];
   
   return self;
-}
-
-- (void)drawInContext:(CGContextRef)context;
-{
-  // nothing to do (the background color is enough)
 }
 
 // delegate methods

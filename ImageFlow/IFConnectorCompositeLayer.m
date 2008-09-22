@@ -8,8 +8,7 @@
 
 #import "IFConnectorCompositeLayer.h"
 
-#import "IFBaseLayer.h"
-#import "IFHighlightLayer.h"
+#import "IFConnectorHighlightLayer.h"
 #import "IFInputConnectorLayer.h"
 #import "IFOutputConnectorLayer.h"
 
@@ -31,13 +30,17 @@ typedef enum {
     return nil;
   
   kind = theKind;
-  [self addSublayer:(theKind == IFConnectorKindInput
-                     ? [IFInputConnectorLayer inputConnectorLayerWithNode:theNode layoutParameters:theLayoutParameters]
-                     : [IFOutputConnectorLayer outputConnectorLayerWithNode:theNode layoutParameters:theLayoutParameters])];
-  [self addSublayer:[IFHighlightLayer highlightLayerWithLayoutParameters:theLayoutParameters]];
+  IFLayer* baseLayer = (theKind == IFConnectorKindInput
+                        ? [IFInputConnectorLayer inputConnectorLayerForNode:theNode layoutParameters:theLayoutParameters]
+                        : [IFOutputConnectorLayer outputConnectorLayerForNode:theNode layoutParameters:theLayoutParameters]);
+
+  IFLayer* highlightLayer = [IFConnectorHighlightLayer highlightLayerWithLayoutParameters:theLayoutParameters];
+  highlightLayer.frame = baseLayer.frame;
+  highlightLayer.hidden = YES;
+  highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   
-  // Hide all layers but the base
-  self.highlightLayer.hidden = YES;
+  [self addSublayer:baseLayer];
+  [self addSublayer:highlightLayer];
   
   return self;
 }
@@ -52,7 +55,7 @@ typedef enum {
   return kind == IFConnectorKindOutput;
 }
 
-- (IFBaseLayer*)baseLayer;
+- (IFLayer*)baseLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
 }
@@ -60,6 +63,12 @@ typedef enum {
 - (IFLayer*)highlightLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
+}
+
+- (void)layoutSublayers;
+{
+  ((IFConnectorHighlightLayer*)self.highlightLayer).outlinePath = ((IFConnectorLayer*)self.baseLayer).outlinePath;
+  [super layoutSublayers];
 }
 
 @end

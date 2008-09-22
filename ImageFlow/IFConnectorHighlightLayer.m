@@ -6,10 +6,10 @@
 //  Copyright 2008 Michel Schinz. All rights reserved.
 //
 
-#import "IFHighlightLayer.h"
+#import "IFConnectorHighlightLayer.h"
 
 
-@implementation IFHighlightLayer
+@implementation IFConnectorHighlightLayer
 
 + (id)highlightLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 {
@@ -26,12 +26,18 @@
 
 @synthesize outlinePath;
 
-- (void)drawInCurrentNSGraphicsContext;
+- (void)drawInContext:(CGContextRef)context;
 {
+  NSGraphicsContext *nsGraphicsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
+  [NSGraphicsContext saveGraphicsState];
+  [NSGraphicsContext setCurrentContext:nsGraphicsContext];
+  
   [layoutParameters.highlightingColor set];
   [outlinePath setLineWidth:layoutParameters.selectionWidth];
   [outlinePath fill];
   [outlinePath stroke];
+  
+  [NSGraphicsContext restoreGraphicsState];
 }
 
 @end

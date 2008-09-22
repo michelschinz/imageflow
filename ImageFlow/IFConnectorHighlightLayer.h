@@ -10,12 +10,11 @@
 
 #import "IFLayer.h"
 
-@interface IFHighlightLayer : IFLayer {
+@interface IFConnectorHighlightLayer : IFLayer {
   NSBezierPath* outlinePath;
 }
 
 + (id)highlightLayerWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 
 @property(retain) NSBezierPath* outlinePath;
 

@@ -13,7 +13,6 @@
 #import "IFTreeLayoutParameters.h"
 #import "IFTreeCursorPair.h"
 #import "IFLayer.h"
-#import "IFCursorLayer.h"
 #import "IFCompositeLayer.h"
 #import "IFLayerSet.h"
 #import "IFForestLayoutManager.h"

@@ -8,22 +8,7 @@
 
 #import "IFCompositeLayer.h"
 
-#import "IFCompositeLayoutManager.h"
-
 @implementation IFCompositeLayer
-
-- (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
-{
-  if (![super initWithLayoutParameters:theLayoutParameters])
-    return nil;
-  self.layoutManager = [IFCompositeLayoutManager compositeLayoutManagerWithLayoutParameters:theLayoutParameters];
-  return self;
-}
-
-- (CGSize)preferredFrameSize;
-{
-  return [self.baseLayer preferredFrameSize];
-}
 
 - (BOOL)isNode;
 {
@@ -45,18 +30,18 @@
   return nil;
 }
 
-- (IFBaseLayer*)baseLayer;
+- (IFLayer*)baseLayer;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
 }
 
-- (IFCursorLayer*)cursorLayer;
+- (CALayer*)cursorLayer;
 {
   return nil;
 }
 
-- (IFHighlightLayer*)highlightLayer;
+- (CALayer*)highlightLayer;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
@@ -64,7 +49,20 @@
 
 - (IFTreeNode*)node;
 {
-  return self.baseLayer.node;
+  return [self.baseLayer valueForKey:@"node"]; // HACK (slightly hackish)
+}
+
+- (CGSize)preferredFrameSize;
+{
+  return [self.baseLayer preferredFrameSize];
+}
+
+- (void)layoutSublayers;
+{
+  [super layoutSublayers];
+  
+  if (!CGSizeEqualToSize([self preferredFrameSize], self.frame.size))
+    [self.superlayer setNeedsLayout];
 }
 
 @end

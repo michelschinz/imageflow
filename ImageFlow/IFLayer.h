@@ -17,7 +17,4 @@
 
 - (id)initWithLayoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 
-- (void)drawInContext:(CGContextRef)context;
-- (void)drawInCurrentNSGraphicsContext; // abstract
-
 @end

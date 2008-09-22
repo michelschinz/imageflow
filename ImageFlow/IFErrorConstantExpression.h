@@ -16,6 +16,6 @@
 
 + (id)errorConstantExpressionWithMessage:(NSString*)theMessage;
 
-- (NSString*)message;
+@property(readonly, retain) NSString* message;
 
 @end

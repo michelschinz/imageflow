@@ -10,7 +10,6 @@
 
 #import "IFCompositeLayer.h"
 #import "IFNodeLayer.h"
-#import "IFCursorLayer.h"
 
 @interface IFNodeCompositeLayer : IFCompositeLayer {
 }

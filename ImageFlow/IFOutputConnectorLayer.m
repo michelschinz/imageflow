@@ -10,7 +10,7 @@
 
 @implementation IFOutputConnectorLayer
 
-+ (id)outputConnectorLayerWithNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
++ (id)outputConnectorLayerForNode:(IFTreeNode*)theNode layoutParameters:(IFTreeLayoutParameters*)theLayoutParameters;
 {
   return [[[self alloc] initForNode:theNode layoutParameters:theLayoutParameters] autorelease];
 }
@@ -82,13 +82,16 @@
   return NSSizeToCGSize(outlinePath.bounds.size);
 }
 
-
-- (void)drawInCurrentNSGraphicsContext;
+- (void)drawInContext:(CGContextRef)context;
 {
+  [NSGraphicsContext saveGraphicsState];
+  [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO]];
+  
   [layoutParameters.connectorColor set];
   [self.outlinePath fill];
   
   if (label != nil) {
+    // TODO: replace with a text layer
     NSMutableParagraphStyle* parStyle = [NSMutableParagraphStyle new];
     [parStyle setAlignment:NSCenterTextAlignment];
     NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -100,6 +103,8 @@
     float textHeight = layoutParameters.labelFontHeight;
     [attributedLabel drawWithRect:NSMakeRect(leftReach, 2.0, layoutParameters.columnWidth, textHeight) options:0];
   }
+  
+  [NSGraphicsContext restoreGraphicsState];
 }
 
 @end
