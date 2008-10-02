@@ -22,4 +22,6 @@
 - (void)addLayer:(CALayer*)layer;
 - (void)addLayersFromGroup:(IFLayerSet*)group;
 
+- (void)removeAllLayers;
+
 @end

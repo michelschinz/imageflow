@@ -66,6 +66,11 @@
     [layers addObject:layer];
 }
 
+- (void)removeAllLayers;
+{
+  [layers removeAllObjects];
+}
+
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState*)state objects:(id*)stackbuf count:(NSUInteger)len;
 {
   return [layers countByEnumeratingWithState:state objects:stackbuf count:len];
