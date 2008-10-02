@@ -43,7 +43,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return @"invert";
 }

@@ -64,7 +64,7 @@
   }
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return [NSString stringWithFormat:@"save %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
 }

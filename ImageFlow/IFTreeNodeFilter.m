@@ -80,11 +80,11 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   [self updateExpression];
 }
 
-- (void)updateExpression;
+- (IFExpression*)computeExpression;
 {
   IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:activeTypeIndex] withValuesFromVariablesEnvironment:[settings asDictionary]];
   IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:parentExpressions];
-  [self setExpression:expr2];
+  return expr2;
 }
 
 #pragma mark Filter settings view support
@@ -109,11 +109,6 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
   return [NSString stringWithFormat:@"parent %d",index];
-}
-
-- (NSString*)label;
-{
-  return [self className];
 }
 
 - (NSString*)toolTip;
@@ -219,10 +214,11 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
         NSAssert(NO, @"unexpected change kind");
         break;
     }
-  } else if (context == IFSettingsValueDidChangeContext)
+  } else if (context == IFSettingsValueDidChangeContext) {
+    [self updateLabel];
     [self updateExpression];
-  else
-    NSAssert1(NO, @"unexpected context %@", context);
+  } else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 @end

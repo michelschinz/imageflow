@@ -44,7 +44,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   NSRect r = [(NSValue*)[settings valueForKey:@"rectangle"] rectValue];
   return [NSString stringWithFormat:@"crop (%d,%d) %dx%d",

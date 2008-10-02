@@ -49,7 +49,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return @"drop shadow";
 }

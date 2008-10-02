@@ -46,7 +46,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return [NSString stringWithFormat:@"load %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
 }

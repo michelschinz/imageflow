@@ -13,6 +13,7 @@
 
 @interface IFTreeNode : NSObject<NSCoding> {
   NSString* name;
+  NSString* label;
   BOOL isFolded;
   IFExpression* expression;
 }
@@ -28,9 +29,9 @@
 @property(readonly) BOOL isAlias;
 @property(readonly) BOOL isHole;
 
-@property(readonly, retain) IFTreeNode* original;
-@property(readonly, retain) IFEnvironment* settings;
-@property(readonly, retain) IFExpression* expression;
+@property(readonly) IFTreeNode* original;
+@property(readonly) IFEnvironment* settings;
+@property(readonly) IFExpression* expression;
 
 @property(readonly) int inputArity;
 @property(readonly) int outputArity;
@@ -43,7 +44,7 @@
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 @property(readonly, retain) NSString* label;
-@property(readonly, retain) NSString* toolTip;
+@property(readonly) NSString* toolTip;
 
 // MARK: Image view support
 
@@ -57,7 +58,9 @@
 - (NSAffineTransform*)transformForParentAtIndex:(int)index;
 
 // MARK: (protected)
+- (void)updateLabel;
+- (NSString*)computeLabel; // abstract
 - (void)updateExpression;
-- (void)setExpression:(IFExpression*)newExpression;
+- (IFExpression*)computeExpression; // abstract
 
 @end

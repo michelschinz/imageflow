@@ -41,7 +41,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   char* channelInitials = "rgbal";
   return [NSString stringWithFormat:@"%c to mask", channelInitials[[[settings valueForKey:@"channel"] intValue]]];

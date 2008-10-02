@@ -87,11 +87,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return [original nameOfParentAtIndex:index];
 }
 
-- (NSString*)label;
-{
-  return [original label];
-}
-
 - (NSString*)toolTip;
 {
   return [original toolTip];
@@ -156,12 +151,18 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   NSAssert(context == IFOriginalExpressionChangedContext, @"unexpected context");
+  [self updateLabel];
   [self updateExpression];
 }
 
-- (void)updateExpression;
+- (NSString*)computeLabel;
 {
-  [self setExpression:[original expression]];
+  return original.label;
+}
+
+- (IFExpression*)computeExpression;
+{
+  return original.expression;
 }
 
 @end

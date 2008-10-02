@@ -61,7 +61,7 @@ static IFConstantExpression* maskColor = nil;
   return [parentNames objectAtIndex:index];
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return @"mask";
 }

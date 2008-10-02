@@ -84,7 +84,7 @@
   return nil;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return [NSString stringWithFormat:@"print TODO"];
 }

@@ -14,6 +14,8 @@
 
 @interface IFTreeNode (Private)
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
+@property(retain) NSString* label;
+@property(retain) IFExpression* expression;
 @end
 
 @implementation IFTreeNode
@@ -118,8 +120,9 @@
 
 - (NSString*)label;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  if (label == nil)
+    [self updateLabel];
+  return label;
 }
 
 - (NSString*)toolTip;
@@ -190,9 +193,38 @@
 
 // MARK: (protected)
 
-- (void)updateExpression;
+- (void)updateLabel;
+{
+  self.label = [self computeLabel];
+}
+
+- (NSString*)computeLabel;
 {
   [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (void)updateExpression;
+{
+  self.expression = [self computeExpression];
+}
+
+- (IFExpression*)computeExpression;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+@end
+
+@implementation IFTreeNode (Private)
+
+- (void)setLabel:(NSString*)newLabel;
+{
+  if (newLabel == label)
+    return;
+  [label release];
+  label = [newLabel retain];
 }
 
 - (void)setExpression:(IFExpression*)newExpression;
@@ -202,10 +234,6 @@
   [expression release];
   expression = [newExpression retain];
 }
-
-@end
-
-@implementation IFTreeNode (Private)
 
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 {

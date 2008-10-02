@@ -67,7 +67,7 @@ static NSArray* parentNames = nil;
   return [parentNames objectAtIndex:index];
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return NSStringFromBlendMode([[settings valueForKey:@"mode"] intValue]);
 }

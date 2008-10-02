@@ -50,7 +50,7 @@
   return exprs;
 }
 
-- (NSString*)label;
+- (NSString*)computeLabel;
 {
   return [NSString stringWithFormat:@"threshold %.2f", [(NSNumber*)[settings valueForKey:@"threshold"] floatValue]];
 }

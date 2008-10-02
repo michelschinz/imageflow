@@ -43,4 +43,9 @@
   return [NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"nop"] operands:operands]];
 }
 
+- (NSString*)computeLabel;
+{
+  return @"";
+}
+
 @end
