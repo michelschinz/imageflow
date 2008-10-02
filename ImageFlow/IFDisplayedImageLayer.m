@@ -17,8 +17,8 @@ static NSImage* lockUnlockedImage;
 {
   if (self != [IFDisplayedImageLayer class])
     return; // avoid repeated initialisation
-  lockLockedImage = [NSImage imageNamed:NSImageNameLockLockedTemplate];
-  lockUnlockedImage = [NSImage imageNamed:NSImageNameLockUnlockedTemplate];
+  lockLockedImage = [[NSImage imageNamed:NSImageNameLockLockedTemplate] retain];
+  lockUnlockedImage = [[NSImage imageNamed:NSImageNameLockUnlockedTemplate] retain];
 }
 
 + (id)displayedImageLayer;
