@@ -17,6 +17,7 @@
   float gutterWidth;
   
   CGColorRef nodeBackgroundColor;
+  CGColorRef nodeLabelColor;
   
   NSFont* labelFont;
   float labelFontHeight;
@@ -25,11 +26,13 @@
   CGColorRef connectorLabelColor;
   float connectorArrowSize;
   
+  CGColorRef displayedImageBackgroundColor;
   CGColorRef cursorColor;
   float cursorWidth;
   float selectionWidth;
   
-  CGColorRef highlightColor;
+  CGColorRef highlightBackgroundColor;
+  CGColorRef highlightBorderColor;
 }
 
 + (IFLayoutParameters*)sharedLayoutParameters;
@@ -43,6 +46,7 @@
 @property(readonly) float gutterWidth;
 
 @property(readonly) CGColorRef nodeBackgroundColor;
+@property(readonly) CGColorRef nodeLabelColor;
 
 @property(readonly) NSFont* labelFont;
 @property(readonly) float labelFontHeight;
@@ -51,10 +55,12 @@
 @property(readonly) CGColorRef connectorLabelColor;
 @property(readonly) float connectorArrowSize;
 
+@property(readonly) CGColorRef displayedImageBackgroundColor;
 @property(readonly) CGColorRef cursorColor;
 @property(readonly) float cursorWidth;
 @property(readonly) float selectionWidth;
 
-@property(readonly) CGColorRef highlightColor;
+@property(readonly) CGColorRef highlightBackgroundColor;
+@property(readonly) CGColorRef highlightBorderColor;
 
 @end

@@ -32,6 +32,7 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   gutterWidth = 30.0;
   
   nodeBackgroundColor = CGColorCreateGenericGray(1.0, 1.0);
+  nodeLabelColor = CGColorCreateGenericGray(0.0, 1.0);
   
   labelFont = [[NSFont fontWithName:@"Verdana" size:9.0] retain];
   NSLayoutManager* layoutManager = [[[NSLayoutManager alloc] init] autorelease];
@@ -40,12 +41,15 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   connectorColor = CGColorCreateGenericGray(0.2, 1.0);
   connectorLabelColor = CGColorCreateGenericGray(0.6, 1.0);
   connectorArrowSize = 4.0;
-  
+
+  displayedImageBackgroundColor = CGColorCreateGenericGray(0.75, 1.0);
+
   cursorColor = CGColorCreateGenericRGB(1, 0, 0, 1);
   cursorWidth = 3.0;
   selectionWidth = 1.0;
   
-  highlightColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
+  highlightBackgroundColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
+  highlightBorderColor = CGColorCreateGenericRGB(0, 0, 1, 1.0);
   
   return self;
 }
@@ -61,13 +65,14 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
 @synthesize nodeInternalMargin;
 @synthesize gutterWidth;
 
-@synthesize nodeBackgroundColor;
+@synthesize nodeBackgroundColor, nodeLabelColor;
 
 @synthesize labelFont, labelFontHeight;
 
 @synthesize connectorColor, connectorLabelColor, connectorArrowSize;
 
+@synthesize displayedImageBackgroundColor;
 @synthesize cursorColor, cursorWidth, selectionWidth;
-@synthesize highlightColor;
+@synthesize highlightBackgroundColor, highlightBorderColor;
 
 @end

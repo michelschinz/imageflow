@@ -48,9 +48,7 @@ typedef enum {
   cursorLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   cursorLayer.cornerRadius = baseLayer.cornerRadius;
   cursorLayer.hidden = YES;
-  CGColorRef redColor = CGColorCreateGenericRGB(1, 0, 0, 1); // TODO: use cursorColor from layout parameters
-  cursorLayer.borderColor = redColor;
-  CGColorRelease(redColor);
+  cursorLayer.borderColor = layoutParameters.cursorColor;
   
   // Highlight (used for drag&drop)
   CALayer* highlightLayer = [CALayer layer];
@@ -59,12 +57,8 @@ typedef enum {
   highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   highlightLayer.cornerRadius = baseLayer.cornerRadius;
   highlightLayer.hidden = YES;
-  CGColorRef transparentBlueColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
-  highlightLayer.backgroundColor = transparentBlueColor;
-  CGColorRelease(transparentBlueColor);
-  CGColorRef opaqueBlueColor = CGColorCreateGenericRGB(0, 0, 1, 1);
-  highlightLayer.borderColor = opaqueBlueColor;
-  CGColorRelease(opaqueBlueColor);
+  highlightLayer.backgroundColor = layoutParameters.highlightBackgroundColor;
+  highlightLayer.borderColor = layoutParameters.highlightBorderColor;
   highlightLayer.borderWidth = layoutParameters.selectionWidth;
 
   [self addSublayer:displayedImageLayer];

@@ -44,10 +44,10 @@
   
   CGContextAddPath(context, outlinePath);
   
-  CGContextSetFillColorWithColor(context, layoutParameters.highlightColor);
+  CGContextSetFillColorWithColor(context, layoutParameters.highlightBackgroundColor);
   CGContextFillPath(context);
   
-  CGContextSetStrokeColorWithColor(context, layoutParameters.highlightColor);
+  CGContextSetStrokeColorWithColor(context, layoutParameters.highlightBorderColor);
   CGContextSetLineWidth(context, layoutParameters.selectionWidth);
   CGContextStrokePath(context);
 }

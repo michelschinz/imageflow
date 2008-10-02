@@ -7,6 +7,7 @@
 //
 
 #import "IFDisplayedImageLayer.h"
+#import "IFLayoutParameters.h"
 
 @implementation IFDisplayedImageLayer
 
@@ -30,7 +31,7 @@ static NSImage* lockUnlockedImage;
 {
   if (![super init])
     return nil;
-  self.backgroundColor = CGColorCreateGenericGray(0.75, 1.0);
+  self.backgroundColor = [IFLayoutParameters sharedLayoutParameters].displayedImageBackgroundColor;
   
   NSSize lockSize = [lockLockedImage size];
   float lockMaxSize = fmax(lockSize.width, lockSize.height) + 4.0;

@@ -77,9 +77,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 {
   CALayer* rootLayer = [CALayer layer];
   
-  CGColorRef grayColor = CGColorCreateGenericRGB(0.5, 0.5, 0.5, 1.0); // TODO: use a converted version of layoutParameters.backgroundColor
-  rootLayer.backgroundColor = grayColor;
-  CGColorRelease(grayColor);
+  rootLayer.backgroundColor = [IFLayoutParameters sharedLayoutParameters].backgroundColor;
   
   IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManager];
   rootLayoutManager.delegate = self;
