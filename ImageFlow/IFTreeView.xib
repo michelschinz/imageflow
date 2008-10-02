@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
+		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -25,9 +25,6 @@
 			</object>
 			<object class="NSCustomObject" id="1004">
 				<string key="NSClassName">NSApplication</string>
-			</object>
-			<object class="NSCustomObject" id="284467133">
-				<string key="NSClassName">IFTreeLayoutParameters</string>
 			</object>
 			<object class="NSCustomView" id="663276930">
 				<reference key="NSNextResponder"/>
@@ -161,7 +158,7 @@
 												<int key="NSvFlags">274</int>
 												<string key="NSFrameSize">{293, 180}</string>
 												<reference key="NSSuperview" ref="17011073"/>
-												<string key="NSClassName">IFPaletteView</string>
+												<string key="NSClassName">IFPaletteView2</string>
 											</object>
 										</object>
 										<string key="NSFrame">{{1, 1}, {348, 211}}</string>
@@ -259,38 +256,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">layoutParameters</string>
-						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="284467133"/>
-					</object>
-					<int key="connectionID">43</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">content</string>
-						<reference key="source" ref="180853767"/>
-						<reference key="destination" ref="284467133"/>
-					</object>
-					<int key="connectionID">65</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">layoutParameters</string>
-						<reference key="source" ref="258359578"/>
-						<reference key="destination" ref="284467133"/>
-					</object>
-					<int key="connectionID">128</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">layoutParameters</string>
-						<reference key="source" ref="361538681"/>
-						<reference key="destination" ref="284467133"/>
-					</object>
-					<int key="connectionID">129</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">paletteView</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="361538681"/>
@@ -329,6 +294,14 @@
 					</object>
 					<int key="connectionID">134</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">layoutParametersController</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="180853767"/>
+					</object>
+					<int key="connectionID">135</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -358,12 +331,6 @@
 						<reference key="object" ref="1004"/>
 						<reference key="parent" ref="1002"/>
 						<string key="objectName">Application</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">2</int>
-						<reference key="object" ref="284467133"/>
-						<reference key="parent" ref="1002"/>
-						<string key="objectName">Layout Parameters</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">26</int>
@@ -507,7 +474,6 @@
 					<string>121.IBPluginDependency</string>
 					<string>124.IBPluginDependency</string>
 					<string>127.IBPluginDependency</string>
-					<string>2.IBPluginDependency</string>
 					<string>26.IBEditorWindowLastContentRect</string>
 					<string>26.IBPluginDependency</string>
 					<string>26.editorWindowContentRectSynchronizationRect</string>
@@ -526,8 +492,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{0, 733}, {350, 401}}</string>
+					<string>{{51, 412}, {350, 401}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{483, 439}, {430, 479}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -553,7 +518,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">134</int>
+			<int key="maxID">135</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -562,17 +527,8 @@
 					<string key="className">IFForestView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>delegate</string>
-							<string>layoutParameters</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>IFTreeLayoutParameters</string>
-						</object>
+						<string key="NS.key.0">delegate</string>
+						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -583,17 +539,8 @@
 					<string key="className">IFNodesView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>delegate</string>
-							<string>layoutParameters</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
-							<string>IFTreeLayoutParameters</string>
-						</object>
+						<string key="NS.key.0">delegate</string>
+						<string key="NS.object.0">id</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -609,11 +556,15 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">IFTreeLayoutParameters</string>
-					<string key="superclassName">NSObject</string>
+					<string key="className">IFPaletteView2</string>
+					<string key="superclassName">NSView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">delegate</string>
+						<string key="NS.object.0">id</string>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">IFTreeLayoutParameters.h</string>
+						<string key="minorKey">IFPaletteView2.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -624,13 +575,13 @@
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>forestView</string>
-							<string>layoutParameters</string>
+							<string>layoutParametersController</string>
 							<string>paletteView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>IFForestView</string>
-							<string>IFTreeLayoutParameters</string>
+							<string>NSObjectController</string>
 							<string>IFPaletteView</string>
 						</object>
 					</object>

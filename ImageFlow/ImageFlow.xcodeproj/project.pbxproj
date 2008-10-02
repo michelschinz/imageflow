@@ -105,6 +105,7 @@
 		FA8B016C0E87854000E3679C /* IFLayoutParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B016B0E87854000E3679C /* IFLayoutParameters.m */; };
 		FA8B03B80E87B54B00E3679C /* IFInputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B03B70E87B54B00E3679C /* IFInputConnectorLayer.m */; };
 		FA8B04070E87BAAD00E3679C /* IFOutputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D2BB0E7107EE00873FA0 /* IFOutputConnectorLayer.m */; };
+		FA8B05600E880F5500E3679C /* IFPaletteView2.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B055F0E880F5500E3679C /* IFPaletteView2.m */; };
 		FA8BFFBE0E8763CF00E3679C /* IFConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8BFFBD0E8763CF00E3679C /* IFConnectorLayer.m */; };
 		FA8C858A08864ADD003A77FB /* IFTreeLayoutGhost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8C858908864ADD003A77FB /* IFTreeLayoutGhost.m */; };
 		FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */; };
@@ -117,6 +118,7 @@
 		FA9CC2770948B6AC00F30C5A /* IFTreeLayoutInputConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9CC2750948B6AC00F30C5A /* IFTreeLayoutInputConnector.m */; };
 		FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E241E0B03ADE3001EC346 /* alias_arrow.png */; };
 		FA9E24590B03B10F001EC346 /* locked_view.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E24580B03B10F001EC346 /* locked_view.png */; };
+		FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */; };
 		FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */; };
 		FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */; };
 		FAA5901C0E66D49100E1D52D /* IFConnectorHighlightLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA5901B0E66D49100E1D52D /* IFConnectorHighlightLayer.m */; };
@@ -426,6 +428,8 @@
 		FA8B016B0E87854000E3679C /* IFLayoutParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayoutParameters.m; sourceTree = "<group>"; };
 		FA8B03B60E87B54B00E3679C /* IFInputConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFInputConnectorLayer.h; sourceTree = "<group>"; };
 		FA8B03B70E87B54B00E3679C /* IFInputConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFInputConnectorLayer.m; sourceTree = "<group>"; };
+		FA8B055E0E880F5500E3679C /* IFPaletteView2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPaletteView2.h; sourceTree = "<group>"; };
+		FA8B055F0E880F5500E3679C /* IFPaletteView2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPaletteView2.m; sourceTree = "<group>"; };
 		FA8BFFBC0E8763CF00E3679C /* IFConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConnectorLayer.h; sourceTree = "<group>"; };
 		FA8BFFBD0E8763CF00E3679C /* IFConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConnectorLayer.m; sourceTree = "<group>"; };
 		FA8C858808864ADD003A77FB /* IFTreeLayoutGhost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeLayoutGhost.h; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 		FA9CC2750948B6AC00F30C5A /* IFTreeLayoutInputConnector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeLayoutInputConnector.m; sourceTree = "<group>"; };
 		FA9E241E0B03ADE3001EC346 /* alias_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alias_arrow.png; sourceTree = "<group>"; };
 		FA9E24580B03B10F001EC346 /* locked_view.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locked_view.png; sourceTree = "<group>"; };
+		FA9EEF770E8965A000328B8E /* IFPaletteLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPaletteLayoutManager.h; sourceTree = "<group>"; };
+		FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPaletteLayoutManager.m; sourceTree = "<group>"; };
 		FAA2AF2A08FFA1750055AFDD /* IFSavePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSavePanelController.h; sourceTree = "<group>"; };
 		FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSavePanelController.m; sourceTree = "<group>"; };
 		FAA2AFA108FFAB710055AFDD /* IFDirectoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDirectoryManager.h; sourceTree = "<group>"; };
@@ -1222,6 +1228,10 @@
 				FA9C6CED0E1E26F8004A6953 /* IFForestView.m */,
 				FA830EDE0E2765FB00887676 /* IFForestLayoutManager.h */,
 				FA830EDF0E2765FB00887676 /* IFForestLayoutManager.m */,
+				FA8B055E0E880F5500E3679C /* IFPaletteView2.h */,
+				FA8B055F0E880F5500E3679C /* IFPaletteView2.m */,
+				FA9EEF770E8965A000328B8E /* IFPaletteLayoutManager.h */,
+				FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */,
 				FA8B016A0E87854000E3679C /* IFLayoutParameters.h */,
 				FA8B016B0E87854000E3679C /* IFLayoutParameters.m */,
 				FAB17A560E4CA703008BEC70 /* Layers */,
@@ -1932,6 +1942,8 @@
 				FA8B016C0E87854000E3679C /* IFLayoutParameters.m in Sources */,
 				FA8B03B80E87B54B00E3679C /* IFInputConnectorLayer.m in Sources */,
 				FA8B04070E87BAAD00E3679C /* IFOutputConnectorLayer.m in Sources */,
+				FA8B05600E880F5500E3679C /* IFPaletteView2.m in Sources */,
+				FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

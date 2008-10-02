@@ -12,11 +12,13 @@
 
 }
 
-@property(readonly, retain) CALayer* firstLayer;
-@property(readonly, retain) CALayer* lastLayer;
+@property(readonly) CALayer* firstLayer;
+@property(readonly) CALayer* lastLayer;
 - (CALayer*)layerAtIndex:(int)index;
 
-- (CGRect)boundingBox;
+@property(readonly) unsigned count;
+
+@property(readonly) CGRect boundingBox;
 - (void)translateByX:(float)dx Y:(float)dy;
 
 - (CALayer*)hitTest:(CGPoint)point;

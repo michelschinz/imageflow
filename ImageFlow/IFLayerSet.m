@@ -35,6 +35,14 @@
   return nil;
 }
 
+- (unsigned)count;
+{
+  unsigned count = 0;
+  for (CALayer* layer in self)
+    ++count;
+  return count;
+}
+
 - (CGRect)boundingBox;
 {
   CGRect bbox = CGRectNull;

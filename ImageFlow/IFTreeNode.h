@@ -32,9 +32,9 @@
 @property(readonly, retain) IFEnvironment* settings;
 @property(readonly, retain) IFExpression* expression;
 
-- (int)inputArity;
-- (int)outputArity;
-- (NSArray*)potentialTypes;
+@property(readonly) int inputArity;
+@property(readonly) int outputArity;
+@property(readonly) NSArray* potentialTypes;
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 - (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;

@@ -16,6 +16,8 @@
   float nodeInternalMargin;
   float gutterWidth;
   
+  CGColorRef nodeBackgroundColor;
+  
   NSFont* labelFont;
   float labelFontHeight;
   
@@ -39,6 +41,8 @@
 @property(readonly) CGColorRef backgroundColor;
 @property(readonly) float nodeInternalMargin;
 @property(readonly) float gutterWidth;
+
+@property(readonly) CGColorRef nodeBackgroundColor;
 
 @property(readonly) NSFont* labelFont;
 @property(readonly) float labelFontHeight;

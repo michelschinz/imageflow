@@ -92,9 +92,10 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   self.enclosingScrollView.contentView.wantsLayer = YES;
 }
 
-@synthesize document;
 @synthesize cursors;
 @synthesize delegate;
+
+@synthesize document;
 
 - (void)setDocument:(IFDocument*)newDocument;
 {
@@ -140,7 +141,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
   if (context == IFCanvasBoundsDidChange)
-    NSLog(@"canvas bounds changed");
+    NSLog(@"canvas bounds changed"); // TODO: do something about it (so that the nodes redisplay themselves)
   else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
@@ -325,7 +326,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFCompositeLayer* draggedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   
-  if (draggedLayer.isNode && draggedLayer.node == self.cursorNode) {
+  if (draggedLayer != nil && draggedLayer.isNode && draggedLayer.node == self.cursorNode) {
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
@@ -738,10 +739,8 @@ static enum {
   newSize.width = round(fmax(newSize.width, minSize.width));
   newSize.height = round(fmax(newSize.height, minSize.height));
   
-  if (!NSEqualSizes(self.frame.size, newSize)) {
+  if (!NSEqualSizes(self.frame.size, newSize))
     [self setFrameSize:newSize];
-//    [self setNeedsDisplay:YES];
-  }
 }
 
 // MARK: Ghost node editing

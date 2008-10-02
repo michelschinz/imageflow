@@ -14,9 +14,6 @@
 @interface IFNodeLayer (Private)
 - (void)setupComponentLayers;
 - (void)teardownComponentLayers;
-
-- (void)updateLabel;
-- (void)updateName;
 @end
 
 @implementation IFNodeLayer
@@ -36,20 +33,21 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
   node = [theNode retain];
   
+  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   self.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-  self.cornerRadius = [IFLayoutParameters sharedLayoutParameters].nodeInternalMargin;
-  CGColorRef whiteColor = CGColorCreateGenericRGB(1, 1, 1, 1);
-  self.backgroundColor = whiteColor;
-  CGColorRelease(whiteColor);
+  self.cornerRadius = layoutParameters.nodeInternalMargin;
+  self.backgroundColor = layoutParameters.nodeBackgroundColor;
   
-  [self setupComponentLayers];
+  if (!node.isGhost)
+    [self setupComponentLayers];
 
   return self;
 }
 
 - (void)dealloc;
 {
-  [self teardownComponentLayers];
+  if (!node.isGhost)
+    [self teardownComponentLayers];
 
   OBJC_RELEASE(node);
   [super dealloc];
@@ -103,14 +101,20 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   size_t width = round(CGRectGetWidth(self.bounds));
   size_t height = round(CGRectGetHeight(self.bounds));
 
-  // TODO: find an easy way to set alpha to 0.6 (setting it with CGContextSetAlpha does not work).
-  
   CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
   CGContextRef ctx = CGBitmapContextCreate(NULL, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedFirst);
-  [self renderInContext:ctx];  
-  CGImageRef cgDragImage = CGBitmapContextCreateImage(ctx);
-  NSImageRep* imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:cgDragImage] autorelease];
-  CGImageRelease(cgDragImage);
+  CGRect ctxBounds = CGRectMake(0, 0, width, height);
+
+  [self renderInContext:ctx];
+  
+  CGImageRef cgOpaqueDragImage = CGBitmapContextCreateImage(ctx);
+  CGContextClearRect(ctx, ctxBounds);
+  CGContextSetAlpha(ctx, 0.6);
+  CGContextDrawImage(ctx, ctxBounds, cgOpaqueDragImage);
+  CGImageRef cgTransparentDragImage = CGBitmapContextCreateImage(ctx);
+  
+  NSImageRep* imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:cgTransparentDragImage] autorelease];
+  CGImageRelease(cgTransparentDragImage);
   CGContextRelease(ctx);
   CGColorSpaceRelease(colorSpace);
   
@@ -122,9 +126,9 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFNodeLabelChangedContext) {
-    [self updateLabel];
+    labelLayer.string = node.label;
   } else if (context == IFNodeNameChangedContext) {
-    [self updateName];
+    nameLayer.string = node.name;
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
@@ -136,9 +140,6 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
 - (void)setupComponentLayers;
 {
-  if (node.isGhost)
-    return;
-  
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
   // Create component layers
@@ -151,7 +152,6 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   labelLayer.alignmentMode = kCAAlignmentCenter;
   labelLayer.truncationMode = kCATruncationMiddle;
   labelLayer.anchorPoint = CGPointZero;
-  [self updateLabel];
   [self addSublayer:labelLayer];
   
   thumbnailLayer = [IFThumbnailLayer layerForNode:node];
@@ -164,30 +164,20 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   nameLayer.alignmentMode = kCAAlignmentCenter;
   nameLayer.truncationMode = kCATruncationMiddle;
   nameLayer.anchorPoint = CGPointZero;
-  [self updateName];
   [self addSublayer:nameLayer];
   
-  [node addObserver:self forKeyPath:@"label" options:0 context:IFNodeLabelChangedContext];
-  [node addObserver:self forKeyPath:@"name" options:0 context:IFNodeNameChangedContext];
+  [node addObserver:self forKeyPath:@"label" options:NSKeyValueObservingOptionInitial context:IFNodeLabelChangedContext];
+  [node addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionInitial context:IFNodeNameChangedContext];
 }
 
 - (void)teardownComponentLayers;
 {
-  if (node.isGhost)
-    return;
-  
-  [node removeObserver:self forKeyPath:@"name"];
-  [node removeObserver:self forKeyPath:@"label"];  
-}
-
-- (void)updateLabel;
-{
-  labelLayer.string = node.label;
-}
-
-- (void)updateName;
-{
-  nameLayer.string = node.name;
+  [labelLayer removeFromSuperlayer];
+  labelLayer = nil;
+  [thumbnailLayer removeFromSuperlayer];
+  thumbnailLayer = nil;
+  [nameLayer removeFromSuperlayer];
+  nameLayer = nil;
 }
 
 @end

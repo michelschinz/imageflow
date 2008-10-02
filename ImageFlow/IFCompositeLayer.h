@@ -18,10 +18,10 @@
 @property(readonly) BOOL isInputConnector;
 @property(readonly) BOOL isOutputConnector;
 
-@property(readonly, assign) CALayer* displayedImageLayer; // optional (can be nil)
-@property(readonly, assign) CALayer* baseLayer;
-@property(readonly, assign) CALayer* cursorLayer; // optional (can be nil)
-@property(readonly, assign) CALayer* highlightLayer;
+@property(readonly) CALayer* displayedImageLayer; // optional (can be nil)
+@property(readonly) CALayer* baseLayer;
+@property(readonly) CALayer* cursorLayer; // optional (can be nil)
+@property(readonly) CALayer* highlightLayer;
 
 @property(readonly, assign) IFTreeNode* node;
 

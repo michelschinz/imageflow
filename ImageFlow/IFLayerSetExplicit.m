@@ -55,6 +55,11 @@
   return [layers objectAtIndex:index];
 }
 
+- (unsigned)count;
+{
+  return [layers count];
+}
+
 - (void)addLayer:(CALayer*)layer;
 {
   [layers addObject:layer];

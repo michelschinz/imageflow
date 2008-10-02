@@ -31,6 +31,8 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   nodeInternalMargin = 3.0;
   gutterWidth = 30.0;
   
+  nodeBackgroundColor = CGColorCreateGenericGray(1.0, 1.0);
+  
   labelFont = [[NSFont fontWithName:@"Verdana" size:9.0] retain];
   NSLayoutManager* layoutManager = [[[NSLayoutManager alloc] init] autorelease];
   labelFontHeight = [layoutManager defaultLineHeightForFont:labelFont];
@@ -58,6 +60,8 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
 @synthesize backgroundColor;
 @synthesize nodeInternalMargin;
 @synthesize gutterWidth;
+
+@synthesize nodeBackgroundColor;
 
 @synthesize labelFont, labelFontHeight;
 

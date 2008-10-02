@@ -35,7 +35,6 @@
 {
   OBJC_RELEASE(sidePanePath);
   OBJC_RELEASE(deleteButtonCell);
-    
   OBJC_RELEASE(layoutNodes);
   OBJC_RELEASE(layoutParams);
   [super dealloc];

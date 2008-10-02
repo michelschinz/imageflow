@@ -8,6 +8,8 @@
 
 #import "IFTreePaletteViewController.h"
 
+#import "IFLayoutParameters.h"
+
 @implementation IFTreePaletteViewController
 
 + (void)initialize {
@@ -27,13 +29,14 @@
 
 - (void)awakeFromNib;
 {
+  layoutParametersController.content = [IFLayoutParameters sharedLayoutParameters];
   cursorsVar.value = forestView.cursors;
 }
 
 - (void)setDocument:(IFDocument*)document;
 {
   [forestView setDocument:document];
-  [paletteView setDocument:document];
+//  [paletteView setDocument:document];
 }
 
 @synthesize cursorsVar;
