@@ -32,24 +32,22 @@
   const unsigned columns = MAX(1, (unsigned)floor((totalWidth - minGutterX) / (columnWidth + minGutterX)));
   const float gutterX = (totalWidth - ((float)columns * columnWidth)) / (columns + 1);
   const float gutterY = minGutterX;
-  
-  IFLayerSetExplicit* allRows = [IFLayerSetExplicit layerSet];
-  IFLayerSetExplicit* currentRow = [IFLayerSetExplicit layerSet];
-  float x = gutterX;
+
+  unsigned column = 0;
+  float x = gutterX, y = 0;
+  float rowHeight = 0;
   for (CALayer* layer in parentLayer.sublayers) {
-    if ([currentRow count] == columns) {
-      [allRows translateByX:0 Y:ceil(CGRectGetHeight(currentRow.boundingBox) + gutterY)];
-      [allRows addLayersFromGroup:currentRow];
-      [currentRow removeAllLayers];
+    layer.frame = (CGRect){ CGPointMake(round(x), round(y)), [layer preferredFrameSize] };
+    rowHeight = fmax(rowHeight, CGRectGetHeight(layer.frame));
+    
+    if (++column == columns) {
       x = gutterX;
-    }
-    
-    layer.frame = (CGRect){ CGPointMake(round(x), 0), [layer preferredFrameSize] };
-    [currentRow addLayer:layer];
-    
-    x += columnWidth + gutterX;
+      y += ceil(rowHeight + gutterY);
+      rowHeight = 0;
+      column = 0;
+    } else
+      x += columnWidth + gutterX;
   }
-  [allRows translateByX:0 Y:ceil(CGRectGetHeight(currentRow.boundingBox) + gutterY)];
   
   [delegate layoutManager:self didLayoutSublayersOfLayer:parentLayer];
 }  
