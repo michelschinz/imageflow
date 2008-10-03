@@ -1,5 +1,5 @@
 //
-//  IFPaletteView2.h
+//  IFPaletteView.h
 //  ImageFlow
 //
 //  Created by Michel Schinz on 22.09.08.
@@ -12,7 +12,7 @@
 #import "IFForestView.h"
 #import "IFPaletteLayoutManager.h"
 
-@interface IFPaletteView2 : NSView<IFPaletteLayoutManagerDelegate> {
+@interface IFPaletteView : NSView<IFPaletteLayoutManagerDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
 
   // Cursors & selection

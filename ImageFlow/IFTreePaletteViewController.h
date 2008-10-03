@@ -10,14 +10,14 @@
 
 #import "IFViewController.h"
 #import "IFForestView.h"
-#import "IFPaletteView2.h"
+#import "IFPaletteView.h"
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"
 
 @interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate> {
   IBOutlet NSObjectController* layoutParametersController;
   IBOutlet IFForestView* forestView;
-  IBOutlet IFPaletteView2* paletteView;
+  IBOutlet IFPaletteView* paletteView;
   
   IFVariable* cursorsVar;
 }

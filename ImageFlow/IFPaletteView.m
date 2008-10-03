@@ -1,12 +1,12 @@
 //
-//  IFPaletteView2.m
+//  IFPaletteView.m
 //  ImageFlow
 //
 //  Created by Michel Schinz on 22.09.08.
 //  Copyright 2008 Michel Schinz. All rights reserved.
 //
 
-#import "IFPaletteView2.h"
+#import "IFPaletteView.h"
 
 #import "IFTreeTemplateManager.h"
 #import "IFTreeTemplate.h"
@@ -20,7 +20,7 @@
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
-@interface IFPaletteView2 (Private)
+@interface IFPaletteView (Private)
 @property(readonly) IFLayerSet* templateLayers;
 - (void)syncLayersWithTemplates;
 - (NSArray*)computeTemplates;
@@ -28,7 +28,7 @@ static NSString* IFTreePboardType = @"IFTreePboardType";
 - (void)updateBounds;
 @end
 
-@implementation IFPaletteView2
+@implementation IFPaletteView
 
 static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeContext";
 
@@ -189,7 +189,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 @end
 
-@implementation IFPaletteView2 (Private)
+@implementation IFPaletteView (Private)
 
 - (IFLayerSet*)templateLayers;
 {
