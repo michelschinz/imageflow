@@ -10,7 +10,6 @@
 
 #import "IFViewController.h"
 #import "IFForestView.h"
-#import "IFTreeView.h"
 #import "IFPaletteView2.h"
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"

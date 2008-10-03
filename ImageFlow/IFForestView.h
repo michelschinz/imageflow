@@ -10,7 +10,6 @@
 
 #import "IFGrabableViewMixin.h"
 #import "IFDocument.h"
-#import "IFTreeLayoutParameters.h"
 #import "IFTreeCursorPair.h"
 #import "IFCompositeLayer.h"
 #import "IFLayerSet.h"
