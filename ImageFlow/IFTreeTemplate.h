@@ -22,14 +22,11 @@
 + (id)templateWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
 - (id)initWithName:(NSString*)theName description:(NSString*)theDescription tree:(IFTree*)theTree;
 
-- (NSString*)name;
-- (NSString*)description;
-- (IFTree*)tree;
+@property(readonly) NSString* name;
+@property(readonly) NSString* description;
+@property(readonly) IFTree* tree;
 
-- (NSString*)fileName;
-- (void)setFileName:(NSString*)newFileName;
-
-- (NSString*)tag;
-- (void)setTag:(NSString*)theTag;
+@property(retain) NSString* fileName;
+@property(retain) NSString* tag;
 
 @end

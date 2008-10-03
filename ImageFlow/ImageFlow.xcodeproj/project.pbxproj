@@ -126,6 +126,7 @@
 		FAB179FC0E4C862F008BEC70 /* IFLayerSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB179FB0E4C862F008BEC70 /* IFLayerSet.m */; };
 		FAB17A050E4C8872008BEC70 /* IFLayerSetExplicit.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */; };
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
+		FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABB51A80E9605A300480196 /* IFTemplateLayer.m */; };
 		FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC3D52088AD689007E8691 /* IFTreeMark.m */; };
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
@@ -467,6 +468,8 @@
 		FAB17A030E4C8872008BEC70 /* IFLayerSetExplicit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerSetExplicit.h; sourceTree = "<group>"; };
 		FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSetExplicit.m; sourceTree = "<group>"; };
 		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
+		FABB51A70E9605A300480196 /* IFTemplateLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTemplateLayer.h; sourceTree = "<group>"; };
+		FABB51A80E9605A300480196 /* IFTemplateLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTemplateLayer.m; sourceTree = "<group>"; };
 		FABC3D51088AD689007E8691 /* IFTreeMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeMark.h; sourceTree = "<group>"; };
 		FABC3D52088AD689007E8691 /* IFTreeMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeMark.m; sourceTree = "<group>"; };
 		FABC93B60E6FC6C600459364 /* IFCompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCompositeLayer.h; sourceTree = "<group>"; };
@@ -1249,6 +1252,7 @@
 				FAA590AD0E66F1BC00E1D52D /* IFDisplayedImageLayer.m */,
 				FA5061400E8154DD004E089C /* Node */,
 				FA5061410E8154E6004E089C /* Connectors */,
+				FABB51AA0E9605A900480196 /* Template */,
 			);
 			name = Layers;
 			sourceTree = "<group>";
@@ -1278,6 +1282,15 @@
 				FA402737091A3638001626A2 /* Sinks */,
 			);
 			name = "Settings panels";
+			sourceTree = "<group>";
+		};
+		FABB51AA0E9605A900480196 /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				FABB51A70E9605A300480196 /* IFTemplateLayer.h */,
+				FABB51A80E9605A300480196 /* IFTemplateLayer.m */,
+			);
+			name = Template;
 			sourceTree = "<group>";
 		};
 		FAD718A208B5E2AF00CF732B /* Inspectors */ = {
@@ -1944,6 +1957,7 @@
 				FA8B04070E87BAAD00E3679C /* IFOutputConnectorLayer.m in Sources */,
 				FA8B05600E880F5500E3679C /* IFPaletteView2.m in Sources */,
 				FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */,
+				FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

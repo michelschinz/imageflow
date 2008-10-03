@@ -14,19 +14,17 @@
 #import "IFLayoutParameters.h"
 #import "IFPaletteLayoutManager.h"
 #import "IFNodeLayer.h"
+#import "IFTemplateLayer.h"
 #import "IFLayerSetExplicit.h"
 #import "IFLayerSubsetComposites.h"
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
 @interface IFPaletteView2 (Private)
-@property(readonly) IFLayerSet* nodeLayers;
+@property(readonly) IFLayerSet* templateLayers;
 - (void)syncLayersWithTemplates;
 - (NSArray*)computeTemplates;
 @property(retain) NSArray* templates;
-- (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
-@property(retain) NSArray* normalModeTrees;
-- (NSArray*)computeNormalModeTrees;
 - (void)updateBounds;
 @end
 
@@ -41,7 +39,6 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
   
   templates = [[self computeTemplates] retain];
-  normalModeTrees = nil;
   acceptFirstResponder = NO;
   
   [self updateBounds];
@@ -55,7 +52,6 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 {
   [[IFTreeTemplateManager sharedManager] removeObserver:self forKeyPath:@"templates"];
   
-  OBJC_RELEASE(normalModeTrees);
   OBJC_RELEASE(templates);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
@@ -118,17 +114,17 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
     return;
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFCompositeLayer* draggedLayer = (IFCompositeLayer*)[self.nodeLayers hitTest:localPoint];
+  IFTemplateLayer* draggedLayer = (IFTemplateLayer*)[self.templateLayers hitTest:localPoint];
   
   if (draggedLayer == nil)
     return;
   
-  IFTreeTemplate* template = [self templateContainingNode:[draggedLayer node]];
+  IFTreeTemplate* template = draggedLayer.treeTemplate;
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
   [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[template tree]] forType:IFTreePboardType];
   
-  IFNodeLayer* nodeLayer = (IFNodeLayer*)draggedLayer.baseLayer;
+  IFNodeLayer* nodeLayer = (IFNodeLayer*)(draggedLayer.nodeCompositeLayer.baseLayer);
   [self dragImage:nodeLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
 }
 
@@ -141,7 +137,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   [self.window makeFirstResponder:self];
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFCompositeLayer* layerUnderMouse = (IFCompositeLayer*)[self.nodeLayers hitTest:localPoint];
+  IFCompositeLayer* layerUnderMouse = (IFCompositeLayer*)[self.templateLayers hitTest:localPoint];
   if (layerUnderMouse == nil)
     return;
   [cursors moveToNode:layerUnderMouse.node];
@@ -181,7 +177,6 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 {
   if (context == IFTreeTemplatesDidChangeContext) {
     [self setTemplates:[self computeTemplates]];
-    self.normalModeTrees = [self computeNormalModeTrees];
     [self syncLayersWithTemplates];
   } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -196,32 +191,26 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 @implementation IFPaletteView2 (Private)
 
-- (IFLayerSet*)nodeLayers;
+- (IFLayerSet*)templateLayers;
 {
-  return [IFLayerSubsetComposites compositeSubsetOf:[IFLayerSetExplicit layerSetWithLayers:self.layer.sublayers]];
+  return [IFLayerSetExplicit layerSetWithLayers:self.layer.sublayers];
 }
 
 - (void)syncLayersWithTemplates;
 {
-  NSMutableDictionary* existingNodeLayers = createMutableDictionaryWithRetainedKeys();
+  NSMutableDictionary* existingTemplateLayers = createMutableDictionaryWithRetainedKeys();
   
-  for (IFCompositeLayer* layer in self.nodeLayers)
-    CFDictionarySetValue((CFMutableDictionaryRef)existingNodeLayers, [layer valueForKey:@"template"], layer);
+  for (IFTemplateLayer* layer in self.templateLayers)
+    CFDictionarySetValue((CFMutableDictionaryRef)existingTemplateLayers, layer.treeTemplate, layer);
 
-  NSArray* trees = self.normalModeTrees;
-  int i = 0;
-  for (IFTree* template in templates) {
-    if ([existingNodeLayers objectForKey:template] != nil)
-      [existingNodeLayers removeObjectForKey:template];
-    else {
-      CALayer* newLayer = [IFNodeCompositeLayer layerForNode:((IFTree*)[trees objectAtIndex:i]).root];
-      [newLayer setValue:template forKey:@"template"];
-      [self.layer addSublayer:newLayer];
-    }
-    ++i;
+  for (IFTreeTemplate* treeTemplate in templates) {
+    if ([existingTemplateLayers objectForKey:treeTemplate] != nil)
+      [existingTemplateLayers removeObjectForKey:treeTemplate];
+    else
+      [self.layer addSublayer:[IFTemplateLayer layerForTemplate:treeTemplate]];
   }
   
-  for (CALayer* layer in [existingNodeLayers objectEnumerator])
+  for (CALayer* layer in [existingTemplateLayers objectEnumerator])
     [layer removeFromSuperlayer];
 }
 
@@ -249,61 +238,11 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   templates = [newTemplates retain];
 }
 
-- (IFTreeTemplate*)templateContainingNode:(IFTreeNode*)node;
-{
-  int i = 0;
-  for (IFTree* tree in normalModeTrees) {
-    if (tree.root == node)
-      return [templates objectAtIndex:i];
-    ++i;
-  }
-  return nil;
-}
-
-- (NSArray*)normalModeTrees;
-{
-  if (normalModeTrees == nil)
-    [self setNormalModeTrees:[self computeNormalModeTrees]];
-  return normalModeTrees;
-}
-
-- (void)setNormalModeTrees:(NSArray*)newNormalModeTrees;
-{
-  if (newNormalModeTrees == normalModeTrees)
-    return;
-  [normalModeTrees release];
-  normalModeTrees = [newNormalModeTrees retain];
-}
-
-- (NSArray*)computeNormalModeTrees;
-{
-  NSMutableArray* trees = [NSMutableArray arrayWithCapacity:[templates count]];
-  for (int i = 0; i < [templates count]; ++i) {
-    IFTree* templateTree = [[templates objectAtIndex:i] tree];
-    unsigned parentsCount = [templateTree holesCount];
-    IFTree* hostTree = [IFTree tree];
-    IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:parentsCount];
-    [hostTree addNode:ghost];
-    for (int j = 0; j < parentsCount; ++j) {
-      IFTreeNode* parent = [IFTreeNode universalSourceWithIndex:j];
-      [hostTree addNode:parent];
-      [hostTree addEdgeFromNode:parent toNode:ghost withIndex:j];
-    }
-    [hostTree copyTree:templateTree toReplaceNode:ghost];
-    
-    [hostTree configureNodes];
-    [hostTree setPropagateNewParentExpressions:YES];
-    
-    [trees addObject:hostTree];
-  }
-  return trees;
-}
-
 // MARK: View size
 
 - (void)updateBounds;
 {
-  IFLayerSet* allLayers = self.nodeLayers;
+  IFLayerSet* allLayers = self.templateLayers;
   NSSize newSize = NSSizeFromCGSize(allLayers.boundingBox.size);
   NSSize minSize = self.superview.frame.size;
 

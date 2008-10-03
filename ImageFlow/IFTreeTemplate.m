@@ -28,12 +28,10 @@
   return self;
 }
 
-- (void) dealloc;
+- (void)dealloc;
 {
-  if (tag != nil)
-    OBJC_RELEASE(tag);
-  if (fileName != nil)
-    OBJC_RELEASE(fileName);
+  OBJC_RELEASE(tag);
+  OBJC_RELEASE(fileName);
 
   OBJC_RELEASE(tree);
   OBJC_RELEASE(description);
@@ -41,38 +39,11 @@
   [super dealloc];
 }
 
-- (NSString*)name;
-{
-  return name;
-}
-
-- (NSString*)description;
-{
-  return description;
-}
-
-- (IFTree*)tree;
-{
-  return tree;
-}
-
-- (NSString*)fileName;
-{
-  return fileName;
-}
-
-- (void)setFileName:(NSString*)newFileName;
-{
-  if (newFileName == fileName)
-    return;
-  [fileName release];
-  fileName = [newFileName retain];
-}
-
-- (NSString*)tag;
-{
-  return tag;
-}
+@synthesize name;
+@synthesize description;
+@synthesize tree;
+@synthesize fileName;
+@synthesize tag;
 
 - (void)setTag:(NSString*)theTag;
 {
