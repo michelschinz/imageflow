@@ -99,6 +99,9 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   
   nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight), [nodeCompositeLayer preferredFrameSize] };
   arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(nodeCompositeLayer.frame)), CGSizeMake(layoutParameters.columnWidth, layoutParameters.connectorArrowSize) };
+
+  if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
+    [self.superlayer setNeedsLayout];
 }
 
 // delegate methods

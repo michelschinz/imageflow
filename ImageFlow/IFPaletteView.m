@@ -41,7 +41,6 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   templates = [[self computeTemplates] retain];
   acceptFirstResponder = NO;
   
-  [self updateBounds];
   [self registerForDraggedTypes:[NSArray arrayWithObject:IFTreePboardType]];
   [[IFTreeTemplateManager sharedManager] addObserver:self forKeyPath:@"templates" options:0 context:IFTreeTemplatesDidChangeContext];
   
@@ -74,6 +73,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   self.enclosingScrollView.wantsLayer = YES;
   self.enclosingScrollView.contentView.wantsLayer = YES;
   
+  [self updateBounds];
   [self syncLayersWithTemplates];
 }
 

@@ -126,9 +126,10 @@ static CGImageRef imageNamed(NSString* imageName) {
     [ciContext drawImage:image inRect:self.bounds fromRect:sourceRect];
   } else {
     IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)evaluatedExpression;
-    if (errorExpression.message != nil)
-      CGContextDrawImage(ctx, self.bounds, errorImage);
-    else
+    if (errorExpression.message != nil) {
+      const float x = floor((CGRectGetWidth(self.bounds) - CGImageGetWidth(errorImage)) / 2.0);
+      CGContextDrawImage(ctx, CGRectMake(x, 0, CGImageGetWidth(errorImage), CGImageGetHeight(errorImage)), errorImage);
+    } else
       ; // nothing to draw
   }
 }
@@ -203,7 +204,7 @@ static CGImageRef imageNamed(NSString* imageName) {
     
     IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)basicExpression;
     if (errorExpression.message != nil)
-      self.aspectRatio = CGImageGetWidth(errorImage) / CGImageGetHeight(errorImage); // TODO: fix
+      self.aspectRatio = (layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin) / CGImageGetHeight(errorImage);
     else
       self.aspectRatio = 0.0;
     
