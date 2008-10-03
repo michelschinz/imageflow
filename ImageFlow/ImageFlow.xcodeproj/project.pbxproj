@@ -125,10 +125,6 @@
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
-		FABF844C0AFB324900EABEAB /* side_button_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF84480AFB324900EABEAB /* side_button_delete.png */; };
-		FABF844D0AFB324900EABEAB /* side_button_fold.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF84490AFB324900EABEAB /* side_button_fold.png */; };
-		FABF844E0AFB324900EABEAB /* side_button_menu.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF844A0AFB324900EABEAB /* side_button_menu.png */; };
-		FABF844F0AFB324900EABEAB /* side_button_unfold.png in Resources */ = {isa = PBXBuildFile; fileRef = FABF844B0AFB324900EABEAB /* side_button_unfold.png */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FAC14C320E7D534300F7B93B /* IFThumbnailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC14C310E7D534300F7B93B /* IFThumbnailLayer.m */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
@@ -449,10 +445,6 @@
 		FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConnectorCompositeLayer.m; sourceTree = "<group>"; };
 		FABC95190E70147A00459364 /* IFLayerSubsetComposites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerSubsetComposites.h; sourceTree = "<group>"; };
 		FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSubsetComposites.m; sourceTree = "<group>"; };
-		FABF84480AFB324900EABEAB /* side_button_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_delete.png; sourceTree = "<group>"; };
-		FABF84490AFB324900EABEAB /* side_button_fold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_fold.png; sourceTree = "<group>"; };
-		FABF844A0AFB324900EABEAB /* side_button_menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_menu.png; sourceTree = "<group>"; };
-		FABF844B0AFB324900EABEAB /* side_button_unfold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = side_button_unfold.png; sourceTree = "<group>"; };
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FAC14C300E7D534300F7B93B /* IFThumbnailLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFThumbnailLayer.h; sourceTree = "<group>"; };
 		FAC14C310E7D534300F7B93B /* IFThumbnailLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFThumbnailLayer.m; sourceTree = "<group>"; };
@@ -1113,10 +1105,6 @@
 				FA9E24580B03B10F001EC346 /* locked_view.png */,
 				FA9E241E0B03ADE3001EC346 /* alias_arrow.png */,
 				FA2E97370AFFB591006AE6E8 /* mask_tag.png */,
-				FABF84480AFB324900EABEAB /* side_button_delete.png */,
-				FABF84490AFB324900EABEAB /* side_button_fold.png */,
-				FABF844A0AFB324900EABEAB /* side_button_menu.png */,
-				FABF844B0AFB324900EABEAB /* side_button_unfold.png */,
 				FA6609160AF7D6270049AD02 /* warning-sign.png */,
 				FA74F0780AB5EC5B00027606 /* duplicationTool.png */,
 				FA74F0790AB5EC5B00027606 /* eraserTool.png */,
@@ -1661,10 +1649,6 @@
 				FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */,
 				FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */,
 				FA6609170AF7D6270049AD02 /* warning-sign.png in Resources */,
-				FABF844C0AFB324900EABEAB /* side_button_delete.png in Resources */,
-				FABF844D0AFB324900EABEAB /* side_button_fold.png in Resources */,
-				FABF844E0AFB324900EABEAB /* side_button_menu.png in Resources */,
-				FABF844F0AFB324900EABEAB /* side_button_unfold.png in Resources */,
 				FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */,
 				FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */,
 				FA9E24590B03B10F001EC346 /* locked_view.png in Resources */,
