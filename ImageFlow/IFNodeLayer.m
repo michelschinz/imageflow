@@ -12,7 +12,7 @@
 #import "IFLayoutParameters.h"
 
 @interface IFNodeLayer (Private)
-- (void)setupComponentLayers;
+- (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)teardownComponentLayers;
 @end
 
@@ -21,17 +21,18 @@
 static NSString* IFNodeLabelChangedContext = @"IFNodeLabelChangedContext";
 static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  return [[[self alloc] initWithNode:theNode] autorelease];
+  return [[[self alloc] initWithNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
   if (![super init])
     return nil;
 
   node = [theNode retain];
+  tree = [theTree retain];
   
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   self.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
@@ -39,7 +40,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   self.backgroundColor = layoutParameters.nodeBackgroundColor;
   
   if (!node.isGhost)
-    [self setupComponentLayers];
+    [self setupComponentLayersWithCanvasBounds:theCanvasBoundsVar];
 
   return self;
 }
@@ -49,6 +50,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   if (!node.isGhost)
     [self teardownComponentLayers];
 
+  OBJC_RELEASE(tree);
   OBJC_RELEASE(node);
   [super dealloc];
 }
@@ -138,7 +140,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
 @implementation IFNodeLayer (Private)
 
-- (void)setupComponentLayers;
+- (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
@@ -152,7 +154,8 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   labelLayer.anchorPoint = CGPointZero;
   [self addSublayer:labelLayer];
   
-  thumbnailLayer = [IFThumbnailLayer layerForNode:node];
+  // Thumbnail
+  thumbnailLayer = [IFThumbnailLayer layerForNode:node canvasBounds:canvasBoundsVar];
   [self addSublayer:thumbnailLayer];
   
   nameLayer = [CATextLayer layer];

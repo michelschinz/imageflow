@@ -20,12 +20,12 @@ typedef enum {
 
 @implementation IFNodeCompositeLayer
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  return [[[self alloc] initWithNode:theNode] autorelease];
+  return [[[self alloc] initWithNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
   if (![super init])
     return nil;
@@ -34,7 +34,7 @@ typedef enum {
   
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
-  CALayer* baseLayer = [IFNodeLayer layerForNode:theNode];
+  CALayer* baseLayer = [IFNodeLayer layerForNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar];
   
   CALayer* displayedImageLayer = [IFDisplayedImageLayer displayedImageLayer];
   displayedImageLayer.frame = CGRectInset(baseLayer.frame, -25, 0); // TODO: use a parameter in the layout parameters

@@ -50,18 +50,18 @@ static CGImageRef imageNamed(NSString* imageName) {
   maskImage = imageNamed(@"mask_tag");
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  return [[[self alloc] initForNode:theNode] autorelease];
+  return [[[self alloc] initForNode:theNode canvasBounds:theCanvasBoundsVar] autorelease];
 }
 
-- (id)initForNode:(IFTreeNode*)theNode;
+- (id)initForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
   if (![super init])
     return nil;
 
-  NSAssert(theNode != nil, @"nil node");
   node = [theNode retain];
+  canvasBoundsVar = [theCanvasBoundsVar retain];
   
   self.needsDisplayOnBoundsChange = YES;
   // TODO: maybe set opaque to YES (but then fix problem with error sign, e.g. by setting a background color)
@@ -83,9 +83,9 @@ static CGImageRef imageNamed(NSString* imageName) {
   [self addSublayer:maskIndicatorLayer];
   
   [self updateEvaluatedExpression];
-  
+
+  [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsChangedContext];
   [[IFLayoutParameters sharedLayoutParameters] addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
-  // TODO: observe canvas bounds
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
 
   return self;
@@ -97,7 +97,9 @@ static CGImageRef imageNamed(NSString* imageName) {
   if (node != nil) {
     [node removeObserver:self forKeyPath:@"expression"];
     [[IFLayoutParameters sharedLayoutParameters] removeObserver:self forKeyPath:@"columnWidth"];
+    [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   
+    OBJC_RELEASE(canvasBoundsVar);
     OBJC_RELEASE(node);
     OBJC_RELEASE(evaluatedExpression);
   }
@@ -106,13 +108,9 @@ static CGImageRef imageNamed(NSString* imageName) {
 
 - (CGSize)preferredFrameSize;
 {
-  if (aspectRatio == 0.0)
-    return CGSizeZero;
-  else {
-    const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-    const float width = layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin;
-    return CGSizeMake(width, width / aspectRatio);
-  }
+  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  const float width = layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin;
+  return CGSizeMake(width, aspectRatio != 0.0 ? width / aspectRatio : 0.0);
 }
 
 - (void)drawInContext:(CGContextRef)ctx;
@@ -179,24 +177,21 @@ static CGImageRef imageNamed(NSString* imageName) {
 
 - (void)updateEvaluatedExpression;
 {
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float margin = layoutParameters.nodeInternalMargin;
-  
   IFExpression* nodeExpression = node.expression;
   if (nodeExpression == nil)
     return;
   
+  const float width = [self preferredFrameSize].width;
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
   if (!basicExpression.isError) {
-    CGRect canvasBounds = layoutParameters.canvasBounds;
+    NSRect canvasBounds = ((NSValue*)canvasBoundsVar.value).rectValue;
     IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:basicExpression];
-    IFExpression* croppedExpression = [IFOperatorExpression crop:imageExpression along:NSRectFromCGRect(canvasBounds)];
-    const float maxSide = layoutParameters.columnWidth - 2.0 * margin;
-    const float scaling = maxSide / fmax(CGRectGetWidth(canvasBounds), CGRectGetHeight(canvasBounds));
+    IFExpression* croppedExpression = [IFOperatorExpression crop:imageExpression along:canvasBounds];
+    const float scaling = width / NSWidth(canvasBounds);
     IFExpression* scaledCroppedExpression = [IFOperatorExpression resample:croppedExpression by:scaling];
     self.evaluatedExpression = [evaluator evaluateExpression:scaledCroppedExpression];
-    self.aspectRatio = CGRectIsEmpty(canvasBounds) ? 0.0 : CGRectGetWidth(canvasBounds) / CGRectGetHeight(canvasBounds);
+    self.aspectRatio = NSIsEmptyRect(canvasBounds) ? 0.0 : NSWidth(canvasBounds) / NSHeight(canvasBounds);
     
     maskIndicatorLayer.hidden = (((IFImageConstantExpression*)basicExpression).image.kind != IFImageKindMask);
   } else {
@@ -204,7 +199,7 @@ static CGImageRef imageNamed(NSString* imageName) {
     
     IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)basicExpression;
     if (errorExpression.message != nil)
-      self.aspectRatio = (layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin) / CGImageGetHeight(errorImage);
+      self.aspectRatio = width / CGImageGetHeight(errorImage);
     else
       self.aspectRatio = 0.0;
     

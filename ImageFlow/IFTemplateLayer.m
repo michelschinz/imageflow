@@ -10,8 +10,20 @@
 
 #import "IFNodeLayer.h"
 #import "IFLayoutParameters.h"
+#import "IFVariable.h"
 
 @implementation IFTemplateLayer
+
+static IFVariable* normalCanvasBoundsVar = nil;
+
++ (void)initialize;
+{
+  if (self != [IFTemplateLayer class])
+    return; // avoid repeated initialisation
+  
+  normalCanvasBoundsVar = [[IFVariable variable] retain];
+  normalCanvasBoundsVar.value = [NSValue valueWithRect:NSMakeRect(0, 0, 640, 508)]; // TODO: obtain size from elsewhere
+}
 
 static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   IFTree* templateTree = treeTemplate.tree;
@@ -57,7 +69,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   
   // Normal mode layer
   normalModeTree = [computeNormalModeTreeForTemplate(treeTemplate) retain];
-  normalNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:normalModeTree.root];
+  normalNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree canvasBounds:normalCanvasBoundsVar];
   [self addSublayer:normalNodeCompositeLayer];
   
   nodeCompositeLayer = normalNodeCompositeLayer;

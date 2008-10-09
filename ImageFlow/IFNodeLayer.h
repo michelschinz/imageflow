@@ -8,12 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFTree.h"
 #import "IFTreeNode.h"
 #import "IFConstantExpression.h"
 #import "IFThumbnailLayer.h"
 
 @interface IFNodeLayer : CALayer {
   IFTreeNode* node;
+  IFTree* tree;
 
   // Component layers (not retained)
   CATextLayer* labelLayer;
@@ -21,8 +23,8 @@
   CATextLayer* nameLayer;
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
-- (id)initWithNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
 @property(readonly) IFTreeNode* node;
 

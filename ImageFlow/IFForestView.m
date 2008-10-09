@@ -18,12 +18,14 @@
 #import "IFDocument.h"
 #import "IFTreeTemplateManager.h"
 #import "IFLayoutParameters.h"
+#import "IFVariableKVO.h"
 
 @interface IFForestView (Private)
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
 - (void)setCursors:(IFTreeCursorPair*)newCursors;
 @property(readonly) IFLayerSet* nodeLayers;
 @property(readonly) IFLayerSet* visibleNodeLayers;
+@property(retain) IFVariable* canvasBoundsVar;
 - (void)syncLayersWithTree;
 - (void)documentTreeChanged:(NSNotification*)notification;
 - (IFCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
@@ -34,7 +36,7 @@
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 - (void)updateCursorLayers;
 @property(copy) NSSet* selectedNodes;
-@property(readonly, copy) IFSubtree* selectedSubtree;
+@property(readonly) IFSubtree* selectedSubtree;
 @property(copy) IFTreeNode* cursorNode;
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (BOOL)canExtendSelectionTo:(IFTreeNode*)node;
@@ -46,8 +48,6 @@
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 static NSString* IFMarkPboardType = @"IFMarkPboardType";
-
-static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (id)initWithFrame:(NSRect)theFrame;
 {
@@ -105,12 +105,11 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   NSNotificationCenter* notifCenter = [NSNotificationCenter defaultCenter];
   if (document != nil) {
     [notifCenter removeObserver:self name:IFTreeChangedNotification object:document];
-    [document removeObserver:self forKeyPath:@"canvasBounds"];
   }
   if (newDocument != nil) {
-    [newDocument addObserver:self forKeyPath:@"canvasBounds" options:0 context:IFCanvasBoundsDidChange];
     [notifCenter addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:newDocument];
     self.cursors = [IFTreeCursorPair treeCursorPairWithTree:[newDocument tree] editMark:[IFTreeMark mark] viewMark:[IFTreeMark mark]];
+    self.canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:newDocument key:@"canvasBounds"];
   }
 
   document = newDocument;
@@ -134,14 +133,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 {
   [self updateBounds];
-}
-
-- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
-{
-  if (context == IFCanvasBoundsDidChange)
-    NSLog(@"canvas bounds changed"); // TODO: do something about it (so that the nodes redisplay themselves)
-  else
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (void)layoutManager:(IFForestLayoutManager*)layoutManager didLayoutSublayersOfLayer:(CALayer*)parent;
@@ -657,6 +648,19 @@ static enum {
   return [IFLayerPredicateSubset subsetOf:self.nodeLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
 }
 
+- (IFVariable*)canvasBoundsVar;
+{
+  return canvasBoundsVar;
+}
+
+- (void)setCanvasBoundsVar:(IFVariable*)newCanvasBoundsVar;
+{
+  if (newCanvasBoundsVar == canvasBoundsVar)
+    return;
+  [canvasBoundsVar release];
+  canvasBoundsVar = [newCanvasBoundsVar retain];
+}
+
 - (void)syncLayersWithTree;
 {
   NSMutableDictionary* existingNodeLayers = createMutableDictionaryWithRetainedKeys();
@@ -684,7 +688,7 @@ static enum {
     if ([existingNodeLayers objectForKey:node] != nil)
       [existingNodeLayers removeObjectForKey:node];
     else
-      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node]];
+      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node ofTree:tree canvasBounds:canvasBoundsVar]];
     
     IFLayerNeededMask layersNeeded = [IFForestLayoutManager layersNeededFor:node inTree:tree];
     if (layersNeeded & IFLayerNeededIn) {

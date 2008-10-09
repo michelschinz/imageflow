@@ -10,9 +10,11 @@
 
 #import "IFTreeNode.h"
 #import "IFConstantExpression.h"
+#import "IFVariable.h"
 
 @interface IFThumbnailLayer : CALayer {
   IFTreeNode* node;
+  IFVariable* canvasBoundsVar;
   
   IFConstantExpression* evaluatedExpression;
   float aspectRatio;
@@ -21,7 +23,7 @@
   CALayer* maskIndicatorLayer; // not retained
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
-- (id)initForNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
 @end

@@ -14,6 +14,7 @@
 #import "IFCompositeLayer.h"
 #import "IFLayerSet.h"
 #import "IFForestLayoutManager.h"
+#import "IFVariable.h"
 
 @class IFForestView;
 @protocol IFForestViewDelegate
@@ -24,6 +25,7 @@
   IFGrabableViewMixin* grabableViewMixin;
   
   IFDocument* document;
+  IFVariable* canvasBoundsVar;
 
   // Cursors and selection
   IFTreeCursorPair* cursors;

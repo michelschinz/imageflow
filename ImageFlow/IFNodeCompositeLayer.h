@@ -9,11 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFCompositeLayer.h"
+#import "IFTree.h"
+#import "IFVariable.h"
 
 @interface IFNodeCompositeLayer : IFCompositeLayer {
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode;
-- (id)initWithNode:(IFTreeNode*)theNode;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
 @end
