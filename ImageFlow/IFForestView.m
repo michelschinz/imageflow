@@ -456,8 +456,8 @@ static enum {
       break;
     case IFDragKindFileName: {
       if (targetCompositeLayer != nil) {
-        IFTreeNode* node = [targetCompositeLayer node];
-        highlightTarget = [node isGhost] || ([[node settings] valueForKey:@"fileName"] != nil);
+        IFTreeNode* node = targetCompositeLayer.node;
+        highlightTarget = node.isGhost || ([node.original.settings valueForKey:@"fileName"] != nil);
         allowedOperationsMask = highlightTarget ? NSDragOperationLink : NSDragOperationNone;
       } else
         allowedOperationsMask = NSDragOperationLink;
@@ -596,9 +596,9 @@ static enum {
           return YES;
         } else
           return NO;
-      } else if ([[targetNode settings] valueForKey:@"fileName"] != nil) {
+      } else if ([targetNode.original.settings valueForKey:@"fileName"] != nil) {
         // Change "fileName" entry in environment to the dropped file name.
-        [[targetNode settings] setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
+        [targetNode.original.settings setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
         return YES;
       } else
         return NO;
