@@ -40,13 +40,15 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   
   connectorColor = CGColorCreateGenericGray(0.2, 1.0);
   connectorLabelColor = CGColorCreateGenericGray(0.6, 1.0);
-  connectorArrowSize = 4.0;
+  connectorArrowSize = 5.0;
 
   displayedImageBackgroundColor = CGColorCreateGenericGray(0.75, 1.0);
 
   cursorColor = CGColorCreateGenericRGB(1, 0, 0, 1);
   cursorWidth = 3.0;
   selectionWidth = 1.0;
+  
+  templateLabelColor = CGColorCreateGenericGray(1.0, 1.0);
   
   highlightBackgroundColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
   highlightBorderColor = CGColorCreateGenericRGB(0, 0, 1, 1.0);
@@ -73,6 +75,9 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
 
 @synthesize displayedImageBackgroundColor;
 @synthesize cursorColor, cursorWidth, selectionWidth;
+
+@synthesize templateLabelColor;
+
 @synthesize highlightBackgroundColor, highlightBorderColor;
 
 @end

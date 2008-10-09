@@ -35,6 +35,8 @@
 
 @property(readonly) IFNodeCompositeLayer* nodeCompositeLayer;
 
+@property(readonly) NSImage* dragImage;
+
 //@property(retain) IFTreeNode* previewNode;
 
 @end

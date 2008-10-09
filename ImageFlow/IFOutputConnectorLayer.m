@@ -67,17 +67,17 @@
   const float internalWidth = layoutParameters.columnWidth - 2.0 * margin;
   const float textHeight = [labelLayer preferredFrameSize].height;
   
-  float totalLeftLength = arrowSize + margin + leftReach;
-  float totalRightLength = arrowSize + margin + rightReach;
+  float totalLeftLength = 2.0 * margin + leftReach;
+  float totalRightLength = 2.0 * margin + rightReach;
   
   // Build the path in a clockwise direction, starting from the bottom-left corner (put at the origin)
   CGMutablePathRef path = CGPathCreateMutable();
   CGPathMoveToPoint(path, NULL, 0, 0);
   CGPathAddLineToPoint(path, NULL, 0, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength, textHeight + 2.0);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - arrowSize, textHeight + 2.0 + arrowSize);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - arrowSize + internalWidth, textHeight + 2.0 + arrowSize);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - 2.0 * arrowSize + internalWidth, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - layoutParameters.nodeInternalMargin, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - layoutParameters.nodeInternalMargin + internalWidth, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - 2.0 * layoutParameters.nodeInternalMargin + internalWidth, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, 0);
   CGPathCloseSubpath(path);

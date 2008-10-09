@@ -30,6 +30,8 @@
   CGColorRef cursorColor;
   float cursorWidth;
   float selectionWidth;
+
+  CGColorRef templateLabelColor;
   
   CGColorRef highlightBackgroundColor;
   CGColorRef highlightBorderColor;
@@ -59,6 +61,8 @@
 @property(readonly) CGColorRef cursorColor;
 @property(readonly) float cursorWidth;
 @property(readonly) float selectionWidth;
+
+@property(readonly) CGColorRef templateLabelColor;
 
 @property(readonly) CGColorRef highlightBackgroundColor;
 @property(readonly) CGColorRef highlightBorderColor;

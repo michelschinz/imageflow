@@ -124,8 +124,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
   [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[template tree]] forType:IFTreePboardType];
   
-  IFNodeLayer* nodeLayer = (IFNodeLayer*)(draggedLayer.nodeCompositeLayer.baseLayer);
-  [self dragImage:nodeLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+  [self dragImage:draggedLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
 }
 
 - (void)mouseUp:(NSEvent*)event;

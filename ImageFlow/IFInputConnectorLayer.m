@@ -17,10 +17,10 @@
   const float arrowSize = layoutParameters.connectorArrowSize;
   
   CGMutablePathRef path = CGPathCreateMutable();
-  CGPathMoveToPoint(path, NULL, arrowSize, 0);
+  CGPathMoveToPoint(path, NULL, layoutParameters.nodeInternalMargin, 0);
   CGPathAddLineToPoint(path, NULL, 0, arrowSize);
   CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin, arrowSize);
-  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin - arrowSize, 0);
+  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - 3.0 * layoutParameters.nodeInternalMargin, 0);
   CGPathCloseSubpath(path);
   
   return path;

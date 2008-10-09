@@ -8,6 +8,7 @@
 
 #import "IFTemplateLayer.h"
 
+#import "IFNodeLayer.h"
 #import "IFLayoutParameters.h"
 
 @implementation IFTemplateLayer
@@ -48,6 +49,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   // Artiy indicator layer
   if (treeTemplate.tree.holesCount > 0) {
     arityIndicatorLayer = [CALayer layer];
+    arityIndicatorLayer.needsDisplayOnBoundsChange = YES;
     arityIndicatorLayer.delegate = self;
     [arityIndicatorLayer setNeedsDisplay];
     [self addSublayer:arityIndicatorLayer];
@@ -62,7 +64,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   
   // Name layer
   nameLayer = [CATextLayer layer];
-  nameLayer.foregroundColor = layoutParameters.nodeLabelColor;
+  nameLayer.foregroundColor = layoutParameters.templateLabelColor;
   nameLayer.font = layoutParameters.labelFont;
   nameLayer.fontSize = layoutParameters.labelFont.pointSize;
   nameLayer.alignmentMode = kCAAlignmentCenter;
@@ -84,10 +86,15 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 @synthesize treeTemplate;
 @synthesize nodeCompositeLayer;
 
+- (NSImage*)dragImage;
+{
+  return ((IFNodeLayer*)self.nodeCompositeLayer.baseLayer).dragImage;
+}
+
 - (CGSize)preferredFrameSize;
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  return CGSizeMake(layoutParameters.columnWidth, [nameLayer preferredFrameSize].height + [nodeCompositeLayer preferredFrameSize].height);
+  return CGSizeMake(layoutParameters.columnWidth, [nameLayer preferredFrameSize].height + 2.0 + [nodeCompositeLayer preferredFrameSize].height);
 }
 
 - (void)layoutSublayers;
@@ -97,7 +104,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   const float nameHeight = [nameLayer preferredFrameSize].height;
   nameLayer.frame = (CGRect) { CGPointZero, CGSizeMake(layoutParameters.columnWidth, nameHeight) };
   
-  nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight), [nodeCompositeLayer preferredFrameSize] };
+  nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight + 2.0), [nodeCompositeLayer preferredFrameSize] };
   arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(nodeCompositeLayer.frame)), CGSizeMake(layoutParameters.columnWidth, layoutParameters.connectorArrowSize) };
 
   if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
@@ -115,10 +122,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   CGContextBeginPath(ctx);
   
   // Draw "arrow"
-  CGContextMoveToPoint(ctx, arrowSize, 0);
-  CGContextAddLineToPoint(ctx, 0, arrowSize);
-  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth, arrowSize);
-  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth - arrowSize, 0);
+  CGContextMoveToPoint(ctx, 2.0 * layoutParameters.nodeInternalMargin, 0);
+  CGContextAddLineToPoint(ctx, layoutParameters.nodeInternalMargin, arrowSize);
+  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth - layoutParameters.nodeInternalMargin, arrowSize);
+  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin, 0);
   CGContextClosePath(ctx);
 
   // Draw dents
@@ -127,7 +134,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   const float dentSpacing = layoutParameters.columnWidth / (dentsCount + 1);
   float x = dentSpacing;
   for (unsigned i = 0; i < dentsCount; ++i) {
-    CGContextAddRect(ctx, CGRectMake(x - dentWidth / 2.0, 0, dentWidth, arrowSize));
+    CGContextAddRect(ctx, CGRectMake(round(x - dentWidth / 2.0), 0, dentWidth, arrowSize));
     x += dentSpacing;
   }
 
