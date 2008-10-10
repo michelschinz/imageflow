@@ -24,35 +24,36 @@
 - (IFTree*)clone;
 - (IFTree*)cloneWithoutNewParentExpressionsPropagation;
 
-#pragma mark Navigation
+// MARK: Navigation
 
-- (NSSet*)nodes;
-- (IFTreeNode*)root;
+@property(readonly) NSSet* nodes;
+@property(readonly) IFTreeNode* root;
 
 - (NSArray*)parentsOfNode:(IFTreeNode*)node;
 - (unsigned)parentsCountOfNode:(IFTreeNode*)node;
 - (IFTreeNode*)childOfNode:(IFTreeNode*)node;
 - (NSArray*)siblingsOfNode:(IFTreeNode*)node;
 - (NSArray*)dfsAncestorsOfNode:(IFTreeNode*)node;
+- (unsigned)ancestorsCountOfNode:(IFTreeNode*)node;
 
 - (NSArray*)parentsOfSubtree:(IFSubtree*)subtree;
 - (IFTreeNode*)childOfSubtree:(IFSubtree*)subtree;
 
 - (BOOL)isGhostSubtreeRoot:(IFTreeNode*)node;
 
-- (unsigned)holesCount;
+@property(readonly) unsigned holesCount;
 
-#pragma mark Expression propagation
+// MARK: Expression propagation
 
 - (BOOL)propagateNewParentExpressions;
 - (void)setPropagateNewParentExpressions:(BOOL)newValue;
 
-#pragma mark Low level editing
+// MARK: Low level editing
 
 - (void)addNode:(IFTreeNode*)node;
 - (void)addEdgeFromNode:(IFTreeNode*)fromNode toNode:(IFTreeNode*)toNode withIndex:(unsigned)index;
 
-#pragma mark High level editing
+// MARK: High level editing
 
 - (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 
@@ -82,7 +83,7 @@
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 - (void)moveSubtree:(IFSubtree*)subtree asParentOfNode:(IFTreeNode*)node;
 
-#pragma mark Type checking
+// MARK: Type checking
 
 - (void)configureNodes;
 

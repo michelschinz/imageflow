@@ -335,8 +335,13 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
 - (IBAction)toggleNodeFoldingState:(id)sender;
 {
   IFTreeNode* node = self.cursorNode;
-  node.isFolded = !node.isFolded;
-  [self.layer setNeedsLayout];
+
+  IFTree* tree = document.tree;
+  if (!node.isGhost && [tree ancestorsCountOfNode:node] > 1) {
+    node.isFolded = !node.isFolded;
+    [self.layer setNeedsLayout];
+  } else
+    NSBeep();
 }
 
 // MARK: Copy and paste

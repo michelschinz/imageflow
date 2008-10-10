@@ -19,6 +19,7 @@
 
   // Component layers (not retained)
   CATextLayer* labelLayer;
+  CALayer* foldingSeparatorLayer;
   IFThumbnailLayer* thumbnailLayer;
   CATextLayer* nameLayer;
 }

@@ -20,6 +20,7 @@
 
 static NSString* IFNodeLabelChangedContext = @"IFNodeLabelChangedContext";
 static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
+static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedContext";
 
 + (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
@@ -68,6 +69,8 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
     height = 2.0 * layoutParameters.nodeInternalMargin;
     if (nameLayer.string != nil)
       height += [nameLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
+    if (!foldingSeparatorLayer.hidden)
+      height += [foldingSeparatorLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
     height += [thumbnailLayer preferredFrameSize].height;
     height += [labelLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
   }
@@ -92,10 +95,29 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   thumbnailLayer.frame = (CGRect){ CGPointMake(x, y), [thumbnailLayer preferredFrameSize] };
   y += CGRectGetHeight(thumbnailLayer.bounds) + internalMargin;
   
+  foldingSeparatorLayer.frame = CGRectMake(0, y, layoutParameters.columnWidth, 1.0);
+  if (!foldingSeparatorLayer.hidden)
+    y += CGRectGetHeight(foldingSeparatorLayer.bounds) + internalMargin;
+  
   labelLayer.frame = CGRectMake(x, y, internalWidth, [labelLayer preferredFrameSize].height);
   
   if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
     [self.superlayer setNeedsLayout];
+}
+
+- (void)drawLayer:(CALayer*)layer inContext:(CGContextRef)ctx;
+{
+  assert(layer == foldingSeparatorLayer);
+
+  CGContextSetLineWidth(ctx, 1.0);
+  CGFloat dash[] = { 1.0, 1.0 };
+  CGContextSetLineDash(ctx, 0, dash, sizeof(dash) / sizeof(CGFloat));
+  CGContextSetStrokeColorWithColor(ctx, [IFLayoutParameters sharedLayoutParameters].backgroundColor);
+  
+  CGContextBeginPath(ctx);
+  CGContextMoveToPoint(ctx, 0, 0);
+  CGContextAddLineToPoint(ctx, CGRectGetWidth(self.bounds), 0);
+  CGContextStrokePath(ctx);
 }
 
 - (NSImage*)dragImage;
@@ -127,8 +149,21 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if (context == IFNodeLabelChangedContext) {
-    labelLayer.string = node.label;
+  if (context == IFNodeFoldingStateChangedContext) {
+    if (node.isFolded) {
+      unsigned ancestors = [tree ancestorsCountOfNode:node];
+      foldingSeparatorLayer.hidden = NO;
+      labelLayer.string = [NSString stringWithFormat:@"(%d nodes)", ancestors];
+      labelLayer.opacity = 0.5;
+    } else {
+      foldingSeparatorLayer.hidden = YES;
+      labelLayer.string = node.label;
+      labelLayer.opacity = 1.0;
+    }
+    [self setNeedsLayout];
+  } else if (context == IFNodeLabelChangedContext) {
+    if (!node.isFolded)
+      labelLayer.string = node.label;
   } else if (context == IFNodeNameChangedContext) {
     nameLayer.string = node.name;
   } else {
@@ -144,7 +179,7 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
-  // Create component layers
+  // Label
   labelLayer = [CATextLayer layer];
   labelLayer.font = layoutParameters.labelFont;
   labelLayer.fontSize = layoutParameters.labelFont.pointSize;
@@ -153,11 +188,19 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   labelLayer.truncationMode = kCATruncationMiddle;
   labelLayer.anchorPoint = CGPointZero;
   [self addSublayer:labelLayer];
+
+  // Folding separator
+  foldingSeparatorLayer = [CALayer layer];
+  foldingSeparatorLayer.needsDisplayOnBoundsChange = YES;
+  foldingSeparatorLayer.anchorPoint = CGPointZero;
+  foldingSeparatorLayer.delegate = self;
+  [self addSublayer:foldingSeparatorLayer];
   
   // Thumbnail
   thumbnailLayer = [IFThumbnailLayer layerForNode:node canvasBounds:canvasBoundsVar];
   [self addSublayer:thumbnailLayer];
-  
+
+  // Name
   nameLayer = [CATextLayer layer];
   nameLayer.font = layoutParameters.labelFont;
   nameLayer.fontSize = layoutParameters.labelFont.pointSize;
@@ -169,10 +212,15 @@ static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
   
   [node addObserver:self forKeyPath:@"label" options:NSKeyValueObservingOptionInitial context:IFNodeLabelChangedContext];
   [node addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionInitial context:IFNodeNameChangedContext];
+  [node addObserver:self forKeyPath:@"isFolded" options:NSKeyValueObservingOptionInitial context:IFNodeFoldingStateChangedContext];
 }
 
 - (void)teardownComponentLayers;
 {
+  [node removeObserver:self forKeyPath:@"isFolded"];
+  [node removeObserver:self forKeyPath:@"name"];
+  [node removeObserver:self forKeyPath:@"label"];
+  
   [labelLayer removeFromSuperlayer];
   labelLayer = nil;
   [thumbnailLayer removeFromSuperlayer];

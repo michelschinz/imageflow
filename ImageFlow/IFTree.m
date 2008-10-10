@@ -140,6 +140,14 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return result;
 }
 
+- (unsigned)ancestorsCountOfNode:(IFTreeNode*)node;
+{
+  unsigned count = 1;
+  for (IFTreeNode* parent in [self parentsOfNode:node])
+    count += [self ancestorsCountOfNode:parent];
+  return count;
+}
+
 - (NSArray*)parentsOfSubtree:(IFSubtree*)subtree;
 {
   NSAssert([subtree baseTree] == self, @"invalid subtree");
