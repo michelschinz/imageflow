@@ -129,7 +129,6 @@
 		FAC14C320E7D534300F7B93B /* IFThumbnailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC14C310E7D534300F7B93B /* IFThumbnailLayer.m */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
-		FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */; };
 		FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD887A20CD073D100D3DE7D /* IFTree.m */; };
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
 		FAD888FC0CD0A83B00D3DE7D /* IFOrientedGraphEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */; };
@@ -452,7 +451,6 @@
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
 		FAD4DF6E08D075C1004EA3A0 /* IFUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUtilities.h; sourceTree = "<group>"; };
 		FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUtilities.m; sourceTree = "<group>"; };
-		FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGhostFilter.nib; sourceTree = "<group>"; };
 		FAD887A10CD073D100D3DE7D /* IFTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTree.h; sourceTree = "<group>"; };
 		FAD887A20CD073D100D3DE7D /* IFTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTree.m; sourceTree = "<group>"; };
 		FAD888F50CD0A83B00D3DE7D /* IFOrientedGraph.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFOrientedGraph.h; sourceTree = "<group>"; };
@@ -974,7 +972,6 @@
 				46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */,
 				5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */,
 				FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */,
-				FAD7187F08B5CFFE00CF732B /* IFGhostFilter.nib */,
 				FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */,
 				FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */,
 				FA1BF71609194BDD00E288BB /* IFThresholdFilter.nib */,
@@ -1614,7 +1611,6 @@
 				FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */,
 				FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */,
 				FA38ACF508AB1D0B00D0292A /* IFFileSource.nib in Resources */,
-				FAD7188008B5CFFE00CF732B /* IFGhostFilter.nib in Resources */,
 				FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */,
 				FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */,
 				FAE653DC08F1847B00FE2949 /* IFDocumentSettings.nib in Resources */,
