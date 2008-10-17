@@ -43,21 +43,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return YES;
 }
 
-- (void)insertObject:(IFTreeNode*)parent inParentsAtIndex:(unsigned int)index;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)removeObjectFromParentsAtIndex:(unsigned int)index;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
-- (void)replaceObjectInParentsAtIndex:(unsigned int)index withObject:(IFTreeNode*)newParent;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
 - (IFTreeNode*)original;
 {
   return original;
@@ -68,19 +53,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return 0;
 }
 
-- (NSArray*)potentialTypes;
-{
-  NSArray* originalPTs = [original potentialTypes];
-  NSMutableArray* potentialTypes = [NSMutableArray array];
-  for (int i = 0, count = [originalPTs count]; i < count; ++i) {
-    IFType* limitedType = [(IFType*)[originalPTs objectAtIndex:i] resultType];
-    if (![potentialTypes containsObject:limitedType])
-      [potentialTypes addObject:limitedType];
-  }
-  return potentialTypes;
-}
-
-#pragma mark Tree view support
+// MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
@@ -92,7 +65,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return [original toolTip];
 }
 
-#pragma mark Image view support
+// MARK: Image view support
 
 - (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
@@ -129,7 +102,7 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return [original variantNamed:variantName ofExpression:originalExpression];
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -145,8 +118,8 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   [encoder encodeObject:original forKey:@"original"];
 }
 
-#pragma mark -
-#pragma mark (protected)
+// MARK: -
+// MARK: PROTECTED
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
