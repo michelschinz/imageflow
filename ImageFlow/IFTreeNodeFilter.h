@@ -13,7 +13,7 @@
 
 @interface IFTreeNodeFilter : IFTreeNode<NSCoding> {
   IFEnvironment* settings;
-  int activeTypeIndex;
+  unsigned activeTypeIndex;
   NSMutableDictionary* parentExpressions;
   NSNib* settingsNib;
 }
@@ -23,8 +23,9 @@
 
 - (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
 
-#pragma mark -
-#pragma mark protected
+// MARK: -
+// MARK: PROTECTED
+
 - (NSArray*)potentialRawExpressions;
 
 @end

@@ -12,6 +12,10 @@
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"
 
+@interface IFTemplateLayer ()
+@property(retain) IFNodeCompositeLayer* previewNodeCompositeLayer;
+@end
+
 @implementation IFTemplateLayer
 
 static IFVariable* normalCanvasBoundsVar = nil;
@@ -67,12 +71,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     [self addSublayer:arityIndicatorLayer];
   }
   
-  // Normal mode layer
-  normalModeTree = [computeNormalModeTreeForTemplate(treeTemplate) retain];
-  normalNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree canvasBounds:normalCanvasBoundsVar];
+  // Node layer
+  IFTree* normalModeTree = computeNormalModeTreeForTemplate(treeTemplate);
+  normalNodeCompositeLayer = [[IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree canvasBounds:normalCanvasBoundsVar] retain];
   [self addSublayer:normalNodeCompositeLayer];
-  
-  nodeCompositeLayer = normalNodeCompositeLayer;
   
   // Name layer
   nameLayer = [CATextLayer layer];
@@ -83,20 +85,49 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   nameLayer.truncationMode = kCATruncationMiddle;
   nameLayer.string = treeTemplate.name;
   [self addSublayer:nameLayer];
-
+  
   return self;
 }
 
 - (void)dealloc;
 {
+  OBJC_RELEASE(previewNodeCompositeLayer);
   OBJC_RELEASE(normalNodeCompositeLayer);
-  OBJC_RELEASE(normalModeTree);
   OBJC_RELEASE(treeTemplate);
   [super dealloc];
 }
 
 @synthesize treeTemplate;
-@synthesize nodeCompositeLayer;
+
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+{
+  // Create preview tree
+  IFTree* previewTree = [tree cloneWithoutNewParentExpressionsPropagation];
+  NSSet* constNodes = [NSSet setWithSet:previewTree.nodes];
+  IFTreeNode* previewTreeNode = [previewTree copyTree:treeTemplate.tree toReplaceNode:node];  
+  if ([previewTree isTypeCorrect]) {
+    [previewTree configureAllNodesBut:constNodes];
+    self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewTree canvasBounds:canvasBoundsVar];
+    
+    [self replaceSublayer:normalNodeCompositeLayer with:previewNodeCompositeLayer];
+    self.hidden = NO;
+  } else
+    self.hidden = YES;
+}
+
+- (void)switchToNormalMode;
+{
+  if (previewNodeCompositeLayer != nil) {
+    [self replaceSublayer:previewNodeCompositeLayer with:normalNodeCompositeLayer];
+    self.previewNodeCompositeLayer = nil;
+  } else
+    self.hidden = NO;
+}
+
+- (IFNodeCompositeLayer*)nodeCompositeLayer;
+{
+  return (previewNodeCompositeLayer == nil) ? normalNodeCompositeLayer : previewNodeCompositeLayer;
+}
 
 - (NSImage*)dragImage;
 {
@@ -106,7 +137,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 - (CGSize)preferredFrameSize;
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  return CGSizeMake(layoutParameters.columnWidth, [nameLayer preferredFrameSize].height + 2.0 + [nodeCompositeLayer preferredFrameSize].height);
+  return CGSizeMake(layoutParameters.columnWidth, [nameLayer preferredFrameSize].height + 2.0 + [self.nodeCompositeLayer preferredFrameSize].height);
 }
 
 - (void)layoutSublayers;
@@ -116,14 +147,15 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   const float nameHeight = [nameLayer preferredFrameSize].height;
   nameLayer.frame = (CGRect) { CGPointZero, CGSizeMake(layoutParameters.columnWidth, nameHeight) };
   
-  nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight + 2.0), [nodeCompositeLayer preferredFrameSize] };
-  arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(nodeCompositeLayer.frame)), CGSizeMake(layoutParameters.columnWidth, layoutParameters.connectorArrowSize) };
+  self.nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight + 2.0), [self.nodeCompositeLayer preferredFrameSize] };
+  arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(self.nodeCompositeLayer.frame)), CGSizeMake(layoutParameters.columnWidth, layoutParameters.connectorArrowSize) };
 
   if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
     [self.superlayer setNeedsLayout];
 }
 
-// delegate methods
+// MARK: Delegate methods
+
 - (void)drawLayer:(CALayer*)layer inContext:(CGContextRef)ctx;
 {
   NSAssert(layer == arityIndicatorLayer, @"unexpected layer");
@@ -153,5 +185,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   CGContextSetFillColorWithColor(ctx, layoutParameters.connectorColor);
   CGContextEOFillPath(ctx);
 }
+
+// -
+// MARK: PRIVATE
+
+@synthesize previewNodeCompositeLayer;
 
 @end

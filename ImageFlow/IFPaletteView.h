@@ -11,10 +11,19 @@
 #import "IFGrabableViewMixin.h"
 #import "IFForestView.h"
 #import "IFPaletteLayoutManager.h"
+#import "IFTree.h"
+#import "IFTreeNode.h"
 
+typedef enum {
+  IFPaletteViewModeNormal,
+  IFPaletteViewModePreview
+} IFPaletteViewMode;
+ 
 @interface IFPaletteView : NSView<IFPaletteLayoutManagerDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
 
+  IFPaletteViewMode mode;
+  
   // Cursors & selection
   IFTreeCursorPair* cursors;
 
@@ -28,6 +37,10 @@
   // Delegate
   id<IFForestViewDelegate> delegate;
 }
+
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+- (void)switchToNormalMode;
+@property(readonly) IFPaletteViewMode mode;
 
 @property(assign) id<IFForestViewDelegate> delegate;
 

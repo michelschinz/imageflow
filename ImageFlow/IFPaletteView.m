@@ -20,7 +20,8 @@
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
-@interface IFPaletteView (Private)
+@interface IFPaletteView ()
+@property IFPaletteViewMode mode;
 @property(readonly) IFLayerSet* templateLayers;
 - (void)syncLayersWithTemplates;
 - (NSArray*)computeTemplates;
@@ -38,6 +39,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
     return nil;
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
   
+  mode = IFPaletteViewModeNormal;
   templates = [[self computeTemplates] retain];
   acceptFirstResponder = NO;
   
@@ -78,6 +80,27 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 }
 
 @synthesize delegate;
+
+// MARK: Normal/preview modes
+
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+{
+  for (IFTemplateLayer* templateLayer in self.templateLayers)
+    [templateLayer switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
+  [self.layer setNeedsLayout];
+  
+  self.mode = IFPaletteViewModePreview;
+}
+
+- (void)switchToNormalMode;
+{
+  for (IFTemplateLayer* templateLayer in self.templateLayers)
+    [templateLayer switchToNormalMode];
+  
+  self.mode = IFPaletteViewModeNormal;
+}
+
+@synthesize mode;
 
 // MARK: First responder
 
@@ -122,7 +145,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   IFTreeTemplate* template = draggedLayer.treeTemplate;
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
-  [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[template tree]] forType:IFTreePboardType];
+  [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:template.tree] forType:IFTreePboardType];
   
   [self dragImage:draggedLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
 }
@@ -186,9 +209,8 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   [self updateBounds];
 }
 
-@end
-
-@implementation IFPaletteView (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (IFLayerSet*)templateLayers;
 {
@@ -224,18 +246,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   return allTemplates;
 }
 
-- (NSArray*)templates;
-{
-  return templates;
-}
-
-- (void)setTemplates:(NSArray*)newTemplates;
-{
-  if (newTemplates == templates)
-    return;
-  [templates release];
-  templates = [newTemplates retain];
-}
+@synthesize templates;
 
 // MARK: View size
 

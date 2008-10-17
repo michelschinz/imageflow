@@ -362,14 +362,14 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
 - (void)paste:(id)sender;
 {
   if (![[self cursorNode] isGhost]) {
-    NSBeep(); // TODO error message
+    NSBeep(); // TODO: error message
     return;
   }
   
   NSPasteboard* pboard = [NSPasteboard generalPasteboard];
   NSString* available = [pboard availableTypeFromArray:[NSArray arrayWithObject:IFTreePboardType]];
   if (available == nil) {
-    NSBeep(); // TODO deactivate menu instead (or additionally)
+    NSBeep(); // TODO: deactivate menu instead (or additionally)
     return;
   }
   
@@ -774,6 +774,8 @@ static enum {
   [self.window makeFirstResponder:textField];
   if (mouseEvent != nil)
     [textField mouseDown:mouseEvent];
+  
+  [delegate beginPreviewForNode:ghostCompositeLayer.node ofTree:document.tree];
 }
 
 // text field action method
@@ -796,6 +798,8 @@ static enum {
 // text field delegate method
 - (void)controlTextDidEndEditing:(NSNotification*)notification;
 {
+  [delegate endPreview];
+  
   [self.window makeFirstResponder:self];
   [notification.object removeFromSuperview];
 }

@@ -83,6 +83,12 @@
   return expression;
 }
 
+- (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 - (NSArray*)potentialTypes;
 {
   [self doesNotRecognizeSelector:_cmd];
@@ -94,7 +100,7 @@
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
 }

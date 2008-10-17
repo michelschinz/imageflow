@@ -19,7 +19,7 @@ static NSArray* nodeParents(IFOrientedGraph* graph, IFTreeNode* node);
 static NSArray* serialiseSortedNodes(IFOrientedGraph* graph, NSArray* sortedNodes);
 static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
-@interface IFTree (Private)
+@interface IFTree ()
 - (unsigned)arityOfSubtree:(IFSubtree*)subtree;
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 - (void)collectParentsOfSubtree:(IFSubtree*)subtree startingAt:(IFTreeNode*)root into:(NSMutableArray*)result;
@@ -35,7 +35,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)exchangeSubtree:(IFSubtree*)subtree withTreeRootedAt:(IFTreeNode*)root;
 - (BOOL)canDeleteNode:(IFTreeNode*)node;
 - (void)deleteNode:(IFTreeNode*)node;
-- (BOOL)isTypeCorrect;
 @end
 
 @implementation IFTree
@@ -97,7 +96,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [[[IFTree alloc] initWithGraph:[graph clone] propagateNewParentExpressions:NO] autorelease];
 }
 
-#pragma mark Navigation
+// MARK: Navigation
 
 - (NSSet*)nodes;
 {
@@ -182,12 +181,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return count;
 }
 
-#pragma mark Expression propagation
+// MARK: Expression propagation
 
-- (BOOL)propagateNewParentExpressions;
-{
-  return propagateNewParentExpressions;
-}
+@synthesize propagateNewParentExpressions;
 
 - (void)setPropagateNewParentExpressions:(BOOL)newValue;
 {
@@ -215,7 +211,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [child setParentExpression:[node expression] atIndex:[outEdge targetIndex]];
 }
 
-#pragma mark Low level editing
+// MARK: Low level editing
 
 - (void)addNode:(IFTreeNode*)node;
 {
@@ -228,7 +224,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [graph addEdge:[IFTreeEdge edgeWithTargetIndex:index] fromNode:fromNode toNode:toNode];
 }
 
-#pragma mark High level editing
+// MARK: High level editing
 
 - (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 {
@@ -290,13 +286,14 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [clone isTypeCorrect];
 }
 
-- (void)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
 
   IFTreeNode* copiedTreeRoot = [self addCopyOfTree:tree];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:copiedTreeRoot];
   [self removeTreeRootedAt:node];
+  return copiedTreeRoot;
 }
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
@@ -306,9 +303,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [clone isTypeCorrect];
 }
 
-- (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
-  [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
+  return [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
 }
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
@@ -318,9 +315,9 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [clone isTypeCorrect];
 }
 
-- (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
-  [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
+  return [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
 }
 
   // Moving subtrees to some other location
@@ -382,25 +379,52 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self moveSubtree:subtree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
 }
 
-#pragma mark Type checking
+// MARK: Type checking
+
+- (BOOL)isTypeCorrect;
+{
+  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
+  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
+  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
+  if (sortedNodes == nil)
+    return NO; // cyclic graph
+  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
+  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+}
 
 - (void)configureNodes;
+{
+  [self configureAllNodesBut:[NSSet set]];
+}
+
+- (void)configureAllNodesBut:(NSSet*)nonConfiguredNodes;
 {
   IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
   IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
   NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
+  const unsigned nodesCount = [sortedNodes count];
   NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodes) withPotentialTypes:[[sortedNodes collect] potentialTypes]];
 
-  for (int i = 0; i < [config count]; ++i) {
+  NSMutableDictionary* nodeExpressions = createMutableDictionaryWithRetainedKeys();
+  for (unsigned i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    NSArray* parentExpressions = (NSArray*)[[[self parentsOfNode:node] collect] expression];
+    
+    NSMutableDictionary* parentExpressions = [NSMutableDictionary dictionaryWithCapacity:5];
+    unsigned j = 0;
+    for (IFTreeNode* parent in [self parentsOfNode:node])
+      [parentExpressions setObject:[nodeExpressions objectForKey:parent] forKey:[NSNumber numberWithUnsignedInt:j++]];
+    
     unsigned activeTypeIndex = [[config objectAtIndex:i] unsignedIntValue];
-    [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
+    IFExpression* nodeExpression = [node expressionForSettings:node.settings parentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
+    CFDictionarySetValue((CFMutableDictionaryRef)nodeExpressions, node, nodeExpression);
+    if (![nonConfiguredNodes containsObject:node])
+      [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
   }
+  [nodeExpressions release];
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -413,11 +437,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [encoder encodeBool:propagateNewParentExpressions forKey:@"propagateNewParentExpressions"];
 }
 
-@end
-
-#pragma mark -
-
-@implementation IFTree (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (unsigned)arityOfSubtree:(IFSubtree*)subtree;
 {
@@ -449,7 +470,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [outEdges count] == 0 ? nil : [outEdges anyObject];
 }
 
-#pragma mark Low level editing
+// MARK: Low level editing
 
 - (void)collectHolesInSubtreeRootedAt:(IFTreeNode*)root into:(NSMutableArray*)result;
 {
@@ -622,19 +643,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self addNode:hole];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:hole];
   [self removeTreeRootedAt:node];
-}
-
-#pragma mark Type checking
-
-- (BOOL)isTypeCorrect;
-{
-  IFTypeChecker* typeChecker = [IFTypeChecker sharedInstance];
-  IFOrientedGraph* cloneWithoutAliases = graphCloneWithoutAliases(graph);
-  NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
-  if (sortedNodes == nil)
-    return NO; // cyclic graph
-  NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
 }
 
 @end

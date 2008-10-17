@@ -16,16 +16,14 @@
   IFTreeTemplate* treeTemplate;
 
   // Normal mode
-  IFTree* normalModeTree;
   IFNodeCompositeLayer* normalNodeCompositeLayer;
 
   // Preview mode
-  //IFNodeLayer* previewNodeLayer;
+  IFNodeCompositeLayer* previewNodeCompositeLayer; // (nil when not in preview mode)
   
-  // Sublayers
-  CALayer* arityIndicatorLayer; // not retained
-  IFNodeCompositeLayer* nodeCompositeLayer; // not retained, either normalNodeCompositeLayer or previewNodeLayer
-  CATextLayer* nameLayer; // not retained
+  // Sublayers (not retained)
+  CALayer* arityIndicatorLayer;
+  CATextLayer* nameLayer;
 }
 
 + (IFTemplateLayer*)layerForTemplate:(IFTreeTemplate*)theTreeTemplate;
@@ -33,10 +31,11 @@
 
 @property(readonly) IFTreeTemplate* treeTemplate;
 
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+- (void)switchToNormalMode;
+
 @property(readonly) IFNodeCompositeLayer* nodeCompositeLayer;
 
 @property(readonly) NSImage* dragImage;
-
-//@property(retain) IFTreeNode* previewNode;
 
 @end

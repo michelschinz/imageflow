@@ -15,10 +15,14 @@
 #import "IFLayerSet.h"
 #import "IFForestLayoutManager.h"
 #import "IFVariable.h"
+#import "IFTree.h"
 
 @class IFForestView;
 @protocol IFForestViewDelegate
 - (void)willBecomeActive:(IFForestView*)forestView;
+
+- (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
+- (void)endPreview;
 @end
 
 @interface IFForestView : NSView<IFForestLayoutManagerDelegate> {

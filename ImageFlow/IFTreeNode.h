@@ -32,13 +32,14 @@
 @property(readonly) IFTreeNode* original;
 @property(readonly) IFEnvironment* settings;
 @property(readonly) IFExpression* expression;
+- (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
 @property(readonly) int inputArity;
 @property(readonly) int outputArity;
 @property(readonly) NSArray* potentialTypes;
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
-- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)activeTypeIndex;
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
 
 // MARK: Tree view support
 
@@ -57,7 +58,9 @@
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 - (NSAffineTransform*)transformForParentAtIndex:(int)index;
 
-// MARK: (protected)
+// MARK: -
+// MARK: PROTECTED
+
 - (void)updateLabel;
 - (NSString*)computeLabel; // abstract
 - (void)updateExpression;

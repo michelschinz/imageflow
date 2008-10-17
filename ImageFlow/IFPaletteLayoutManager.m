@@ -37,6 +37,9 @@
   float x = gutterX, y = 0;
   float rowHeight = 0;
   for (CALayer* layer in parentLayer.sublayers) {
+    if (layer.hidden)
+      continue;
+
     layer.frame = (CGRect){ CGPointMake(round(x), round(y)), [layer preferredFrameSize] };
     rowHeight = fmax(rowHeight, CGRectGetHeight(layer.frame));
     

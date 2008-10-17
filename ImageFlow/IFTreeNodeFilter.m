@@ -9,7 +9,7 @@
 #import "IFTreeNodeFilter.h"
 #import "IFExpressionPlugger.h"
 
-@interface IFTreeNodeFilter (Private)
+@interface IFTreeNodeFilter ()
 - (void)startObservingSettingsKeys:(NSSet*)keys;
 - (void)stopObservingSettingsKeys:(NSSet*)keys;
 @end
@@ -71,23 +71,26 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   [self updateExpression];
 }
 
-- (void)setParentExpressions:(NSArray*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
 {
-  [parentExpressions removeAllObjects];
-  for (int i = 0; i < [expressions count]; ++i)
-    [parentExpressions setObject:[expressions objectAtIndex:i] forKey:[NSNumber numberWithInt:i]];
+  [parentExpressions setDictionary:expressions];
   activeTypeIndex = newActiveTypeIndex;
   [self updateExpression];
 }
 
-- (IFExpression*)computeExpression;
+- (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 {
-  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:activeTypeIndex] withValuesFromVariablesEnvironment:[settings asDictionary]];
-  IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:parentExpressions];
+  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
+  IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:altParentExpressions];
   return expr2;
 }
 
-#pragma mark Filter settings view support
+- (IFExpression*)computeExpression;
+{
+  return [self expressionForSettings:settings parentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
+}
+
+// MARK: Filter settings view support
 
 - (NSArray*)instantiateSettingsNibWithOwner:(NSObject*)owner;
 {
@@ -104,7 +107,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return topLevelObjects;
 }
 
-#pragma mark Tree view support
+// MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
 {
@@ -116,7 +119,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return [self label];
 }
 
-#pragma mark Image view support
+// MARK: Image view support
 
 - (NSArray*)editingAnnotationsForView:(NSView*)view;
 {
@@ -159,7 +162,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return [NSAffineTransform transform];
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -181,15 +184,15 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   [encoder encodeObject:settings forKey:@"settings"];
 }
 
-#pragma mark Debugging
+// MARK: Debugging
 
 - (NSString*)description;
 {
   return [self label];
 }
 
-#pragma mark -
-#pragma mark protected
+// MARK: -
+// MARK: PROTECTED
 
 - (NSArray*)potentialRawExpressions;
 {
@@ -221,9 +224,8 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-@end
-
-@implementation IFTreeNodeFilter (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (void)startObservingSettingsKeys:(NSSet*)keys;
 {

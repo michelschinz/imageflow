@@ -45,8 +45,7 @@
 
 // MARK: Expression propagation
 
-- (BOOL)propagateNewParentExpressions;
-- (void)setPropagateNewParentExpressions:(BOOL)newValue;
+@property BOOL propagateNewParentExpressions;
 
 // MARK: Low level editing
 
@@ -65,13 +64,13 @@
 
   // Copying trees inside the current tree
 - (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
-- (void)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
-- (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
-- (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 
   // Moving subtrees to some other location
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
@@ -85,6 +84,8 @@
 
 // MARK: Type checking
 
+- (BOOL)isTypeCorrect;
 - (void)configureNodes;
+- (void)configureAllNodesBut:(NSSet*)nonConfiguredNodes;
 
 @end

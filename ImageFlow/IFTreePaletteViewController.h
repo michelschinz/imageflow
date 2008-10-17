@@ -18,15 +18,19 @@
   IBOutlet NSObjectController* layoutParametersController;
   IBOutlet IFForestView* forestView;
   IBOutlet IFPaletteView* paletteView;
-  
+
+  IFDocument* document;
   IFVariable* cursorsVar;
 }
 
-- (void)setDocument:(IFDocument*)document;
+@property(retain) IFDocument* document;
+@property(readonly) IFVariable* cursorsVar;
 
-@property(readonly, assign) IFVariable* cursorsVar;
+// MARK: delegate methods
 
-// delegate methods
 - (void)willBecomeActive:(IFForestView*)nodesView;
+
+- (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
+- (void)endPreview;
 
 @end
