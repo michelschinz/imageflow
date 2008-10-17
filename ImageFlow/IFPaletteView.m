@@ -219,7 +219,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 - (void)syncLayersWithTemplates;
 {
-  NSMutableDictionary* existingTemplateLayers = createMutableDictionaryWithRetainedKeys();
+  NSMutableDictionary* existingTemplateLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   
   for (IFTemplateLayer* layer in self.templateLayers)
     CFDictionarySetValue((CFMutableDictionaryRef)existingTemplateLayers, layer.treeTemplate, layer);

@@ -668,9 +668,9 @@ static enum {
 
 - (void)syncLayersWithTree;
 {
-  NSMutableDictionary* existingNodeLayers = createMutableDictionaryWithRetainedKeys();
-  NSMutableDictionary* existingInConnectorLayers = createMutableDictionaryWithRetainedKeys();
-  NSMutableDictionary* existingOutConnectorLayers = createMutableDictionaryWithRetainedKeys();
+  NSMutableDictionary* existingNodeLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
+  NSMutableDictionary* existingInConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
+  NSMutableDictionary* existingOutConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   
   for (IFCompositeLayer* layer in self.nodeLayers) {
     NSMutableDictionary* dict;

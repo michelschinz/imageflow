@@ -406,7 +406,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   const unsigned nodesCount = [sortedNodes count];
   NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodes) withPotentialTypes:[[sortedNodes collect] potentialTypes]];
 
-  NSMutableDictionary* nodeExpressions = createMutableDictionaryWithRetainedKeys();
+  NSMutableDictionary* nodeExpressions = [createMutableDictionaryWithRetainedKeys() autorelease];
   for (unsigned i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
     
@@ -421,7 +421,6 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     if (![nonConfiguredNodes containsObject:node])
       [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
   }
-  [nodeExpressions release];
 }
 
 // MARK: NSCoding protocol

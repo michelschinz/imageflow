@@ -50,9 +50,9 @@
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
   // Find all layers and associate them with their node
-  NSMutableDictionary* nodeLayers = createMutableDictionaryWithRetainedKeys();
-  NSMutableDictionary* inConnectorLayers = createMutableDictionaryWithRetainedKeys();
-  NSMutableDictionary* outConnectorLayers = createMutableDictionaryWithRetainedKeys();
+  NSMutableDictionary* nodeLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
+  NSMutableDictionary* inConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
+  NSMutableDictionary* outConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
 
   IFLayerSubsetComposites* mySublayers = [IFLayerSubsetComposites compositeSubsetOf:[IFLayerSetExplicit layerSetWithLayers:parentLayer.sublayers]];
   for (IFCompositeLayer* layer in mySublayers) {
