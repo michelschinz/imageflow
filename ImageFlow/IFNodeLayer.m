@@ -221,12 +221,7 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
   [node removeObserver:self forKeyPath:@"name"];
   [node removeObserver:self forKeyPath:@"label"];
   
-  [labelLayer removeFromSuperlayer];
-  labelLayer = nil;
-  [thumbnailLayer removeFromSuperlayer];
-  thumbnailLayer = nil;
-  [nameLayer removeFromSuperlayer];
-  nameLayer = nil;
+  // Note: sublayers will be removed automatically for us (trying to remove them here actually fails).
 }
 
 @end
