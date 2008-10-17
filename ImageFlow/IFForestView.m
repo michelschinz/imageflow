@@ -20,9 +20,9 @@
 #import "IFLayoutParameters.h"
 #import "IFVariableKVO.h"
 
-@interface IFForestView (Private)
+@interface IFForestView ()
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
-- (void)setCursors:(IFTreeCursorPair*)newCursors;
+@property(assign) IFTreeCursorPair* cursors;
 @property(readonly) IFLayerSet* nodeLayers;
 @property(readonly) IFLayerSet* visibleNodeLayers;
 @property(retain) IFVariable* canvasBoundsVar;
@@ -31,6 +31,7 @@
 - (IFCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
 - (void)updateBounds;
 - (void)startEditingGhost:(IFCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
+@property(retain) NSInvocation* delayedMouseEventInvocation;
 - (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (void)moveToNodeRepresentedBy:(IFCompositeLayer*)layer extendingSelection:(BOOL)extendSelection;
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
@@ -290,11 +291,22 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
     IFTreeNode* clickedNode = [clickedLayer node];
     BOOL extendSelection = ([event modifierFlags] & NSShiftKeyMask) != 0;
     switch ([event clickCount]) {
-      case 1:
-        [self moveToNodeRepresentedBy:clickedLayer extendingSelection:extendSelection];
-        if (clickedNode.isGhost)
-          [self startEditingGhost:(IFNodeCompositeLayer*)clickedLayer withMouseClick:event];
-        break;
+      case 1: {
+        NSInvocation* movementInvocation = [NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(moveToNode:extendingSelection:)]];
+        [movementInvocation setSelector:@selector(moveToNode:extendingSelection:)];
+        [movementInvocation setTarget:self];
+        [movementInvocation setArgument:&clickedNode atIndex:2];
+        [movementInvocation setArgument:&extendSelection atIndex:3];
+        
+        if ([self.selectedNodes containsObject:clickedNode]) {
+          [movementInvocation retainArguments];
+          self.delayedMouseEventInvocation = movementInvocation;
+        } else {
+          [movementInvocation invoke];
+          if (self.cursorNode == clickedNode && clickedNode.isGhost)
+            [self startEditingGhost:clickedLayer withMouseClick:event];
+        }
+      } break;
       case 2:
         [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
         break;
@@ -312,10 +324,12 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
   if ([grabableViewMixin handlesMouseDragged:event])
     return;
   
+  self.delayedMouseEventInvocation = nil;
+  
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFCompositeLayer* draggedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   
-  if (draggedLayer != nil && draggedLayer.isNode && draggedLayer.node == self.cursorNode) {
+  if (draggedLayer != nil && draggedLayer.isNode && [self.selectedNodes containsObject:draggedLayer.node]) {
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
@@ -330,6 +344,13 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
 {
   if (![grabableViewMixin handlesMouseUp:event])
     [super mouseUp:event];
+
+  if (self.delayedMouseEventInvocation != nil) {
+    [self.delayedMouseEventInvocation invoke];
+    self.delayedMouseEventInvocation = nil;
+    if (self.cursorNode.isGhost)
+      [self startEditingGhost:[self compositeLayerForNode:self.cursorNode] withMouseClick:nil];
+  }
 }
 
 - (IBAction)toggleNodeFoldingState:(id)sender;
@@ -623,9 +644,8 @@ static enum {
   }
 }
 
-@end
-
-@implementation IFForestView (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
 {
@@ -633,14 +653,6 @@ static enum {
   IFTree* clonedTree = [NSKeyedUnarchiver unarchiveObjectWithData:archivedClone];
   [[[clonedTree root] settings] setValue:fileName forKey:@"fileName"];
   return clonedTree;
-}
-
-- (void)setCursors:(IFTreeCursorPair*)newCursors;
-{
-  if (newCursors != cursors) {
-    [cursors release];
-    cursors = [newCursors retain];
-  }
 }
 
 - (IFLayerSet*)nodeLayers;
@@ -653,18 +665,7 @@ static enum {
   return [IFLayerPredicateSubset subsetOf:self.nodeLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
 }
 
-- (IFVariable*)canvasBoundsVar;
-{
-  return canvasBoundsVar;
-}
-
-- (void)setCanvasBoundsVar:(IFVariable*)newCanvasBoundsVar;
-{
-  if (newCanvasBoundsVar == canvasBoundsVar)
-    return;
-  [canvasBoundsVar release];
-  canvasBoundsVar = [newCanvasBoundsVar retain];
-}
+@synthesize canvasBoundsVar;
 
 - (void)syncLayersWithTree;
 {
@@ -805,6 +806,8 @@ static enum {
 }
 
 // MARK: Cursor movement
+
+@synthesize delayedMouseEventInvocation;
 
 - (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 {
@@ -1049,10 +1052,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 
 // MARK: highlighting
 
-- (IFCompositeLayer*)highlightedLayer;
-{
-  return highlightedLayer;
-}
+@synthesize highlightedLayer;
 
 - (void)setHighlightedLayer:(IFCompositeLayer*)newHighlightedLayer;
 {

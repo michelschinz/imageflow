@@ -34,6 +34,7 @@
   // Cursors and selection
   IFTreeCursorPair* cursors;
   NSMutableSet* selectedNodes;
+  NSInvocation* delayedMouseEventInvocation;
 
   // Marks
   NSArray* marks;

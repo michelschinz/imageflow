@@ -413,7 +413,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     NSMutableDictionary* parentExpressions = [NSMutableDictionary dictionaryWithCapacity:5];
     unsigned j = 0;
     for (IFTreeNode* parent in [self parentsOfNode:node])
-      [parentExpressions setObject:[nodeExpressions objectForKey:parent] forKey:[NSNumber numberWithUnsignedInt:j++]];
+      [parentExpressions setObject:[nodeExpressions objectForKey:parent.original] forKey:[NSNumber numberWithUnsignedInt:j++]];
     
     unsigned activeTypeIndex = [[config objectAtIndex:i] unsignedIntValue];
     IFExpression* nodeExpression = [node expressionForSettings:node.settings parentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
