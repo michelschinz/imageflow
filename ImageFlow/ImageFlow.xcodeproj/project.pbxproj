@@ -54,8 +54,6 @@
 		FA2644DF0E13ACDB00701326 /* IFTreeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA2644DE0E13ACDB00701326 /* IFTreeView.xib */; };
 		FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */; };
 		FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */; };
-		FA2C0ABD08FBCF11009FE5ED /* RBSplitView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
-		FA2C0AF608FBCF25009FE5ED /* RBSplitView.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */; };
 		FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2E97370AFFB591006AE6E8 /* mask_tag.png */; };
 		FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FA2F6BAC095AFEEE00CB2780 /* IFTreeNodeAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */; };
@@ -238,7 +236,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FA2C0AF608FBCF25009FE5ED /* RBSplitView.framework in Copy Frameworks */,
 				FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */,
 				FAFCF5CA0C9A921D00B69055 /* IFCropFilter.h in Copy Frameworks */,
 			);
@@ -331,7 +328,6 @@
 		FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "rectangular-window.cikernel"; sourceTree = "<group>"; };
 		FA2A705508DE995F00397488 /* IFHistogramData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFHistogramData.m; sourceTree = "<group>"; };
 		FA2A705708DE997300397488 /* IFHistogramData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramData.h; sourceTree = "<group>"; };
-		FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RBSplitView.framework; path = Frameworks/RBSplitView.framework; sourceTree = "third-party-cocoa-libraries"; };
 		FA2E97370AFFB591006AE6E8 /* mask_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask_tag.png; sourceTree = "<group>"; };
 		FA2F19E40ADD3F420049C88D /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeAlias.h; sourceTree = "<group>"; };
@@ -613,7 +609,6 @@
 				FAE5A50908A7933C00BBBB16 /* QuartzCore.framework in Frameworks */,
 				FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */,
 				FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */,
-				FA2C0ABD08FBCF11009FE5ED /* RBSplitView.framework in Frameworks */,
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
 				FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */,
 				FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */,
@@ -627,7 +622,6 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA2C0ABC08FBCF11009FE5ED /* RBSplitView.framework */,
 				FA47F50308F6587800C906A8 /* MPWFoundation.framework */,
 				FAE0DF2308C3876C00595ED4 /* Accelerate.framework */,
 				FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */,
