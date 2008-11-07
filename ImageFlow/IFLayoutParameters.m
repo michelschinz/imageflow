@@ -38,7 +38,7 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   NSLayoutManager* layoutManager = [[[NSLayoutManager alloc] init] autorelease];
   labelFontHeight = [layoutManager defaultLineHeightForFont:labelFont];
   
-  connectorColor = CGColorCreateGenericGray(0.2, 1.0);
+  connectorColor = CGColorCreateGenericGray(0.3, 1.0);
   connectorLabelColor = CGColorCreateGenericGray(0.6, 1.0);
   connectorArrowSize = 5.0;
 

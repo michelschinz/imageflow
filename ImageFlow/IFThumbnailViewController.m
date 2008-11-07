@@ -39,11 +39,11 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 {
   if (cursors != nil) {
-    [[cursors editMark] removeObserver:self forKeyPath:@"node.expression"];
+    [cursors removeObserver:self forKeyPath:@"node.expression"];
     [cursors release];
   }
   if (newCursors != nil) {
-    [[newCursors editMark] addObserver:self forKeyPath:@"node.expression" options:0 context:IFExpressionDidChangeContext];
+    [newCursors addObserver:self forKeyPath:@"node.expression" options:0 context:IFExpressionDidChangeContext];
     [newCursors retain];
   }
   cursors = newCursors;
@@ -83,7 +83,7 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 
 - (void)updateExpression;
 {
-  IFExpression* expr = [[[cursors editMark] node] expression];
+  IFExpression* expr = cursors.node.expression;
   [self setExpression:(expr == nil
                        ? nil
                        : [IFOperatorExpression resample:expr by:(1.0/thumbnailFactor)])];  

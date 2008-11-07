@@ -119,7 +119,6 @@
 		FAB17A050E4C8872008BEC70 /* IFLayerSetExplicit.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */; };
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
 		FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABB51A80E9605A300480196 /* IFTemplateLayer.m */; };
-		FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC3D52088AD689007E8691 /* IFTreeMark.m */; };
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
@@ -163,6 +162,9 @@
 		FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */; };
 		FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */; };
 		FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */; };
+		FAEEBA680EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */; };
+		FAEEBAF60EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */; };
+		FAEEBAF90EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */; };
 		FAEF26890AE7910100BD8954 /* IFMaskThresholdCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF26870AE7910100BD8954 /* IFMaskThresholdCIFilter.m */; };
 		FAEF26930AE7929B00BD8954 /* IFMaskInvertCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF26910AE7929B00BD8954 /* IFMaskInvertCIFilter.m */; };
 		FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF26990AE7947100BD8954 /* mask-invert.cikernel */; };
@@ -432,8 +434,6 @@
 		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
 		FABB51A70E9605A300480196 /* IFTemplateLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTemplateLayer.h; sourceTree = "<group>"; };
 		FABB51A80E9605A300480196 /* IFTemplateLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTemplateLayer.m; sourceTree = "<group>"; };
-		FABC3D51088AD689007E8691 /* IFTreeMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeMark.h; sourceTree = "<group>"; };
-		FABC3D52088AD689007E8691 /* IFTreeMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeMark.m; sourceTree = "<group>"; };
 		FABC93B60E6FC6C600459364 /* IFCompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCompositeLayer.h; sourceTree = "<group>"; };
 		FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCompositeLayer.m; sourceTree = "<group>"; };
 		FABC94F30E6FE23B00459364 /* IFConnectorCompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConnectorCompositeLayer.h; sourceTree = "<group>"; };
@@ -509,6 +509,12 @@
 		FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFObjectNamer.m; sourceTree = "<group>"; };
 		FAEE95D10935B90100583BDB /* IFColorProfileNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFColorProfileNamer.h; sourceTree = "<group>"; };
 		FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFColorProfileNamer.m; sourceTree = "<group>"; };
+		FAEEBA660EC2D6E500FBC424 /* IFSplittableTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSplittableTreeCursorPair.h; sourceTree = "<group>"; };
+		FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSplittableTreeCursorPair.m; sourceTree = "<group>"; };
+		FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCompositeTreeCursorPair.h; sourceTree = "<group>"; };
+		FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCompositeTreeCursorPair.m; sourceTree = "<group>"; };
+		FAEEBAF70EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUnsplittableTreeCursorPair.h; sourceTree = "<group>"; };
+		FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUnsplittableTreeCursorPair.m; sourceTree = "<group>"; };
 		FAEF26860AE7910100BD8954 /* IFMaskThresholdCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskThresholdCIFilter.h; sourceTree = "<group>"; };
 		FAEF26870AE7910100BD8954 /* IFMaskThresholdCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMaskThresholdCIFilter.m; sourceTree = "<group>"; };
 		FAEF26900AE7929B00BD8954 /* IFMaskInvertCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskInvertCIFilter.h; sourceTree = "<group>"; };
@@ -870,8 +876,6 @@
 				FAD889E90CD0CBCB00D3DE7D /* IFTreeEdge.m */,
 				FA8492AD0CDA23E700F78F29 /* IFSubtree.h */,
 				FA8492AE0CDA23E700F78F29 /* IFSubtree.m */,
-				FABC3D51088AD689007E8691 /* IFTreeMark.h */,
-				FABC3D52088AD689007E8691 /* IFTreeMark.m */,
 				FA2411770962C98100173105 /* IFTreeIdentifier.h */,
 				FA2411780962C98100173105 /* IFTreeIdentifier.m */,
 				FA1776490AED3DCA0013D98B /* IFTreeNodeReference.h */,
@@ -1144,6 +1148,12 @@
 				FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */,
 				FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */,
 				FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */,
+				FAEEBAF70EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.h */,
+				FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */,
+				FAEEBA660EC2D6E500FBC424 /* IFSplittableTreeCursorPair.h */,
+				FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */,
+				FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */,
+				FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */,
 				FA8B016A0E87854000E3679C /* IFLayoutParameters.h */,
 				FA8B016B0E87854000E3679C /* IFLayoutParameters.m */,
 				FAB17A560E4CA703008BEC70 /* Layers */,
@@ -1670,7 +1680,6 @@
 				8D15AC320486D014006FF6A4 /* main.m in Sources */,
 				FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */,
 				FA21BC2108683CA70019D1B7 /* IFAppController.m in Sources */,
-				FABC3D53088AD689007E8691 /* IFTreeMark.m in Sources */,
 				FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */,
 				FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */,
 				FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */,
@@ -1806,6 +1815,9 @@
 				FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */,
 				FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */,
 				FA64BB6A0E96772D001ABDD3 /* IFPaletteView.m in Sources */,
+				FAEEBA680EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m in Sources */,
+				FAEEBAF60EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m in Sources */,
+				FAEEBAF90EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

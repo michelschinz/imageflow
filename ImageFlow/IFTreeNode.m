@@ -9,7 +9,6 @@
 #import "IFTreeNode.h"
 #import "IFTreeNodeFilter.h"
 #import "IFExpressionPlugger.h"
-#import "IFTreeMark.h"
 #import "IFType.h"
 
 @interface IFTreeNode (Private)

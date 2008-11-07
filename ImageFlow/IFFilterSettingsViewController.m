@@ -44,11 +44,11 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 {
   if (cursors != nil) {
-    [[cursors editMark] removeObserver:self forKeyPath:@"node"];
+    [cursors removeObserver:self forKeyPath:@"node"];
     [cursors release];
   }
   if (newCursors != nil) {
-    [[newCursors editMark] addObserver:self forKeyPath:@"node" options:0 context:IFEditedNodeDidChangeContext];
+    [newCursors addObserver:self forKeyPath:@"node" options:0 context:IFEditedNodeDidChangeContext];
     [newCursors retain];
   }
   cursors = newCursors;
@@ -86,7 +86,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 
 - (void)updateSettingsView;
 {
-  IFTreeNode* nodeToEdit = [[[cursors editMark] node] original];
+  IFTreeNode* nodeToEdit = cursors.node.original;
   if (nodeToEdit == nil)
     return;
   

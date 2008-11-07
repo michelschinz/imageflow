@@ -13,35 +13,46 @@
 #import "IFPaletteLayoutManager.h"
 #import "IFTree.h"
 #import "IFTreeNode.h"
+#import "IFTreeTemplate.h"
 
 typedef enum {
   IFPaletteViewModeNormal,
   IFPaletteViewModePreview
 } IFPaletteViewMode;
- 
+
+@class IFPaletteView;
+@protocol IFPaletteViewDelegate
+- (void)paletteViewWillBecomeActive:(IFPaletteView*)paletteView;
+@end
+
 @interface IFPaletteView : NSView<IFPaletteLayoutManagerDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
 
   IFPaletteViewMode mode;
+  NSString* previewModeFilterString;
   
-  // Cursors & selection
   IFTreeCursorPair* cursors;
+  IFTreeCursorPair* visualisedCursor;
 
-  // Templates
   NSMutableArray* templates;
   NSArray* normalModeTrees;
   
-  // First responder
   BOOL acceptFirstResponder;
   
-  // Delegate
-  id<IFForestViewDelegate> delegate;
+  id<IFPaletteViewDelegate> delegate;
 }
+
+@property(assign) id<IFPaletteViewDelegate> delegate;
+@property(readonly) IFTreeCursorPair* cursors;
+@property(retain) IFTreeCursorPair* visualisedCursor;
 
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)switchToNormalMode;
 @property(readonly) IFPaletteViewMode mode;
+@property(copy) NSString* previewModeFilterString;
 
-@property(assign) id<IFForestViewDelegate> delegate;
+@property(readonly, retain) IFTreeTemplate* selectedTreeTemplate;
+- (BOOL)selectPreviousTreeTemplate;
+- (BOOL)selectNextTreeTemplate;
 
 @end

@@ -14,23 +14,29 @@
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"
 
-@interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate> {
+@interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate, IFPaletteViewDelegate> {
   IBOutlet NSObjectController* layoutParametersController;
   IBOutlet IFForestView* forestView;
   IBOutlet IFPaletteView* paletteView;
 
   IFDocument* document;
   IFVariable* cursorsVar;
+  IFTreeTemplate* cachedSelectedTreeTemplate;
 }
 
 @property(retain) IFDocument* document;
 @property(readonly) IFVariable* cursorsVar;
 
-// MARK: delegate methods
-
-- (void)willBecomeActive:(IFForestView*)nodesView;
-
+// MARK: IFForestView delegate methods
+- (void)forestViewWillBecomeActive:(IFForestView*)view;
 - (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
+- (void)previewFilterStringDidChange:(NSString*)newFilterString;
+- (IFTreeTemplate*)selectedTreeTemplate;
+- (BOOL)selectPreviousTreeTemplate;
+- (BOOL)selectNextTreeTemplate;
 - (void)endPreview;
+
+// MARK: IFPaletteView delegate methods
+- (void)paletteViewWillBecomeActive:(IFPaletteView*)newPaletteView;
 
 @end

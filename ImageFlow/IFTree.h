@@ -54,13 +54,13 @@
 
 // MARK: High level editing
 
-- (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (void)deleteSubtree:(IFSubtree*)subtree;
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
-- (void)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 
   // Copying trees inside the current tree
 - (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;

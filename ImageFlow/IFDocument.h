@@ -9,7 +9,6 @@
 #import "IFTree.h"
 #import "IFSubtree.h"
 #import "IFTreeNode.h"
-#import "IFTreeMark.h"
 #import "IFColorProfile.h"
 #import "IFTypeChecker.h"
 
@@ -51,17 +50,17 @@ extern NSString* IFTreeChangedNotification;
 
 #pragma mark Tree manipulations
 
-- (void)addCopyOfTree:(IFTree*)tree;
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (void)deleteSubtree:(IFSubtree*)subtree;
 
 - (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
-- (void)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (IFTreeNode*)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
-- (void)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 - (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
-- (void)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
 - (void)moveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;

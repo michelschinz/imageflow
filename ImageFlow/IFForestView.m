@@ -22,7 +22,7 @@
 
 @interface IFForestView ()
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
-@property(assign) IFTreeCursorPair* cursors;
+@property(retain) IFTreeCursorPair* cursors;
 @property(readonly) IFLayerSet* nodeLayers;
 @property(readonly) IFLayerSet* visibleNodeLayers;
 @property(retain) IFVariable* canvasBoundsVar;
@@ -49,6 +49,7 @@
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 static NSString* IFMarkPboardType = @"IFMarkPboardType";
+static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidChangeContext";
 
 - (id)initWithFrame:(NSRect)theFrame;
 {
@@ -57,18 +58,21 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
+  [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
 
   return self;
 }
 
 - (void)dealloc;
 {
+  [self removeObserver:self forKeyPath:@"visualisedCursor.viewLockedNode"];
+
   if (document != nil) {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:IFTreeChangedNotification object:document];
-    [document removeObserver:self forKeyPath:@"canvasBounds"];
     document = nil;
   }
-  
+
+  OBJC_RELEASE(visualisedCursor);
   OBJC_RELEASE(cursors);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
@@ -91,7 +95,7 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
   self.enclosingScrollView.contentView.wantsLayer = YES;
 }
 
-@synthesize cursors;
+@synthesize cursors, visualisedCursor;
 @synthesize delegate;
 
 @synthesize document;
@@ -109,7 +113,7 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
   }
   if (newDocument != nil) {
     [notifCenter addObserver:self selector:@selector(documentTreeChanged:) name:IFTreeChangedNotification object:newDocument];
-    self.cursors = [IFTreeCursorPair treeCursorPairWithTree:[newDocument tree] editMark:[IFTreeMark mark] viewMark:[IFTreeMark mark]];
+    self.cursors = [IFSplittableTreeCursorPair splittableTreeCursorPair];
     self.canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:newDocument key:@"canvasBounds"];
   }
 
@@ -125,11 +129,19 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
 - (BOOL)becomeFirstResponder;
 {
   if (delegate != nil)
-    [delegate willBecomeActive:self];
+    [delegate forestViewWillBecomeActive:self];
   return YES;
 }
 
 // MARK: Misc. callbacks
+
+- (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+  if (context == IFVisualisedCursorDidChangeContext)
+    [self updateCursorLayers];
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSize;
 {
@@ -259,8 +271,8 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
 
 - (void)insertNewline:(id)sender
 {
-  [document insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:[self cursorNode]];
-  [self moveToNode:[self cursorNode] extendingSelection:NO];
+  [document insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:self.cursorNode];
+  [self moveToNode:[document.tree childOfNode:self.cursorNode] extendingSelection:NO];
 }
 
 - (void)keyDown:(NSEvent*)event;
@@ -430,7 +442,8 @@ static NSString* IFMarkPboardType = @"IFMarkPboardType";
     case NSDragOperationDelete: {
       if ([types containsObject:IFMarkPboardType]) {
         int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-        [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
+        NSLog(@"remove mark #%d", markIndex);
+//        [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
       } else if ([types containsObject:IFTreePboardType])
         [document deleteSubtree:[self selectedSubtree]];
     } break;
@@ -634,7 +647,8 @@ static enum {
       if (targetCompositeLayer == nil)
         return NO;
       int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:targetNode];
+      NSLog(@"move mark #%d", markIndex);
+//      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:targetNode];
       return YES;
     }
       
@@ -782,25 +796,43 @@ static enum {
 // text field action method
 - (void)replaceGhostAction:(id)sender;
 {
-  NSLog(@"val: %@", [(NSTextField*)sender stringValue]);
+  IFTreeTemplate* treeTemplate = [delegate selectedTreeTemplate];
+  if (treeTemplate != nil) {
+    IFTreeNode* newRoot = [document copyTree:treeTemplate.tree toReplaceGhostNode:self.cursorNode];
+    [self moveToNode:newRoot extendingSelection:NO];
+  } else
+    NSBeep();
 }
 
 // text field delegate method
 - (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)command;
 {
-  NSLog(@"sel: %@  control: %@",NSStringFromSelector(command),control);
   if (command == @selector(cancelOperation:)) {
     [self.window makeFirstResponder:self];
+    return YES;
+  } else if (command == @selector(insertTab:)) {
+    if (![self.delegate selectNextTreeTemplate])
+      NSBeep();
+    return YES;
+  } else if (command == @selector(insertBacktab:)) {
+    if (![self.delegate selectPreviousTreeTemplate])
+      NSBeep();
     return YES;
   }
   return NO;
 }
 
 // text field delegate method
+
+- (void)controlTextDidChange:(NSNotification*)notification;
+{
+  [self.delegate previewFilterStringDidChange:((NSTextField*)notification.object).stringValue];
+}
+
 - (void)controlTextDidEndEditing:(NSNotification*)notification;
 {
   [delegate endPreview];
-  
+
   [self.window makeFirstResponder:self];
   [notification.object removeFromSuperview];
 }
@@ -945,9 +977,12 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 
 - (void)updateCursorLayers;
 {
+  [self syncLayersWithTree]; // Make sure all layers exist
+  
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   IFTreeNode* cursorNode = self.cursorNode;
   NSSet* selNodes = self.selectedNodes;
+  IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
   
   for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
     if (!nodeLayer.isNode)
@@ -957,7 +992,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
     CALayer* cursorLayer = nodeLayer.cursorLayer;
     IFTreeNode* node = nodeLayer.node;
 
-    displayedImageLayer.hidden = (node != cursorNode);
+    displayedImageLayer.hidden = (node != displayedNode);
     if ([selNodes containsObject:node]) {
       cursorLayer.hidden = NO;
       cursorLayer.borderWidth = (node == cursorNode) ? layoutParameters.cursorWidth : layoutParameters.selectionWidth;
@@ -1004,13 +1039,13 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 {
   if (newCursorNode == self.cursorNode)
     return;
-  [cursors moveToNode:newCursorNode];
+  [cursors setTree:document.tree node:newCursorNode];
   [self updateCursorLayers];
 }
 
 - (IFTreeNode*)cursorNode;
 {
-  return cursors.editMark.node;
+  return cursors.node;
 }
 
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;

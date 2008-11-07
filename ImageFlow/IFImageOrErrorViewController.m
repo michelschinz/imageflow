@@ -56,8 +56,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   cursorsVar = [theCursorsVar retain];
   canvasBoundsVar = [theCanvasBoundsVar retain];
   
-  [cursorsVar addObserver:self forKeyPath:@"value.viewMark.node.expression" options:0 context:IFViewedExpressionDidChange];
-  [cursorsVar addObserver:self forKeyPath:@"value.editMark.node" options:0 context:IFEditedNodeDidChange];
+  [cursorsVar addObserver:self forKeyPath:@"value.viewLockedNode.expression" options:0 context:IFViewedExpressionDidChange];
+  [cursorsVar addObserver:self forKeyPath:@"value.node" options:0 context:IFEditedNodeDidChange];
   [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
   
   [imageView setCanvasBounds:canvasBoundsVar];
@@ -70,8 +70,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   NSAssert(cursorsVar != nil && canvasBoundsVar != nil, @"post-initialisation not done");
   [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   OBJC_RELEASE(canvasBoundsVar);
-  [cursorsVar removeObserver:self forKeyPath:@"value.editMark.node"];
-  [cursorsVar removeObserver:self forKeyPath:@"value.viewMark.node.expression"];
+  [cursorsVar removeObserver:self forKeyPath:@"value.node"];
+  [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedNode.expression"];
   OBJC_RELEASE(cursorsVar);
 
   if (viewedNode != nil)
@@ -186,7 +186,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFViewedExpressionDidChange) {
-    IFTreeNode* currViewedNode = [[cursorsVar.value viewMark] node];
+    IFTreeNode* currViewedNode = ((IFTreeCursorPair*)cursorsVar.value).viewLockedNode;
     if (currViewedNode != viewedNode) {
       [self updateVariants];
       [self updateAnnotations];
@@ -196,7 +196,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   } else if (context == IFEditedNodeDidChange) {
     [self updateAnnotations];
 
-    editedNode = [[cursorsVar.value editMark] node];
+    editedNode = ((IFTreeCursorPair*)cursorsVar.value).node;
   } else if (context == IFCanvasBoundsDidChange) {
     [self updateImageViewVisibleBounds];
   } else
@@ -266,7 +266,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)updateExpression;
 {
-  IFTreeNode* node = [[cursorsVar.value viewMark] node];
+  IFTreeNode* node = ((IFTreeCursorPair*)cursorsVar.value).viewLockedNode;
   IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
   if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
     expr = [node variantNamed:[self activeVariant] ofExpression:expr];
@@ -278,7 +278,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   if (mode == IFImageViewModeView)
     [imageView setAnnotations:nil];
   else {
-    IFTreeNode* nodeToEdit = [[cursorsVar.value editMark] node];
+    IFTreeNode* nodeToEdit = ((IFTreeCursorPair*)cursorsVar.value).node;
     [imageView setAnnotations:[nodeToEdit editingAnnotationsForView:imageView]];
   }
 }
@@ -286,8 +286,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)updateVariants;
 {
   [self setVariants:(mode == IFImageViewModeView
-                     ? [[[cursorsVar.value viewMark] node] variantNamesForViewing]
-                     : [[[cursorsVar.value viewMark] node] variantNamesForEditing])];
+                     ? ((IFTreeCursorPair*)cursorsVar.value).viewLockedNode.variantNamesForViewing
+                     : ((IFTreeCursorPair*)cursorsVar.value).viewLockedNode.variantNamesForEditing)];
 }
 
 @end

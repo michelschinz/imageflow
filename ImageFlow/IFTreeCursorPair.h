@@ -9,31 +9,20 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTree.h"
-#import "IFTreeMark.h"
 
 @interface IFTreeCursorPair : NSObject {
-  IFTree* tree;
-  IFTreeMark* viewMark;
-  IFTreeMark* editMark;
-  BOOL isViewLocked;
-  NSAffineTransform* editViewTransform;
-  NSAffineTransform* viewEditTransform;
 }
 
-+ (IFTreeCursorPair*)treeCursorPairWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
-- (IFTreeCursorPair*)initWithTree:(IFTree*)theTree editMark:(IFTreeMark*)theEditMark viewMark:(IFTreeMark*)theViewMark;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode;
+@property(readonly, retain) IFTree* tree;
+@property(readonly, retain) IFTreeNode* node;
 
-- (IFTreeMark*)viewMark;
-- (IFTreeMark*)editMark;
+@property(readonly, retain) IFTree* viewLockedTree;
+@property(readonly, retain) IFTreeNode* viewLockedNode;
 
-- (void)moveToNode:(IFTreeNode*)newNode;
+@property(readonly) BOOL isViewLocked;
 
-- (void)setIsViewLocked:(BOOL)newValue;
-- (BOOL)isViewLocked;
-
-- (IFTreeNode*)viewLockedNode;
-
-- (NSAffineTransform*)editViewTransform;
-- (NSAffineTransform*)viewEditTransform;
+@property(readonly) NSAffineTransform* editViewTransform;
+@property(readonly) NSAffineTransform* viewEditTransform;
 
 @end

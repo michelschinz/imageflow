@@ -9,17 +9,15 @@
 #import "IFTreePaletteViewController.h"
 
 #import "IFLayoutParameters.h"
+#import "IFCompositeTreeCursorPair.h"
 #import "IFVariableKVO.h"
 
+@interface IFTreePaletteViewController ()
+@property(retain) IFTreeTemplate* cachedSelectedTreeTemplate;
+- (void)updateCursors;
+@end
+
 @implementation IFTreePaletteViewController
-
-+ (void)initialize;
-{
-  if (self != [IFTreePaletteViewController class])
-    return; // avoid repeated initialisation
-
-  [self setKeys:[NSArray arrayWithObject:@"activeView"] triggerChangeNotificationsForDependentKey:@"cursors"];
-}
 
 - (id)init;
 {
@@ -29,9 +27,11 @@
   return self;
 }
 
-- (void) dealloc;
+- (void)dealloc;
 {
+  OBJC_RELEASE(cachedSelectedTreeTemplate);
   OBJC_RELEASE(cursorsVar);
+  OBJC_RELEASE(document);
   [super dealloc];
 }
 
@@ -52,27 +52,74 @@
   document = [newDocument retain];
 
   [forestView setDocument:newDocument];
-//  [paletteView setDocument:document];
 }
 
 @synthesize cursorsVar;
 
-// MARK: delegate methods
+// MARK: IFForestView delegate methods
 
-- (void)willBecomeActive:(IFForestView*)newForestView; // TODO: see how to integrate the palette here (which type to use? two different notification methods?)
+- (void)forestViewWillBecomeActive:(IFForestView*)newForestView;
 {
   cursorsVar.value = newForestView.cursors;
+  [self updateCursors];
 }
 
 - (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
 {
   IFVariable* canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:document key:@"canvasBounds"];
   [paletteView switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
+  cursorsVar.value = [IFCompositeTreeCursorPair compositeWithEditCursor:forestView.cursors viewCursor:paletteView.cursors];
+  [self updateCursors];
+}
+
+- (void)previewFilterStringDidChange:(NSString*)newFilterString;
+{
+  paletteView.previewModeFilterString = newFilterString;
+}
+
+- (IFTreeTemplate*)selectedTreeTemplate;
+{
+  return cachedSelectedTreeTemplate;
+}
+
+- (BOOL)selectPreviousTreeTemplate;
+{
+  return [paletteView selectPreviousTreeTemplate];
+}
+
+- (BOOL)selectNextTreeTemplate;
+{
+  return [paletteView selectNextTreeTemplate];
 }
 
 - (void)endPreview;
 {
+  self.cachedSelectedTreeTemplate = paletteView.selectedTreeTemplate;
+
+  cursorsVar.value = forestView.cursors;
+  [self updateCursors];
   [paletteView switchToNormalMode];
+  paletteView.previewModeFilterString = nil;
+}
+
+// MARK: IFPaletteView delegate methods
+
+- (void)paletteViewWillBecomeActive:(IFPaletteView*)newPaletteView;
+{
+  cursorsVar.value = newPaletteView.cursors;
+  [self updateCursors];
+}
+
+// MARK: -
+// MARK: PRIVATE
+
+@synthesize cachedSelectedTreeTemplate;
+
+- (void)updateCursors;
+{
+  IFTreeCursorPair* cursors = cursorsVar.value;
+  forestView.visualisedCursor = cursors;
+  paletteView.visualisedCursor = cursors;
 }
 
 @end

@@ -133,7 +133,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 #pragma mark Tree manipulations
 
-- (void)addCopyOfTree:(IFTree*)newTree;
+- (IFTreeNode*)addCopyOfTree:(IFTree*)newTree;
 {
   NSArray* roots = [self roots];
   int i;
@@ -143,8 +143,9 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     ;
   
   [self beginTreeModification];
-  [tree addCopyOfTree:newTree asNewRootAtIndex:i+1];
+  IFTreeNode* newRoot = [tree addCopyOfTree:newTree asNewRootAtIndex:i+1];
   [self endTreeModification];
+  return newRoot;
 }
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
@@ -165,12 +166,13 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [tree canCopyTree:replacement toReplaceNode:node];
 }
 
-- (void)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (IFTreeNode*)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 {
   NSAssert([node isGhost], @"non-ghost node");
   [self beginTreeModification];
-  [tree copyTree:replacement toReplaceNode:node];
+  IFTreeNode* newRoot = [tree copyTree:replacement toReplaceNode:node];
   [self endTreeModification];
+  return newRoot;
 }
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
@@ -178,11 +180,12 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [tree canInsertCopyOfTree:otherTree asChildOfNode:node];
 }
 
-- (void)insertCopyOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
 {
   [self beginTreeModification];
-  [tree insertCopyOfTree:otherTree asChildOfNode:node];
+  IFTreeNode* newRoot = [tree insertCopyOfTree:otherTree asChildOfNode:node];
   [self endTreeModification];
+  return newRoot;
 }
 
 - (BOOL)canInsertCopyOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
@@ -190,11 +193,12 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [tree canInsertCopyOfTree:otherTree asParentOfNode:node];
 }
 
-- (void)insertCopyOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCopyOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
 {
   [self beginTreeModification];
-  [tree insertCopyOfTree:otherTree asParentOfNode:node];
+  IFTreeNode* newRoot = [tree insertCopyOfTree:otherTree asParentOfNode:node];
   [self endTreeModification];
+  return newRoot;
 }
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;

@@ -12,7 +12,17 @@
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"
 
+typedef enum {
+  IFVisibilityFlagTypeCorrect = 0x01,
+  IFVisibilityFlagNotFiltered = 0x02,
+} IFVisibilityFlag;
+
+static const unsigned IFVisibilityFlagsVisible = IFVisibilityFlagTypeCorrect | IFVisibilityFlagNotFiltered;
+
 @interface IFTemplateLayer ()
+@property(retain) IFTree* normalModeTree;
+@property(retain) IFTree* previewModeTree;
+@property unsigned visibilityFlags;
 @property(retain) IFNodeCompositeLayer* previewNodeCompositeLayer;
 @end
 
@@ -72,7 +82,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   }
   
   // Node layer
-  IFTree* normalModeTree = computeNormalModeTreeForTemplate(treeTemplate);
+  self.normalModeTree = computeNormalModeTreeForTemplate(treeTemplate);
   normalNodeCompositeLayer = [[IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree canvasBounds:normalCanvasBoundsVar] retain];
   [self addSublayer:normalNodeCompositeLayer];
   
@@ -86,33 +96,48 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   nameLayer.string = treeTemplate.name;
   [self addSublayer:nameLayer];
   
+  self.hidden = NO;
+  visibilityFlags = IFVisibilityFlagsVisible;
+  
   return self;
 }
 
 - (void)dealloc;
 {
   OBJC_RELEASE(previewNodeCompositeLayer);
+  OBJC_RELEASE(previewModeTree);
   OBJC_RELEASE(normalNodeCompositeLayer);
+  OBJC_RELEASE(normalModeTree);
   OBJC_RELEASE(treeTemplate);
   [super dealloc];
 }
 
 @synthesize treeTemplate;
 
+- (IFTree*)tree;
+{
+  return (previewModeTree == nil) ? normalModeTree : previewModeTree;
+}
+
+- (IFTreeNode*)treeNode;
+{
+  return self.nodeCompositeLayer.node;
+}
+
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 {
   // Create preview tree
-  IFTree* previewTree = [tree cloneWithoutNewParentExpressionsPropagation];
-  NSSet* constNodes = [NSSet setWithSet:previewTree.nodes];
-  IFTreeNode* previewTreeNode = [previewTree copyTree:treeTemplate.tree toReplaceNode:node];  
-  if ([previewTree isTypeCorrect]) {
-    [previewTree configureAllNodesBut:constNodes];
-    self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewTree canvasBounds:canvasBoundsVar];
+  self.previewModeTree = [tree cloneWithoutNewParentExpressionsPropagation];
+  NSSet* constNodes = [NSSet setWithSet:previewModeTree.nodes];
+  IFTreeNode* previewTreeNode = [previewModeTree copyTree:treeTemplate.tree toReplaceNode:node];  
+  if ([previewModeTree isTypeCorrect]) {
+    [previewModeTree configureAllNodesBut:constNodes];
+    self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree canvasBounds:canvasBoundsVar];
     
     [self replaceSublayer:normalNodeCompositeLayer with:previewNodeCompositeLayer];
-    self.hidden = NO;
+    self.visibilityFlags = self.visibilityFlags | IFVisibilityFlagTypeCorrect;
   } else
-    self.hidden = YES;
+    self.visibilityFlags = self.visibilityFlags & ~IFVisibilityFlagTypeCorrect;
 }
 
 - (void)switchToNormalMode;
@@ -120,14 +145,30 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   if (previewNodeCompositeLayer != nil) {
     [self replaceSublayer:previewNodeCompositeLayer with:normalNodeCompositeLayer];
     self.previewNodeCompositeLayer = nil;
-  } else
-    self.hidden = NO;
+  }
+  
+  self.hidden = NO;
+  self.visibilityFlags = IFVisibilityFlagsVisible;
+}
+
+- (BOOL)filterOut;
+{
+  return (visibilityFlags & IFVisibilityFlagNotFiltered) == 0;
+}
+
+- (void)setFilterOut:(BOOL)newFilterOut;
+{
+  if (newFilterOut == self.filterOut)
+    return;
+  self.visibilityFlags = self.visibilityFlags ^ IFVisibilityFlagNotFiltered;
 }
 
 - (IFNodeCompositeLayer*)nodeCompositeLayer;
 {
   return (previewNodeCompositeLayer == nil) ? normalNodeCompositeLayer : previewNodeCompositeLayer;
 }
+
+@synthesize nameLayer;
 
 - (NSImage*)dragImage;
 {
@@ -188,6 +229,15 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 
 // -
 // MARK: PRIVATE
+
+@synthesize normalModeTree, previewModeTree;
+@synthesize visibilityFlags;
+
+- (void)setVisibilityFlags:(unsigned)newVisibiltyFlags;
+{
+  visibilityFlags = newVisibiltyFlags;
+  self.hidden = (visibilityFlags != IFVisibilityFlagsVisible);
+}
 
 @synthesize previewNodeCompositeLayer;
 

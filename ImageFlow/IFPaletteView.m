@@ -17,13 +17,18 @@
 #import "IFTemplateLayer.h"
 #import "IFLayerSetExplicit.h"
 #import "IFLayerSubsetComposites.h"
+#import "IFLayerPredicateSubset.h"
+#import "IFUnsplittableTreeCursorPair.h"
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
 @interface IFPaletteView ()
 @property IFPaletteViewMode mode;
 @property(readonly) IFLayerSet* templateLayers;
+@property(readonly) IFLayerSet* visibleTemplateLayers;
 - (void)syncLayersWithTemplates;
+- (void)updateCursorLayers;
+- (void)updateFiltering;
 - (NSArray*)computeTemplates;
 @property(retain) NSArray* templates;
 - (void)updateBounds;
@@ -31,7 +36,9 @@ static NSString* IFTreePboardType = @"IFTreePboardType";
 
 @implementation IFPaletteView
 
+static NSString* IFPreviewModeFilterStringDidChangeContext = @"IFPreviewModeFilterStringDidChangeContext";
 static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeContext";
+static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidChangeContext";
 
 - (id)initWithFrame:(NSRect)theFrame;
 {
@@ -40,20 +47,29 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
   
   mode = IFPaletteViewModeNormal;
+  cursors = [[IFUnsplittableTreeCursorPair unsplittableTreeCursorPair] retain];
   templates = [[self computeTemplates] retain];
   acceptFirstResponder = NO;
   
   [self registerForDraggedTypes:[NSArray arrayWithObject:IFTreePboardType]];
   [[IFTreeTemplateManager sharedManager] addObserver:self forKeyPath:@"templates" options:0 context:IFTreeTemplatesDidChangeContext];
+  [self addObserver:self forKeyPath:@"previewModeFilterString" options:0 context:IFPreviewModeFilterStringDidChangeContext];
+  [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
   
   return self;
 }
 
 - (void)dealloc;
 {
+  [self removeObserver:self forKeyPath:@"visualisedCursor.viewLockedNode"];
+  [self removeObserver:self forKeyPath:@"previewModeFilterString"];
   [[IFTreeTemplateManager sharedManager] removeObserver:self forKeyPath:@"templates"];
   
+  OBJC_RELEASE(normalModeTrees);
   OBJC_RELEASE(templates);
+  OBJC_RELEASE(visualisedCursor);
+  OBJC_RELEASE(cursors);
+  OBJC_RELEASE(previewModeFilterString);
   OBJC_RELEASE(grabableViewMixin);
   [super dealloc];
 }
@@ -80,6 +96,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 }
 
 @synthesize delegate;
+@synthesize cursors, visualisedCursor;
 
 // MARK: Normal/preview modes
 
@@ -87,7 +104,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 {
   for (IFTemplateLayer* templateLayer in self.templateLayers)
     [templateLayer switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
-  [self.layer setNeedsLayout];
+  [self updateFiltering];
   
   self.mode = IFPaletteViewModePreview;
 }
@@ -96,11 +113,57 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 {
   for (IFTemplateLayer* templateLayer in self.templateLayers)
     [templateLayer switchToNormalMode];
-  
   self.mode = IFPaletteViewModeNormal;
 }
 
 @synthesize mode;
+@synthesize previewModeFilterString;
+
+- (IFTreeTemplate*)selectedTreeTemplate;
+{
+  const IFTreeNode* cursorNode = cursors.node;
+  for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
+    if (layer.treeNode == cursorNode)
+      return layer.treeTemplate;
+  }
+  return nil;
+}
+
+- (BOOL)selectPreviousTreeTemplate;
+{
+  const IFTreeNode* cursorNode = cursors.node;
+  IFTemplateLayer* prev = (IFTemplateLayer*)self.visibleTemplateLayers.lastLayer;
+  for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
+    if (layer.treeNode == cursorNode) {
+      [cursors setTree:prev.tree node:prev.treeNode];
+      [self updateCursorLayers];
+      return YES;
+    }
+    prev = layer;
+  }
+  return NO;
+}
+
+- (BOOL)selectNextTreeTemplate;
+{
+  const IFTreeNode* cursorNode = cursors.node;
+  BOOL selectNext = NO;
+  for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
+    if (selectNext) {
+      [cursors setTree:layer.tree node:layer.treeNode];
+      [self updateCursorLayers];
+      return YES;
+    } else if (layer.treeNode == cursorNode)
+      selectNext = YES;
+    else
+      ;
+  }
+  if (selectNext) {
+    IFTemplateLayer* firstLayer = (IFTemplateLayer*)self.visibleTemplateLayers.firstLayer;
+    [cursors setTree:firstLayer.tree node:firstLayer.treeNode];
+  }
+  return selectNext;
+}
 
 // MARK: First responder
 
@@ -111,10 +174,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 - (BOOL)becomeFirstResponder;
 {
-  if (acceptFirstResponder) {
-    return [super becomeFirstResponder];
-  } else
-    return NO;
+  return (acceptFirstResponder && [super becomeFirstResponder]);
 }
 
 - (BOOL)resignFirstResponder;
@@ -137,7 +197,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
     return;
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFTemplateLayer* draggedLayer = (IFTemplateLayer*)[self.templateLayers hitTest:localPoint];
+  IFTemplateLayer* draggedLayer = (IFTemplateLayer*)[self.visibleTemplateLayers hitTest:localPoint];
   
   if (draggedLayer == nil)
     return;
@@ -159,10 +219,12 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
   [self.window makeFirstResponder:self];
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFCompositeLayer* layerUnderMouse = (IFCompositeLayer*)[self.templateLayers hitTest:localPoint];
+  IFTemplateLayer* layerUnderMouse = (IFTemplateLayer*)[self.visibleTemplateLayers hitTest:localPoint];
   if (layerUnderMouse == nil)
     return;
-  [cursors moveToNode:layerUnderMouse.node];
+
+  [cursors setTree:layerUnderMouse.tree node:layerUnderMouse.treeNode];
+  [delegate paletteViewWillBecomeActive:self];
 }
 
 // MARK: Drag & drop
@@ -171,7 +233,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 {
-  return NSDragOperationCopy; // TODO add NSDragOperationDelete, which implies implementing imageEndedAt...
+  return NSDragOperationCopy; // TODO: add NSDragOperationDelete, which implies implementing imageEndedAt...
 }
 
 // Dragging destination
@@ -197,7 +259,11 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void *)context;
 {
-  if (context == IFTreeTemplatesDidChangeContext) {
+  if (context == IFPreviewModeFilterStringDidChangeContext) {
+    [self updateFiltering];
+  } else if (context == IFVisualisedCursorDidChangeContext) {
+    [self updateCursorLayers];
+  } else if (context == IFTreeTemplatesDidChangeContext) {
     [self setTemplates:[self computeTemplates]];
     [self syncLayersWithTemplates];
   } else
@@ -215,6 +281,11 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 - (IFLayerSet*)templateLayers;
 {
   return [IFLayerSetExplicit layerSetWithLayers:self.layer.sublayers];
+}
+
+- (IFLayerSet*)visibleTemplateLayers;
+{
+  return [IFLayerPredicateSubset subsetOf:self.templateLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
 }
 
 - (void)syncLayersWithTemplates;
@@ -235,6 +306,35 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
     [layer removeFromSuperlayer];
 }
 
+- (void)updateCursorLayers;
+{
+  IFTree* displayedTree = visualisedCursor.viewLockedTree;
+  IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
+
+  for (IFTemplateLayer* layer in self.templateLayers) {
+    IFNodeCompositeLayer* nodeLayer = layer.nodeCompositeLayer;
+    nodeLayer.cursorLayer.hidden = !(layer.tree == cursors.tree && layer.treeNode == cursors.node);
+    nodeLayer.displayedImageLayer.hidden = !(layer.tree == displayedTree && layer.treeNode == displayedNode);
+  }
+}
+
+- (void)updateFiltering;
+{
+  BOOL emptyFilter = (previewModeFilterString == nil || [previewModeFilterString isEqualToString:@""]);
+  for (IFTemplateLayer* layer in self.templateLayers)
+    layer.filterOut = !emptyFilter && [layer.treeTemplate.name rangeOfString:previewModeFilterString options:(NSCaseInsensitiveSearch | NSAnchoredSearch)].location == NSNotFound;
+
+  for (IFTemplateLayer* layer in self.templateLayers) {
+    if (!layer.hidden) {
+      [cursors setTree:layer.tree node:layer.treeNode];
+      break;
+    }
+  }
+  [self updateCursorLayers];
+  
+  [self.layer setNeedsLayout];
+}
+
 // MARK: Templates
 
 - (NSArray*)computeTemplates;
@@ -252,7 +352,7 @@ static NSString* IFTreeTemplatesDidChangeContext = @"IFTreeTemplatesDidChangeCon
 
 - (void)updateBounds;
 {
-  IFLayerSet* allLayers = self.templateLayers;
+  IFLayerSet* allLayers = self.visibleTemplateLayers;
   NSSize newSize = NSSizeFromCGSize(allLayers.boundingBox.size);
   NSSize minSize = self.superview.frame.size;
 

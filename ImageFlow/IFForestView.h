@@ -10,18 +10,23 @@
 
 #import "IFGrabableViewMixin.h"
 #import "IFDocument.h"
-#import "IFTreeCursorPair.h"
+#import "IFSplittableTreeCursorPair.h"
 #import "IFCompositeLayer.h"
 #import "IFLayerSet.h"
 #import "IFForestLayoutManager.h"
 #import "IFVariable.h"
 #import "IFTree.h"
+#import "IFTreeTemplate.h"
 
 @class IFForestView;
 @protocol IFForestViewDelegate
-- (void)willBecomeActive:(IFForestView*)forestView;
+- (void)forestViewWillBecomeActive:(IFForestView*)forestView;
 
 - (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
+- (void)previewFilterStringDidChange:(NSString*)newFilterString;
+- (IFTreeTemplate*)selectedTreeTemplate;
+- (BOOL)selectPreviousTreeTemplate;
+- (BOOL)selectNextTreeTemplate;
 - (void)endPreview;
 @end
 
@@ -32,7 +37,8 @@
   IFVariable* canvasBoundsVar;
 
   // Cursors and selection
-  IFTreeCursorPair* cursors;
+  IFSplittableTreeCursorPair* cursors;
+  IFTreeCursorPair* visualisedCursor;
   NSMutableSet* selectedNodes;
   NSInvocation* delayedMouseEventInvocation;
 
@@ -49,7 +55,8 @@
 }
 
 @property(assign) IFDocument* document;
-@property(readonly, assign) IFTreeCursorPair* cursors;
+@property(readonly, retain) IFTreeCursorPair* cursors;
+@property(retain) IFTreeCursorPair* visualisedCursor;
 
 @property(assign) id<IFForestViewDelegate> delegate;
 

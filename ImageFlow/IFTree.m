@@ -226,7 +226,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 // MARK: High level editing
 
-- (void)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
+- (IFTreeNode*)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
@@ -240,6 +240,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   IFTreeNode* addedTreeRoot = [self addCopyOfTree:tree];
   [self addEdgeFromNode:addedTreeRoot toNode:root withIndex:index];
+  return addedTreeRoot;
 }
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
@@ -268,7 +269,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [clone isTypeCorrect];
 }
 
-- (void)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
 
@@ -276,6 +277,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self addNode:alias];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:alias];
   [self removeTreeRootedAt:node];
+  return alias;
 }
 
 // Copying trees inside the current tree
