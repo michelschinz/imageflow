@@ -35,6 +35,14 @@
   return nil;
 }
 
+- (NSArray*)toArray;
+{
+  NSMutableArray* array = [NSMutableArray array];
+  for (CALayer* layer in self)
+    [array addObject:layer];
+  return array;
+}
+
 - (unsigned)count;
 {
   unsigned count = 0;

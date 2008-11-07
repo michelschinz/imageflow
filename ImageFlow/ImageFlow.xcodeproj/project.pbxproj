@@ -122,6 +122,7 @@
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
+		FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FAC14C320E7D534300F7B93B /* IFThumbnailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC14C310E7D534300F7B93B /* IFThumbnailLayer.m */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
@@ -440,6 +441,8 @@
 		FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConnectorCompositeLayer.m; sourceTree = "<group>"; };
 		FABC95190E70147A00459364 /* IFLayerSubsetComposites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerSubsetComposites.h; sourceTree = "<group>"; };
 		FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSubsetComposites.m; sourceTree = "<group>"; };
+		FABEF09B0EC4510000FAADD5 /* IFLayerGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerGeometry.h; sourceTree = "<group>"; };
+		FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerGeometry.m; sourceTree = "<group>"; };
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FAC14C300E7D534300F7B93B /* IFThumbnailLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFThumbnailLayer.h; sourceTree = "<group>"; };
 		FAC14C310E7D534300F7B93B /* IFThumbnailLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFThumbnailLayer.m; sourceTree = "<group>"; };
@@ -686,6 +689,8 @@
 				FA6E98B00AE6A0DC0074184E /* IFBlendMode.m */,
 				FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */,
 				FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */,
+				FABEF09B0EC4510000FAADD5 /* IFLayerGeometry.h */,
+				FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */,
 				FAD4DF6E08D075C1004EA3A0 /* IFUtilities.h */,
 				FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */,
 				FA57F9D50924CFA8002AAA68 /* IFFNVHash.h */,
@@ -1818,6 +1823,7 @@
 				FAEEBA680EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m in Sources */,
 				FAEEBAF60EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m in Sources */,
 				FAEEBAF90EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m in Sources */,
+				FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

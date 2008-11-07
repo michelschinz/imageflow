@@ -19,6 +19,7 @@
 #import "IFLayerSubsetComposites.h"
 #import "IFLayerPredicateSubset.h"
 #import "IFUnsplittableTreeCursorPair.h"
+#import "IFLayerGeometry.h"
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
@@ -26,12 +27,15 @@ static NSString* IFTreePboardType = @"IFTreePboardType";
 @property IFPaletteViewMode mode;
 @property(readonly) IFLayerSet* templateLayers;
 @property(readonly) IFLayerSet* visibleTemplateLayers;
+@property(readonly) IFTemplateLayer* cursorLayer;
 - (void)syncLayersWithTemplates;
 - (void)updateCursorLayers;
 - (void)updateFiltering;
 - (NSArray*)computeTemplates;
 @property(retain) NSArray* templates;
 - (void)updateBounds;
+- (void)moveToNodeRepresentedBy:(IFTemplateLayer*)layer;
+- (void)moveToClosestNodeInDirection:(IFDirection)direction;
 @end
 
 @implementation IFPaletteView
@@ -185,6 +189,26 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 // MARK: Event handing
 
+- (void)moveUp:(id)sender;
+{
+  [self moveToClosestNodeInDirection:IFUp];
+}
+
+- (void)moveDown:(id)sender;
+{
+  [self moveToClosestNodeInDirection:IFDown];
+}
+
+- (void)moveLeft:(id)sender;
+{
+  [self selectPreviousTreeTemplate];
+}
+
+- (void)moveRight:(id)sender;
+{
+  [self selectNextTreeTemplate];
+}
+
 - (void)mouseDown:(NSEvent*)event;
 {
   if ([grabableViewMixin handlesMouseDown:event])
@@ -223,7 +247,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   if (layerUnderMouse == nil)
     return;
 
-  [cursors setTree:layerUnderMouse.tree node:layerUnderMouse.treeNode];
+  [self moveToNodeRepresentedBy:layerUnderMouse];
   [delegate paletteViewWillBecomeActive:self];
 }
 
@@ -288,6 +312,16 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   return [IFLayerPredicateSubset subsetOf:self.templateLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
 }
 
+- (IFTemplateLayer*)cursorLayer;
+{
+  IFTreeNode* cursorNode = cursors.node;
+  for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
+    if (layer.treeNode == cursorNode)
+      return layer;
+  }
+  return nil;
+}
+
 - (void)syncLayersWithTemplates;
 {
   NSMutableDictionary* existingTemplateLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
@@ -308,12 +342,15 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)updateCursorLayers;
 {
+  IFTree* cursorTree = visualisedCursor.tree;
+  IFTreeNode* cursorNode = visualisedCursor.node;
+  
   IFTree* displayedTree = visualisedCursor.viewLockedTree;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
 
   for (IFTemplateLayer* layer in self.templateLayers) {
     IFNodeCompositeLayer* nodeLayer = layer.nodeCompositeLayer;
-    nodeLayer.cursorLayer.hidden = !(layer.tree == cursors.tree && layer.treeNode == cursors.node);
+    nodeLayer.cursorLayer.hidden = !(layer.tree == cursorTree && layer.treeNode == cursorNode);
     nodeLayer.displayedImageLayer.hidden = !(layer.tree == displayedTree && layer.treeNode == displayedNode);
   }
 }
@@ -361,6 +398,22 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   
   if (!NSEqualSizes(self.frame.size, newSize))
     [self setFrameSize:newSize];
+}
+
+// MARK: Cursor movement
+
+- (void)moveToNodeRepresentedBy:(IFTemplateLayer*)layer;
+{
+  [cursors setTree:layer.tree node:layer.treeNode];
+}
+
+- (void)moveToClosestNodeInDirection:(IFDirection)direction;
+{
+  CALayer* closestLayer = closestLayerInDirection(self.cursorLayer, [self.visibleTemplateLayers toArray], direction);
+  if (closestLayer != nil)
+    [self moveToNodeRepresentedBy:(IFTemplateLayer*)closestLayer];
+  else
+    NSBeep();
 }
 
 @end

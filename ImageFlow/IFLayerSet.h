@@ -15,6 +15,7 @@
 @property(readonly) CALayer* firstLayer;
 @property(readonly) CALayer* lastLayer;
 - (CALayer*)layerAtIndex:(int)index;
+- (NSArray*)toArray;
 
 @property(readonly) unsigned count;
 

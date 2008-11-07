@@ -48,6 +48,7 @@ typedef enum {
   cursorLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   cursorLayer.cornerRadius = baseLayer.cornerRadius;
   cursorLayer.hidden = YES;
+  cursorLayer.borderWidth = layoutParameters.cursorWidth;
   cursorLayer.borderColor = layoutParameters.cursorColor;
   
   // Highlight (used for drag&drop)

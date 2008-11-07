@@ -19,11 +19,14 @@
 #import "IFTreeTemplateManager.h"
 #import "IFLayoutParameters.h"
 #import "IFVariableKVO.h"
+#import "IFLayerGeometry.h"
 
 @interface IFForestView ()
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
 @property(retain) IFTreeCursorPair* cursors;
+@property(readonly) IFLayerSet* nodeConnectorLayers;
 @property(readonly) IFLayerSet* nodeLayers;
+@property(readonly) IFLayerSet* visibleNodeConnectorLayers;
 @property(readonly) IFLayerSet* visibleNodeLayers;
 @property(retain) IFVariable* canvasBoundsVar;
 - (void)syncLayersWithTree;
@@ -299,7 +302,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFCompositeLayer* clickedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
-  if (clickedLayer != nil && clickedLayer.isNode) {
+  if (clickedLayer != nil) {
     IFTreeNode* clickedNode = [clickedLayer node];
     BOOL extendSelection = ([event modifierFlags] & NSShiftKeyMask) != 0;
     switch ([event clickCount]) {
@@ -341,7 +344,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFCompositeLayer* draggedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   
-  if (draggedLayer != nil && draggedLayer.isNode && [self.selectedNodes containsObject:draggedLayer.node]) {
+  if (draggedLayer != nil && [self.selectedNodes containsObject:draggedLayer.node]) {
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
@@ -483,7 +486,7 @@ static enum {
     return NSDragOperationNone;
   
   CGPoint targetLocation = NSPointToCGPoint([self convertPoint:[sender draggingLocation] fromView:nil]);
-  IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:targetLocation];
+  IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeConnectorLayers hitTest:targetLocation];
   IFTreeNode* targetNode = targetCompositeLayer == nil ? nil : targetCompositeLayer.node;
   BOOL highlightTarget = NO;
   
@@ -537,7 +540,7 @@ static enum {
   isCurrentDragLocal = ([sender draggingSource] == self);
   
   CGPoint targetLocation = NSPointToCGPoint([self convertPoint:[sender draggingLocation] fromView:nil]);
-  IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:targetLocation];
+  IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeConnectorLayers hitTest:targetLocation];
   IFTreeNode* targetNode = targetCompositeLayer.node;
   
   NSPasteboard* pboard = [sender draggingPasteboard];
@@ -669,14 +672,24 @@ static enum {
   return clonedTree;
 }
 
-- (IFLayerSet*)nodeLayers;
+- (IFLayerSet*)nodeConnectorLayers;
 {
   return [IFLayerSubsetComposites compositeSubsetOf:[IFLayerSetExplicit layerSetWithLayers:self.layer.sublayers]];
 }
 
+- (IFLayerSet*)nodeLayers;
+{
+  return [IFLayerPredicateSubset subsetOf:self.nodeConnectorLayers predicate:[NSPredicate predicateWithFormat:@"isNode == YES"]];
+}
+
+- (IFLayerSet*)visibleNodeConnectorLayers;
+{
+  return [IFLayerPredicateSubset subsetOf:self.nodeConnectorLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
+}
+
 - (IFLayerSet*)visibleNodeLayers;
 {
-  return [IFLayerPredicateSubset subsetOf:self.nodeLayers predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
+  return [IFLayerPredicateSubset subsetOf:self.nodeConnectorLayers predicate:[NSPredicate predicateWithFormat:@"isNode == YES && hidden == NO"]];
 }
 
 @synthesize canvasBoundsVar;
@@ -687,7 +700,7 @@ static enum {
   NSMutableDictionary* existingInConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   NSMutableDictionary* existingOutConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   
-  for (IFCompositeLayer* layer in self.nodeLayers) {
+  for (IFCompositeLayer* layer in self.nodeConnectorLayers) {
     NSMutableDictionary* dict;
     if (layer.isNode)
       dict = existingNodeLayers;
@@ -742,10 +755,8 @@ static enum {
 - (IFCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
 {
   for (IFCompositeLayer* layer in self.nodeLayers) {
-    if (layer.isNode) {
-      if (layer.node == node)
-        return layer;
-    }
+    if (layer.node == node)
+      return layer;
   }
   return nil;
 }
@@ -754,7 +765,7 @@ static enum {
 
 - (void)updateBounds;
 {
-  IFLayerSet* allLayers = self.visibleNodeLayers;
+  IFLayerSet* allLayers = self.visibleNodeConnectorLayers;
   NSSize newSize = NSSizeFromCGSize(allLayers.boundingBox.size);
   NSSize minSize = self.superview.frame.size;
   
@@ -859,117 +870,12 @@ static enum {
   [self moveToNode:layer.node extendingSelection:extendSelection];
 }
 
-static CGPoint IFMidPoint(CGPoint p1, CGPoint p2) {
-  return CGPointMake(p1.x + (p2.x - p1.x) / 2.0, p1.y + (p2.y - p1.y) / 2.0);
-}
-
-static CGPoint IFFaceMidPoint(CGRect r, IFDirection faceDirection) {
-  CGPoint bl = CGPointMake(CGRectGetMinX(r), CGRectGetMinY(r));
-  CGPoint br = CGPointMake(CGRectGetMaxX(r), CGRectGetMinY(r));
-  CGPoint tr = CGPointMake(CGRectGetMaxX(r), CGRectGetMaxY(r));
-  CGPoint tl = CGPointMake(CGRectGetMinX(r), CGRectGetMaxY(r));
-  CGPoint p1 = (faceDirection == IFLeft || faceDirection == IFDown) ? bl : tr;
-  CGPoint p2 = (faceDirection == IFLeft || faceDirection == IFUp) ? tl : br;
-  return IFMidPoint(p1,p2);
-}
-
-static IFDirection IFPerpendicularDirection(IFDirection d) {
-  switch (d) {
-    case IFUp: return IFRight;
-    case IFRight: return IFDown;
-    case IFDown: return IFLeft;
-    case IFLeft: return IFUp;
-    default: abort();
-  }
-}
-
-typedef struct {
-  float begin, end;
-} IFInterval;
-
-static IFInterval IFMakeInterval(float begin, float end) {
-  IFInterval i = { begin, end };
-  return i;
-}
-
-static BOOL IFIntersectsInterval(IFInterval i1, IFInterval i2) {
-  return (i1.begin <= i2.begin && i2.begin <= i1.end) || (i2.begin <= i1.begin && i1.begin <= i2.end);
-}
-
-static float IFIntervalDistance(IFInterval i1, IFInterval i2) {
-  if (IFIntersectsInterval(i1,i2))
-    return 0;
-  else if (i1.begin < i2.begin)
-    return i2.begin - i1.end;
-  else
-    return i1.begin - i2.end;
-}
-
-static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
-  return (projectionDirection == IFUp || projectionDirection == IFDown)
-  ? IFMakeInterval(CGRectGetMinX(r), CGRectGetMaxX(r))
-  : IFMakeInterval(CGRectGetMinY(r), CGRectGetMaxY(r));
-}
-
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 {
-  const float searchDistance = 1000;
-
-  CALayer* refLayer = [self compositeLayerForNode:self.cursorNode];
-  CGRect refRect = [refLayer convertRect:refLayer.bounds toLayer:self.layer];
-  
-  CGPoint refMidPoint = IFFaceMidPoint(refRect, direction);
-  CGPoint searchRectCorner;
-  const float epsilon = 0.1;
-  switch (direction) {
-    case IFUp:
-      searchRectCorner = CGPointMake(refMidPoint.x - searchDistance / 2.0, refMidPoint.y + epsilon);
-      break;
-    case IFDown:
-      searchRectCorner = CGPointMake(refMidPoint.x - searchDistance / 2.0, refMidPoint.y - (searchDistance + epsilon));
-      break;
-    case IFLeft:
-      searchRectCorner = CGPointMake(refMidPoint.x - (searchDistance + epsilon), refMidPoint.y - searchDistance / 2.0);
-      break;
-    case IFRight:
-      searchRectCorner = CGPointMake(refMidPoint.x + epsilon, refMidPoint.y - searchDistance / 2.0);
-      break;
-    default:
-      abort();
-  }
-  CGRect searchRect = { searchRectCorner, CGSizeMake(searchDistance, searchDistance) };
-  
-  NSMutableArray* candidates = [NSMutableArray array];
-  for (IFCompositeLayer* layer in self.visibleNodeLayers) {
-    if (layer.isNode && CGRectIntersectsRect(searchRect, layer.frame))
-      [candidates addObject:layer];
-  }
-  
-  if ([candidates count] > 0) {
-    IFDirection perDirection = IFPerpendicularDirection(direction);
-    
-    IFInterval refProjectionPar = IFProjectRect(refRect, direction);
-    IFInterval refProjectionPer = IFProjectRect(refRect, perDirection);
-    
-    IFCompositeLayer* bestCandidate = nil;
-    float bestCandidateDistancePar = searchDistance, bestCandidateDistancePer = searchDistance;
-    for (IFCompositeLayer* candidate in candidates) {
-      CGRect r = [candidate convertRect:candidate.bounds toLayer:self.layer];
-      
-      float dPer = IFIntervalDistance(refProjectionPar, IFProjectRect(r, direction));
-      float dPar = IFIntervalDistance(refProjectionPer, IFProjectRect(r, perDirection));
-      
-      if (dPer < bestCandidateDistancePer || (dPer == bestCandidateDistancePer && dPar < bestCandidateDistancePar)) {
-        bestCandidate = candidate;
-        bestCandidateDistancePar = dPar;
-        bestCandidateDistancePer = dPer;
-      }
-    }
-    if (bestCandidate != nil)
-      [self moveToNodeRepresentedBy:bestCandidate extendingSelection:extendSelection];
-    else
-      NSBeep();
-  } else
+  CALayer* closestLayer = closestLayerInDirection([self compositeLayerForNode:self.cursorNode], [self.visibleNodeLayers toArray], direction);
+  if (closestLayer != nil)
+    [self moveToNodeRepresentedBy:(IFCompositeLayer*)closestLayer extendingSelection:extendSelection];
+  else
     NSBeep();
 }
 
@@ -985,9 +891,6 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
   
   for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
-    if (!nodeLayer.isNode)
-      continue;
-    
     CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
     CALayer* cursorLayer = nodeLayer.cursorLayer;
     IFTreeNode* node = nodeLayer.node;
