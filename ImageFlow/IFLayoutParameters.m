@@ -54,11 +54,6 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   return self;
 }
 
-- (CGRect)canvasBounds;
-{
-  return CGRectMake(0, 0, 800, 600);
-}
-
 @synthesize backgroundColor;
 @synthesize nodeInternalMargin;
 @synthesize gutterWidth;

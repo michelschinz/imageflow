@@ -37,8 +37,6 @@
 
 + (IFLayoutParameters*)sharedLayoutParameters;
 
-@property(readonly) CGRect canvasBounds; // TODO: remove, it is specific to the document
-
 @property(readonly) CGColorRef backgroundColor;
 @property(readonly) float nodeInternalMargin;
 @property(readonly) float gutterWidth;
