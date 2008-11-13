@@ -12,10 +12,12 @@
 #import "IFTreeNode.h"
 #import "IFConstantExpression.h"
 #import "IFThumbnailLayer.h"
+#import "IFCompositeLayer.h"
 
-@interface IFNodeLayer : CALayer {
+@interface IFNodeLayer : CALayer<IFBaseLayer> {
   IFTreeNode* node;
   IFTree* tree;
+  float forcedFrameWidth;
 
   // Component layers (not retained)
   CATextLayer* labelLayer;
@@ -27,7 +29,9 @@
 + (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
+// IFBaseLayer method
 @property(readonly) IFTreeNode* node;
+@property float forcedFrameWidth;
 
 @property(readonly) CATextLayer* labelLayer;
 @property(readonly) IFThumbnailLayer* thumbnailLayer;

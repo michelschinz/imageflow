@@ -15,7 +15,8 @@
 
 @interface IFTemplateLayer : CALayer {
   IFTreeTemplate* treeTemplate;
-
+  float forcedFrameWidth;
+  
   // Normal mode
   IFTree* normalModeTree;
   IFNodeCompositeLayer* normalNodeCompositeLayer;
@@ -36,6 +37,7 @@
 @property(readonly) IFTreeTemplate* treeTemplate;
 @property(readonly) IFTree* tree;
 @property(readonly) IFTreeNode* treeNode;
+@property float forcedFrameWidth;
 
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)switchToNormalMode;

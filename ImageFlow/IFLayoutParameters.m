@@ -25,8 +25,6 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   if (![super init])
     return nil;
  
-  columnWidth = 50;
-  
   backgroundColor = CGColorCreateGenericGray(0.5, 1.0);
   nodeInternalMargin = 3.0;
   gutterWidth = 30.0;
@@ -60,8 +58,6 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
 {
   return CGRectMake(0, 0, 800, 600);
 }
-
-@synthesize columnWidth;
 
 @synthesize backgroundColor;
 @synthesize nodeInternalMargin;

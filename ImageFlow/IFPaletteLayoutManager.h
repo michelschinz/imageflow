@@ -14,11 +14,13 @@
 @end
 
 @interface IFPaletteLayoutManager : NSObject {
+  float columnWidth;
   id<IFPaletteLayoutManagerDelegate> delegate;
 }
 
 + (id)paletteLayoutManager;
 
+@property float columnWidth;
 @property(assign) id<IFPaletteLayoutManagerDelegate> delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)layer;

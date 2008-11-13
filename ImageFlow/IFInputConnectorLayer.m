@@ -14,13 +14,14 @@
 - (CGPathRef)createOutlinePath;
 {
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  const float margin = layoutParameters.nodeInternalMargin;
   const float arrowSize = layoutParameters.connectorArrowSize;
   
   CGMutablePathRef path = CGPathCreateMutable();
-  CGPathMoveToPoint(path, NULL, layoutParameters.nodeInternalMargin, 0);
+  CGPathMoveToPoint(path, NULL, margin, 0);
   CGPathAddLineToPoint(path, NULL, 0, arrowSize);
-  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin, arrowSize);
-  CGPathAddLineToPoint(path, NULL, layoutParameters.columnWidth - 3.0 * layoutParameters.nodeInternalMargin, 0);
+  CGPathAddLineToPoint(path, NULL, forcedFrameWidth, arrowSize); // TODO: use actual bounds width
+  CGPathAddLineToPoint(path, NULL, forcedFrameWidth - margin, 0);
   CGPathCloseSubpath(path);
   
   return path;

@@ -124,6 +124,13 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   return self.nodeCompositeLayer.node;
 }
 
+@synthesize forcedFrameWidth;
+- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
+{
+  forcedFrameWidth = newForcedFrameWidth;
+  normalNodeCompositeLayer.forcedFrameWidth = forcedFrameWidth;
+}
+
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 {
   // Create preview tree
@@ -133,6 +140,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   if ([previewModeTree isTypeCorrect]) {
     [previewModeTree configureAllNodesBut:constNodes];
     self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree canvasBounds:canvasBoundsVar];
+    previewNodeCompositeLayer.forcedFrameWidth = forcedFrameWidth;
     
     [self replaceSublayer:normalNodeCompositeLayer with:previewNodeCompositeLayer];
     self.visibilityFlags = self.visibilityFlags | IFVisibilityFlagTypeCorrect;
@@ -177,8 +185,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 
 - (CGSize)preferredFrameSize;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  return CGSizeMake(layoutParameters.columnWidth, [nameLayer preferredFrameSize].height + 2.0 + [self.nodeCompositeLayer preferredFrameSize].height);
+  return CGSizeMake(forcedFrameWidth, [nameLayer preferredFrameSize].height + 2.0 + [self.nodeCompositeLayer preferredFrameSize].height);
 }
 
 - (void)layoutSublayers;
@@ -186,10 +193,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   
   const float nameHeight = [nameLayer preferredFrameSize].height;
-  nameLayer.frame = (CGRect) { CGPointZero, CGSizeMake(layoutParameters.columnWidth, nameHeight) };
+  nameLayer.frame = (CGRect) { CGPointZero, CGSizeMake(CGRectGetWidth(self.bounds), nameHeight) };
   
   self.nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight + 2.0), [self.nodeCompositeLayer preferredFrameSize] };
-  arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(self.nodeCompositeLayer.frame)), CGSizeMake(layoutParameters.columnWidth, layoutParameters.connectorArrowSize) };
+  arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(self.nodeCompositeLayer.frame)), CGSizeMake(CGRectGetWidth(self.bounds), layoutParameters.connectorArrowSize) };
 
   if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
     [self.superlayer setNeedsLayout];
@@ -203,20 +210,21 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float arrowSize = layoutParameters.connectorArrowSize;
+  const float margin = layoutParameters.nodeInternalMargin;
 
   CGContextBeginPath(ctx);
   
   // Draw "arrow"
-  CGContextMoveToPoint(ctx, 2.0 * layoutParameters.nodeInternalMargin, 0);
-  CGContextAddLineToPoint(ctx, layoutParameters.nodeInternalMargin, arrowSize);
-  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth - layoutParameters.nodeInternalMargin, arrowSize);
-  CGContextAddLineToPoint(ctx, layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin, 0);
+  CGContextMoveToPoint(ctx, 2.0 * margin, 0);
+  CGContextAddLineToPoint(ctx, margin, arrowSize);
+  CGContextAddLineToPoint(ctx, CGRectGetWidth(layer.bounds) - margin, arrowSize);
+  CGContextAddLineToPoint(ctx, CGRectGetWidth(layer.bounds) - 2.0 * margin, 0);
   CGContextClosePath(ctx);
 
   // Draw dents
   const float dentWidth = 2.0;
   const unsigned dentsCount = treeTemplate.tree.holesCount - 1;
-  const float dentSpacing = layoutParameters.columnWidth / (dentsCount + 1);
+  const float dentSpacing = CGRectGetWidth(layer.bounds) / (dentsCount + 1);
   float x = dentSpacing;
   for (unsigned i = 0; i < dentsCount; ++i) {
     CGContextAddRect(ctx, CGRectMake(round(x - dentWidth / 2.0), 0, dentWidth, arrowSize));

@@ -22,6 +22,7 @@ typedef enum {
 
 @interface IFForestLayoutManager : NSObject {
   IFTree* tree; // not retained
+  float columnWidth;
   id<IFForestLayoutManagerDelegate> delegate; // not retained
 }
 
@@ -30,6 +31,7 @@ typedef enum {
 + (id)forestLayoutManager;
 
 @property(assign) IFTree* tree;
+@property float columnWidth;
 @property(assign) id<IFForestLayoutManagerDelegate> delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)layer;

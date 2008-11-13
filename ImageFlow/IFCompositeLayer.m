@@ -38,7 +38,7 @@
   return nil;
 }
 
-- (CALayer*)baseLayer;
+- (CALayer<IFBaseLayer>*)baseLayer;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
@@ -57,7 +57,17 @@
 
 - (IFTreeNode*)node;
 {
-  return [self.baseLayer valueForKey:@"node"]; // HACK (slightly hackish)
+  return [self.baseLayer node];
+}
+
+- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
+{
+  self.baseLayer.forcedFrameWidth = newForcedFrameWidth;
+}
+
+- (float)forcedFrameWidth;
+{
+  return self.baseLayer.forcedFrameWidth;
 }
 
 - (CGSize)preferredFrameSize;

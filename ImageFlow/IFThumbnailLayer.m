@@ -13,7 +13,7 @@
 #import "IFImageConstantExpression.h"
 #import "IFLayoutParameters.h"
 
-@interface IFThumbnailLayer (Private)
+@interface IFThumbnailLayer ()
 @property(retain) IFConstantExpression* evaluatedExpression;
 @property float aspectRatio;
 - (void)updateEvaluatedExpression;
@@ -23,7 +23,6 @@
 
 static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 static NSString* IFCanvasBoundsChangedContext = @"IFCanvasBoundsChangedContext";
-static NSString* IFColumnWidthChangedContext = @"IFColumnWidthChangedContext";
 
 static CGImageRef errorImage;
 static CGImageRef aliasImage;
@@ -85,7 +84,6 @@ static CGImageRef imageNamed(NSString* imageName) {
   [self updateEvaluatedExpression];
 
   [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsChangedContext];
-  [[IFLayoutParameters sharedLayoutParameters] addObserver:self forKeyPath:@"columnWidth" options:0 context:IFColumnWidthChangedContext];
   [node addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
 
   return self;
@@ -96,21 +94,25 @@ static CGImageRef imageNamed(NSString* imageName) {
   // If node is nil, this is a presentation layer (there doesn't seem to be a better way to know this currently)
   if (node != nil) {
     [node removeObserver:self forKeyPath:@"expression"];
-    [[IFLayoutParameters sharedLayoutParameters] removeObserver:self forKeyPath:@"columnWidth"];
     [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   
+    OBJC_RELEASE(evaluatedExpression);
     OBJC_RELEASE(canvasBoundsVar);
     OBJC_RELEASE(node);
-    OBJC_RELEASE(evaluatedExpression);
   }
   [super dealloc];
 }
 
+@synthesize forcedFrameWidth;
+- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
+{
+  forcedFrameWidth = newForcedFrameWidth;
+  [self updateEvaluatedExpression];
+}
+
 - (CGSize)preferredFrameSize;
 {
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float width = layoutParameters.columnWidth - 2.0 * layoutParameters.nodeInternalMargin;
-  return CGSizeMake(width, aspectRatio != 0.0 ? width / aspectRatio : 0.0);
+  return CGSizeMake(forcedFrameWidth, aspectRatio != 0.0 ? forcedFrameWidth / aspectRatio : 0.0);
 }
 
 - (void)drawInContext:(CGContextRef)ctx;
@@ -134,34 +136,19 @@ static CGImageRef imageNamed(NSString* imageName) {
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
-  if (context == IFColumnWidthChangedContext) {
+  if (context == IFExpressionChangedContext || context == IFCanvasBoundsChangedContext) {
     [self updateEvaluatedExpression];
-    [self.superlayer setNeedsLayout];
-  } else if (context == IFExpressionChangedContext || context == IFCanvasBoundsChangedContext)
-    [self updateEvaluatedExpression];
-  else
+    [self setNeedsDisplay];
+  } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-@end
+// MARK: -
+// MARK: PRIVATE
 
-@implementation IFThumbnailLayer (Private)
+@synthesize evaluatedExpression;
 
-- (void)setEvaluatedExpression:(IFConstantExpression*)newExpression;
-{
-  if (newExpression == evaluatedExpression)
-    return;
-  [evaluatedExpression release];
-  evaluatedExpression = [newExpression retain];
-  
-  [self setNeedsDisplay];
-}
-
-- (IFConstantExpression*)evaluatedExpression;
-{
-  return evaluatedExpression;
-}
-
+@synthesize aspectRatio;
 - (void)setAspectRatio:(float)newAspectRatio;
 {
   if (fabs(newAspectRatio - aspectRatio) > 0.01)
@@ -170,25 +157,19 @@ static CGImageRef imageNamed(NSString* imageName) {
   aspectRatio = newAspectRatio;
 }
 
-- (float)aspectRatio;
-{
-  return aspectRatio;
-}
-
 - (void)updateEvaluatedExpression;
 {
   IFExpression* nodeExpression = node.expression;
   if (nodeExpression == nil)
     return;
   
-  const float width = [self preferredFrameSize].width;
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFConstantExpression* basicExpression = [evaluator evaluateExpression:nodeExpression];
   if (!basicExpression.isError) {
     NSRect canvasBounds = ((NSValue*)canvasBoundsVar.value).rectValue;
     IFExpression* imageExpression = [evaluator evaluateExpressionAsImage:basicExpression];
     IFExpression* croppedExpression = [IFOperatorExpression crop:imageExpression along:canvasBounds];
-    const float scaling = width / NSWidth(canvasBounds);
+    const float scaling = forcedFrameWidth / NSWidth(canvasBounds);
     IFExpression* scaledCroppedExpression = [IFOperatorExpression resample:croppedExpression by:scaling];
     self.evaluatedExpression = [evaluator evaluateExpression:scaledCroppedExpression];
     self.aspectRatio = NSIsEmptyRect(canvasBounds) ? 0.0 : NSWidth(canvasBounds) / NSHeight(canvasBounds);
@@ -199,7 +180,7 @@ static CGImageRef imageNamed(NSString* imageName) {
     
     IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)basicExpression;
     if (errorExpression.message != nil)
-      self.aspectRatio = width / CGImageGetHeight(errorImage);
+      self.aspectRatio = forcedFrameWidth / CGImageGetHeight(errorImage);
     else
       self.aspectRatio = 0.0;
     

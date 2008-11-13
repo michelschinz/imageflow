@@ -64,7 +64,7 @@
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float margin = layoutParameters.nodeInternalMargin;
   const float arrowSize = layoutParameters.connectorArrowSize;
-  const float internalWidth = layoutParameters.columnWidth - 2.0 * margin;
+  const float internalWidth = forcedFrameWidth - (leftReach + rightReach + 2.0 * margin);
   const float textHeight = [labelLayer preferredFrameSize].height;
   
   float totalLeftLength = 2.0 * margin + leftReach;
@@ -75,9 +75,9 @@
   CGPathMoveToPoint(path, NULL, 0, 0);
   CGPathAddLineToPoint(path, NULL, 0, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength, textHeight + 2.0);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - layoutParameters.nodeInternalMargin, textHeight + 2.0 + arrowSize);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - layoutParameters.nodeInternalMargin + internalWidth, textHeight + 2.0 + arrowSize);
-  CGPathAddLineToPoint(path, NULL, totalLeftLength - 2.0 * layoutParameters.nodeInternalMargin + internalWidth, textHeight + 2.0);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - margin, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - margin + internalWidth, textHeight + 2.0 + arrowSize);
+  CGPathAddLineToPoint(path, NULL, totalLeftLength - 2.0 * margin + internalWidth, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, textHeight + 2.0);
   CGPathAddLineToPoint(path, NULL, totalLeftLength + internalWidth + totalRightLength, 0);
   CGPathCloseSubpath(path);

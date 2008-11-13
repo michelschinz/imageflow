@@ -10,8 +10,6 @@
 
 
 @interface IFLayoutParameters : NSObject {
-  float columnWidth;
-  
   CGColorRef backgroundColor;
   float nodeInternalMargin;
   float gutterWidth;
@@ -40,8 +38,6 @@
 + (IFLayoutParameters*)sharedLayoutParameters;
 
 @property(readonly) CGRect canvasBounds; // TODO: remove, it is specific to the document
-
-@property float columnWidth;
 
 @property(readonly) CGColorRef backgroundColor;
 @property(readonly) float nodeInternalMargin;

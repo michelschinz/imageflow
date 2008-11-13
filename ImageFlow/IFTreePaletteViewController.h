@@ -25,6 +25,7 @@
 }
 
 @property(retain) IFDocument* document;
+@property float columnWidth;
 @property(readonly) IFVariable* cursorsVar;
 
 // MARK: IFForestView delegate methods

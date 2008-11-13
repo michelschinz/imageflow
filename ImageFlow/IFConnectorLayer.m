@@ -47,16 +47,9 @@
 }
 
 @synthesize node;
+@synthesize forcedFrameWidth;
+
 @synthesize kind;
-
-- (NSString*)label;
-{
-  return nil;
-}
-
-- (void)setLabel:(NSString*)newLabel;
-{
-}
 
 - (CGPathRef)outlinePath;
 {

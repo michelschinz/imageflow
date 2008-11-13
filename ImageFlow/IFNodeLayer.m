@@ -11,7 +11,7 @@
 #import "IFErrorConstantExpression.h"
 #import "IFLayoutParameters.h"
 
-@interface IFNodeLayer (Private)
+@interface IFNodeLayer ()
 - (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)teardownComponentLayers;
 @end
@@ -57,6 +57,14 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
 }
 
 @synthesize node;
+
+@synthesize forcedFrameWidth;
+- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
+{
+  forcedFrameWidth = newForcedFrameWidth;
+  thumbnailLayer.forcedFrameWidth = newForcedFrameWidth - 2.0 * [IFLayoutParameters sharedLayoutParameters].nodeInternalMargin;
+}
+
 @synthesize labelLayer, thumbnailLayer, nameLayer;
 
 - (CGSize)preferredFrameSize;
@@ -75,14 +83,14 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
     height += [labelLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
   }
   
-  return CGSizeMake(layoutParameters.columnWidth, height);
+  return CGSizeMake(forcedFrameWidth, height);
 }
 
 - (void)layoutSublayers;
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   const float internalMargin = layoutParameters.nodeInternalMargin;
-  const float internalWidth = layoutParameters.columnWidth - 2.0 * internalMargin;
+  const float internalWidth = CGRectGetWidth(self.bounds) - 2.0 * internalMargin;
   
   const float x = internalMargin;
   float y = internalMargin;
@@ -95,7 +103,7 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
   thumbnailLayer.frame = (CGRect){ CGPointMake(x, y), [thumbnailLayer preferredFrameSize] };
   y += CGRectGetHeight(thumbnailLayer.bounds) + internalMargin;
   
-  foldingSeparatorLayer.frame = CGRectMake(0, y, layoutParameters.columnWidth, 1.0);
+  foldingSeparatorLayer.frame = CGRectMake(0, y, CGRectGetWidth(self.bounds), 1.0);
   if (!foldingSeparatorLayer.hidden)
     y += CGRectGetHeight(foldingSeparatorLayer.bounds) + internalMargin;
   
@@ -171,9 +179,8 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
   }
 }
 
-@end
-
-@implementation IFNodeLayer (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
 {

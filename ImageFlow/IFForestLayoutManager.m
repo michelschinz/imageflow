@@ -42,7 +42,7 @@
 }
 
 @synthesize tree;
-
+@synthesize columnWidth;
 @synthesize delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)parentLayer;
@@ -151,11 +151,12 @@
       IFOutputConnectorLayer* outputConnectorLayer = (IFOutputConnectorLayer*)outputConnectorCompositeLayer.baseLayer;
       outputConnectorLayer.label = [root nameOfParentAtIndex:i];
       outputConnectorLayer.leftReach = (i > 0
-                                        ? round((currLeft - CGRectGetMinX([directParentLayers layerAtIndex:i-1].frame) - layoutParameters.columnWidth) / 2.0)
+                                        ? round((currLeft - CGRectGetMinX([directParentLayers layerAtIndex:i-1].frame) - columnWidth) / 2.0)
                                         : 0.0);
       outputConnectorLayer.rightReach = (i < parentsCount - 1
-                                         ? round((CGRectGetMinX([directParentLayers layerAtIndex:i+1].frame) - currLeft - layoutParameters.columnWidth) / 2.0)
+                                         ? round((CGRectGetMinX([directParentLayers layerAtIndex:i+1].frame) - currLeft - columnWidth) / 2.0)
                                          : 0.0);
+      outputConnectorLayer.forcedFrameWidth = outputConnectorLayer.leftReach + outputConnectorLayer.rightReach + columnWidth;
       
       outputConnectorCompositeLayer.bounds = (CGRect){ CGPointZero, [outputConnectorCompositeLayer preferredFrameSize] };
       outputConnectorCompositeLayer.position = CGPointMake(currLeft - outputConnectorLayer.leftReach, 0);
@@ -168,12 +169,13 @@
     
   const float directParentsLeft = CGRectGetMinX(directParentLayers.firstLayer.frame);
   const float directParentsRight = CGRectGetMaxX(directParentLayers.lastLayer.frame);
-  const float rootColumnLeft = fmax(round(directParentsLeft + (directParentsRight - directParentsLeft - layoutParameters.columnWidth) / 2.0), 0.0);
+  const float rootColumnLeft = fmax(round(directParentsLeft + (directParentsRight - directParentsLeft - columnWidth) / 2.0), 0.0);
 
   // Layout input connector
   if (parentsCount > 0) {
     IFCompositeLayer* inputConnectorLayer = [inConnectorLayers objectForKey:root];
     inputConnectorLayer.hidden = parentsInFoldedSubtree;
+    inputConnectorLayer.forcedFrameWidth = columnWidth - 2.0 * layoutParameters.nodeInternalMargin;
 
     inputConnectorLayer.bounds = (CGRect){ CGPointZero, [inputConnectorLayer preferredFrameSize] };
     inputConnectorLayer.position = CGPointMake(rootColumnLeft + layoutParameters.nodeInternalMargin, 0);
@@ -184,8 +186,9 @@
   }
   
   // Layout root
-  CALayer* rootLayer = [nodeLayers objectForKey:root];
+  IFCompositeLayer* rootLayer = [nodeLayers objectForKey:root];
   rootLayer.hidden = inFoldedSubtree;
+  rootLayer.forcedFrameWidth = columnWidth;
   rootLayer.bounds = (CGRect){ CGPointZero, [rootLayer preferredFrameSize] };
   if (parentsWidth == 0)
     rootLayer.position = CGPointZero;

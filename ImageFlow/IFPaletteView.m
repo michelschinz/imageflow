@@ -102,6 +102,17 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 @synthesize delegate;
 @synthesize cursors, visualisedCursor;
 
+- (float)columnWidth;
+{
+  return ((IFPaletteLayoutManager*)self.layer.layoutManager).columnWidth;
+}
+
+- (void)setColumnWidth:(float)newColumnWidth;
+{
+  ((IFPaletteLayoutManager*)self.layer.layoutManager).columnWidth = newColumnWidth;
+  [self.layer setNeedsLayout];
+}
+
 // MARK: Normal/preview modes
 
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;

@@ -39,6 +39,10 @@
 {
   layoutParametersController.content = [IFLayoutParameters sharedLayoutParameters];
   cursorsVar.value = forestView.cursors;
+  
+  [self willChangeValueForKey:@"columnWidth"]; // HACK to make sure the slider starts with the correct value
+  forestView.columnWidth = paletteView.columnWidth = 50.0;
+  [self didChangeValueForKey:@"columnWidth"];
 }
 
 @synthesize document;
@@ -52,6 +56,17 @@
   document = [newDocument retain];
 
   [forestView setDocument:newDocument];
+}
+
+- (float)columnWidth;
+{
+  return forestView.columnWidth;
+}
+
+- (void)setColumnWidth:(float)newColumnWidth;
+{
+  forestView.columnWidth = newColumnWidth;
+  paletteView.columnWidth = newColumnWidth;
 }
 
 @synthesize cursorsVar;

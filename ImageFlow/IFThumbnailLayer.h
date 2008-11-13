@@ -15,6 +15,8 @@
 @interface IFThumbnailLayer : CALayer {
   IFTreeNode* node;
   IFVariable* canvasBoundsVar;
+
+  float forcedFrameWidth;
   
   IFConstantExpression* evaluatedExpression;
   float aspectRatio;
@@ -25,5 +27,7 @@
 
 + (id)layerForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initForNode:(IFTreeNode*)theNode canvasBounds:(IFVariable*)theCanvasBoundsVar;
+
+@property float forcedFrameWidth;
 
 @end

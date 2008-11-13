@@ -99,6 +99,18 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 }
 
 @synthesize cursors, visualisedCursor;
+
+- (float)columnWidth;
+{
+  return ((IFForestLayoutManager*)self.layer.layoutManager).columnWidth;
+}
+
+- (void)setColumnWidth:(float)newColumnWidth;
+{
+  ((IFForestLayoutManager*)self.layer.layoutManager).columnWidth = newColumnWidth;
+  [self.layer setNeedsLayout];
+}
+
 @synthesize delegate;
 
 @synthesize document;

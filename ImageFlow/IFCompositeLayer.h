@@ -10,6 +10,11 @@
 
 #import "IFTreeNode.h"
 
+@protocol IFBaseLayer
+- (IFTreeNode*)node;
+@property float forcedFrameWidth;
+@end
+
 @interface IFCompositeLayer : CALayer {
 
 }
@@ -19,10 +24,11 @@
 @property(readonly) BOOL isOutputConnector;
 
 @property(readonly) CALayer* displayedImageLayer; // optional (can be nil)
-@property(readonly) CALayer* baseLayer;
+@property(readonly) CALayer<IFBaseLayer>* baseLayer;
 @property(readonly) CALayer* cursorLayer; // optional (can be nil)
 @property(readonly) CALayer* highlightLayer;
 
-@property(readonly, assign) IFTreeNode* node;
+@property(readonly) IFTreeNode* node;
+@property float forcedFrameWidth;
 
 @end

@@ -12,6 +12,7 @@
 #import "IFCompositeLayer.h"
 #import "IFTree.h"
 #import "IFLayoutParameters.h"
+#import "IFTemplateLayer.h"
 
 @implementation IFPaletteLayoutManager
 
@@ -20,12 +21,13 @@
   return [[[self alloc] init] autorelease];
 }
 
+
+@synthesize columnWidth;
 @synthesize delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)parentLayer;
 {
   const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float columnWidth = layoutParameters.columnWidth;
   const float minGutterX = layoutParameters.gutterWidth;
   
   const float totalWidth = CGRectGetWidth(parentLayer.bounds);
@@ -36,10 +38,11 @@
   unsigned column = 0;
   float x = gutterX, y = 0;
   float rowHeight = 0;
-  for (CALayer* layer in parentLayer.sublayers) {
+  for (IFTemplateLayer* layer in parentLayer.sublayers) {
     if (layer.hidden)
       continue;
 
+    layer.forcedFrameWidth = columnWidth;
     layer.frame = (CGRect){ CGPointMake(round(x), round(y)), [layer preferredFrameSize] };
     rowHeight = fmax(rowHeight, CGRectGetHeight(layer.frame));
     

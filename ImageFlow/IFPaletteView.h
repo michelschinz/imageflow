@@ -45,6 +45,7 @@ typedef enum {
 @property(assign) id<IFPaletteViewDelegate> delegate;
 @property(readonly) IFTreeCursorPair* cursors;
 @property(retain) IFTreeCursorPair* visualisedCursor;
+@property float columnWidth;
 
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)switchToNormalMode;

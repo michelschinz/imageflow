@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFCompositeLayer.h"
 #import "IFTreeNode.h"
 
 typedef enum {
@@ -15,21 +16,26 @@ typedef enum {
   IFConnectorKindOutput
 } IFConnectorKind;
 
-@interface IFConnectorLayer : CALayer {
+@interface IFConnectorLayer : CALayer<IFBaseLayer> {
   IFTreeNode* node;
   IFConnectorKind kind;
+  float forcedFrameWidth;
   CGPathRef outlinePath;
 }
 
 + (id)connectorLayerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 - (id)initForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 
+// IFBaseLayer method
 @property(readonly) IFTreeNode* node;
+@property float forcedFrameWidth;
+
 @property(readonly) IFConnectorKind kind;
 
 @property CGPathRef outlinePath;
 
-// MARK: (protected)
+// MARK: -
+// MARK: PROTECTED
 - (CGPathRef)createOutlinePath; // abstract
 
 @end
