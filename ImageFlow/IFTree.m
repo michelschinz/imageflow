@@ -248,7 +248,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   return [[subtree includedNodes] count] > 1 || ![[subtree root] isGhost] || [self canDeleteNode:[subtree root]];
 }
 
-- (void)deleteSubtree:(IFSubtree*)subtree;
+- (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
 
@@ -258,8 +258,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self removeTreeRootedAt:[subtree root]];
 
   // Try to delete the ghost too.
-  if ([self canDeleteNode:ghostRoot])
+  if ([self canDeleteNode:ghostRoot]) {
     [self deleteNode:ghostRoot];
+    return nil;
+  } else
+    return ghostRoot;
 }
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;

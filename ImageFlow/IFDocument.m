@@ -153,11 +153,12 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return [tree canDeleteSubtree:subtree];
 }
 
-- (void)deleteSubtree:(IFSubtree*)subtree;
+- (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
 {
   [self beginTreeModification];
-  [tree deleteSubtree:subtree];
+  IFTreeNode* maybeGhost = [tree deleteSubtree:subtree];
   [self endTreeModification];
+  return maybeGhost;
 }
 
 - (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;

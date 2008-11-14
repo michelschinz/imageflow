@@ -33,10 +33,7 @@
   [super dealloc];
 }
 
-- (IFTree*)baseTree;
-{
-  return baseTree;
-}
+@synthesize baseTree;
 
 - (IFTreeNode*)root;
 {
@@ -51,10 +48,7 @@
   return root;
 }
 
-- (NSSet*)includedNodes;
-{
-  return includedNodes;
-}
+@synthesize includedNodes;
 
 - (BOOL)containsNode:(IFTreeNode*)node;
 {
@@ -85,7 +79,7 @@
   return tree;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {

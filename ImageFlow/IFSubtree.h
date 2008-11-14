@@ -18,9 +18,9 @@
 + (id)subtreeOf:(IFTree*)theBaseTree includingNodes:(NSSet*)theIncludedNodes;
 - (id)initWithTree:(IFTree*)theBaseTree includingNodes:(NSSet*)theIncludedNodes;
 
-- (IFTree*)baseTree;
-- (IFTreeNode*)root;
-- (NSSet*)includedNodes;
+@property(readonly) IFTree* baseTree;
+@property(readonly) IFTreeNode* root;
+@property(readonly) NSSet* includedNodes;
 
 - (BOOL)containsNode:(IFTreeNode*)node;
 

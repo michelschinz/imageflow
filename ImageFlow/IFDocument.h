@@ -53,7 +53,7 @@ extern NSString* IFTreeChangedNotification;
 - (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
-- (void)deleteSubtree:(IFSubtree*)subtree;
+- (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
 
 - (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 - (IFTreeNode*)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;

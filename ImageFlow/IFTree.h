@@ -57,7 +57,7 @@
 - (IFTreeNode*)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
-- (void)deleteSubtree:(IFSubtree*)subtree;
+- (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
 
 - (BOOL)canCreateAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 - (IFTreeNode*)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;

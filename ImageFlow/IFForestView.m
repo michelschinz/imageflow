@@ -273,9 +273,15 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)delete:(id)sender;
 {
   IFSubtree* subtree = [self selectedSubtree];
-  if ([document canDeleteSubtree:subtree])
-    [document deleteSubtree:subtree];
-  else
+  if ([document canDeleteSubtree:subtree]) {
+    IFTreeNode* deletedSubtreeChild = [document.tree childOfNode:subtree.root];
+    unsigned deletedSubtreeChildIndex = [[document.tree parentsOfNode:deletedSubtreeChild] indexOfObject:subtree.root];
+    IFTreeNode* maybeGhost = [document deleteSubtree:subtree];
+    IFTreeNode* newCursorNode = (maybeGhost != nil)
+    ? maybeGhost
+    : [[document.tree parentsOfNode:deletedSubtreeChild] objectAtIndex:deletedSubtreeChildIndex];
+    [self moveToNode:newCursorNode extendingSelection:NO];
+  } else
     NSBeep();
 }
 
@@ -422,9 +428,10 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   }
   
   IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
-  if ([document canCopyTree:tree toReplaceGhostNode:[self cursorNode]])
-    [document copyTree:tree toReplaceGhostNode:[self cursorNode]];
-  else
+  if ([document canCopyTree:tree toReplaceGhostNode:[self cursorNode]]) {
+    IFTreeNode* pastedRoot = [document copyTree:tree toReplaceGhostNode:[self cursorNode]];
+    [self moveToNode:pastedRoot extendingSelection:NO];
+  } else
     NSBeep();
 }
 
