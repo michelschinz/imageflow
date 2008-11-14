@@ -416,6 +416,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)moveToNodeRepresentedBy:(IFTemplateLayer*)layer;
 {
   [cursors setTree:layer.tree node:layer.treeNode];
+  [self scrollRectToVisible:NSRectFromCGRect(layer.frame)];
 }
 
 - (void)moveToClosestNodeInDirection:(IFDirection)direction;

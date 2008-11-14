@@ -860,7 +860,7 @@ static enum {
   [notification.object removeFromSuperview];
 }
 
-// MARK: Cursor movement
+// MARK: Cursor & selection
 
 @synthesize delayedMouseEventInvocation;
 
@@ -891,8 +891,6 @@ static enum {
     NSBeep();
 }
 
-// MARK: Selection
-
 - (void)updateCursorLayers;
 {
   [self syncLayersWithTree]; // Make sure all layers exist
@@ -906,9 +904,10 @@ static enum {
     IFTreeNode* node = nodeLayer.node;
 
     displayedImageLayer.hidden = (node != displayedNode);
-    if (node == cursorNode)
+    if (node == cursorNode) {
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorCursor;
-    else if ([selNodes containsObject:node])
+      [self scrollRectToVisible:NSRectFromCGRect(nodeLayer.frame)];
+    } else if ([selNodes containsObject:node])
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorSelection;
     else
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorNone;
