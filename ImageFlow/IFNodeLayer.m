@@ -40,6 +40,8 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
   self.cornerRadius = layoutParameters.nodeInternalMargin;
   self.backgroundColor = layoutParameters.nodeBackgroundColor;
   
+  self.borderColor = layoutParameters.cursorColor;
+  
   if (!node.isGhost)
     [self setupComponentLayersWithCanvasBounds:theCanvasBoundsVar];
 

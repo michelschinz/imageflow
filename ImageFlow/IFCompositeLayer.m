@@ -8,6 +8,8 @@
 
 #import "IFCompositeLayer.h"
 
+#import "IFLayoutParameters.h"
+
 @implementation IFCompositeLayer
 
 - (id)init;
@@ -44,15 +46,43 @@
   return nil;
 }
 
-- (CALayer*)cursorLayer;
+- (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
 {
-  return nil;
+  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  CALayer* baseLayer = self.baseLayer;
+  switch (newIndicator) {
+    case IFLayerCursorIndicatorNone:
+      baseLayer.borderWidth = 0;
+      break;
+    case IFLayerCursorIndicatorCursor:
+      baseLayer.borderWidth = layoutParameters.cursorWidth;
+      break;
+    case IFLayerCursorIndicatorSelection:
+      baseLayer.borderWidth = layoutParameters.selectionWidth;
+  }
 }
 
-- (CALayer*)highlightLayer;
+- (IFLayerCursorIndicator)cursorIndicator;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  CALayer* cursorLayer = [self valueForKey:@"cursorLayer"];
+  if (cursorLayer.hidden)
+    return IFLayerCursorIndicatorNone;
+  else if (cursorLayer.borderWidth == [IFLayoutParameters sharedLayoutParameters].cursorWidth)
+    return IFLayerCursorIndicatorCursor;
+  else
+    return IFLayerCursorIndicatorSelection;
+}
+
+- (void)setHighlighted:(BOOL)newValue;
+{
+  CALayer* highlightLayer = [self valueForKey:@"highlightLayer"];
+  highlightLayer.hidden = !newValue;
+}
+
+- (BOOL)highlighted;
+{
+  CALayer* highlightLayer = [self valueForKey:@"highlightLayer"];
+  return !highlightLayer.hidden;
 }
 
 - (IFTreeNode*)node;

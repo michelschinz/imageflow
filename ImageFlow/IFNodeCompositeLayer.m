@@ -14,7 +14,6 @@
 typedef enum {
   IFCompositeSublayerDisplayedImage,
   IFCompositeSublayerBase,
-  IFCompositeSublayerCursor,
   IFCompositeSublayerHighlight,
 } IFCompositeSublayer;
 
@@ -41,16 +40,6 @@ typedef enum {
   displayedImageLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   displayedImageLayer.hidden = YES;
   
-  // Cursor / selection indicator
-  CALayer* cursorLayer = [CALayer layer];
-  cursorLayer.anchorPoint = CGPointZero;
-  cursorLayer.frame = baseLayer.frame;
-  cursorLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-  cursorLayer.cornerRadius = baseLayer.cornerRadius;
-  cursorLayer.hidden = YES;
-  cursorLayer.borderWidth = layoutParameters.cursorWidth;
-  cursorLayer.borderColor = layoutParameters.cursorColor;
-  
   // Highlight (used for drag&drop)
   CALayer* highlightLayer = [CALayer layer];
   highlightLayer.anchorPoint = CGPointZero;
@@ -64,7 +53,6 @@ typedef enum {
 
   [self addSublayer:displayedImageLayer];
   [self addSublayer:baseLayer];
-  [self addSublayer:cursorLayer];
   [self addSublayer:highlightLayer];
 
   return self;
@@ -83,11 +71,6 @@ typedef enum {
 - (IFNodeLayer*)baseLayer;
 {
   return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
-}
-
-- (CALayer*)cursorLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerCursor];
 }
 
 - (CALayer*)highlightLayer;

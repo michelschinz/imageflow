@@ -361,7 +361,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
   for (IFTemplateLayer* layer in self.templateLayers) {
     IFNodeCompositeLayer* nodeLayer = layer.nodeCompositeLayer;
-    nodeLayer.cursorLayer.hidden = !(layer.tree == cursorTree && layer.treeNode == cursorNode);
+    nodeLayer.cursorIndicator = ((layer.tree == cursorTree && layer.treeNode == cursorNode) ? IFLayerCursorIndicatorCursor : IFLayerCursorIndicatorNone) ;
     nodeLayer.displayedImageLayer.hidden = !(layer.tree == displayedTree && layer.treeNode == displayedNode);
   }
 }

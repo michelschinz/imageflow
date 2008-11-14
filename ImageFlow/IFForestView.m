@@ -897,22 +897,21 @@ static enum {
 {
   [self syncLayersWithTree]; // Make sure all layers exist
   
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   IFTreeNode* cursorNode = self.cursorNode;
   NSSet* selNodes = self.selectedNodes;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
   
   for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
     CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
-    CALayer* cursorLayer = nodeLayer.cursorLayer;
     IFTreeNode* node = nodeLayer.node;
 
     displayedImageLayer.hidden = (node != displayedNode);
-    if ([selNodes containsObject:node]) {
-      cursorLayer.hidden = NO;
-      cursorLayer.borderWidth = (node == cursorNode) ? layoutParameters.cursorWidth : layoutParameters.selectionWidth;
-    } else
-      cursorLayer.hidden = YES;
+    if (node == cursorNode)
+      nodeLayer.cursorIndicator = IFLayerCursorIndicatorCursor;
+    else if ([selNodes containsObject:node])
+      nodeLayer.cursorIndicator = IFLayerCursorIndicatorSelection;
+    else
+      nodeLayer.cursorIndicator = IFLayerCursorIndicatorNone;
   }
 }
 
@@ -1009,9 +1008,9 @@ static enum {
   if (newHighlightedLayer == highlightedLayer)
     return;
   if (highlightedLayer != nil)
-    highlightedLayer.highlightLayer.hidden = YES;
+    highlightedLayer.highlighted = NO;
   if (newHighlightedLayer != nil)
-    newHighlightedLayer.highlightLayer.hidden = NO;
+    newHighlightedLayer.highlighted = YES;
   highlightedLayer = newHighlightedLayer;
 }
 
