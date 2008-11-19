@@ -10,7 +10,6 @@
 #import "IFNodeCompositeLayer.h"
 #import "IFConnectorCompositeLayer.h"
 #import "IFNodeLayer.h"
-#import "IFDisplayedImageLayer.h"
 #import "IFForestLayoutManager.h"
 #import "IFLayerSetExplicit.h"
 #import "IFLayerPredicateSubset.h"
@@ -38,6 +37,7 @@
 - (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
 - (void)moveToNodeRepresentedBy:(IFCompositeLayer*)layer extendingSelection:(BOOL)extendSelection;
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
+- (void)updateViewLockButton;
 - (void)updateCursorLayers;
 @property(copy) NSSet* selectedNodes;
 @property(readonly) IFSubtree* selectedSubtree;
@@ -62,12 +62,14 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
   [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
+  [self addObserver:self forKeyPath:@"visualisedCursor.isViewLocked" options:0 context:IFVisualisedCursorDidChangeContext];
 
   return self;
 }
 
 - (void)dealloc;
 {
+  [self removeObserver:self forKeyPath:@"visualisedCursor.isViewLocked"];
   [self removeObserver:self forKeyPath:@"visualisedCursor.viewLockedNode"];
 
   if (document != nil) {
@@ -171,6 +173,9 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   [self removeAllToolTips];
   for (IFNodeCompositeLayer* nodeLayer in self.visibleNodeLayers)
     [self addToolTipRect:NSRectFromCGRect(nodeLayer.frame) owner:self userData:nodeLayer.node];
+  
+  // Position view lock button
+  [self updateViewLockButton];
 }
 
 - (NSString*)view:(NSView*)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void*)userData;
@@ -317,7 +322,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   if ([grabableViewMixin handlesMouseDown:event])
     return;
-  
+
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFCompositeLayer* clickedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   if (clickedLayer != nil) {
@@ -898,6 +903,21 @@ static enum {
     NSBeep();
 }
 
+- (void)updateViewLockButton;
+{
+  for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
+    const CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
+    if (displayedImageLayer.hidden == NO) {
+      CGRect diLayerFrame = [displayedImageLayer.superlayer convertRect:displayedImageLayer.frame toLayer:self.layer];
+      [viewLockButton setFrameOrigin:NSMakePoint(CGRectGetMinX(diLayerFrame) + 2.0, CGRectGetMaxY(diLayerFrame) - NSHeight([viewLockButton frame]) - 1.0)];
+      viewLockButton.layer.zPosition = 2.0;
+      [viewLockButton setHidden:NO];
+      return;
+    }
+  }
+  [viewLockButton setHidden:YES];
+}  
+
 - (void)updateCursorLayers;
 {
   [self syncLayersWithTree]; // Make sure all layers exist
@@ -905,12 +925,18 @@ static enum {
   IFTreeNode* cursorNode = self.cursorNode;
   NSSet* selNodes = self.selectedNodes;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
-  
+
   for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
-    CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
     IFTreeNode* node = nodeLayer.node;
 
-    displayedImageLayer.hidden = (node != displayedNode);
+    if (node == displayedNode) {
+      const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+      CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
+      displayedImageLayer.hidden = NO;
+      displayedImageLayer.backgroundColor = cursors.isViewLocked ? layoutParameters.displayedImageLockedBackgroundColor : layoutParameters.displayedImageUnlockedBackgroundColor;
+    } else
+      nodeLayer.displayedImageLayer.hidden = YES;
+
     if (node == cursorNode) {
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorCursor;
       [self scrollRectToVisible:NSRectFromCGRect(nodeLayer.frame)];
@@ -919,6 +945,7 @@ static enum {
     else
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorNone;
   }
+  [self updateViewLockButton];
 }
 
 - (void)setSelectedNodes:(NSSet*)newSelectedNodes;
@@ -935,8 +962,6 @@ static enum {
   }
   [selectedNodes release];
   selectedNodes = [expandedNodes retain];
-  
-  [self updateCursorLayers];
 }
 
 - (NSSet*)selectedNodes;
@@ -960,7 +985,6 @@ static enum {
   if (newCursorNode == self.cursorNode)
     return;
   [cursors setTree:document.tree node:newCursorNode];
-  [self updateCursorLayers];
 }
 
 - (IFTreeNode*)cursorNode;

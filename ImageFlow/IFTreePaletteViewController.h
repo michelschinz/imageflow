@@ -1,5 +1,5 @@
 //
-//  IFTreeViewController.h
+//  IFTreePaletteViewController.h
 //  ImageFlow
 //
 //  Created by Michel Schinz on 13.11.06.

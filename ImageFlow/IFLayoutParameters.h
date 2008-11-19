@@ -24,7 +24,8 @@
   CGColorRef connectorLabelColor;
   float connectorArrowSize;
   
-  CGColorRef displayedImageBackgroundColor;
+  CGColorRef displayedImageUnlockedBackgroundColor;
+  CGColorRef displayedImageLockedBackgroundColor;
   CGColorRef cursorColor;
   float cursorWidth;
   float selectionWidth;
@@ -51,7 +52,8 @@
 @property(readonly) CGColorRef connectorLabelColor;
 @property(readonly) float connectorArrowSize;
 
-@property(readonly) CGColorRef displayedImageBackgroundColor;
+@property(readonly) CGColorRef displayedImageUnlockedBackgroundColor;
+@property(readonly) CGColorRef displayedImageLockedBackgroundColor;
 @property(readonly) CGColorRef cursorColor;
 @property(readonly) float cursorWidth;
 @property(readonly) float selectionWidth;

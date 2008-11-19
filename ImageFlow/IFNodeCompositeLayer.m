@@ -7,7 +7,6 @@
 //
 
 #import "IFNodeCompositeLayer.h"
-#import "IFDisplayedImageLayer.h"
 #import "IFNodeLayer.h"
 #import "IFLayoutParameters.h"
 
@@ -35,7 +34,9 @@ typedef enum {
   
   CALayer* baseLayer = [IFNodeLayer layerForNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar];
   
-  CALayer* displayedImageLayer = [IFDisplayedImageLayer displayedImageLayer];
+  // Displayed image indicator
+  CALayer* displayedImageLayer = [CALayer layer];
+  displayedImageLayer.backgroundColor = layoutParameters.displayedImageUnlockedBackgroundColor;
   displayedImageLayer.frame = CGRectInset(baseLayer.frame, -25, 0); // TODO: use a parameter in the layout parameters
   displayedImageLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   displayedImageLayer.hidden = YES;

@@ -36,6 +36,8 @@
   IFDocument* document;
   IFVariable* canvasBoundsVar;
 
+  IBOutlet NSButton* viewLockButton;
+  
   // Cursors and selection
   IFSplittableTreeCursorPair* cursors;
   IFTreeCursorPair* visualisedCursor;
