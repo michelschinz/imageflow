@@ -62,6 +62,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
 
   [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
+  [self addObserver:self forKeyPath:@"visualisedCursor.node" options:0 context:IFVisualisedCursorDidChangeContext];
   [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
   [self addObserver:self forKeyPath:@"visualisedCursor.isViewLocked" options:0 context:IFVisualisedCursorDidChangeContext];
 
@@ -72,6 +73,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   [self removeObserver:self forKeyPath:@"visualisedCursor.isViewLocked"];
   [self removeObserver:self forKeyPath:@"visualisedCursor.viewLockedNode"];
+  [self removeObserver:self forKeyPath:@"visualisedCursor.node"];
 
   if (document != nil) {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:IFTreeChangedNotification object:document];
@@ -990,8 +992,6 @@ static enum {
 
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 {
-  if (newCursorNode == self.cursorNode)
-    return;
   [cursors setTree:document.tree node:newCursorNode];
 }
 

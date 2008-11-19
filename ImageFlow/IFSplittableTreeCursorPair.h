@@ -10,7 +10,10 @@
 
 #import "IFUnsplittableTreeCursorPair.h"
 
-@interface IFSplittableTreeCursorPair : IFUnsplittableTreeCursorPair {
+@interface IFSplittableTreeCursorPair : IFTreeCursorPair {
+  IFTree* tree;
+  IFTreeNode* node;
+  
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
   

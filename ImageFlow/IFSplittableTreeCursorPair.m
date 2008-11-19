@@ -9,6 +9,8 @@
 #import "IFSplittableTreeCursorPair.h"
 
 @interface IFSplittableTreeCursorPair ()
+@property(retain) IFTree* tree;
+@property(retain) IFTreeNode* node;
 @property(retain) IFTree* viewLockedTree;
 @property(retain) IFTreeNode* viewLockedNode;
 @property(retain) NSAffineTransform* editViewTransform;
@@ -29,12 +31,15 @@
   OBJC_RELEASE(editViewTransform);
   OBJC_RELEASE(viewLockedNode);
   OBJC_RELEASE(viewLockedTree);
+  OBJC_RELEASE(node);
+  OBJC_RELEASE(tree);
   [super dealloc];
 }
 
 - (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode;
 {
-  [super setTree:newTree node:newNode];
+  self.tree = newTree;
+  self.node = newNode;
   if (!isViewLocked) {
     self.viewLockedTree = newTree;
     self.viewLockedNode = newNode;
@@ -42,6 +47,7 @@
   [self updateTransforms];
 }
 
+@synthesize tree, node;
 @synthesize viewLockedTree, viewLockedNode;
 @synthesize isViewLocked;
 
