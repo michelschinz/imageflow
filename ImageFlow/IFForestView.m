@@ -19,6 +19,7 @@
 #import "IFLayoutParameters.h"
 #import "IFVariableKVO.h"
 #import "IFLayerGeometry.h"
+#import "IFDragBadgeCreator.h"
 
 @interface IFForestView ()
 - (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
@@ -373,8 +374,15 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
     
     isCurrentDragLocal = NO;
+    
     IFNodeLayer* nodeLayer = (IFNodeLayer*)draggedLayer.baseLayer;
-    [self dragImage:nodeLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+    NSImage* dragImage = nodeLayer.dragImage;
+    unsigned nodesCount = [self.selectedNodes count];
+    if (nodesCount > 1) {
+      IFDragBadgeCreator* badgeCreator = [IFDragBadgeCreator sharedCreator];
+      dragImage = [badgeCreator addBadgeToImage:dragImage count:nodesCount];
+    }
+    [self dragImage:dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
   }
 }
 
@@ -916,7 +924,7 @@ static enum {
     }
   }
   [viewLockButton setHidden:YES];
-}  
+}
 
 - (void)updateCursorLayers;
 {

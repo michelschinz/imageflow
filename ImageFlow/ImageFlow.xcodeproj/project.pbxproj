@@ -10,6 +10,10 @@
 		775DFF38067A968500C5B868 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		8D15AC310486D014006FF6A4 /* IFDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* IFDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		FA001F7C0ED419A00016630E /* dragBadge1-2.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA001F780ED419A00016630E /* dragBadge1-2.tiff */; };
+		FA001F7D0ED419A00016630E /* dragBadge3.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA001F790ED419A00016630E /* dragBadge3.tiff */; };
+		FA001F7E0ED419A00016630E /* dragBadge4.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA001F7A0ED419A00016630E /* dragBadge4.tiff */; };
+		FA001F7F0ED419A00016630E /* dragBadge5.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA001F7B0ED419A00016630E /* dragBadge5.tiff */; };
 		FA0079E80CA53D9900E7B2D0 /* IFTreeNodeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */; };
 		FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA033C780ACD647500D2775B /* libcurses.dylib */; };
 		FA0606240914B1FF002A2527 /* IFExpressionVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */; };
@@ -113,6 +117,7 @@
 		FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */; };
 		FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */; };
 		FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */; };
+		FAA3C44D0ED40F3C0015BD95 /* IFDragBadgeCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA3C44C0ED40F3C0015BD95 /* IFDragBadgeCreator.m */; };
 		FAA5901C0E66D49100E1D52D /* IFConnectorHighlightLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA5901B0E66D49100E1D52D /* IFConnectorHighlightLayer.m */; };
 		FAB179FC0E4C862F008BEC70 /* IFLayerSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB179FB0E4C862F008BEC70 /* IFLayerSet.m */; };
 		FAB17A050E4C8872008BEC70 /* IFLayerSetExplicit.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */; };
@@ -260,6 +265,10 @@
 		5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFUnsharpMaskFilter.nib; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* ImageFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA001F780ED419A00016630E /* dragBadge1-2.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "dragBadge1-2.tiff"; sourceTree = "<group>"; };
+		FA001F790ED419A00016630E /* dragBadge3.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = dragBadge3.tiff; sourceTree = "<group>"; };
+		FA001F7A0ED419A00016630E /* dragBadge4.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = dragBadge4.tiff; sourceTree = "<group>"; };
+		FA001F7B0ED419A00016630E /* dragBadge5.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = dragBadge5.tiff; sourceTree = "<group>"; };
 		FA0079E50CA53D9900E7B2D0 /* IFTreeNodeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeFilter.h; sourceTree = "<group>"; };
 		FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeFilter.m; sourceTree = "<group>"; };
 		FA033C780ACD647500D2775B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = /usr/lib/libcurses.dylib; sourceTree = "<absolute>"; };
@@ -421,6 +430,8 @@
 		FAA2AF2B08FFA1750055AFDD /* IFSavePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSavePanelController.m; sourceTree = "<group>"; };
 		FAA2AFA108FFAB710055AFDD /* IFDirectoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDirectoryManager.h; sourceTree = "<group>"; };
 		FAA2AFA208FFAB710055AFDD /* IFDirectoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDirectoryManager.m; sourceTree = "<group>"; };
+		FAA3C44B0ED40F3C0015BD95 /* IFDragBadgeCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFDragBadgeCreator.h; sourceTree = "<group>"; };
+		FAA3C44C0ED40F3C0015BD95 /* IFDragBadgeCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFDragBadgeCreator.m; sourceTree = "<group>"; };
 		FAA5901A0E66D49100E1D52D /* IFConnectorHighlightLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConnectorHighlightLayer.h; sourceTree = "<group>"; };
 		FAA5901B0E66D49100E1D52D /* IFConnectorHighlightLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConnectorHighlightLayer.m; sourceTree = "<group>"; };
 		FAA8D2BA0E7107EE00873FA0 /* IFOutputConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFOutputConnectorLayer.h; sourceTree = "<group>"; };
@@ -1095,6 +1106,10 @@
 		FA68E173092E04EF009D02CB /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FA001F780ED419A00016630E /* dragBadge1-2.tiff */,
+				FA001F790ED419A00016630E /* dragBadge3.tiff */,
+				FA001F7A0ED419A00016630E /* dragBadge4.tiff */,
+				FA001F7B0ED419A00016630E /* dragBadge5.tiff */,
 				FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */,
 				FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */,
 				FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */,
@@ -1158,6 +1173,8 @@
 				FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */,
 				FA8B016A0E87854000E3679C /* IFLayoutParameters.h */,
 				FA8B016B0E87854000E3679C /* IFLayoutParameters.m */,
+				FAA3C44B0ED40F3C0015BD95 /* IFDragBadgeCreator.h */,
+				FAA3C44C0ED40F3C0015BD95 /* IFDragBadgeCreator.m */,
 				FAB17A560E4CA703008BEC70 /* Layers */,
 				FAB17A570E4CA70E008BEC70 /* Layer sets */,
 			);
@@ -1666,6 +1683,10 @@
 				FA2644DF0E13ACDB00701326 /* IFTreeView.xib in Resources */,
 				FA9923B90E13ECFA004BDED9 /* IFImageView.xib in Resources */,
 				FA9924380E140679004BDED9 /* MainMenu.xib in Resources */,
+				FA001F7C0ED419A00016630E /* dragBadge1-2.tiff in Resources */,
+				FA001F7D0ED419A00016630E /* dragBadge3.tiff in Resources */,
+				FA001F7E0ED419A00016630E /* dragBadge4.tiff in Resources */,
+				FA001F7F0ED419A00016630E /* dragBadge5.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1818,6 +1839,7 @@
 				FAEEBAF60EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m in Sources */,
 				FAEEBAF90EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m in Sources */,
 				FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */,
+				FAA3C44D0ED40F3C0015BD95 /* IFDragBadgeCreator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

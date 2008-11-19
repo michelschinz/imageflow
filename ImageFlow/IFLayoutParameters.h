@@ -34,6 +34,9 @@
   
   CGColorRef highlightBackgroundColor;
   CGColorRef highlightBorderColor;
+  
+  NSFont* dragBadgeFont;
+  float dragBadgeFontHeight;
 }
 
 + (IFLayoutParameters*)sharedLayoutParameters;
@@ -62,5 +65,8 @@
 
 @property(readonly) CGColorRef highlightBackgroundColor;
 @property(readonly) CGColorRef highlightBorderColor;
+
+@property(readonly) NSFont* dragBadgeFont;
+@property(readonly) float dragBadgeFontHeight;
 
 @end

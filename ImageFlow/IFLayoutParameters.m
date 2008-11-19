@@ -52,6 +52,9 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
   highlightBackgroundColor = CGColorCreateGenericRGB(0, 0, 1, 0.8);
   highlightBorderColor = CGColorCreateGenericRGB(0, 0, 1, 1.0);
   
+  dragBadgeFont = [[NSFont fontWithName:@"LucidaGrande-Bold" size:11.0] retain];
+  dragBadgeFontHeight = [layoutManager defaultLineHeightForFont:dragBadgeFont];
+  
   return self;
 }
 
@@ -71,5 +74,7 @@ static IFLayoutParameters* sharedLayoutParameters = nil;
 @synthesize templateLabelColor;
 
 @synthesize highlightBackgroundColor, highlightBorderColor;
+
+@synthesize dragBadgeFont, dragBadgeFontHeight;
 
 @end
