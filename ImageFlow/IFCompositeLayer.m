@@ -46,19 +46,27 @@
   return nil;
 }
 
+- (CALayer*)cursorLayer;
+{
+  return nil;
+}
+
 - (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
 {
   IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  CALayer* baseLayer = self.baseLayer;
+  CALayer* cursorLayer = self.cursorLayer;
   switch (newIndicator) {
     case IFLayerCursorIndicatorNone:
-      baseLayer.borderWidth = 0;
+      cursorLayer.hidden = YES;
       break;
     case IFLayerCursorIndicatorCursor:
-      baseLayer.borderWidth = layoutParameters.cursorWidth;
+      cursorLayer.hidden = NO;
+      cursorLayer.borderWidth = layoutParameters.cursorWidth;
       break;
     case IFLayerCursorIndicatorSelection:
-      baseLayer.borderWidth = layoutParameters.selectionWidth;
+      cursorLayer.hidden = NO;
+      cursorLayer.borderWidth = layoutParameters.selectionWidth;
+      break;
   }
 }
 
