@@ -21,7 +21,7 @@
 
 @implementation IFCropFilter
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
@@ -29,10 +29,10 @@
       [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
                                returnType:[IFImageType imageRGBAType]]] retain];
   }
-  return types;
+  return (arity == 1) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -41,7 +41,7 @@
       [IFVariableExpression expressionWithName:@"rectangle"],
       nil]] retain];
   }
-  return exprs;
+  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

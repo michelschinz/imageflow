@@ -54,7 +54,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 + (id)ghostTreeWithArity:(unsigned)arity;
 {
   IFTree* tree = [self tree];
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:arity];
+  IFTreeNode* ghost = [IFTreeNode ghostNode];
   [tree addNode:ghost];
   for (unsigned i = 0; i < arity; ++i) {
     IFTreeNode* holeParent = [IFTreeNodeHole hole];
@@ -117,7 +117,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (unsigned)parentsCountOfNode:(IFTreeNode*)node;
 {
-  return [[self parentsOfNode:node] count];
+  return [graph inDegree:node];
 }
 
 - (IFTreeNode*)childOfNode:(IFTreeNode*)node;
@@ -394,7 +394,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   if (sortedNodes == nil)
     return NO; // cyclic graph
   NSArray* sortedNodesNoRoot = [sortedNodes subarrayWithRange:NSMakeRange(0,[sortedNodes count] - 1)];
-  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodesNoRoot) withPotentialTypes:[[sortedNodesNoRoot collect] potentialTypes]];
+  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:[sortedNodesNoRoot count]];
+  for (IFTreeNode* node in sortedNodesNoRoot)
+    [potentialTypes addObject:[node potentialTypesForArity:[self parentsCountOfNode:node]]];
+  return [typeChecker checkDAG:serialiseSortedNodes(cloneWithoutAliases, sortedNodesNoRoot) withPotentialTypes:potentialTypes];
 }
 
 - (void)configureNodes;
@@ -409,7 +412,11 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
   const unsigned nodesCount = [sortedNodes count];
-  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases,sortedNodes) withPotentialTypes:[[sortedNodes collect] potentialTypes]];
+  
+  NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
+  for (IFTreeNode* node in sortedNodes)
+    [potentialTypes addObject:[node potentialTypesForArity:[self parentsCountOfNode:node]]];
+  NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases, sortedNodes) withPotentialTypes:potentialTypes];
 
   NSMutableDictionary* nodeExpressions = [createMutableDictionaryWithRetainedKeys() autorelease];
   for (unsigned i = 0; i < nodesCount; ++i) {
@@ -511,7 +518,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (IFTreeNode*)addGhostTreeWithArity:(unsigned)arity;
 {
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:arity];
+  IFTreeNode* ghost = [IFTreeNode ghostNode];
   [self addNode:ghost];
 
   for (int i = 0; i < arity; ++i) {
@@ -524,7 +531,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (IFTreeNode*)insertNewGhostNodeAsChildOf:(IFTreeNode*)node;
 {
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:1];
+  IFTreeNode* ghost = [IFTreeNode ghostNode];
   [graph addNode:ghost];
 
   IFTreeEdge* parentOutEdge = [self outgoingEdgeForNode:node];
@@ -539,7 +546,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (IFTreeNode*)insertNewGhostNodeAsParentOf:(IFTreeNode*)node;
 {
   NSSet* inEdges = [graph incomingEdgesForNode:node];
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:[inEdges count]];
+  IFTreeNode* ghost = [IFTreeNode ghostNode];
   [graph addNode:ghost];
 
   for (IFTreeEdge* inEdge in inEdges) {
@@ -549,7 +556,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   [graph addEdge:[IFTreeEdge edgeWithTargetIndex:0] fromNode:ghost toNode:node];
   for (int i = 1; i < [inEdges count]; ++i) {
-    IFTreeNode* ghostParent = [IFTreeNode ghostNodeWithInputArity:0];
+    IFTreeNode* ghostParent = [IFTreeNode ghostNode];
     [graph addNode:ghostParent];
     [graph addEdge:[IFTreeEdge edgeWithTargetIndex:i] fromNode:ghostParent toNode:node];
   }
@@ -625,7 +632,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   } else if (holesCount > parentsCount) {
     // more holes than parents, plug them with ghosts
     for (int i = parentsCount; i < holesCount; ++i) {
-      IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:0];
+      IFTreeNode* ghost = [IFTreeNode ghostNode];
       [self addNode:ghost];
       [self plugHole:[treeHoles objectAtIndex:i] withNode:ghost];
     }

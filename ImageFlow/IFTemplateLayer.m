@@ -43,7 +43,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   IFTree* templateTree = treeTemplate.tree;
   unsigned parentsCount = templateTree.holesCount;
   IFTree* hostTree = [IFTree tree];
-  IFTreeNode* ghost = [IFTreeNode ghostNodeWithInputArity:parentsCount];
+  IFTreeNode* ghost = [IFTreeNode ghostNode];
   [hostTree addNode:ghost];
   for (int j = 0; j < parentsCount; ++j) {
     IFTreeNode* parent = [IFTreeNode universalSourceWithIndex:j];

@@ -18,7 +18,7 @@
   IFExpression* expression;
 }
 
-+ (IFTreeNode*)ghostNodeWithInputArity:(int)inputArity;
++ (IFTreeNode*)ghostNode;
 + (IFTreeNode*)universalSourceWithIndex:(unsigned)index;
 
 // MARK: Properties
@@ -34,9 +34,7 @@
 @property(readonly) IFExpression* expression;
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
-@property(readonly) int inputArity;
-@property(readonly) int outputArity;
-@property(readonly) NSArray* potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
 - (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;

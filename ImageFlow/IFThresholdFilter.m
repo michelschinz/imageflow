@@ -18,7 +18,7 @@
 
 @implementation IFThresholdFilter
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
@@ -29,10 +29,10 @@
                                returnType:[IFImageType maskType]],
       nil] retain];
   }
-  return types;
+  return (arity == 1) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -47,7 +47,7 @@
         nil],
       nil] retain];
   }
-  return exprs;
+  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

@@ -17,7 +17,7 @@
 
 @implementation IFInvertFilter
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
@@ -28,10 +28,10 @@
                                returnType:[IFImageType maskType]],
       nil] retain];      
   }
-  return types;
+  return (arity == 1) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -40,7 +40,7 @@
       [IFOperatorExpression expressionWithOperatorNamed:@"invert-mask" operands:[IFParentExpression parentExpressionWithIndex:0],nil],
       nil] retain];
   }
-  return exprs;
+  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

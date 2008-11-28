@@ -161,7 +161,12 @@
 
 - (unsigned)inDegree:(id)node;
 {
-  return [[self incomingEdgesForNode:node] count];
+  unsigned degree = 0;
+  for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
+    if ([edge toNode] == node)
+      ++degree;
+  }
+  return degree;
 }
 
 - (NSSet*)outgoingEdgesForNode:(id)node;

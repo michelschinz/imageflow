@@ -48,11 +48,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return original;
 }
 
-- (int)inputArity
-{
-  return 0;
-}
-
 // MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;

@@ -33,7 +33,7 @@ static NSArray* parentNames = nil;
   parentNames = [[NSArray arrayWithObjects:@"background",@"foreground",nil] retain];
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
@@ -41,10 +41,10 @@ static NSArray* parentNames = nil;
       [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType imageRGBAType],nil]
                                returnType:[IFImageType imageRGBAType]]] retain];
   }
-  return types;
+  return (arity == 2) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -59,7 +59,7 @@ static NSArray* parentNames = nil;
                              withForeground:trOpFgd
                                      inMode:[IFVariableExpression expressionWithName:@"mode"]]] retain];
   }
-  return exprs;
+  return (arity == 2) ? exprs : [NSArray array];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

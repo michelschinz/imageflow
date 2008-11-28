@@ -21,16 +21,16 @@
 
 @implementation IFBitmapDrawingSource
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil)
     // TODO add Mask
     types = [[NSArray arrayWithObject:[IFImageType imageRGBAType]] retain];
-  return types;
+  return (arity == 0) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -40,7 +40,7 @@
     IFExpression* fg = [IFVariableExpression expressionWithName:@"drawing"];
     exprs = [[NSArray arrayWithObject:[IFOperatorExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]] retain];
   }
-  return exprs;
+  return (arity == 0) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

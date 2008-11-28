@@ -17,15 +17,15 @@
 
 @implementation IFFileSource
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil)
     types = [[NSArray arrayWithObject:[IFImageType imageRGBAType]] retain];
-  return types;
+  return (arity == 0) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -43,7 +43,7 @@
                                             [IFVariableExpression expressionWithName:@"defaultResolutionY"],
                                             nil]]] retain];
   }
-  return exprs;
+  return (arity == 0) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

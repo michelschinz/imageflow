@@ -26,6 +26,6 @@
 // MARK: -
 // MARK: PROTECTED
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 
 @end

@@ -21,24 +21,22 @@
   return YES;
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
-  unsigned inputArity = [[settings valueForKey:@"inputArity"] unsignedIntValue];
-  if (inputArity == 0)
+  if (arity == 0)
     return [NSArray arrayWithObject:[IFTypeVar typeVarWithIndex:0]];
   else {
-    NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:inputArity];
-    for (int i = 1; i <= inputArity; ++i)
+    NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
+    for (int i = 1; i <= arity; ++i)
       [argTypes addObject:[IFTypeVar typeVarWithIndex:i]];
     return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:[IFTypeVar typeVarWithIndex:0]]];
   }
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  unsigned inputArity = [[settings valueForKey:@"inputArity"] unsignedIntValue];
-  NSMutableArray* operands = [NSMutableArray arrayWithCapacity:inputArity];
-  for (unsigned i = 0; i < inputArity; ++i)
+  NSMutableArray* operands = [NSMutableArray arrayWithCapacity:arity];
+  for (unsigned i = 0; i < arity; ++i)
     [operands addObject:[IFParentExpression parentExpressionWithIndex:i]];
   return [NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"nop"] operands:operands]];
 }

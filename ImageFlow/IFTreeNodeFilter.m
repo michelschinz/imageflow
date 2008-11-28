@@ -59,7 +59,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return settings;
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
@@ -80,7 +80,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 {
-  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressions] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
+  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressionsForArity:[altParentExpressions count]] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
   IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:altParentExpressions];
   return expr2;
 }
@@ -194,7 +194,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 // MARK: -
 // MARK: PROTECTED
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;

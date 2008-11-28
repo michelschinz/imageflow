@@ -33,7 +33,7 @@ static IFConstantExpression* maskColor = nil;
   maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
@@ -41,10 +41,10 @@ static IFConstantExpression* maskColor = nil;
       [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil]
                                returnType:[IFImageType imageRGBAType]]] retain];
   }
-  return types;
+  return (arity == 2) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
@@ -53,7 +53,7 @@ static IFConstantExpression* maskColor = nil;
       [IFParentExpression parentExpressionWithIndex:1],
       nil]] retain];
   }
-  return exprs;
+  return (arity == 2) ? exprs : [NSArray array];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

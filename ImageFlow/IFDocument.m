@@ -35,7 +35,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   typeChecker = [IFTypeChecker sharedInstance];
 
   tree = [[IFTree tree] retain];
-  [tree addNode:[IFTreeNode ghostNodeWithInputArity:0]];
+  [tree addNode:[IFTreeNode ghostNode]];
   [self ensureGhostNodes];
   [tree setPropagateNewParentExpressions:YES];
   
@@ -307,7 +307,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     IFTreeNode* root = [roots objectAtIndex:i];
     if ([root isGhost])
       hasGhostColumn |= ([tree parentsCountOfNode:root] == 0);
-    else if ([root outputArity] == 1)
+    else if (YES) // TODO: check that tree has an image output
       [tree insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:root];
   }
   if (!hasGhostColumn)

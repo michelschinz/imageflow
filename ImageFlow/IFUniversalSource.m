@@ -30,15 +30,15 @@ static NSArray* sourceFileNames;
   sourceFileNames = [fileNames retain];
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil)
     types = [[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil] retain];
-  return types;
+  return (arity == 0) ? types : [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressions;
+- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   // TODO use better images for masks
   unsigned fileNameIndex = [[settings valueForKey:@"index"] unsignedIntValue];
@@ -56,13 +56,16 @@ static NSArray* sourceFileNames;
     [IFConstantExpression expressionWithInt:1],
     nil];
   
-  return [NSArray arrayWithObjects:
-    loadExpression,
-    [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
-      loadExpression,
-      [IFConstantExpression expressionWithInt:4],
-      nil],
-    nil];
+  if (arity == 0)
+    return [NSArray arrayWithObjects:
+            loadExpression,
+            [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
+             loadExpression,
+             [IFConstantExpression expressionWithInt:4],
+             nil],
+            nil];
+  else
+    return [NSArray array];
 }
 
 @end

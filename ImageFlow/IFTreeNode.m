@@ -19,11 +19,9 @@
 
 @implementation IFTreeNode
 
-+ (IFTreeNode*)ghostNodeWithInputArity:(int)inputArity;
++ (IFTreeNode*)ghostNode;
 {
-  IFEnvironment* env = [IFEnvironment environment];
-  [env setValue:[NSNumber numberWithInt:inputArity] forKey:@"inputArity"];
-  return [IFTreeNodeFilter nodeWithFilterNamed:@"IFGhostFilter" settings:env];
+  return [IFTreeNodeFilter nodeWithFilterNamed:@"IFGhostFilter" settings:[IFEnvironment environment]];
 }
 
 + (IFTreeNode*)universalSourceWithIndex:(unsigned)index;
@@ -88,7 +86,7 @@
   return nil;
 }
 
-- (NSArray*)potentialTypes;
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
@@ -102,17 +100,6 @@
 - (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
-}
-
-- (int)inputArity;
-{
-  return [[[self potentialTypes] objectAtIndex:0] arity];
-}
-
-- (int)outputArity;
-{
-  // TODO
-  return 1;
 }
 
 // MARK: Tree view support
