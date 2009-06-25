@@ -19,15 +19,14 @@
 
 @implementation IFGaussianBlurFilter
 
-// FIXME: the type should be Image['a] => Image['a], not 'a => 'a as now
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;
   if (types == nil) {
-    IFTypeVar* var = [IFTypeVar typeVarWithIndex:0];
+    IFImageType* imageType = [IFImageType imageTypeWithPixelType:[IFTypeVar typeVarWithIndex:0]];
     types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:var]
-                               returnType:var]] retain];
+      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
+                               returnType:imageType]] retain];
   }
   return (arity == 1) ? types : [NSArray array];
 }
