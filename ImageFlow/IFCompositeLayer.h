@@ -11,8 +11,7 @@
 #import "IFTreeNode.h"
 
 @protocol IFBaseLayer
-- (IFTreeNode*)node;
-@property float forcedFrameWidth;
+@property(readonly) IFTreeNode* node;
 @end
 
 typedef enum {
@@ -32,10 +31,10 @@ typedef enum {
 @property(readonly) CALayer* displayedImageLayer; // optional (can be nil)
 @property(readonly) CALayer<IFBaseLayer>* baseLayer;
 @property(readonly) CALayer* cursorLayer; // optional (can be nil)
+@property(readonly) CALayer* highlightLayer;
 @property IFLayerCursorIndicator cursorIndicator;
 @property BOOL highlighted;
 
 @property(readonly) IFTreeNode* node;
-@property float forcedFrameWidth;
 
 @end

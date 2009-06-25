@@ -8,19 +8,21 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFLayoutParameters.h"
+
 @class IFPaletteLayoutManager;
 @protocol IFPaletteLayoutManagerDelegate
 - (void)layoutManager:(IFPaletteLayoutManager*)layoutManager didLayoutSublayersOfLayer:(CALayer*)layer;
 @end
 
 @interface IFPaletteLayoutManager : NSObject {
-  float columnWidth;
+  IFLayoutParameters* layoutParameters;
   id<IFPaletteLayoutManagerDelegate> delegate;
 }
 
 + (id)paletteLayoutManager;
 
-@property float columnWidth;
+@property(retain) IFLayoutParameters* layoutParameters;
 @property(assign) id<IFPaletteLayoutManagerDelegate> delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)layer;

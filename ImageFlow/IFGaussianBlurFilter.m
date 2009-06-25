@@ -19,6 +19,7 @@
 
 @implementation IFGaussianBlurFilter
 
+// FIXME: the type should be Image['a] => Image['a], not 'a => 'a as now
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
   static NSArray* types = nil;

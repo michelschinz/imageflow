@@ -44,11 +44,9 @@ static IFDragBadgeCreator* sharedCreator = nil;
 
 - (NSImage*)addBadgeToImage:(NSImage*)baseImage count:(unsigned)count;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  
   NSString* countStr = [NSString stringWithFormat:@"%d", count];
   NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                              layoutParameters.dragBadgeFont, NSFontAttributeName,
+                              [IFLayoutParameters dragBadgeFont], NSFontAttributeName,
                               [NSColor whiteColor], NSForegroundColorAttributeName,
                               nil];
   NSAttributedString* countAttrStr = [[[NSAttributedString alloc] initWithString:countStr attributes:attributes] autorelease];

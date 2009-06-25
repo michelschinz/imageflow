@@ -11,10 +11,6 @@
 #import "IFInputConnectorLayer.h"
 #import "IFOutputConnectorLayer.h"
 
-@interface IFConnectorLayer (Private)
-- (void)updateOutlinePath;
-@end
-
 @implementation IFConnectorLayer
 
 + (id)connectorLayerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
@@ -31,70 +27,22 @@
     return nil;
   
   node = [theNode retain];
-  kind = theKind;
-
-  self.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   self.needsDisplayOnBoundsChange = YES;
-  
   return self;
 }
 
 - (void)dealloc;
 {
   OBJC_RELEASE(node);
-  CGPathRelease(outlinePath);
   [super dealloc];
 }
 
 @synthesize node;
-@synthesize forcedFrameWidth;
 
-@synthesize kind;
-
-- (CGPathRef)outlinePath;
-{
-  return outlinePath;
-}
-
-- (void)setOutlinePath:(CGPathRef)newOutlinePath;
-{
-  if (newOutlinePath == outlinePath)
-    return;
-  CGPathRelease(outlinePath);
-  outlinePath = CGPathRetain(newOutlinePath);
-}
-
-- (CGSize)preferredFrameSize;
-{
-  [self updateOutlinePath];
-  return CGPathGetBoundingBox(outlinePath).size;
-}
-
-- (void)drawInContext:(CGContextRef)context;
-{
-  [self updateOutlinePath];
-
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  CGContextAddPath(context, outlinePath);
-  CGContextSetFillColorWithColor(context, layoutParameters.connectorColor);
-  CGContextFillPath(context);
-}
-
-- (CGPathRef)createOutlinePath;
+- (IFConnectorKind)kind;
 {
   [self doesNotRecognizeSelector:_cmd];
-  return NULL;
-}
-
-@end
-
-@implementation IFConnectorLayer (Private)
-
-- (void)updateOutlinePath;
-{
-  CGPathRef newOutlinePath = [self createOutlinePath];
-  self.outlinePath = newOutlinePath;
-  CGPathRelease(newOutlinePath);
+  return IFConnectorKindInput;
 }
 
 @end

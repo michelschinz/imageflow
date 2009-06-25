@@ -153,6 +153,16 @@
   return [(NSNumber*)object floatValue];
 }
 
+- (BOOL)isArray;
+{
+  return [object isKindOfClass:[NSArray class]];
+}
+
+- (BOOL)isImage;
+{
+  return NO;
+}
+
 - (BOOL)isError;
 {
   return NO;
@@ -173,7 +183,7 @@
   return [other isKindOfClass:[IFConstantExpression class]] && [object isEqual:[other objectValue]];
 }
 
-#pragma mark XML input/output
+// MARK: XML input/output
 
 - (id)initWithXML:(NSXMLElement*)xml;
 {
@@ -190,7 +200,7 @@
   return elem;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -202,13 +212,24 @@
   [encoder encodeObject:object forKey:@"object"];
 }
 
-#pragma mark Caml representation
+// MARK: Caml representation
 
 static void expressionWithCamlValue(value camlValue, IFConstantExpression** result) {
   CAMLparam1(camlValue);
   CAMLlocal1(contents);
   IFExpressionTag tag = Tag_val(camlValue);
   switch (tag) {
+    case IFExpressionTag_Array: {
+      contents = Field(camlValue, 0);
+      NSMutableArray* array = [NSMutableArray arrayWithCapacity:Wosize_val(contents)];
+      for (int i = 0; i < Wosize_val(contents); ++i) {
+        IFConstantExpression* elemExpression;
+        expressionWithCamlValue(Field(contents, i), &elemExpression);
+        [array addObject:elemExpression];
+      }
+      *result = [IFConstantExpression expressionWithArray:array];
+    } break;
+      
     case IFExpressionTag_Mask:
     case IFExpressionTag_Image: {
       static value* imageToIFImageClosure = NULL;
@@ -242,8 +263,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     } break;
       
     case IFExpressionTag_String:
-      *result = [IFConstantExpression expressionWithString:[NSString stringWithCString:String_val(Field(camlValue, 0))
-                                                                              encoding:NSISOLatin1StringEncoding]];
+      *result = [IFConstantExpression expressionWithString:[NSString stringWithCString:String_val(Field(camlValue, 0)) encoding:NSISOLatin1StringEncoding]];
       break;
     case IFExpressionTag_Num:
       *result = [IFConstantExpression expressionWithFloat:Double_val(Field(camlValue, 0))];
@@ -255,8 +275,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       *result = [IFConstantExpression expressionWithInt:Bool_val(Field(camlValue, 0))];
       break;
     case IFExpressionTag_Action:
-      NSLog(@"TODO action");
-      *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:@"not implemented yet"];
+      *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:@"not implemented yet"]; // TODO: action
       break;
     case IFExpressionTag_Error: {
       NSString* msg = (Field(camlValue, 0) == Val_int(0/*None*/))

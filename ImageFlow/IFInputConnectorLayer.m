@@ -9,22 +9,43 @@
 #import "IFInputConnectorLayer.h"
 #import "IFLayoutParameters.h"
 
+@interface IFInputConnectorLayer ()
+- (void)updatePath;
+@end
+
 @implementation IFInputConnectorLayer
 
-- (CGPathRef)createOutlinePath;
+- (IFConnectorKind)kind;
 {
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float margin = layoutParameters.nodeInternalMargin;
-  const float arrowSize = layoutParameters.connectorArrowSize;
+  return IFConnectorKindInput;
+}
+
+@synthesize width;
+
+- (void)setWidth:(float)newWidth;
+{
+  if (newWidth == width)
+    return;
+  width = newWidth;
+  [self updatePath];
+}
+
+// MARK: -
+// MARK: PRIVATE
+
+- (void)updatePath;
+{
+  const float margin = [IFLayoutParameters nodeInternalMargin];
+  const float arrowSize = [IFLayoutParameters connectorArrowSize];
   
-  CGMutablePathRef path = CGPathCreateMutable();
-  CGPathMoveToPoint(path, NULL, margin, 0);
-  CGPathAddLineToPoint(path, NULL, 0, arrowSize);
-  CGPathAddLineToPoint(path, NULL, forcedFrameWidth, arrowSize); // TODO: use actual bounds width
-  CGPathAddLineToPoint(path, NULL, forcedFrameWidth - margin, 0);
-  CGPathCloseSubpath(path);
+  CGMutablePathRef newPath = CGPathCreateMutable();
+  CGPathMoveToPoint(newPath, NULL, margin, 0);
+  CGPathAddLineToPoint(newPath, NULL, 0, arrowSize);
+  CGPathAddLineToPoint(newPath, NULL, width, arrowSize);
+  CGPathAddLineToPoint(newPath, NULL, width - margin, 0);
+  CGPathCloseSubpath(newPath);
   
-  return path;
+  self.path = newPath;
 }
 
 @end

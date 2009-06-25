@@ -15,7 +15,6 @@
 #import "IFVariable.h"
 
 @interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate, IFPaletteViewDelegate> {
-  IBOutlet NSObjectController* layoutParametersController;
   IBOutlet IFForestView* forestView;
   IBOutlet IFPaletteView* paletteView;
 
@@ -25,7 +24,6 @@
 }
 
 @property(retain) IFDocument* document;
-@property float columnWidth;
 @property(readonly) IFVariable* cursorsVar;
 
 // MARK: IFForestView delegate methods

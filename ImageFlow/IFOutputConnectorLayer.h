@@ -12,10 +12,11 @@
 
 @interface IFOutputConnectorLayer : IFConnectorLayer {
   CATextLayer* labelLayer; // not retained
+  float width;
   float leftReach, rightReach;
 }
 
 @property(retain) NSString* label;
-@property float leftReach, rightReach;
+@property float width, leftReach, rightReach;
 
 @end

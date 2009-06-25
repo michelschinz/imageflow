@@ -9,11 +9,13 @@
 #import "IFNodeLayer.h"
 #import "IFOperatorExpression.h"
 #import "IFErrorConstantExpression.h"
-#import "IFLayoutParameters.h"
+#import "IFImageOrMaskLayer.h"
+#import "IFStackLayer.h"
+#import "IFErrorLayer.h"
 
-@interface IFNodeLayer ()
-- (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
-- (void)teardownComponentLayers;
+@interface IFNodeLayer()
+- (void)setExpression:(IFExpression*)newUnevaluatedExpression;
+@property(readwrite, assign) CALayer<IFExpressionContentsLayer>* expressionLayer;
 @end
 
 @implementation IFNodeLayer
@@ -21,38 +23,69 @@
 static NSString* IFNodeLabelChangedContext = @"IFNodeLabelChangedContext";
 static NSString* IFNodeNameChangedContext = @"IFNodeNameChangedContext";
 static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedContext";
+static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedContext";
 
-+ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  return [[[self alloc] initWithNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar] autorelease];
+  return [[[self alloc] initWithNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
   if (![super init])
     return nil;
 
   node = [theNode retain];
   tree = [theTree retain];
+  layoutParameters = [theLayoutParameters retain];
+  canvasBounds = [theCanvasBoundsVar retain];
   
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  self.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-  self.cornerRadius = layoutParameters.nodeInternalMargin;
-  self.backgroundColor = layoutParameters.nodeBackgroundColor;
+  self.style = [IFLayoutParameters nodeLayerStyle];
   
-  self.borderColor = layoutParameters.cursorColor;
+  // Label
+  labelLayer = [CATextLayer layer];
+  labelLayer.font = [IFLayoutParameters labelFont];
+  labelLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
+  labelLayer.foregroundColor = [IFLayoutParameters nodeLabelColor];
+  labelLayer.alignmentMode = kCAAlignmentCenter;
+  labelLayer.truncationMode = kCATruncationMiddle;
+  [self addSublayer:labelLayer];
   
-  if (!node.isGhost)
-    [self setupComponentLayersWithCanvasBounds:theCanvasBoundsVar];
-
+  // Folding separator
+  foldingSeparatorLayer = [CALayer layer];
+  foldingSeparatorLayer.needsDisplayOnBoundsChange = YES;
+  foldingSeparatorLayer.delegate = self;
+  [self addSublayer:foldingSeparatorLayer];
+  
+  // Expression thumbnail
+  expressionLayer = nil;
+  
+  // Name
+  nameLayer = [CATextLayer layer];
+  nameLayer.font = [IFLayoutParameters labelFont];
+  nameLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
+  nameLayer.foregroundColor = labelLayer.foregroundColor;
+  nameLayer.alignmentMode = kCAAlignmentCenter;
+  nameLayer.truncationMode = kCATruncationMiddle;
+  [self addSublayer:nameLayer];
+  
+  [node addObserver:self forKeyPath:@"label" options:NSKeyValueObservingOptionInitial context:IFNodeLabelChangedContext];
+  [node addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionInitial context:IFNodeNameChangedContext];
+  [node addObserver:self forKeyPath:@"isFolded" options:NSKeyValueObservingOptionInitial context:IFNodeFoldingStateChangedContext];
+  [node addObserver:self forKeyPath:@"expression" options:NSKeyValueObservingOptionInitial context:IFNodeExpressionChangedContext];
+  
   return self;
 }
 
 - (void)dealloc;
 {
-  if (!node.isGhost)
-    [self teardownComponentLayers];
-
+  [node removeObserver:self forKeyPath:@"expression"];
+  [node removeObserver:self forKeyPath:@"isFolded"];
+  [node removeObserver:self forKeyPath:@"name"];
+  [node removeObserver:self forKeyPath:@"label"];
+  
+  OBJC_RELEASE(canvasBounds);
+  OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(tree);
   OBJC_RELEASE(node);
   [super dealloc];
@@ -60,69 +93,44 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
 
 @synthesize node;
 
-@synthesize forcedFrameWidth;
-- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
-{
-  forcedFrameWidth = newForcedFrameWidth;
-  thumbnailLayer.forcedFrameWidth = newForcedFrameWidth - 2.0 * [IFLayoutParameters sharedLayoutParameters].nodeInternalMargin;
-}
-
-@synthesize labelLayer, thumbnailLayer, nameLayer;
-
-- (CGSize)preferredFrameSize;
-{
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  float height;
-  if (node.isGhost) {
-    height = 20.0;  // TODO: use size obtained from NSCell's methods
-  } else {
-    height = 2.0 * layoutParameters.nodeInternalMargin;
-    if (nameLayer.string != nil)
-      height += [nameLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
-    if (!foldingSeparatorLayer.hidden)
-      height += [foldingSeparatorLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
-    height += [thumbnailLayer preferredFrameSize].height;
-    height += [labelLayer preferredFrameSize].height + layoutParameters.nodeInternalMargin;
-  }
-  
-  return CGSizeMake(forcedFrameWidth, height);
-}
+@synthesize labelLayer, expressionLayer, nameLayer;
 
 - (void)layoutSublayers;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float internalMargin = layoutParameters.nodeInternalMargin;
-  const float internalWidth = CGRectGetWidth(self.bounds) - 2.0 * internalMargin;
-  
+  const float internalMargin = [IFLayoutParameters nodeInternalMargin];
+
   const float x = internalMargin;
   float y = internalMargin;
+  const float expressionWidth = fmax(layoutParameters.thumbnailWidth, CGRectGetWidth(expressionLayer.bounds));
+  const float totalWidth = expressionWidth + 2.0 * internalMargin;
   
   if (nameLayer.string != nil) {
-    nameLayer.frame = CGRectMake(x, y, internalWidth, [nameLayer preferredFrameSize].height);
+    nameLayer.frame = CGRectMake(x, y, expressionWidth, nameLayer.preferredFrameSize.height);
     y += CGRectGetHeight(nameLayer.bounds) + internalMargin;
   }
   
-  thumbnailLayer.frame = (CGRect){ CGPointMake(x, y), [thumbnailLayer preferredFrameSize] };
-  y += CGRectGetHeight(thumbnailLayer.bounds) + internalMargin;
+  expressionLayer.position = CGPointMake(x + round((expressionWidth - CGRectGetWidth(expressionLayer.bounds)) / 2.0), y);
+  y += CGRectGetHeight(expressionLayer.bounds) + internalMargin;
   
-  foldingSeparatorLayer.frame = CGRectMake(0, y, CGRectGetWidth(self.bounds), 1.0);
+  foldingSeparatorLayer.frame = CGRectMake(0, y, totalWidth, 1.0);
   if (!foldingSeparatorLayer.hidden)
     y += CGRectGetHeight(foldingSeparatorLayer.bounds) + internalMargin;
   
-  labelLayer.frame = CGRectMake(x, y, internalWidth, [labelLayer preferredFrameSize].height);
+  labelLayer.frame = CGRectMake(x, y, expressionWidth, labelLayer.preferredFrameSize.height);
+  y += CGRectGetHeight(labelLayer.bounds) + internalMargin;
   
-  if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
-    [self.superlayer setNeedsLayout];
+  self.bounds = CGRectMake(0, 0, totalWidth, y);
+  [self.superlayer setNeedsLayout];
 }
 
 - (void)drawLayer:(CALayer*)layer inContext:(CGContextRef)ctx;
 {
-  assert(layer == foldingSeparatorLayer);
+  NSAssert(layer == foldingSeparatorLayer, @"unexpected layer");
 
   CGContextSetLineWidth(ctx, 1.0);
   CGFloat dash[] = { 1.0, 1.0 };
   CGContextSetLineDash(ctx, 0, dash, sizeof(dash) / sizeof(CGFloat));
-  CGContextSetStrokeColorWithColor(ctx, [IFLayoutParameters sharedLayoutParameters].backgroundColor);
+  CGContextSetStrokeColorWithColor(ctx, [IFLayoutParameters backgroundColor]);
   
   CGContextBeginPath(ctx);
   CGContextMoveToPoint(ctx, 0, 0);
@@ -170,12 +178,13 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
       labelLayer.string = node.label;
       labelLayer.opacity = 1.0;
     }
-    [self setNeedsLayout];
+    [self.superlayer setNeedsLayout];
   } else if (context == IFNodeLabelChangedContext) {
-    if (!node.isFolded)
-      labelLayer.string = node.label;
+    labelLayer.string = node.label;
   } else if (context == IFNodeNameChangedContext) {
     nameLayer.string = node.name;
+  } else if (context == IFNodeExpressionChangedContext) {
+    [self setExpression:node.expression];
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
@@ -184,53 +193,49 @@ static NSString* IFNodeFoldingStateChangedContext = @"IFNodeFoldingStateChangedC
 // MARK: -
 // MARK: PRIVATE
 
-- (void)setupComponentLayersWithCanvasBounds:(IFVariable*)canvasBoundsVar;
+- (void)setExpression:(IFExpression*)newUnevaluatedExpression;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  IFConstantExpression* newExpression = [[IFExpressionEvaluator sharedEvaluator] evaluateExpression:newUnevaluatedExpression];
   
-  // Label
-  labelLayer = [CATextLayer layer];
-  labelLayer.font = layoutParameters.labelFont;
-  labelLayer.fontSize = layoutParameters.labelFont.pointSize;
-  labelLayer.foregroundColor = layoutParameters.nodeLabelColor;
-  labelLayer.alignmentMode = kCAAlignmentCenter;
-  labelLayer.truncationMode = kCATruncationMiddle;
-  labelLayer.anchorPoint = CGPointZero;
-  [self addSublayer:labelLayer];
-
-  // Folding separator
-  foldingSeparatorLayer = [CALayer layer];
-  foldingSeparatorLayer.needsDisplayOnBoundsChange = YES;
-  foldingSeparatorLayer.anchorPoint = CGPointZero;
-  foldingSeparatorLayer.delegate = self;
-  [self addSublayer:foldingSeparatorLayer];
+  CALayer<IFExpressionContentsLayer>* currentExpressionLayer = self.expressionLayer;
+  CALayer<IFExpressionContentsLayer>* newExpressionLayer;
   
-  // Thumbnail
-  thumbnailLayer = [IFThumbnailLayer layerForNode:node canvasBounds:canvasBoundsVar];
-  [self addSublayer:thumbnailLayer];
-
-  // Name
-  nameLayer = [CATextLayer layer];
-  nameLayer.font = layoutParameters.labelFont;
-  nameLayer.fontSize = layoutParameters.labelFont.pointSize;
-  nameLayer.foregroundColor = labelLayer.foregroundColor;
-  nameLayer.alignmentMode = kCAAlignmentCenter;
-  nameLayer.truncationMode = kCATruncationMiddle;
-  nameLayer.anchorPoint = CGPointZero;
-  [self addSublayer:nameLayer];
+  if (newExpression.isImage) {
+    newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFImageOrMaskLayer class]])
+    ? currentExpressionLayer
+    : [IFImageOrMaskLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];
+  } else if (newExpression.isArray) {
+    newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFStackLayer class]])
+    ? currentExpressionLayer
+    : [IFStackLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];
+  } else if (newExpression.isError) {
+    IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)newExpression;
+    if (errorExpression.message != nil) {
+      newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFErrorLayer class]])
+      ? currentExpressionLayer
+      : [IFErrorLayer layer];
+    } else
+      newExpressionLayer = nil;
+  } else
+    NSAssert(NO, @"unexpected expression");
   
-  [node addObserver:self forKeyPath:@"label" options:NSKeyValueObservingOptionInitial context:IFNodeLabelChangedContext];
-  [node addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionInitial context:IFNodeNameChangedContext];
-  [node addObserver:self forKeyPath:@"isFolded" options:NSKeyValueObservingOptionInitial context:IFNodeFoldingStateChangedContext];
+  if (newExpressionLayer != nil)
+    [newExpressionLayer setExpression:newExpression];
+  self.expressionLayer = newExpressionLayer;
 }
 
-- (void)teardownComponentLayers;
+- (void)setExpressionLayer:(CALayer<IFExpressionContentsLayer>*)newExpressionLayer;
 {
-  [node removeObserver:self forKeyPath:@"isFolded"];
-  [node removeObserver:self forKeyPath:@"name"];
-  [node removeObserver:self forKeyPath:@"label"];
-  
-  // Note: sublayers will be removed automatically for us (trying to remove them here actually fails).
+  CALayer* currentExpressionLayer = self.expressionLayer;
+  if (newExpressionLayer == currentExpressionLayer)
+    return;
+  else if (currentExpressionLayer == nil)
+    [self addSublayer:newExpressionLayer];
+  else if (newExpressionLayer == nil)
+    [currentExpressionLayer removeFromSuperlayer];
+  else
+    [self replaceSublayer:currentExpressionLayer with:newExpressionLayer];
+  expressionLayer = newExpressionLayer;
 }
 
 @end

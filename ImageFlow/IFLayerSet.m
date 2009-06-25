@@ -61,10 +61,8 @@
 
 - (void)translateByX:(float)dx Y:(float)dy;
 {
-  for (CALayer* layer in self) {
-    CGPoint currPos = layer.position;
-    layer.position = CGPointMake(currPos.x + dx, currPos.y + dy);
-  }
+  for (CALayer* layer in self)
+    layer.frame = CGRectOffset(layer.frame, dx, dy);
 }
 
 - (CALayer*)hitTest:(CGPoint)point;

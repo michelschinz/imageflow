@@ -8,12 +8,7 @@
 
 #import "IFConnectorCompositeLayer.h"
 
-#import "IFConnectorHighlightLayer.h"
-
-typedef enum {
-  IFCompositeSublayerBase,
-  IFCompositeSublayerHighlight,
-} IFCompositeSublayer;
+#import "IFLayoutParameters.h"
 
 @implementation IFConnectorCompositeLayer
 
@@ -27,14 +22,17 @@ typedef enum {
   if (![super init])
     return nil;
   
-  CALayer* baseLayer = [IFConnectorLayer connectorLayerForNode:theNode kind:theKind];
-
-  CALayer* highlightLayer = [IFConnectorHighlightLayer highlightLayer];
-  highlightLayer.frame = baseLayer.frame;
-  highlightLayer.hidden = YES;
-  highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
-  
+  baseLayer = [IFConnectorLayer connectorLayerForNode:theNode kind:theKind];
+  baseLayer.anchorPoint = CGPointZero;
+  baseLayer.fillColor = [IFLayoutParameters connectorColor];
   [self addSublayer:baseLayer];
+
+  highlightLayer = [IFPathLayer layer];
+  highlightLayer.anchorPoint = CGPointZero;
+  highlightLayer.lineWidth = [IFLayoutParameters selectionWidth];
+  highlightLayer.strokeColor = [IFLayoutParameters highlightBorderColor];
+  highlightLayer.fillColor = [IFLayoutParameters highlightBackgroundColor];
+  highlightLayer.hidden = YES;
   [self addSublayer:highlightLayer];
   
   return self;
@@ -42,27 +40,19 @@ typedef enum {
 
 - (BOOL)isInputConnector;
 {
-  return ((IFConnectorLayer*)self.baseLayer).kind == IFConnectorKindInput;
+  return baseLayer.kind == IFConnectorKindInput;
 }
 
 - (BOOL)isOutputConnector;
 {
-  return ((IFConnectorLayer*)self.baseLayer).kind == IFConnectorKindOutput;
+  return baseLayer.kind == IFConnectorKindOutput;
 }
 
-- (CALayer*)baseLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
-}
-
-- (CALayer*)highlightLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
-}
+@synthesize baseLayer, highlightLayer;
 
 - (void)layoutSublayers;
 {
-  ((IFConnectorHighlightLayer*)self.highlightLayer).outlinePath = ((IFConnectorLayer*)self.baseLayer).outlinePath;
+  highlightLayer.path = baseLayer.path;
   [super layoutSublayers];
 }
 

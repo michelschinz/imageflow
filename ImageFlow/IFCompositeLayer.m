@@ -53,7 +53,6 @@
 
 - (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
   CALayer* cursorLayer = self.cursorLayer;
   switch (newIndicator) {
     case IFLayerCursorIndicatorNone:
@@ -61,64 +60,57 @@
       break;
     case IFLayerCursorIndicatorCursor:
       cursorLayer.hidden = NO;
-      cursorLayer.borderWidth = layoutParameters.cursorWidth;
+      cursorLayer.borderWidth = [IFLayoutParameters cursorWidth];
       break;
     case IFLayerCursorIndicatorSelection:
       cursorLayer.hidden = NO;
-      cursorLayer.borderWidth = layoutParameters.selectionWidth;
+      cursorLayer.borderWidth = [IFLayoutParameters selectionWidth];
       break;
   }
 }
 
 - (IFLayerCursorIndicator)cursorIndicator;
 {
-  CALayer* cursorLayer = [self valueForKey:@"cursorLayer"];
+  CALayer* cursorLayer = self.cursorLayer;
   if (cursorLayer.hidden)
     return IFLayerCursorIndicatorNone;
-  else if (cursorLayer.borderWidth == [IFLayoutParameters sharedLayoutParameters].cursorWidth)
+  else if (cursorLayer.borderWidth == [IFLayoutParameters cursorWidth])
     return IFLayerCursorIndicatorCursor;
   else
     return IFLayerCursorIndicatorSelection;
 }
 
+- (CALayer*)highlightLayer;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 - (void)setHighlighted:(BOOL)newValue;
 {
-  CALayer* highlightLayer = [self valueForKey:@"highlightLayer"];
-  highlightLayer.hidden = !newValue;
+  self.highlightLayer.hidden = !newValue;
 }
 
 - (BOOL)highlighted;
 {
-  CALayer* highlightLayer = [self valueForKey:@"highlightLayer"];
-  return !highlightLayer.hidden;
+  return !self.highlightLayer.hidden;
 }
 
 - (IFTreeNode*)node;
 {
-  return [self.baseLayer node];
-}
-
-- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
-{
-  self.baseLayer.forcedFrameWidth = newForcedFrameWidth;
-}
-
-- (float)forcedFrameWidth;
-{
-  return self.baseLayer.forcedFrameWidth;
-}
-
-- (CGSize)preferredFrameSize;
-{
-  return [self.baseLayer preferredFrameSize];
+  return self.baseLayer.node;
 }
 
 - (void)layoutSublayers;
 {
-  [super layoutSublayers];
-  
-  if (!CGSizeEqualToSize([self preferredFrameSize], self.frame.size))
-    [self.superlayer setNeedsLayout];
+  CGRect baseFrame = self.baseLayer.frame;
+  self.frame = baseFrame;
+  if (self.displayedImageLayer != nil)
+    self.displayedImageLayer.frame = CGRectInset(baseFrame, -25, 0);
+  if (self.cursorLayer != nil)
+    self.cursorLayer.frame = baseFrame;
+  self.highlightLayer.frame = baseFrame;
+  [self.superlayer setNeedsLayout];
 }
 
 @end

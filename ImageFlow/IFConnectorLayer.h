@@ -10,32 +10,21 @@
 
 #import "IFCompositeLayer.h"
 #import "IFTreeNode.h"
+#import "IFPathLayer.h"
 
 typedef enum {
   IFConnectorKindInput,
   IFConnectorKindOutput
 } IFConnectorKind;
 
-@interface IFConnectorLayer : CALayer<IFBaseLayer> {
+@interface IFConnectorLayer : IFPathLayer<IFBaseLayer> {
   IFTreeNode* node;
-  IFConnectorKind kind;
-  float forcedFrameWidth;
-  CGPathRef outlinePath;
 }
 
 + (id)connectorLayerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 - (id)initForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 
-// IFBaseLayer method
 @property(readonly) IFTreeNode* node;
-@property float forcedFrameWidth;
-
 @property(readonly) IFConnectorKind kind;
-
-@property CGPathRef outlinePath;
-
-// MARK: -
-// MARK: PROTECTED
-- (CGPathRef)createOutlinePath; // abstract
 
 @end

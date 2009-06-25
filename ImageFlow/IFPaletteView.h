@@ -28,6 +28,8 @@ typedef enum {
 @interface IFPaletteView : NSView<IFPaletteLayoutManagerDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
 
+  IFDocument* document;
+  
   IFPaletteViewMode mode;
   NSString* previewModeFilterString;
   
@@ -42,12 +44,13 @@ typedef enum {
   id<IFPaletteViewDelegate> delegate;
 }
 
-@property(assign) id<IFPaletteViewDelegate> delegate;
+@property(assign) IFDocument* document;
 @property(readonly) IFTreeCursorPair* cursors;
 @property(retain) IFTreeCursorPair* visualisedCursor;
-@property float columnWidth;
 
-- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+@property(assign) id<IFPaletteViewDelegate> delegate;
+
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node;
 - (void)switchToNormalMode;
 @property(readonly) IFPaletteViewMode mode;
 @property(copy) NSString* previewModeFilterString;

@@ -10,11 +10,18 @@
 
 #import "IFCompositeLayer.h"
 #import "IFConnectorLayer.h"
+#import "IFPathLayer.h"
 
 @interface IFConnectorCompositeLayer : IFCompositeLayer {
+  // Sublayers (not retained)
+  IFConnectorLayer* baseLayer;
+  IFPathLayer* highlightLayer;
 }
 
 + (id)layerForNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
 - (id)initWithNode:(IFTreeNode*)theNode kind:(IFConnectorKind)theKind;
+
+@property(readonly) CALayer<IFBaseLayer>* baseLayer;
+@property(readonly) CALayer* highlightLayer;
 
 @end

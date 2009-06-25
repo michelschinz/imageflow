@@ -8,64 +8,54 @@
 
 #import "IFNodeCompositeLayer.h"
 #import "IFNodeLayer.h"
+#import "IFGhostNodeLayer.h"
 #import "IFLayoutParameters.h"
-
-typedef enum {
-  IFCompositeSublayerDisplayedImage,
-  IFCompositeSublayerBase,
-  IFCompositeSublayerCursor,
-  IFCompositeSublayerHighlight,
-} IFCompositeSublayer;
 
 @implementation IFNodeCompositeLayer
 
-+ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  return [[[self alloc] initWithNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar] autorelease];
+  return [[[self alloc] initWithNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
   if (![super init])
     return nil;
 
   self.zPosition = 1.0;
   
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  
-  CALayer* baseLayer = [IFNodeLayer layerForNode:theNode ofTree:theTree canvasBounds:theCanvasBoundsVar];
-  
   // Displayed image indicator
-  CALayer* displayedImageLayer = [CALayer layer];
-  displayedImageLayer.backgroundColor = layoutParameters.displayedImageUnlockedBackgroundColor;
-  displayedImageLayer.frame = CGRectInset(baseLayer.frame, -25, 0); // TODO: use a parameter in the layout parameters
-  displayedImageLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+  displayedImageLayer = [CALayer layer];
+  displayedImageLayer.anchorPoint = CGPointZero;
+  displayedImageLayer.backgroundColor = [IFLayoutParameters displayedImageUnlockedBackgroundColor];
   displayedImageLayer.hidden = YES;
+  [self addSublayer:displayedImageLayer];
+  
+  // Base layer
+  baseLayer = theNode.isGhost
+  ? [IFGhostNodeLayer layerForNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar]
+  : [IFNodeLayer layerForNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar];
+  [self addSublayer:baseLayer];
   
   // Cursor
-  CALayer* cursorLayer = [CALayer layer];
+  cursorLayer = [CALayer layer];
+  cursorLayer.anchorPoint = CGPointZero;
   cursorLayer.cornerRadius = baseLayer.cornerRadius;
-  cursorLayer.borderColor = layoutParameters.cursorColor;
-  cursorLayer.frame = baseLayer.frame;
-  cursorLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+  cursorLayer.borderColor = [IFLayoutParameters cursorColor];
   cursorLayer.hidden = YES;
+  [self addSublayer:cursorLayer];
   
-  // Highlight (used for drag&drop)
-  CALayer* highlightLayer = [CALayer layer];
+  // Drag&drop highlight
+  highlightLayer = [CALayer layer];
   highlightLayer.anchorPoint = CGPointZero;
-  highlightLayer.frame = baseLayer.frame;
-  highlightLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
   highlightLayer.cornerRadius = baseLayer.cornerRadius;
   highlightLayer.hidden = YES;
-  highlightLayer.backgroundColor = layoutParameters.highlightBackgroundColor;
-  highlightLayer.borderColor = layoutParameters.highlightBorderColor;
-  highlightLayer.borderWidth = layoutParameters.selectionWidth;
-
-  [self addSublayer:displayedImageLayer];
-  [self addSublayer:baseLayer];
-  [self addSublayer:cursorLayer];
+  highlightLayer.backgroundColor = [IFLayoutParameters highlightBackgroundColor];
+  highlightLayer.borderColor = [IFLayoutParameters highlightBorderColor];
+  highlightLayer.borderWidth = [IFLayoutParameters selectionWidth];
   [self addSublayer:highlightLayer];
-
+  
   return self;
 }
 
@@ -74,24 +64,6 @@ typedef enum {
   return YES;
 }
 
-- (CALayer*)displayedImageLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerDisplayedImage];
-}
+@synthesize displayedImageLayer, baseLayer, cursorLayer, highlightLayer;
 
-- (IFNodeLayer*)baseLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerBase];
-}
-
-- (CALayer*)cursorLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerCursor];
-}
-
-- (CALayer*)highlightLayer;
-{
-  return [self.sublayers objectAtIndex:IFCompositeSublayerHighlight];
-}
- 
 @end

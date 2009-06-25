@@ -12,10 +12,12 @@
 #import "IFTree.h"
 #import "IFNodeCompositeLayer.h"
 #import "IFTreeNode.h"
+#import "IFLayoutParameters.h"
 
 @interface IFTemplateLayer : CALayer {
   IFTreeTemplate* treeTemplate;
-  float forcedFrameWidth;
+  
+  IFLayoutParameters* layoutParameters;
   
   // Normal mode
   IFTree* normalModeTree;
@@ -31,13 +33,12 @@
   CATextLayer* nameLayer;
 }
 
-+ (IFTemplateLayer*)layerForTemplate:(IFTreeTemplate*)theTreeTemplate;
-- (IFTemplateLayer*)initForTemplate:(IFTreeTemplate*)theTreeTemplate;
++ (IFTemplateLayer*)layerForTemplate:(IFTreeTemplate*)theTreeTemplate layoutParameters:(IFLayoutParameters*)theLayoutParameters;
+- (IFTemplateLayer*)initForTemplate:(IFTreeTemplate*)theTreeTemplate layoutParameters:(IFLayoutParameters*)theLayoutParameters;
 
 @property(readonly) IFTreeTemplate* treeTemplate;
 @property(readonly) IFTree* tree;
 @property(readonly) IFTreeNode* treeNode;
-@property float forcedFrameWidth;
 
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 - (void)switchToNormalMode;

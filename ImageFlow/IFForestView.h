@@ -59,7 +59,6 @@
 @property(assign) IFDocument* document;
 @property(readonly, retain) IFTreeCursorPair* cursors;
 @property(retain) IFTreeCursorPair* visualisedCursor;
-@property float columnWidth;
 
 @property(assign) id<IFForestViewDelegate> delegate;
 

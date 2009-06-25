@@ -45,11 +45,14 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self setResolutionX:300];
   [self setResolutionY:300];
   
+  layoutParameters = [IFLayoutParameters layoutParameters];
+  
   return self;
 }
 
 - (void)dealloc;
 {
+  OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(tree);
   OBJC_RELEASE(workingSpaceProfile);
   OBJC_RELEASE(documentDescription);
@@ -63,7 +66,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self addWindowController:[[[IFSingleWindowController alloc] init] autorelease]];
 }
 
-#pragma mark Properties
+// MARK: Properties
 
 - (IFTree*)tree;
 {
@@ -91,7 +94,9 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 @synthesize workingSpaceProfile;
 @synthesize resolutionX, resolutionY;
 
-#pragma mark Tree navigation
+@synthesize layoutParameters;
+
+// MARK: Tree navigation
 
 - (NSSet*)allNodes;
 {
@@ -131,7 +136,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return result;
 }
 
-#pragma mark Tree manipulations
+// MARK: Tree manipulations
 
 - (IFTreeNode*)addCopyOfTree:(IFTree*)newTree;
 {
@@ -254,7 +259,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self endTreeModification];
 }
 
-#pragma mark loading and saving
+// MARK: Loading and saving
 
 - (BOOL)prepareSavePanel:(NSSavePanel*)savePanel;
 {

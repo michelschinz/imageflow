@@ -11,6 +11,7 @@
 #import "IFTreeNode.h"
 #import "IFColorProfile.h"
 #import "IFTypeChecker.h"
+#import "IFLayoutParameters.h"
 
 extern NSString* IFTreeChangedNotification;
 
@@ -25,10 +26,11 @@ extern NSString* IFTreeChangedNotification;
   float resolutionX, resolutionY; // in DPI
 
   IFTree* tree;
+  
+  IFLayoutParameters* layoutParameters;
 }
 
-#pragma mark Properties
-
+// MARK: Properties
 @property(retain) IFTree* tree;
 @property(readonly) NSArray* roots;
 
@@ -40,16 +42,16 @@ extern NSString* IFTreeChangedNotification;
 @property(retain) IFColorProfile* workingSpaceProfile;
 @property float resolutionX, resolutionY;
 
-#pragma mark Tree navigation
+@property(readonly) IFLayoutParameters* layoutParameters;
 
+// MARK: Tree navigation
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;
 - (NSSet*)nodesOfTreeContainingNode:(IFTreeNode*)node;
 - (IFTreeNode*)rootOfTreeContainingNode:(IFTreeNode*)node;
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
 
-#pragma mark Tree manipulations
-
+// MARK: Tree manipulations
 - (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;

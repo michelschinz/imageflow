@@ -38,6 +38,8 @@
 - (BOOL)boolValue;
 - (float)floatValue;
 
+- (BOOL)isArray;
+- (BOOL)isImage;
 - (BOOL)isError;
 
 + (id)expressionWithCamlValue:(value)camlValue;

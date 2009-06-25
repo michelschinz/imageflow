@@ -11,8 +11,9 @@
 #import "IFLayerSubsetComposites.h"
 #import "IFCompositeLayer.h"
 #import "IFTree.h"
-#import "IFLayoutParameters.h"
 #import "IFTemplateLayer.h"
+#import "IFLayerPredicateSubset.h"
+#import "IFLayerSetExplicit.h"
 
 @implementation IFPaletteLayoutManager
 
@@ -21,38 +22,59 @@
   return [[[self alloc] init] autorelease];
 }
 
+- (void)dealloc;
+{
+  OBJC_RELEASE(layoutParameters);
+  [super dealloc];
+}
 
-@synthesize columnWidth;
+@synthesize layoutParameters;
 @synthesize delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)parentLayer;
 {
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float minGutterX = layoutParameters.gutterWidth;
+  IFLayerSubset* layers = [IFLayerPredicateSubset subsetOf:[IFLayerSetExplicit layerSetWithLayers:parentLayer.sublayers] predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
   
+  const float minGutterX = [IFLayoutParameters gutterWidth];
   const float totalWidth = CGRectGetWidth(parentLayer.bounds);
-  const unsigned columns = MAX(1, (unsigned)floor((totalWidth - minGutterX) / (columnWidth + minGutterX)));
-  const float gutterX = (totalWidth - ((float)columns * columnWidth)) / (columns + 1);
   const float gutterY = minGutterX;
+  
+  float y = gutterY;
+  unsigned rowStartIndex = 0;
+  while (rowStartIndex < [layers count]) {
+    unsigned rowEndIndex = rowStartIndex;
 
-  unsigned column = 0;
-  float x = gutterX, y = 0;
-  float rowHeight = 0;
-  for (IFTemplateLayer* layer in parentLayer.sublayers) {
-    if (layer.hidden)
-      continue;
+    float minRowWidth = minGutterX;
+    do {
+      minRowWidth += CGRectGetWidth([layers layerAtIndex:rowEndIndex].frame) + minGutterX;
+      if (minRowWidth > totalWidth)
+        break;
+      ++rowEndIndex;
+    } while (rowEndIndex < [layers count]);
 
-    layer.forcedFrameWidth = columnWidth;
-    layer.frame = (CGRect){ CGPointMake(round(x), round(y)), [layer preferredFrameSize] };
-    rowHeight = fmax(rowHeight, CGRectGetHeight(layer.frame));
-    
-    if (++column == columns) {
-      x = gutterX;
-      y += ceil(rowHeight + gutterY);
-      rowHeight = 0;
-      column = 0;
-    } else
-      x += columnWidth + gutterX;
+    float gutterX;
+    if (rowEndIndex == rowStartIndex) {
+      gutterX = 0;
+      rowEndIndex = rowStartIndex + 1;
+    } else if (rowEndIndex == [layers count]) {
+      gutterX = minGutterX;
+    } else {
+      float rowWidth = 0.0;
+      for (int i = rowStartIndex; i < rowEndIndex; ++i)
+        rowWidth += CGRectGetWidth([layers layerAtIndex:i].frame);
+      gutterX = (totalWidth - rowWidth - 2.0 * minGutterX) / (rowEndIndex - rowStartIndex - 1);
+    }
+
+    float rowHeight = 0.0;
+    float x = minGutterX;
+    for (int i = rowStartIndex; i < rowEndIndex; ++i) {
+      CALayer* layer = [layers layerAtIndex:i];
+      layer.position = CGPointMake(x, y);
+      x += CGRectGetWidth(layer.frame) + gutterX;
+      rowHeight = fmax(rowHeight, CGRectGetHeight(layer.frame));
+    }
+    y += ceil(rowHeight) + gutterY;
+    rowStartIndex = rowEndIndex;
   }
   
   [delegate layoutManager:self didLayoutSublayersOfLayer:parentLayer];

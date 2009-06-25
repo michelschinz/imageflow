@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<tree-template>
+  <name>Stack</name>
+  <description>Stack images</description>
+  <tree>
+    <filter id="1">
+      <name>IFStackFilter</name>
+      <settings>
+      </settings>
+      <parents>
+        <hole id="2"/>
+        <hole id="3"/>
+      </parents>
+    </filter>
+  </tree>
+</tree-template>

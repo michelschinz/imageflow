@@ -39,17 +39,22 @@
 
 - (CIImage*)imageValueCI;
 {
-  // TODO remove
+  // TODO: remove
   return [(IFImage*)object imageCI];
 }
 
 - (CGImageRef)imageValueCG;
 {
-  // TODO remove
+  // TODO: remove
   return [(IFImage*)object imageCG];
 }
 
-#pragma mark Caml representation
+- (BOOL)isImage;
+{
+  return YES;
+}
+
+// MARK: Caml representation
 
 - (value)camlRepresentation;
 {

@@ -15,8 +15,12 @@ let eval expr =
   and out_mask filter =
     Mask (Image.mask_of_ciimage (Coreimage.output_image filter))
   in match expr with
+    (* Array operators *)
+    Op("array", xs) ->
+      Array xs
+
     (* Rectangle operators *)
-    Op("rect-intersection", [|Rect r1; Rect r2|]) ->
+  | Op("rect-intersection", [|Rect r1; Rect r2|]) ->
       Rect (Rect.intersection r1 r2)
   | Op("rect-outset", [|Rect r; Num d|]) ->
       Rect (Rect.outset r d d)

@@ -90,7 +90,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   CALayer* rootLayer = [CALayer layer];
   
-  rootLayer.backgroundColor = [IFLayoutParameters sharedLayoutParameters].backgroundColor;
+  rootLayer.backgroundColor = [IFLayoutParameters backgroundColor];
   
   IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManager];
   rootLayoutManager.delegate = self;
@@ -104,28 +104,17 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 }
 
 @synthesize cursors, visualisedCursor;
-
-- (float)columnWidth;
-{
-  return ((IFForestLayoutManager*)self.layer.layoutManager).columnWidth;
-}
-
-- (void)setColumnWidth:(float)newColumnWidth;
-{
-  ((IFForestLayoutManager*)self.layer.layoutManager).columnWidth = newColumnWidth;
-  [self.layer setNeedsLayout];
-}
-
 @synthesize delegate;
 
 @synthesize document;
-
 - (void)setDocument:(IFDocument*)newDocument;
 {
   if (newDocument == document)
     return;
 
-  ((IFForestLayoutManager*)self.layer.layoutManager).tree = newDocument.tree;
+  IFForestLayoutManager* layoutManager = (IFForestLayoutManager*)self.layer.layoutManager;
+  layoutManager.layoutParameters = newDocument.layoutParameters;
+  layoutManager.tree = newDocument.tree;
   
   NSNotificationCenter* notifCenter = [NSNotificationCenter defaultCenter];
   if (document != nil) {
@@ -746,6 +735,7 @@ static enum {
     CFDictionarySetValue((CFMutableDictionaryRef)dict, layer.node, layer);
   }
   
+  IFLayoutParameters* layoutParameters = document.layoutParameters;
   IFTree* tree = document.tree;
   IFTreeNode* root = tree.root;
   for (IFTreeNode* node in tree.nodes) {
@@ -755,7 +745,7 @@ static enum {
     if ([existingNodeLayers objectForKey:node] != nil)
       [existingNodeLayers removeObjectForKey:node];
     else
-      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node ofTree:tree canvasBounds:canvasBoundsVar]];
+      [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node ofTree:tree layoutParameters:layoutParameters canvasBounds:canvasBoundsVar]];
     
     IFLayerNeededMask layersNeeded = [IFForestLayoutManager layersNeededFor:node inTree:tree];
     if (layersNeeded & IFLayerNeededIn) {
@@ -821,7 +811,7 @@ static enum {
   [textField setImportsGraphics:NO];
   [textField setDrawsBackground:NO];
   [textField setBordered:NO];
-  [textField setFont:[IFLayoutParameters sharedLayoutParameters].labelFont];
+  [textField setFont:[IFLayoutParameters labelFont]];
   [textField setFrame:NSRectFromCGRect([ghostCompositeLayer convertRect:ghostCompositeLayer.baseLayer.frame toLayer:self.layer])];
   [textField setDelegate:self];
   
@@ -940,10 +930,9 @@ static enum {
     IFTreeNode* node = nodeLayer.node;
 
     if (node == displayedNode) {
-      const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
       CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
       displayedImageLayer.hidden = NO;
-      displayedImageLayer.backgroundColor = cursors.isViewLocked ? layoutParameters.displayedImageLockedBackgroundColor : layoutParameters.displayedImageUnlockedBackgroundColor;
+      displayedImageLayer.backgroundColor = cursors.isViewLocked ? [IFLayoutParameters displayedImageLockedBackgroundColor] : [IFLayoutParameters displayedImageUnlockedBackgroundColor];
     } else
       nodeLayer.displayedImageLayer.hidden = YES;
 

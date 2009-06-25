@@ -20,6 +20,7 @@
 #import "IFLayerPredicateSubset.h"
 #import "IFUnsplittableTreeCursorPair.h"
 #import "IFLayerGeometry.h"
+#import "IFVariableKVO.h"
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
 
@@ -82,8 +83,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   CALayer* rootLayer = [CALayer layer];
   
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  rootLayer.backgroundColor = layoutParameters.backgroundColor;
+  rootLayer.backgroundColor = [IFLayoutParameters backgroundColor];
   
   IFPaletteLayoutManager* rootLayoutManager = [IFPaletteLayoutManager paletteLayoutManager];
   rootLayoutManager.delegate = self;
@@ -94,29 +94,30 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   
   self.enclosingScrollView.wantsLayer = YES;
   self.enclosingScrollView.contentView.wantsLayer = YES;
-  
-  [self updateBounds];
-  [self syncLayersWithTemplates];
 }
 
-@synthesize delegate;
 @synthesize cursors, visualisedCursor;
+@synthesize delegate;
 
-- (float)columnWidth;
+@synthesize document;
+- (void)setDocument:(IFDocument*)newDocument;
 {
-  return ((IFPaletteLayoutManager*)self.layer.layoutManager).columnWidth;
-}
+  IFPaletteLayoutManager* layoutManager = (IFPaletteLayoutManager*)self.layer.layoutManager;
+  layoutManager.layoutParameters = newDocument.layoutParameters;
 
-- (void)setColumnWidth:(float)newColumnWidth;
-{
-  ((IFPaletteLayoutManager*)self.layer.layoutManager).columnWidth = newColumnWidth;
-  [self.layer setNeedsLayout];
+  document = newDocument;
+  
+  self.layer.sublayers = [NSArray array];
+  [self syncLayersWithTemplates];
 }
 
 // MARK: Normal/preview modes
 
-- (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
+- (void)switchToPreviewModeForNode:(IFTreeNode*)node;
 {
+  IFTree* tree = document.tree;
+  IFVariable* canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:document key:@"canvasBounds"];
+  
   for (IFTemplateLayer* templateLayer in self.templateLayers)
     [templateLayer switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
   [self updateFiltering];
@@ -344,7 +345,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     if ([existingTemplateLayers objectForKey:treeTemplate] != nil)
       [existingTemplateLayers removeObjectForKey:treeTemplate];
     else
-      [self.layer addSublayer:[IFTemplateLayer layerForTemplate:treeTemplate]];
+      [self.layer addSublayer:[IFTemplateLayer layerForTemplate:treeTemplate layoutParameters:document.layoutParameters]];
   }
   
   for (CALayer* layer in [existingTemplateLayers objectEnumerator])
@@ -404,7 +405,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   NSSize newSize = NSSizeFromCGSize(allLayers.boundingBox.size);
   NSSize minSize = self.superview.frame.size;
 
-  newSize.width = round(minSize.width);
+  newSize.width = round(fmax(newSize.width, minSize.width));
   newSize.height = round(fmax(newSize.height, minSize.height));
   
   if (!NSEqualSizes(self.frame.size, newSize))

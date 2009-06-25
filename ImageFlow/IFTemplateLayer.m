@@ -58,19 +58,18 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   return hostTree;
 }
 
-+ (IFTemplateLayer*)layerForTemplate:(IFTreeTemplate*)theTreeTemplate;
++ (IFTemplateLayer*)layerForTemplate:(IFTreeTemplate*)theTreeTemplate layoutParameters:(IFLayoutParameters*)theLayoutParameters;
 {
-  return [[[self alloc] initForTemplate:theTreeTemplate] autorelease];
+  return [[[self alloc] initForTemplate:theTreeTemplate layoutParameters:theLayoutParameters] autorelease];
 }
 
-- (IFTemplateLayer*)initForTemplate:(IFTreeTemplate*)theTreeTemplate;
+- (IFTemplateLayer*)initForTemplate:(IFTreeTemplate*)theTreeTemplate layoutParameters:(IFLayoutParameters*)theLayoutParameters;
 {
   if (![super init])
     return nil;
   
   treeTemplate = [theTreeTemplate retain];
-
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  layoutParameters = [theLayoutParameters retain];
   
   // Artiy indicator layer
   if (treeTemplate.tree.holesCount > 0) {
@@ -83,19 +82,20 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   
   // Node layer
   self.normalModeTree = computeNormalModeTreeForTemplate(treeTemplate);
-  normalNodeCompositeLayer = [[IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree canvasBounds:normalCanvasBoundsVar] retain];
+  normalNodeCompositeLayer = [[IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree layoutParameters:layoutParameters canvasBounds:normalCanvasBoundsVar] retain];
   [self addSublayer:normalNodeCompositeLayer];
   
   // Name layer
   nameLayer = [CATextLayer layer];
-  nameLayer.foregroundColor = layoutParameters.templateLabelColor;
-  nameLayer.font = layoutParameters.labelFont;
-  nameLayer.fontSize = layoutParameters.labelFont.pointSize;
+  nameLayer.foregroundColor = [IFLayoutParameters templateLabelColor];
+  nameLayer.font = [IFLayoutParameters labelFont];
+  nameLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
   nameLayer.alignmentMode = kCAAlignmentCenter;
   nameLayer.truncationMode = kCATruncationMiddle;
   nameLayer.string = treeTemplate.name;
   [self addSublayer:nameLayer];
   
+  self.anchorPoint = CGPointZero;
   self.hidden = NO;
   visibilityFlags = IFVisibilityFlagsVisible;
   
@@ -108,6 +108,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   OBJC_RELEASE(previewModeTree);
   OBJC_RELEASE(normalNodeCompositeLayer);
   OBJC_RELEASE(normalModeTree);
+  OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(treeTemplate);
   [super dealloc];
 }
@@ -124,13 +125,6 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   return self.nodeCompositeLayer.node;
 }
 
-@synthesize forcedFrameWidth;
-- (void)setForcedFrameWidth:(float)newForcedFrameWidth;
-{
-  forcedFrameWidth = newForcedFrameWidth;
-  normalNodeCompositeLayer.forcedFrameWidth = forcedFrameWidth;
-}
-
 - (void)switchToPreviewModeForNode:(IFTreeNode*)node ofTree:(IFTree*)tree canvasBounds:(IFVariable*)canvasBoundsVar;
 {
   // Create preview tree
@@ -139,8 +133,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   IFTreeNode* previewTreeNode = [previewModeTree copyTree:treeTemplate.tree toReplaceNode:node];  
   if ([previewModeTree isTypeCorrect]) {
     [previewModeTree configureAllNodesBut:constNodes];
-    self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree canvasBounds:canvasBoundsVar];
-    previewNodeCompositeLayer.forcedFrameWidth = forcedFrameWidth;
+    self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree layoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
     
     [self replaceSublayer:normalNodeCompositeLayer with:previewNodeCompositeLayer];
     self.visibilityFlags = self.visibilityFlags | IFVisibilityFlagTypeCorrect;
@@ -183,23 +176,19 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   return ((IFNodeLayer*)self.nodeCompositeLayer.baseLayer).dragImage;
 }
 
-- (CGSize)preferredFrameSize;
-{
-  return CGSizeMake(forcedFrameWidth, [nameLayer preferredFrameSize].height + 2.0 + [self.nodeCompositeLayer preferredFrameSize].height);
-}
-
 - (void)layoutSublayers;
 {
-  IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
+  const float totalWidth = CGRectGetWidth(self.nodeCompositeLayer.bounds);
   
-  const float nameHeight = [nameLayer preferredFrameSize].height;
-  nameLayer.frame = (CGRect) { CGPointZero, CGSizeMake(CGRectGetWidth(self.bounds), nameHeight) };
-  
-  self.nodeCompositeLayer.frame = (CGRect) { CGPointMake(0, nameHeight + 2.0), [self.nodeCompositeLayer preferredFrameSize] };
-  arityIndicatorLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(self.nodeCompositeLayer.frame)), CGSizeMake(CGRectGetWidth(self.bounds), layoutParameters.connectorArrowSize) };
+  nameLayer.frame = CGRectMake(0, 0, totalWidth, [nameLayer preferredFrameSize].height);
 
-  if (!CGSizeEqualToSize(self.frame.size, [self preferredFrameSize]))
-    [self.superlayer setNeedsLayout];
+  IFNodeCompositeLayer* nodeLayer = self.nodeCompositeLayer;
+  nodeLayer.frame = (CGRect) { CGPointMake(0, CGRectGetMaxY(nameLayer.frame)), nodeLayer.bounds.size };
+
+  arityIndicatorLayer.frame = CGRectMake(0, CGRectGetMaxY(nodeLayer.frame), totalWidth, [IFLayoutParameters connectorArrowSize]);
+
+  self.bounds = CGRectMake(0, 0, totalWidth, CGRectGetMaxY(arityIndicatorLayer.frame));
+  [self.superlayer setNeedsLayout];
 }
 
 // MARK: Delegate methods
@@ -208,9 +197,8 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 {
   NSAssert(layer == arityIndicatorLayer, @"unexpected layer");
   
-  const IFLayoutParameters* layoutParameters = [IFLayoutParameters sharedLayoutParameters];
-  const float arrowSize = layoutParameters.connectorArrowSize;
-  const float margin = layoutParameters.nodeInternalMargin;
+  const float arrowSize = [IFLayoutParameters connectorArrowSize];
+  const float margin = [IFLayoutParameters nodeInternalMargin];
 
   CGContextBeginPath(ctx);
   
@@ -231,7 +219,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     x += dentSpacing;
   }
 
-  CGContextSetFillColorWithColor(ctx, layoutParameters.connectorColor);
+  CGContextSetFillColorWithColor(ctx, [IFLayoutParameters connectorColor]);
   CGContextEOFillPath(ctx);
 }
 

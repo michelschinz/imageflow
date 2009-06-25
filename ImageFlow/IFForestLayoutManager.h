@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTree.h"
+#import "IFLayoutParameters.h"
 
 typedef enum {
   IFLayerNeededIn  = 0x1,
@@ -21,8 +22,8 @@ typedef enum {
 @end
 
 @interface IFForestLayoutManager : NSObject {
+  IFLayoutParameters* layoutParameters;
   IFTree* tree; // not retained
-  float columnWidth;
   id<IFForestLayoutManagerDelegate> delegate; // not retained
 }
 
@@ -30,8 +31,8 @@ typedef enum {
 
 + (id)forestLayoutManager;
 
+@property(retain) IFLayoutParameters* layoutParameters;
 @property(assign) IFTree* tree;
-@property float columnWidth;
 @property(assign) id<IFForestLayoutManagerDelegate> delegate;
 
 - (void)layoutSublayersOfLayer:(CALayer*)layer;

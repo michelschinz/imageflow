@@ -11,30 +11,35 @@
 #import "IFTree.h"
 #import "IFTreeNode.h"
 #import "IFConstantExpression.h"
-#import "IFThumbnailLayer.h"
 #import "IFCompositeLayer.h"
+#import "IFLayoutParameters.h"
+
+@protocol IFExpressionContentsLayer
+- (void)setExpression:(IFConstantExpression*)newExpression;
+@end
 
 @interface IFNodeLayer : CALayer<IFBaseLayer> {
   IFTreeNode* node;
   IFTree* tree;
-  float forcedFrameWidth;
 
+  IFLayoutParameters* layoutParameters;
+  IFVariable* canvasBounds;
+  
   // Component layers (not retained)
   CATextLayer* labelLayer;
   CALayer* foldingSeparatorLayer;
-  IFThumbnailLayer* thumbnailLayer;
+  CALayer<IFExpressionContentsLayer>* expressionLayer;
   CATextLayer* nameLayer;
 }
 
-+ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
-- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree canvasBounds:(IFVariable*)theCanvasBoundsVar;
++ (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
 // IFBaseLayer method
 @property(readonly) IFTreeNode* node;
-@property float forcedFrameWidth;
 
 @property(readonly) CATextLayer* labelLayer;
-@property(readonly) IFThumbnailLayer* thumbnailLayer;
+@property(readonly) CALayer<IFExpressionContentsLayer>* expressionLayer;
 @property(readonly) CATextLayer* nameLayer;
 
 @property(readonly) NSImage* dragImage;

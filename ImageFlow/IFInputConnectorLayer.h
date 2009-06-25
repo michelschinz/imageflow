@@ -11,7 +11,9 @@
 #import "IFConnectorLayer.h"
 
 @interface IFInputConnectorLayer : IFConnectorLayer {
-
+  float width;
 }
+
+@property float width;
 
 @end

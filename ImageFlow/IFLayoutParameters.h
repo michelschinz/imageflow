@@ -8,65 +8,44 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface IFLayoutParameters : NSObject {
-  CGColorRef backgroundColor;
-  float nodeInternalMargin;
-  float gutterWidth;
-  
-  CGColorRef nodeBackgroundColor;
-  CGColorRef nodeLabelColor;
-  
-  NSFont* labelFont;
-  float labelFontHeight;
-  
-  CGColorRef connectorColor;
-  CGColorRef connectorLabelColor;
-  float connectorArrowSize;
-  
-  CGColorRef displayedImageUnlockedBackgroundColor;
-  CGColorRef displayedImageLockedBackgroundColor;
-  CGColorRef cursorColor;
-  float cursorWidth;
-  float selectionWidth;
-
-  CGColorRef templateLabelColor;
-  
-  CGColorRef highlightBackgroundColor;
-  CGColorRef highlightBorderColor;
-  
-  NSFont* dragBadgeFont;
-  float dragBadgeFontHeight;
+  float thumbnailWidth;
 }
 
-+ (IFLayoutParameters*)sharedLayoutParameters;
++ (IFLayoutParameters*)layoutParameters;
 
-@property(readonly) CGColorRef backgroundColor;
-@property(readonly) float nodeInternalMargin;
-@property(readonly) float gutterWidth;
+// MARK: Global properties
++ (NSDictionary*)nodeLayerStyle;
 
-@property(readonly) CGColorRef nodeBackgroundColor;
-@property(readonly) CGColorRef nodeLabelColor;
++ (CGColorRef)backgroundColor;
++ (float)nodeInternalMargin;
++ (float)gutterWidth;
 
-@property(readonly) NSFont* labelFont;
-@property(readonly) float labelFontHeight;
++ (CGColorRef)nodeBackgroundColor;
++ (CGColorRef)nodeLabelColor;
 
-@property(readonly) CGColorRef connectorColor;
-@property(readonly) CGColorRef connectorLabelColor;
-@property(readonly) float connectorArrowSize;
++ (NSFont*)labelFont;
++ (float)labelFontHeight;
 
-@property(readonly) CGColorRef displayedImageUnlockedBackgroundColor;
-@property(readonly) CGColorRef displayedImageLockedBackgroundColor;
-@property(readonly) CGColorRef cursorColor;
-@property(readonly) float cursorWidth;
-@property(readonly) float selectionWidth;
++ (CGColorRef)connectorColor;
++ (CGColorRef)connectorLabelColor;
++ (float)connectorArrowSize;
 
-@property(readonly) CGColorRef templateLabelColor;
++ (CGColorRef)displayedImageUnlockedBackgroundColor;
++ (CGColorRef)displayedImageLockedBackgroundColor;
++ (CGColorRef)cursorColor;
++ (float)cursorWidth;
++ (float)selectionWidth;
 
-@property(readonly) CGColorRef highlightBackgroundColor;
-@property(readonly) CGColorRef highlightBorderColor;
++ (CGColorRef)templateLabelColor;
 
-@property(readonly) NSFont* dragBadgeFont;
-@property(readonly) float dragBadgeFontHeight;
++ (CGColorRef)highlightBackgroundColor;
++ (CGColorRef)highlightBorderColor;
+
++ (NSFont*)dragBadgeFont;
++ (float)dragBadgeFontHeight;
+
+// MARK: Local properties
+@property float thumbnailWidth;
 
 @end

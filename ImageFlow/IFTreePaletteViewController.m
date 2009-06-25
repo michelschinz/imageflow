@@ -37,12 +37,7 @@
 
 - (void)awakeFromNib;
 {
-  layoutParametersController.content = [IFLayoutParameters sharedLayoutParameters];
   cursorsVar.value = forestView.cursors;
-  
-  [self willChangeValueForKey:@"columnWidth"]; // HACK to make sure the slider starts with the correct value
-  forestView.columnWidth = paletteView.columnWidth = 50.0;
-  [self didChangeValueForKey:@"columnWidth"];
 }
 
 @synthesize document;
@@ -55,18 +50,8 @@
   [document release];
   document = [newDocument retain];
 
-  [forestView setDocument:newDocument];
-}
-
-- (float)columnWidth;
-{
-  return forestView.columnWidth;
-}
-
-- (void)setColumnWidth:(float)newColumnWidth;
-{
-  forestView.columnWidth = newColumnWidth;
-  paletteView.columnWidth = newColumnWidth;
+  forestView.document = newDocument;
+  paletteView.document = newDocument;
 }
 
 @synthesize cursorsVar;
@@ -81,8 +66,8 @@
 
 - (void)beginPreviewForNode:(IFTreeNode*)node ofTree:(IFTree*)tree;
 {
-  IFVariable* canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:document key:@"canvasBounds"];
-  [paletteView switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
+  NSAssert(tree == document.tree, @"unexpected tree");
+  [paletteView switchToPreviewModeForNode:node];
   cursorsVar.value = [IFCompositeTreeCursorPair compositeWithEditCursor:forestView.cursors viewCursor:paletteView.cursors];
   [self updateCursors];
 }
