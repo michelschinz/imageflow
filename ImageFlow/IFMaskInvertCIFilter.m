@@ -13,17 +13,6 @@
 
 static CIKernel *maskInvertKernel = nil;
 
-- (id)init;
-{
-  if (maskInvertKernel == nil) {
-    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
-    NSString* code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"mask-invert" ofType:@"cikernel"]];
-    NSArray* kernels = [CIKernel kernelsWithString:code];
-    maskInvertKernel = [[kernels objectAtIndex:0] retain];
-  }
-  return [super init];
-}
-
 + (void)initialize;
 {
   if (self != [IFMaskInvertCIFilter class])
@@ -34,6 +23,17 @@ static CIKernel *maskInvertKernel = nil;
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                  @"Invert mask", kCIAttributeFilterDisplayName,
                  nil]];
+}
+
+- (id)init;
+{
+  if (maskInvertKernel == nil) {
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    NSString* code = [NSString stringWithContentsOfFile:[bundle pathForResource:@"mask-invert" ofType:@"cikernel"]];
+    NSArray* kernels = [CIKernel kernelsWithString:code];
+    maskInvertKernel = [[kernels objectAtIndex:0] retain];
+  }
+  return [super init];
 }
 
 - (CIImage*)outputImage;

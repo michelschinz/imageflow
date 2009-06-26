@@ -5,6 +5,15 @@ let (@@@) f g x = f (g x)
 let filter name k a1 =
   k (fun x -> x) (Cifilter.filterWithName name) a1
 
+let array key k filter array =
+  let nsArray = Nsmutablearray.array() in
+  Array.iter
+    (fun image ->
+      Nsmutablearray.addImage ~array:nsArray ~image:(Image.to_ciimage image))
+    array;
+  Cifilter.setArray ~filter:filter ~array:nsArray ~key:key;
+  k filter
+
 let image key k filter image =
   Cifilter.setImage ~filter:filter ~image:(Image.to_ciimage image) ~key:key;
   k filter
@@ -61,6 +70,9 @@ let compositing_filter name =
 let affine_transform =
   filter !@"CIAffineTransform" (image !@"inputImage"
                                 @@@ transform !@"inputTransform")
+
+let average =
+  filter !@"IFAverage" (array !@"inputImages")
 
 let blend_color_burn = compositing_filter !@"CIColorBurnBlendMode"
 let blend_color_dodge = compositing_filter !@"CIColorDodgeBlendMode"

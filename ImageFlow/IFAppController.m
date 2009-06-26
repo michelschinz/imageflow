@@ -15,6 +15,7 @@
 #import "IFPercentValueTransformer.h"
 #import "IFProfileNamePathValueTransformer.h"
 
+#import "IFAverageCIFilter.h"
 #import "IFCropImageWithMaskCIFilter.h"
 #import "IFMaskCIFilter.h"
 #import "IFMaskOverlayCIFilter.h"
@@ -72,6 +73,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
   [IFProfileNamePathValueTransformer class];
   
   // Register filters
+  [IFAverageCIFilter class];
   [IFCropImageWithMaskCIFilter class];
   [IFMaskCIFilter class];
   [IFMaskOverlayCIFilter class];

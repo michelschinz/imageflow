@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<tree-template>
+  <name>Average images</name>
+  <description>Average the pixels of a stack of images</description>
+  <tree>
+    <filter id="1">
+      <name>IFAverageFilter</name>
+      <parents>
+        <hole id="2"/>
+      </parents>
+    </filter>
+  </tree>
+</tree-template>

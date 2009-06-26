@@ -3,6 +3,9 @@ open Objc
 external filterWithName: [`NSString] objc -> [`CIFilter] objc
     = "CIFilter__filterWithName"
 
+external setArray: filter:[`CIFilter] objc -> array:[`NSMutableArray] objc -> key:[`NSString] objc -> unit
+    = "CIFilter_setValueForKey"
+
 external setColor: filter:[`CIFilter] objc -> color:[`CIColor] objc -> key:[`NSString] objc -> unit
     = "CIFilter_setValueForKey"
 

@@ -417,6 +417,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   for (IFTreeNode* node in sortedNodes)
     [potentialTypes addObject:[node potentialTypesForArity:[self parentsCountOfNode:node]]];
   NSArray* config = [typeChecker configureDAG:serialiseSortedNodes(cloneWithoutAliases, sortedNodes) withPotentialTypes:potentialTypes];
+  NSAssert(config != nil, @"unable to configure DAG");
 
   NSMutableDictionary* nodeExpressions = [createMutableDictionaryWithRetainedKeys() autorelease];
   for (unsigned i = 0; i < nodesCount; ++i) {

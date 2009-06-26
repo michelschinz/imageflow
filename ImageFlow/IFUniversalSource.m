@@ -8,6 +8,7 @@
 
 #import "IFUniversalSource.h"
 #import "IFImageType.h"
+#import "IFArrayType.h"
 #import "IFOperatorExpression.h"
 
 static NSArray* sourceFileNames;
@@ -34,37 +35,43 @@ static NSArray* sourceFileNames;
 {
   static NSArray* types = nil;
   if (types == nil)
-    types = [[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil] retain];
+    types = [[NSArray arrayWithObjects:
+              [IFImageType imageRGBAType],
+              [IFImageType maskType],
+              [IFArrayType arrayTypeWithContentType:[IFImageType imageRGBAType]],
+              [IFArrayType arrayTypeWithContentType:[IFImageType maskType]],
+              nil] retain];
   return (arity == 0) ? types : [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  // TODO use better images for masks
-  unsigned fileNameIndex = [[settings valueForKey:@"index"] unsignedIntValue];
-  NSString* fileName = [sourceFileNames objectAtIndex:(fileNameIndex % [sourceFileNames count])];
+  if (arity == 0) {
+    // TODO: use better images for masks and stacks
+    unsigned fileNameIndex = [[settings valueForKey:@"index"] unsignedIntValue];
+    NSString* fileName = [sourceFileNames objectAtIndex:(fileNameIndex % [sourceFileNames count])];
   
-  IFExpression* loadExpression = [IFOperatorExpression expressionWithOperatorNamed:@"load" operands:
-    [IFConstantExpression expressionWithString:fileName],
-    [IFConstantExpression expressionWithInt:YES],
-    [IFConstantExpression expressionWithString:@""],
-    [IFConstantExpression expressionWithString:@""],
-    [IFConstantExpression expressionWithString:@""],
-    [IFConstantExpression expressionWithInt:NO],
-    [IFConstantExpression expressionWithInt:YES],
-    [IFConstantExpression expressionWithInt:1],
-    [IFConstantExpression expressionWithInt:1],
-    nil];
-  
-  if (arity == 0)
+    IFExpression* rgbaImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"load" operands:
+                                         [IFConstantExpression expressionWithString:fileName],
+                                         [IFConstantExpression expressionWithInt:YES],
+                                         [IFConstantExpression expressionWithString:@""],
+                                         [IFConstantExpression expressionWithString:@""],
+                                         [IFConstantExpression expressionWithString:@""],
+                                         [IFConstantExpression expressionWithInt:NO],
+                                         [IFConstantExpression expressionWithInt:YES],
+                                         [IFConstantExpression expressionWithInt:1],
+                                         [IFConstantExpression expressionWithInt:1],
+                                         nil];
+    
+    IFExpression* maskImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];
+    
     return [NSArray arrayWithObjects:
-            loadExpression,
-            [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
-             loadExpression,
-             [IFConstantExpression expressionWithInt:4],
-             nil],
+            rgbaImageExpression,
+            maskImageExpression,
+            [IFOperatorExpression expressionWithOperatorNamed:@"array" operands:rgbaImageExpression, rgbaImageExpression, nil],
+            [IFOperatorExpression expressionWithOperatorNamed:@"array" operands:maskImageExpression, maskImageExpression, nil],
             nil];
-  else
+  } else
     return [NSArray array];
 }
 

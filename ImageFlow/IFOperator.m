@@ -26,6 +26,7 @@ static NSDictionary* allOperatorsByName;
   
   allOperators = [[NSArray arrayWithObjects:
                    [[[self alloc] initWithName:@"array"] autorelease],
+                   [[[self alloc] initWithName:@"average"] autorelease],
                    [[[self alloc] initWithName:@"blend"] autorelease],
                    [[[self alloc] initWithName:@"channel-to-mask"] autorelease],
                    [[[self alloc] initWithName:@"checkerboard"] autorelease],

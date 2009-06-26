@@ -14,6 +14,8 @@
 
 @implementation IFTypeVar
 
+// TODO: remove index and use object identity instead (if possible)
+
 + (id)typeVarWithIndex:(int)theIndex;
 {
   return [[[self alloc] initWithIndex:theIndex] autorelease];

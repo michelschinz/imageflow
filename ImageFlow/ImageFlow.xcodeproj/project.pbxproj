@@ -16,6 +16,8 @@
 		FA001F7F0ED419A00016630E /* dragBadge5.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA001F7B0ED419A00016630E /* dragBadge5.tiff */; };
 		FA0079E80CA53D9900E7B2D0 /* IFTreeNodeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */; };
 		FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA033C780ACD647500D2775B /* libcurses.dylib */; };
+		FA0527FA0FF39ECA00F8F15B /* IFAverageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0527F90FF39ECA00F8F15B /* IFAverageFilter.m */; };
+		FA0527FE0FF3A1D600F8F15B /* IFAverageCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0527FD0FF3A1D600F8F15B /* IFAverageCIFilter.m */; };
 		FA0606240914B1FF002A2527 /* IFExpressionVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */; };
 		FA0607F809151F8C002A2527 /* IFExpressionPlugger.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */; };
 		FA07FE130B3145FA00057249 /* surrogate_parent_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */; };
@@ -277,6 +279,10 @@
 		FA0079E50CA53D9900E7B2D0 /* IFTreeNodeFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeFilter.h; sourceTree = "<group>"; };
 		FA0079E60CA53D9900E7B2D0 /* IFTreeNodeFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeFilter.m; sourceTree = "<group>"; };
 		FA033C780ACD647500D2775B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = /usr/lib/libcurses.dylib; sourceTree = "<absolute>"; };
+		FA0527F80FF39ECA00F8F15B /* IFAverageFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAverageFilter.h; sourceTree = "<group>"; };
+		FA0527F90FF39ECA00F8F15B /* IFAverageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAverageFilter.m; sourceTree = "<group>"; };
+		FA0527FC0FF3A1D600F8F15B /* IFAverageCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAverageCIFilter.h; sourceTree = "<group>"; };
+		FA0527FD0FF3A1D600F8F15B /* IFAverageCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAverageCIFilter.m; sourceTree = "<group>"; };
 		FA0606210914B1FF002A2527 /* IFExpressionVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionVisitor.h; sourceTree = "<group>"; };
 		FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionVisitor.m; sourceTree = "<group>"; };
 		FA0607F509151F8C002A2527 /* IFExpressionPlugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionPlugger.h; sourceTree = "<group>"; };
@@ -778,6 +784,17 @@
 				FAFCF5E30C9A932C00B69055 /* IFUnsharpMaskFilter.m */,
 			);
 			name = "Unsharp mask";
+			sourceTree = "<group>";
+		};
+		FA0527FB0FF39ED000F8F15B /* Average */ = {
+			isa = PBXGroup;
+			children = (
+				FA0527F80FF39ECA00F8F15B /* IFAverageFilter.h */,
+				FA0527F90FF39ECA00F8F15B /* IFAverageFilter.m */,
+				FA0527FC0FF3A1D600F8F15B /* IFAverageCIFilter.h */,
+				FA0527FD0FF3A1D600F8F15B /* IFAverageCIFilter.m */,
+			);
+			name = Average;
 			sourceTree = "<group>";
 		};
 		FA0607EB09151CBC002A2527 /* Expressions */ = {
@@ -1480,6 +1497,7 @@
 		FAF97C2D08EBF27200FC2B61 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				FA0527FB0FF39ED000F8F15B /* Average */,
 				FA1BF2380918E67F00E288BB /* Blend */,
 				FA256ABB0AE37EEC00077863 /* Channel to mask */,
 				46457A3D09A88038009825E9 /* Color Controls */,
@@ -1886,6 +1904,8 @@
 				FAB599700EE92A5600D75030 /* IFStackLayer.m in Sources */,
 				FA8D66DC0EEC26A500E6A244 /* IFGhostNodeLayer.m in Sources */,
 				FA3B82780FEE29DE00D4687B /* IFPathLayer.m in Sources */,
+				FA0527FA0FF39ECA00F8F15B /* IFAverageFilter.m in Sources */,
+				FA0527FE0FF3A1D600F8F15B /* IFAverageCIFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1927,7 +1947,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ImageFlow_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1955,7 +1975,7 @@
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ImageFlow_Prefix.pch;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

@@ -5,6 +5,7 @@ val compositing_filter :
   [ `NSString ] objc -> Image.t -> Image.t -> [ `CIFilter ] objc
 val affine_transform :
   Image.t -> Affinetransform.t -> [ `CIFilter ] objc
+val average : Image.t array -> [ `CIFilter ] objc
 val blend_color_burn : Image.t -> Image.t -> [ `CIFilter ] objc
 val blend_color_dodge : Image.t -> Image.t -> [ `CIFilter ] objc
 val blend_darken : Image.t -> Image.t -> [ `CIFilter ] objc
