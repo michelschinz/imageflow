@@ -10,12 +10,10 @@
 
 
 @interface IFStaticImageLayer : CALayer {
-  CGSize imageSize;
+
 }
 
 + (id)layerWithImageNamed:(NSString*)theImageName;
 - (id)initWithImageNamed:(NSString*)theImageName;
-
-@property(readonly) CGSize imageSize;
 
 @end

@@ -51,6 +51,13 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   labelLayer.truncationMode = kCATruncationMiddle;
   [self addSublayer:labelLayer];
   
+  // Alias arrow
+  if ([node isAlias]) {
+    aliasArrowLayer = [IFStaticImageLayer layerWithImageNamed:@"alias_arrow"];
+    [self addSublayer:aliasArrowLayer];
+  } else
+    aliasArrowLayer = nil;
+  
   // Folding separator
   foldingSeparatorLayer = [CALayer layer];
   foldingSeparatorLayer.needsDisplayOnBoundsChange = YES;
@@ -115,8 +122,15 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   foldingSeparatorLayer.frame = CGRectMake(0, y, totalWidth, 1.0);
   if (!foldingSeparatorLayer.hidden)
     y += CGRectGetHeight(foldingSeparatorLayer.bounds) + internalMargin;
+
+  const float labelHeight = labelLayer.preferredFrameSize.height;
+  float labelWidth = expressionWidth;
+  if (aliasArrowLayer != nil) {
+    aliasArrowLayer.position = CGPointMake(x + expressionWidth - CGRectGetWidth(aliasArrowLayer.bounds), y + floor((labelHeight - CGRectGetHeight(aliasArrowLayer.bounds)) / 2.0));
+    labelWidth -= CGRectGetWidth(aliasArrowLayer.bounds) + internalMargin;
+  }
   
-  labelLayer.frame = CGRectMake(x, y, expressionWidth, labelLayer.preferredFrameSize.height);
+  labelLayer.frame = CGRectMake(x, y, labelWidth, labelHeight);
   y += CGRectGetHeight(labelLayer.bounds) + internalMargin;
   
   self.bounds = CGRectMake(0, 0, totalWidth, y);

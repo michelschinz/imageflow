@@ -32,7 +32,7 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
   self.needsDisplayOnBoundsChange = YES;
   
   maskIndicatorLayer = [IFStaticImageLayer layerWithImageNamed:@"mask_tag"];
-  maskIndicatorLayer.frame = CGRectMake(CGRectGetWidth(self.frame) - maskIndicatorLayer.imageSize.width, 0, maskIndicatorLayer.imageSize.width, maskIndicatorLayer.imageSize.height);
+  maskIndicatorLayer.position = CGPointMake(CGRectGetWidth(self.frame) - CGRectGetWidth(maskIndicatorLayer.bounds), 0);
   maskIndicatorLayer.autoresizingMask = kCALayerMinXMargin | kCALayerMaxYMargin; // stick to bottom-right edge
   maskIndicatorLayer.hidden = YES;
   [self addSublayer:maskIndicatorLayer];

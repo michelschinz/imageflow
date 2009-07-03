@@ -13,6 +13,7 @@
 #import "IFConstantExpression.h"
 #import "IFCompositeLayer.h"
 #import "IFLayoutParameters.h"
+#import "IFStaticImageLayer.h"
 
 @protocol IFExpressionContentsLayer
 - (void)setExpression:(IFConstantExpression*)newExpression;
@@ -25,8 +26,9 @@
   IFLayoutParameters* layoutParameters;
   IFVariable* canvasBounds;
   
-  // Component layers (not retained)
+  // Sublayers (not retained)
   CATextLayer* labelLayer;
+  IFStaticImageLayer* aliasArrowLayer;
   CALayer* foldingSeparatorLayer;
   CALayer<IFExpressionContentsLayer>* expressionLayer;
   CATextLayer* nameLayer;

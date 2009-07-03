@@ -33,13 +33,12 @@ static CGImageRef createImageNamed(NSString* imageName) {
     return nil;
   
   CGImageRef image = createImageNamed(theImageName);
+  self.anchorPoint = CGPointZero;
+  self.bounds = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
   self.contents = (id)image;
-  imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
   CGImageRelease(image);
 
   return self;
 }
-
-@synthesize imageSize;
 
 @end
