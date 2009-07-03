@@ -11,9 +11,10 @@
 #import "IFExpressionPlugger.h"
 #import "IFType.h"
 
-@interface IFTreeNode (Private)
+@interface IFTreeNode ()
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 @property(retain) NSString* label;
+@property(retain) NSArray* cachedTypes;
 @property(retain) IFExpression* expression;
 @end
 
@@ -39,6 +40,8 @@
 - (void)dealloc;
 {
   OBJC_RELEASE(expression);
+  OBJC_RELEASE(cachedTypes);
+  OBJC_RELEASE(label);
   OBJC_RELEASE(name);
   [super dealloc];
 }
@@ -88,8 +91,11 @@
 
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
+  if (cachedTypes == nil || cachedTypesArity != arity) {
+    self.cachedTypes = [self computePotentialTypesForArity:arity];
+    cachedTypesArity = arity;
+  }
+  return cachedTypes;
 }
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
@@ -183,7 +189,8 @@
   [encoder encodeBool:isFolded forKey:@"isFolded"];
 }
 
-// MARK: (protected)
+// MARK: -
+// MARK: PROTECTED
 
 - (void)updateLabel;
 {
@@ -191,6 +198,18 @@
 }
 
 - (NSString*)computeLabel;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (void)clearPotentialTypesCache;
+{
+  self.cachedTypes = nil;
+  cachedTypesArity = 0;
+}
+
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
@@ -207,25 +226,10 @@
   return nil;
 }
 
-@end
+// MARK: -
+// MARK: PRIVATE
 
-@implementation IFTreeNode (Private)
-
-- (void)setLabel:(NSString*)newLabel;
-{
-  if (newLabel == label)
-    return;
-  [label release];
-  label = [newLabel retain];
-}
-
-- (void)setExpression:(IFExpression*)newExpression;
-{
-  if (newExpression == expression)
-    return;
-  [expression release];
-  expression = [newExpression retain];
-}
+@synthesize label, cachedTypes, expression;
 
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 {
@@ -233,6 +237,8 @@
     return nil;
   name = (theName == nil) ? nil : [theName retain];
   isFolded = theIsFolded;
+  cachedTypes = nil;
+  cachedTypesArity = 0;
   expression = nil;
   return self;
 }

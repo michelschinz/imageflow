@@ -42,6 +42,14 @@ let is_error = function
     Error _ -> true
   | _ -> false
 
+let is_image = function
+    Image _ -> true
+  | _ -> false
+
+let is_mask = function
+    Mask _ -> true
+  | _ -> false
+
 let rec equal e1 e2 =
   let equalArray a1 a2 =
     let rec loop i = (i < 0) || ((equal a1.(i)  a2.(i)) && (loop (i - 1))) in

@@ -32,9 +32,12 @@ let eval expr =
       Rect (Rect.union r1 r2)
 
     (* Image and mask operators *)
-  | Op("average", [| Array a |]) ->
+  | Op("average", [| Array a |]) when Marray.for_all is_image a ->
       let a' = Array.map (function Image i -> i) a in
       out_image (Coreimage.average a')
+  | Op("average", [| Array a |]) when Marray.for_all is_mask a ->
+      let a' = Array.map (function Mask i -> i) a in
+      out_mask (Coreimage.average a')
   | Op("blend", [|Image i1; Image i2; Int m|]) ->
       let m' = Nsstring.stringWithUTF8String
           (Blendmode.to_coreimage (Blendmode.of_int m)) in

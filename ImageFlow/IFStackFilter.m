@@ -17,15 +17,15 @@
 
 @implementation IFStackFilter
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  IFTypeVar* typeVar = [IFTypeVar typeVarWithIndex:0];
+  IFTypeVar* typeVar = [IFTypeVar typeVar];
   IFType* retType = [IFArrayType arrayTypeWithContentType:typeVar];
   if (arity == 0)
     return [NSArray arrayWithObject:retType];
   else {
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
-    for (int i = 1; i <= arity; ++i)
+    for (int i = 0; i < arity; ++i)
       [argTypes addObject:typeVar];
     return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:retType]];
   }

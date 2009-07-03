@@ -59,12 +59,6 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   return settings;
 }
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
-}
-
 - (void)setParentExpression:(IFExpression*)parentExpression atIndex:(unsigned)index;
 {
   [parentExpressions setObject:parentExpression forKey:[NSNumber numberWithUnsignedInt:index]];
@@ -220,6 +214,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   } else if (context == IFSettingsValueDidChangeContext) {
     [self updateLabel];
     [self updateExpression];
+    [self clearPotentialTypesCache];
   } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }

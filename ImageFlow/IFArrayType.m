@@ -35,7 +35,7 @@
 
 - (NSString*)description;
 {
-  return [[contentType description] stringByAppendingString:@"[]"];
+  return [NSString stringWithFormat:@"Array[%@]", [contentType description]];
 }
 
 - (BOOL)isEqual:(id)other;

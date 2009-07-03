@@ -1,34 +1,6 @@
 open Expr
 open Type
 
-(* Make sure that all types use a different set of type variables *)
-let next_free_var =
-  let counter = ref (-1) in fun () -> incr counter; !counter
-let alpha_rename_tvars types =
-  let rec alpha_rename subst = function
-      TVar i ->
-        begin try
-          (subst, TVar (List.assoc i subst))
-        with Not_found ->
-          let new_i = next_free_var() in
-          ((i, new_i) :: subst, TVar new_i)
-        end
-    | TFun (tas, tr) ->
-        let (subst', tas') = Array.fold_right
-            (fun t (subst, acc) ->
-              let (subst', t') = alpha_rename subst t in
-              (subst', t' :: acc))
-            tas
-            (subst, []) in
-        let (subst'', tr') = alpha_rename subst' tr in
-        (subst'', TFun(Array.of_list tas', tr'))
-    | TArray t ->
-        let (subst', t') = alpha_rename subst t in
-        (subst', TArray t')
-    | basic_type ->
-        (subst, basic_type)
-  in List.map (fun t -> snd (alpha_rename [] t)) types
-
 let rec apply_subst s = function
     TVar i as var ->
       begin try
@@ -41,6 +13,8 @@ let rec apply_subst s = function
       TFun (Array.map (apply_subst s) ta, apply_subst s tr)
   | TArray t ->
       TArray (apply_subst s t)
+  | TImage t ->
+      TImage (apply_subst s t)
   | basic_type ->
       basic_type
 
@@ -50,6 +24,7 @@ let rec occurs i = function
     TVar j -> i = j
   | TFun (ta, tr) -> (occurs i tr) || (Marray.exists (occurs i) ta)
   | TArray t -> occurs i t
+  | TImage t -> occurs i t
   | _ -> false
 
 let unify cs =
@@ -105,7 +80,7 @@ let valid_types preds types =
           loop ((List.map (apply_subst subst) c) :: valid_confs) cs
         with Unification_failure ->
           loop valid_confs cs
-  in loop [] (Mlist.cartesian_product (List.map alpha_rename_tvars types))
+  in loop [] (Mlist.cartesian_product types)
 
 let check preds types =
   match valid_types preds types with
@@ -148,9 +123,8 @@ let verbose_check constraints possible_types =
     print_newline()) constraints;
   print_string "possible types:\n";
   List.iter (fun ts ->
-    List.iter (fun t ->
-      print_string (Type.to_string t);
-      print_newline()) ts)
+    List.iter (fun t -> print_string (Type.to_string t); print_string " | ") ts;
+    print_newline())
     possible_types;
   let r = check constraints possible_types in
   print_endline ("res: " ^ (string_of_bool r));

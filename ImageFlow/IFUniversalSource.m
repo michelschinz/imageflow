@@ -31,17 +31,17 @@ static NSArray* sourceFileNames;
   sourceFileNames = [fileNames retain];
 }
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil)
-    types = [[NSArray arrayWithObjects:
-              [IFImageType imageRGBAType],
-              [IFImageType maskType],
-              [IFArrayType arrayTypeWithContentType:[IFImageType imageRGBAType]],
-              [IFArrayType arrayTypeWithContentType:[IFImageType maskType]],
-              nil] retain];
-  return (arity == 0) ? types : [NSArray array];
+  if (arity == 0)
+    return [NSArray arrayWithObjects:
+            [IFImageType imageRGBAType],
+            [IFImageType maskType],
+            [IFArrayType arrayTypeWithContentType:[IFImageType imageRGBAType]],
+            [IFArrayType arrayTypeWithContentType:[IFImageType maskType]],
+            nil];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

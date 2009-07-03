@@ -113,9 +113,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   [encoder encodeObject:original forKey:@"original"];
 }
 
-// MARK: -
-// MARK: PROTECTED
-
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   NSAssert(context == IFOriginalExpressionChangedContext, @"unexpected context");
@@ -123,9 +120,22 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   [self updateExpression];
 }
 
+// MARK: -
+// MARK: PROTECTED
+
 - (NSString*)computeLabel;
 {
   return original.label;
+}
+
+- (void)clearPotentialTypesCache;
+{
+  [original clearPotentialTypesCache];
+}
+
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
+{
+  return [original computePotentialTypesForArity:arity];
 }
 
 - (IFExpression*)computeExpression;

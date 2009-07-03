@@ -18,15 +18,14 @@
 
 @implementation IFChannelToMaskFilter
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                               returnType:[IFImageType maskType]]] retain];
-  }
-  return (arity == 1) ? types : [NSArray array];
+  if (arity == 1)
+    return [NSArray arrayWithObject:
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
+                                     returnType:[IFImageType maskType]]];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

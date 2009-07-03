@@ -19,16 +19,15 @@
 
 @implementation IFGaussianBlurFilter
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil) {
-    IFImageType* imageType = [IFImageType imageTypeWithPixelType:[IFTypeVar typeVarWithIndex:0]];
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
-                               returnType:imageType]] retain];
-  }
-  return (arity == 1) ? types : [NSArray array];
+  if (arity == 1) {
+    IFImageType* imageType = [IFImageType imageTypeWithPixelType:[IFTypeVar typeVar]];
+    return [NSArray arrayWithObject:
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
+                                     returnType:imageType]];
+  } else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

@@ -14,7 +14,6 @@
   int index;
 }
 
-+ (id)typeVarWithIndex:(int)theIndex;
-- (id)initWithIndex:(int)theIndex;
++ (id)typeVar;
 
 @end

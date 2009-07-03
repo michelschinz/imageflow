@@ -33,15 +33,14 @@ static NSArray* parentNames = nil;
   parentNames = [[NSArray arrayWithObjects:@"background",@"foreground",nil] retain];
 }
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType imageRGBAType],nil]
-                               returnType:[IFImageType imageRGBAType]]] retain];
-  }
-  return (arity == 2) ? types : [NSArray array];
+  if (arity == 2)
+    return [NSArray arrayWithObject:
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType imageRGBAType],nil]
+                                     returnType:[IFImageType imageRGBAType]]];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

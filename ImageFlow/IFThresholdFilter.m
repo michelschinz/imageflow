@@ -18,18 +18,17 @@
 
 @implementation IFThresholdFilter
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObjects:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                               returnType:[IFImageType imageRGBAType]],
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType maskType]]
-                               returnType:[IFImageType maskType]],
-      nil] retain];
-  }
-  return (arity == 1) ? types : [NSArray array];
+  if (arity == 1)
+    return [NSArray arrayWithObjects:
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
+                                     returnType:[IFImageType imageRGBAType]],
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType maskType]]
+                                     returnType:[IFImageType maskType]],
+            nil];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

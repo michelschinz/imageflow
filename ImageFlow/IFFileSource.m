@@ -17,12 +17,12 @@
 
 @implementation IFFileSource
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil)
-    types = [[NSArray arrayWithObject:[IFImageType imageRGBAType]] retain];
-  return (arity == 0) ? types : [NSArray array];
+  if (arity == 0)
+    return [NSArray arrayWithObject:[IFImageType imageRGBAType]];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

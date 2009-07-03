@@ -12,21 +12,17 @@
 #import <caml/memory.h>
 #import <caml/alloc.h>
 
+@interface IFTypeVar ()
+- (id)initWithIndex:(int)theIndex;
+@end
+
+
 @implementation IFTypeVar
 
-// TODO: remove index and use object identity instead (if possible)
-
-+ (id)typeVarWithIndex:(int)theIndex;
++ (id)typeVar;
 {
-  return [[[self alloc] initWithIndex:theIndex] autorelease];
-}
-
-- (id)initWithIndex:(int)theIndex;
-{
-  if (![super init])
-    return nil;
-  index = theIndex;
-  return self;
+  static int currentIndex = 0;
+  return [[[self alloc] initWithIndex:currentIndex++] autorelease];
 }
 
 - (NSString*)description;
@@ -56,6 +52,17 @@
   block = caml_alloc(1, IFTypeTag_TVar);
   Store_field(block, 0, Val_int(index));
   CAMLreturn(block);
+}
+
+// MARK: -
+// MARK: PRIVATE
+
+- (id)initWithIndex:(int)theIndex;
+{
+  if (![super init])
+    return nil;
+  index = theIndex;
+  return self;
 }
 
 @end

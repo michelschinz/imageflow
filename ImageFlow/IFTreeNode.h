@@ -15,6 +15,8 @@
   NSString* name;
   NSString* label;
   BOOL isFolded;
+  NSArray* cachedTypes;
+  unsigned cachedTypesArity;
   IFExpression* expression;
 }
 
@@ -31,7 +33,7 @@
 
 @property(readonly) IFTreeNode* original;
 @property(readonly) IFEnvironment* settings;
-@property(readonly) IFExpression* expression;
+@property(readonly, retain) IFExpression* expression;
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
@@ -61,6 +63,8 @@
 
 - (void)updateLabel;
 - (NSString*)computeLabel; // abstract
+- (void)clearPotentialTypesCache;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity; // abstract
 - (void)updateExpression;
 - (IFExpression*)computeExpression; // abstract
 

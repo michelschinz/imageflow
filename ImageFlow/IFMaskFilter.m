@@ -33,15 +33,14 @@ static IFConstantExpression* maskColor = nil;
   maskColor = [[IFConstantExpression expressionWithColorNS:[NSColor colorWithCalibratedRed:1.0 green:0 blue:0 alpha:0.8]] retain];
 }
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  static NSArray* types = nil;
-  if (types == nil) {
-    types = [[NSArray arrayWithObject:
-      [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil]
-                               returnType:[IFImageType imageRGBAType]]] retain];
-  }
-  return (arity == 2) ? types : [NSArray array];
+  if (arity == 2)
+    return [NSArray arrayWithObject:
+            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil]
+                                     returnType:[IFImageType imageRGBAType]]];
+  else
+    return [NSArray array];
 }
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;

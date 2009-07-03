@@ -24,4 +24,7 @@ type t =
 val is_value: t -> bool
 val is_error: t -> bool
 
+val is_image: t -> bool
+val is_mask: t -> bool
+
 val equal: t -> t -> bool

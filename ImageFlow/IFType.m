@@ -25,7 +25,7 @@ void camlTypeToObjcType(value camlType, IFType** objcType) {
     *objcType = [IFBasicType basicTypeWithTag:Int_val(camlType)];
   else switch (Tag_val(camlType)) {
     case IFTypeTag_TVar: {
-      *objcType = [IFTypeVar typeVarWithIndex:Int_val(Field(camlType,0))];
+      *objcType = [[[IFTypeVar alloc] initWithIndex:Int_val(Field(camlType,0))] autorelease];
     } break;
     case IFTypeTag_TFun: {
       camlArgTypes = Field(camlType,0);

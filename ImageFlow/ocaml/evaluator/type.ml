@@ -21,7 +21,7 @@ let rec to_string = function
       let tsl = Array.to_list ts in
       "(" ^ (String.concat "," (List.map to_string tsl)) ^ ")=>" ^ (to_string t)
   | TArray t ->
-      (to_string t) ^ "[]"
+      "Array[" ^ (to_string t) ^ "]"
   | TImage t ->
       "Image[" ^ (to_string t) ^ "]"
   | TColor_RGBA ->

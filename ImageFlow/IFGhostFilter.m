@@ -21,15 +21,15 @@
   return YES;
 }
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 0)
-    return [NSArray arrayWithObject:[IFTypeVar typeVarWithIndex:0]];
+    return [NSArray arrayWithObject:[IFTypeVar typeVar]];
   else {
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
     for (int i = 1; i <= arity; ++i)
-      [argTypes addObject:[IFTypeVar typeVarWithIndex:i]];
-    return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:[IFTypeVar typeVarWithIndex:0]]];
+      [argTypes addObject:[IFTypeVar typeVar]];
+    return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:[IFTypeVar typeVar]]];
   }
 }
 
