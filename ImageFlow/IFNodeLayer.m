@@ -116,8 +116,10 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
     y += CGRectGetHeight(nameLayer.bounds) + internalMargin;
   }
   
-  expressionLayer.position = CGPointMake(x + round((expressionWidth - CGRectGetWidth(expressionLayer.bounds)) / 2.0), y);
-  y += CGRectGetHeight(expressionLayer.bounds) + internalMargin;
+  if (expressionLayer != nil) {
+    expressionLayer.position = CGPointMake(x + round((expressionWidth - CGRectGetWidth(expressionLayer.bounds)) / 2.0), y);
+    y += CGRectGetHeight(expressionLayer.bounds) + internalMargin;
+  }
   
   foldingSeparatorLayer.frame = CGRectMake(0, y, totalWidth, 1.0);
   if (!foldingSeparatorLayer.hidden)

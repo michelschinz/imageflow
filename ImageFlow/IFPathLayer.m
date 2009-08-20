@@ -39,6 +39,7 @@
   path = CGPathRetain(newPath);
   
   self.bounds = CGPathGetBoundingBox(path);
+  [self setNeedsDisplay];
 }
 
 @synthesize lineWidth, strokeColor;
