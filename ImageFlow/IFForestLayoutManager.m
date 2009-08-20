@@ -161,7 +161,6 @@
                                          : 0.0);
       outputConnectorLayer.width = outputConnectorLayer.leftReach + currWidth + outputConnectorLayer.rightReach;
       
-      outputConnectorCompositeLayer.bounds = (CGRect){ CGPointZero, [outputConnectorCompositeLayer preferredFrameSize] };
       outputConnectorCompositeLayer.position = CGPointMake(currLeft - outputConnectorLayer.leftReach, 0);
       
       if (i == 0 && !parentsInFoldedSubtree)
@@ -174,7 +173,7 @@
   const float directParentsRight = CGRectGetMaxX(directParentLayers.lastLayer.frame);
   
   IFCompositeLayer* rootLayer = [nodeLayers objectForKey:root];
-  const CGSize rootSize = [rootLayer preferredFrameSize];
+  const CGSize rootSize = rootLayer.bounds.size;
   const float rootColumnLeft = fmax(round(directParentsLeft + (directParentsRight - directParentsLeft - rootSize.width) / 2.0), 0.0);
 
   // Layout input connector

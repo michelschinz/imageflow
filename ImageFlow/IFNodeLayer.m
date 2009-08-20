@@ -108,7 +108,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
 
   const float x = internalMargin;
   float y = internalMargin;
-  const float expressionWidth = fmax(layoutParameters.thumbnailWidth, CGRectGetWidth(expressionLayer.bounds));
+  const float expressionWidth = fmax(layoutParameters.thumbnailWidth, expressionLayer != nil ? CGRectGetWidth(expressionLayer.bounds) : 0.0);
   const float totalWidth = expressionWidth + 2.0 * internalMargin;
   
   if (nameLayer.string != nil) {
