@@ -14,10 +14,12 @@
   IFTreeCursorPair* editCursor;
   IFTree* tree;
   IFTreeNode* node;
+  unsigned index;
 
   IFTreeCursorPair* viewCursor;
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
+  unsigned viewLockedIndex;
 }
 
 + (IFCompositeTreeCursorPair*)compositeWithEditCursor:(IFTreeCursorPair*)theEditCursor viewCursor:(IFTreeCursorPair*)theViewCursor;

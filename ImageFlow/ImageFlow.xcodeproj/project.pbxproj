@@ -1198,6 +1198,21 @@
 			name = Document;
 			sourceTree = "<group>";
 		};
+		FA901600103D590400D7E945 /* Cursors */ = {
+			isa = PBXGroup;
+			children = (
+				FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */,
+				FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */,
+				FAEEBAF70EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.h */,
+				FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */,
+				FAEEBA660EC2D6E500FBC424 /* IFSplittableTreeCursorPair.h */,
+				FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */,
+				FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */,
+				FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */,
+			);
+			name = Cursors;
+			sourceTree = "<group>";
+		};
 		FA9C6CEF0E1E2702004A6953 /* Forest & Palette */ = {
 			isa = PBXGroup;
 			children = (
@@ -1209,16 +1224,9 @@
 				FA64BB690E96772D001ABDD3 /* IFPaletteView.m */,
 				FA9EEF770E8965A000328B8E /* IFPaletteLayoutManager.h */,
 				FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */,
-				FAF7F0E40B083D1700BF6B7A /* IFTreeCursorPair.h */,
-				FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */,
-				FAEEBAF70EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.h */,
-				FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */,
-				FAEEBA660EC2D6E500FBC424 /* IFSplittableTreeCursorPair.h */,
-				FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */,
-				FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */,
-				FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */,
 				FAA3C44B0ED40F3C0015BD95 /* IFDragBadgeCreator.h */,
 				FAA3C44C0ED40F3C0015BD95 /* IFDragBadgeCreator.m */,
+				FA901600103D590400D7E945 /* Cursors */,
 				FAB17A560E4CA703008BEC70 /* Layers */,
 				FAB17A570E4CA70E008BEC70 /* Layer sets */,
 			);

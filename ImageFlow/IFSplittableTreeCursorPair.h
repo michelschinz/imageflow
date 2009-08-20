@@ -13,9 +13,11 @@
 @interface IFSplittableTreeCursorPair : IFTreeCursorPair {
   IFTree* tree;
   IFTreeNode* node;
+  unsigned index;
   
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
+  unsigned viewLockedIndex;
   
   BOOL isViewLocked;
   NSAffineTransform* editViewTransform;

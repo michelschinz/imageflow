@@ -13,12 +13,14 @@
 @interface IFTreeCursorPair : NSObject {
 }
 
-- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode index:(unsigned)newIndex;
 @property(readonly, retain) IFTree* tree;
 @property(readonly, retain) IFTreeNode* node;
+@property(readonly) unsigned index;
 
 @property(readonly, retain) IFTree* viewLockedTree;
 @property(readonly, retain) IFTreeNode* viewLockedNode;
+@property(readonly) unsigned viewLockedIndex;
 
 @property(readonly) BOOL isViewLocked;
 

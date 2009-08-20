@@ -981,7 +981,7 @@ static enum {
 
 - (void)setCursorNode:(IFTreeNode*)newCursorNode;
 {
-  [cursors setTree:document.tree node:newCursorNode];
+  [cursors setTree:document.tree node:newCursorNode index:0]; // FIXME: use correct index
 }
 
 - (IFTreeNode*)cursorNode;

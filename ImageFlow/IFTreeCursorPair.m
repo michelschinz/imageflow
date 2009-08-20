@@ -11,7 +11,7 @@
 
 @implementation IFTreeCursorPair
 
-- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode index:(unsigned)newIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
 }
@@ -28,6 +28,12 @@
   return nil;
 }
 
+- (unsigned)index;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
+}
+
 - (IFTree*)viewLockedTree;
 {
   [self doesNotRecognizeSelector:_cmd];
@@ -38,6 +44,12 @@
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
+}
+
+- (unsigned)viewLockedIndex;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
 }
 
 - (BOOL)isViewLocked;

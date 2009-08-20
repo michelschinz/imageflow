@@ -13,6 +13,7 @@
 @interface IFUnsplittableTreeCursorPair : IFTreeCursorPair {
   IFTree* tree;
   IFTreeNode* node;
+  unsigned index;
 }
 
 + (IFUnsplittableTreeCursorPair*)unsplittableTreeCursorPair;
