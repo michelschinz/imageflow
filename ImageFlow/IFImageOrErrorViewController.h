@@ -42,11 +42,11 @@ typedef enum {
 - (id)init;
 - (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar;
 
-@property(readonly, assign) IFImageView* imageView;
+@property(readonly, retain) IFImageView* imageView;
 @property(readonly, assign) NSView* activeView;
 @property IFImageViewMode mode;
-@property(readonly, assign) NSString* errorMessage;
-@property(retain) NSArray* variants;
+@property(readonly, copy) NSString* errorMessage;
+@property(copy) NSArray* variants;
 @property(retain) NSString* activeVariant;
 
 @end

@@ -12,17 +12,11 @@
 #import "IFOperatorExpression.h"
 #import "NSAffineTransformIFAdditions.h"
 
-typedef enum {
-  IFFilterDelegateHasMouseDown    = 1<<0,
-  IFFilterDelegateHasMouseDragged = 1<<1,
-  IFFilterDelegateHasMouseUp      = 1<<2
-} IFFilterDelegateCapabilities;
-
-@interface IFImageOrErrorViewController (Private)
-- (void)setActiveView:(NSView*)newActiveView;
-- (void)setErrorMessage:(NSString*)newErrorMessage;
-- (void)setViewedNode:(IFTreeNode*)newViewedNode;
-- (void)setExpression:(IFExpression*)newExpression;
+@interface IFImageOrErrorViewController ()
+@property(assign) NSView* activeView;
+@property(copy) NSString* errorMessage;
+@property(retain) IFTreeNode* viewedNode;
+@property(retain) IFExpression* expression;
 - (void)updateImageViewVisibleBounds;
 - (void)updateExpression;
 - (void)updateAnnotations;
@@ -103,16 +97,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [self setActiveView:imageOrErrorTabView];
 }
 
-- (IFImageView*)imageView;
-{
-  return imageView;
-}
+@synthesize imageView, activeView;
 
-- (NSView*)activeView;
-{
-  return activeView;
-}
-
+@synthesize mode;
 - (void)setMode:(IFImageViewMode)newMode;
 {
   if (newMode == mode)
@@ -124,18 +111,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [self updateAnnotations];
 }
 
-- (IFImageViewMode)mode;
-{
-  return mode;
-}
-
 @synthesize errorMessage;
 
-- (NSArray*)variants;
-{
-  return variants;
-}
-
+@synthesize variants;
 - (void)setVariants:(NSArray*)newVariants;
 {
   if (newVariants == variants)
@@ -148,11 +126,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   variants = [newVariants copy];
 }
 
-- (NSString*)activeVariant;
-{
-  return activeVariant;
-}
-
+@synthesize activeVariant;
 - (void)setActiveVariant:(NSString*)newActiveVariant;
 {
   if (newActiveVariant == activeVariant)
@@ -179,10 +153,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [editedNode mouseUp:event inView:imageView viewFilterTransform:[cursorsVar.value viewEditTransform]];
 }
 
-@end
-
-@implementation IFImageOrErrorViewController (Private)
-
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
 {
   if (context == IFViewedExpressionDidChange) {
@@ -200,30 +170,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   } else if (context == IFCanvasBoundsDidChange) {
     [self updateImageViewVisibleBounds];
   } else
-    NSAssert1(NO, @"unexpected context %@", context);
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (void)setActiveView:(NSView*)newActiveView;
-{
-  activeView = newActiveView;
-}
+// MARK: -
+// MARK: PRIVATE
 
-- (void)setErrorMessage:(NSString*)newErrorMessage;
-{
-  if (newErrorMessage == errorMessage)
-    return;
-  [errorMessage release];
-  errorMessage = [newErrorMessage copy];
-}
+@synthesize activeView;
+@synthesize errorMessage;
+@synthesize viewedNode;
 
-- (void)setViewedNode:(IFTreeNode*)newViewedNode;
-{
-  if (newViewedNode == viewedNode)
-    return;
-  [viewedNode release];
-  viewedNode = [newViewedNode retain];
-}
-
+@synthesize expression;
 - (void)setExpression:(IFExpression*)newExpression;
 {
   if (newExpression == expression)
@@ -237,8 +194,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [expression release];
   expression = [newExpression retain];
 
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression
-                                                                            cutout:[canvasBoundsVar.value rectValue]];
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression cutout:[canvasBoundsVar.value rectValue]];
 
   if ([evaluatedExpr isError]) {
     [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
@@ -259,7 +215,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   NSRect realCanvasBounds = NSInsetRect([canvasBoundsVar.value rectValue], -20, -20);
   [imageView setVisibleBounds:realCanvasBounds];
   
-  // HACK should avoid this, to prevent redrawing of the whole image!
+  // FIXME: should avoid this, to prevent redrawing of the whole image!
   [self setExpression:[IFOperatorExpression nop]];
   [self updateExpression];
 }
