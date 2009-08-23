@@ -187,27 +187,38 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     return;
 
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  NSRect dirtyRect = (expression == nil || newExpression == nil)
-    ? NSRectInfinite()
-    : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
 
-  [expression release];
-  expression = [newExpression retain];
+  IFConstantExpression* evaluatedNewExpr = [evaluator evaluateExpression:newExpression];
 
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsMaskedImage:expression cutout:[canvasBoundsVar.value rectValue]];
-
-  if ([evaluatedExpr isError]) {
-    [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedExpr message]];
+  // TODO: make dirty rect. computation work in the presence of arrays. Old code:
+//  NSRect dirtyRect = (expression == nil || newExpression == nil)
+//  ? NSRectInfinite()
+//  : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
+  
+  if ([evaluatedNewExpr isImage]) {
+    [imageView setImage:[(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:evaluatedNewExpr] image] dirtyRect:NSRectInfinite()];
+    [self setErrorMessage:nil];
+    [imageOrErrorTabView selectTabViewItemAtIndex:0];
+    [self setActiveView:imageView];
+  } else if ([evaluatedNewExpr isArray]) {
+    unsigned imageIndex = [((IFTreeCursorPair*)cursorsVar.value) viewLockedIndex];
+    IFExpression* imageExpr = [[evaluatedNewExpr flatArrayValue] objectAtIndex:imageIndex];
+    // TODO: compute the right dirty rect. in this case too
+    [imageView setImage:[(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:imageExpr] image] dirtyRect:NSRectInfinite()];
+    [self setErrorMessage:nil];
+    [imageOrErrorTabView selectTabViewItemAtIndex:0];
+    [self setActiveView:imageView];
+  } else {
+    NSAssert([evaluatedNewExpr isError], @"unexpected expression");
+    [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedNewExpr message]];
     [imageOrErrorTabView selectTabViewItemAtIndex:1];
     [self setActiveView:imageOrErrorTabView];
     [imageView setImage:nil dirtyRect:NSRectInfinite()];
     [self setMode:IFImageViewModeEdit];
-  } else {
-    [imageView setImage:[(IFImageConstantExpression*)evaluatedExpr image] dirtyRect:dirtyRect];
-    [self setErrorMessage:nil];
-    [imageOrErrorTabView selectTabViewItemAtIndex:0];
-    [self setActiveView:imageView];
   }
+
+  [expression release];
+  expression = [newExpression retain];  
 }
 
 - (void)updateImageViewVisibleBounds;

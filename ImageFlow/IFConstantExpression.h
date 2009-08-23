@@ -27,6 +27,7 @@
 - initWithObject:(NSObject*)theConstant;
 
 - (NSArray*)arrayValue;
+- (NSArray*)flatArrayValue;
 - (NSObject*)objectValue;
 - (NSPoint)pointValueNS;
 - (NSRect)rectValueNS;

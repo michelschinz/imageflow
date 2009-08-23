@@ -96,6 +96,19 @@
   return (NSArray*)object;
 }
 
+- (NSArray*)flatArrayValue;
+{
+  NSArray* array = [self arrayValue];
+  if ([array count] == 0 || ![[array objectAtIndex:0] isArray])
+    return array;
+  else {
+    NSMutableArray* flattenedArray = [NSMutableArray array];
+    for (IFConstantExpression* elem in array)
+      [flattenedArray addObjectsFromArray:[elem flatArrayValue]];
+    return flattenedArray;
+  }
+}
+
 - (NSPoint)pointValueNS;
 {
   NSAssert1([object isKindOfClass:[NSValue class]], @"object is not a value: %@",object);

@@ -66,19 +66,19 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
   if (newExpression == expression)
     return;
 
-  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  NSRect dirtyRect = (expression == nil || newExpression == nil)
-    ? NSRectInfinite()
-    : [evaluator deltaFromOld:expression toNew:newExpression];
-  
-  [expression release];
-  expression = [newExpression retain];
-  
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsImage:expression];
-  if ([evaluatedExpr isError])
-    [imageView setImage:nil dirtyRect:NSRectInfinite()];
-  else
-    [imageView setImage:[(IFImageConstantExpression*)evaluatedExpr image] dirtyRect:dirtyRect];
+//  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
+//  NSRect dirtyRect = (expression == nil || newExpression == nil)
+//    ? NSRectInfinite()
+//    : [evaluator deltaFromOld:expression toNew:newExpression];
+//  
+//  [expression release];
+//  expression = [newExpression retain];
+//  
+//  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpressionAsImage:expression];
+//  if ([evaluatedExpr isError])
+//    [imageView setImage:nil dirtyRect:NSRectInfinite()];
+//  else
+//    [imageView setImage:[(IFImageConstantExpression*)evaluatedExpr image] dirtyRect:dirtyRect];
 }
 
 - (void)updateExpression;

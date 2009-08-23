@@ -48,6 +48,7 @@
   countLayer.font = [IFLayoutParameters labelFont];
   countLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
   countLayer.foregroundColor = labelC;
+  // TODO: rotate count layer (the code below behaves strangely)
 //  [countLayer setAffineTransform:CGAffineTransformMakeRotation(pi / 2.0)];
   [self addSublayer:countLayer];
   
