@@ -106,10 +106,11 @@ let first_valid_configuration preds possible_types =
       None
   | types ->
       let make_config types = (List.map2
-                                 (fun tp tps -> Mlist.index (can_unify tp) tps)
+                                 (fun tp tps ->
+                                   (Mlist.index (can_unify tp) tps, tp))
                                  types
                                  possible_types) in
-      (* TODO sort configs. according to their histogram? *)
+      (* TODO: sort configs. according to their histogram? *)
       Some (List.hd (List.sort compare (List.map make_config types)))
 
 (* Debugging *)

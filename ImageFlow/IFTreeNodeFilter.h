@@ -10,11 +10,13 @@
 
 #import "IFTreeNode.h"
 #import "IFEnvironment.h"
+#import "IFType.h"
 
 @interface IFTreeNodeFilter : IFTreeNode<NSCoding> {
   IFEnvironment* settings;
   unsigned activeTypeIndex;
   NSMutableDictionary* parentExpressions;
+  IFType* type;
   NSNib* settingsNib;
 }
 

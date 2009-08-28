@@ -428,11 +428,12 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     for (IFTreeNode* parent in [self parentsOfNode:node])
       [parentExpressions setObject:[nodeExpressions objectForKey:parent.original] forKey:[NSNumber numberWithUnsignedInt:j++]];
     
-    unsigned activeTypeIndex = [[config objectAtIndex:i] unsignedIntValue];
+    NSArray* nodeConfig = [config objectAtIndex:i];
+    unsigned activeTypeIndex = [[nodeConfig objectAtIndex:0] unsignedIntValue];
     IFExpression* nodeExpression = [node expressionForSettings:node.settings parentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
     CFDictionarySetValue((CFMutableDictionaryRef)nodeExpressions, node, nodeExpression);
     if (![nonConfiguredNodes containsObject:node])
-      [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
+      [node setParentExpressions:parentExpressions activeTypeIndex:activeTypeIndex type:[nodeConfig objectAtIndex:1]];
   }
 }
 

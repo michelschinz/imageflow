@@ -10,6 +10,7 @@
 
 #import "IFExpression.h"
 #import "IFImageView.h"
+#import "IFType.h"
 
 @interface IFTreeNode : NSObject<NSCoding> {
   NSString* name;
@@ -34,12 +35,13 @@
 @property(readonly) IFTreeNode* original;
 @property(readonly) IFEnvironment* settings;
 @property(readonly, retain) IFExpression* expression;
+@property(readonly, retain) IFType* type;
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
-- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex type:(IFType*)type;
 
 // MARK: Tree view support
 

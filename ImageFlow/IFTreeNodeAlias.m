@@ -48,6 +48,11 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return original;
 }
 
+- (IFType*)type;
+{
+  return original.type;
+}
+
 // MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;

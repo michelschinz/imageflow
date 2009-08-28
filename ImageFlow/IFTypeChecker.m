@@ -36,14 +36,14 @@ static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** co
 - (NSArray*)configureDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
 {
   NSArray* configuration;
-  camlConfigureDAG(dag,potentialTypes,&configuration);
+  camlConfigureDAG(dag, potentialTypes, &configuration);
   return configuration;
 }
 
 - (NSArray*)inferTypesForDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes parametersCount:(int)paramsCount;
 {
   NSArray* inferredTypes;
-  camlInferTypes(paramsCount,dag,potentialTypes,&inferredTypes);
+  camlInferTypes(paramsCount, dag, potentialTypes, &inferredTypes);
   return inferredTypes;
 }
 
@@ -128,7 +128,7 @@ static value camlTypecheck(NSArray* dag, NSArray* potentialTypes) {
 
 static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** configuration) {
   CAMLparam0();
-  CAMLlocal4(camlDAG, camlTypes, camlConfigurationOption, camlConfiguration);
+  CAMLlocal5(camlDAG, camlTypes, camlConfigurationOption, camlConfiguration, camlPair);
   
   camlDAG = dagToCaml(dag);
   camlTypes = potentialTypesToCaml(potentialTypes);
@@ -137,12 +137,16 @@ static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** co
     configClosure = caml_named_value("Typechecker.first_valid_configuration");
   camlConfigurationOption = caml_callback2(*configClosure, camlDAG, camlTypes);
 
-  if (!Is_long(camlConfigurationOption)) {
+  if (camlConfigurationOption != Val_int(0)) {
     camlConfiguration = Field(camlConfigurationOption, 0);
     NSMutableArray* config = [NSMutableArray array];
     while (camlConfiguration != Val_int(0)) {
-      [config addObject:[NSNumber numberWithInt:Int_val(Field(camlConfiguration,0))]];
-      camlConfiguration = Field(camlConfiguration,1);
+      camlPair = Field(camlConfiguration, 0);
+      [config addObject:[NSArray arrayWithObjects:
+                         [NSNumber numberWithInt:Int_val(Field(camlPair, 0))],
+                         [IFType typeWithCamlType:Field(camlPair, 1)],
+                         nil]];
+      camlConfiguration = Field(camlConfiguration, 1);
     }
     *configuration = config;
   } else

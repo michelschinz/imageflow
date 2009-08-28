@@ -10,6 +10,7 @@
 #import "IFExpressionPlugger.h"
 
 @interface IFTreeNodeFilter ()
+@property(retain) IFType* type;
 - (void)startObservingSettingsKeys:(NSSet*)keys;
 - (void)stopObservingSettingsKeys:(NSSet*)keys;
 @end
@@ -48,6 +49,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   [self stopObservingSettingsKeys:[settings keys]];
   
   OBJC_RELEASE(settingsNib);
+  OBJC_RELEASE(type);
   OBJC_RELEASE(expression);
   OBJC_RELEASE(parentExpressions);
   OBJC_RELEASE(settings);
@@ -65,10 +67,11 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   [self updateExpression];
 }
 
-- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex;
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex type:(IFType*)newType;
 {
   [parentExpressions setDictionary:expressions];
   activeTypeIndex = newActiveTypeIndex;
+  self.type = newType;
   [self updateExpression];
 }
 
@@ -221,6 +224,8 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 // MARK: -
 // MARK: PRIVATE
+
+@synthesize type;
 
 - (void)startObservingSettingsKeys:(NSSet*)keys;
 {
