@@ -11,12 +11,15 @@
 #import "IFErrorConstantExpression.h"
 #import "IFOperatorExpression.h"
 #import "NSAffineTransformIFAdditions.h"
+#import "IFImageType.h"
+#import "IFBlendMode.h"
+#import "IFArrayPath.h"
 
 @interface IFImageOrErrorViewController ()
 @property(assign) NSView* activeView;
 @property(copy) NSString* errorMessage;
 @property(retain) IFTreeNode* viewedNode;
-@property(retain) IFExpression* expression;
+@property(retain) IFExpression* displayedExpression;
 - (void)updateImageViewVisibleBounds;
 - (void)updateExpression;
 - (void)updateAnnotations;
@@ -35,7 +38,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     return nil;
   activeView = nil;
   mode = IFImageViewModeView;
-  expression = nil;
+  displayedExpression = nil;
   errorMessage = nil;
   variants = [[NSArray array] retain];
   activeVariant = nil;
@@ -51,6 +54,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   canvasBoundsVar = [theCanvasBoundsVar retain];
   
   [cursorsVar addObserver:self forKeyPath:@"value.viewLockedNode.expression" options:0 context:IFViewedExpressionDidChange];
+  [cursorsVar addObserver:self forKeyPath:@"value.viewLockedIndex" options:0 context:IFViewedExpressionDidChange];
   [cursorsVar addObserver:self forKeyPath:@"value.node" options:0 context:IFEditedNodeDidChange];
   [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
   
@@ -65,6 +69,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   OBJC_RELEASE(canvasBoundsVar);
   [cursorsVar removeObserver:self forKeyPath:@"value.node"];
+  [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedIndex"];  
   [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedNode.expression"];
   OBJC_RELEASE(cursorsVar);
 
@@ -75,8 +80,8 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   OBJC_RELEASE(variants);
   if (errorMessage != nil)
     OBJC_RELEASE(errorMessage);
-  if (expression != nil)
-    OBJC_RELEASE(expression);
+  if (displayedExpression != nil)
+    OBJC_RELEASE(displayedExpression);
   activeView = nil;
   OBJC_RELEASE(imageView);
   OBJC_RELEASE(imageOrErrorTabView);
@@ -180,45 +185,33 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 @synthesize errorMessage;
 @synthesize viewedNode;
 
-@synthesize expression;
-- (void)setExpression:(IFExpression*)newExpression;
+@synthesize displayedExpression;
+- (void)setDisplayedExpression:(IFExpression*)newDisplayedExpression;
 {
-  if (newExpression == expression)
+  if (newDisplayedExpression == displayedExpression)
     return;
-
+  
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-
-  IFConstantExpression* evaluatedNewExpr = [evaluator evaluateExpression:newExpression];
-
-  // TODO: make dirty rect. computation work in the presence of arrays. Old code:
-//  NSRect dirtyRect = (expression == nil || newExpression == nil)
-//  ? NSRectInfinite()
-//  : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:expression toNew:newExpression]];
+  IFConstantExpression* evaluatedNewExpr = [evaluator evaluateExpression:newDisplayedExpression];
   
   if ([evaluatedNewExpr isImage]) {
-    [imageView setImage:[(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:evaluatedNewExpr] image] dirtyRect:NSRectInfinite()];
-    [self setErrorMessage:nil];
+    NSRect dirtyRect = (displayedExpression == nil || newDisplayedExpression == nil)
+    ? NSRectInfinite()
+    : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:displayedExpression toNew:newDisplayedExpression]];
+    [imageView setImage:[(IFImageConstantExpression*)evaluatedNewExpr image] dirtyRect:dirtyRect];
+    self.errorMessage = nil;
     [imageOrErrorTabView selectTabViewItemAtIndex:0];
-    [self setActiveView:imageView];
-  } else if ([evaluatedNewExpr isArray]) {
-    unsigned imageIndex = [((IFTreeCursorPair*)cursorsVar.value) viewLockedIndex];
-    IFExpression* imageExpr = [[evaluatedNewExpr flatArrayValue] objectAtIndex:imageIndex];
-    // TODO: compute the right dirty rect. in this case too
-    [imageView setImage:[(IFImageConstantExpression*)[evaluator evaluateExpressionAsImage:imageExpr] image] dirtyRect:NSRectInfinite()];
-    [self setErrorMessage:nil];
-    [imageOrErrorTabView selectTabViewItemAtIndex:0];
-    [self setActiveView:imageView];
+    self.activeView = imageView;
   } else {
     NSAssert([evaluatedNewExpr isError], @"unexpected expression");
-    [self setErrorMessage:[(IFErrorConstantExpression*)evaluatedNewExpr message]];
-    [imageOrErrorTabView selectTabViewItemAtIndex:1];
-    [self setActiveView:imageOrErrorTabView];
     [imageView setImage:nil dirtyRect:NSRectInfinite()];
-    [self setMode:IFImageViewModeEdit];
+    self.errorMessage = [(IFErrorConstantExpression*)evaluatedNewExpr message];
+    [imageOrErrorTabView selectTabViewItemAtIndex:1];
+    self.activeView = imageOrErrorTabView;
   }
-
-  [expression release];
-  expression = [newExpression retain];  
+  
+  [displayedExpression release];
+  displayedExpression = [newDisplayedExpression retain];
 }
 
 - (void)updateImageViewVisibleBounds;
@@ -227,17 +220,39 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [imageView setVisibleBounds:realCanvasBounds];
   
   // FIXME: should avoid this, to prevent redrawing of the whole image!
-  [self setExpression:[IFOperatorExpression nop]];
+  self.displayedExpression = [IFOperatorExpression nop];
   [self updateExpression];
 }
 
 - (void)updateExpression;
 {
-  IFTreeNode* node = ((IFTreeCursorPair*)cursorsVar.value).viewLockedNode;
-  IFExpression* expr = (node != nil ? [node expression] : [IFOperatorExpression nop]);
-  if ([self activeVariant] != nil && ![[self activeVariant] isEqualToString:@""])
-    expr = [node variantNamed:[self activeVariant] ofExpression:expr];
-  [self setExpression:expr];
+  IFTreeCursorPair* cursors = (IFTreeCursorPair*)cursorsVar.value;
+  IFTreeNode* node = cursors.viewLockedNode;
+  
+  if (node != nil) {
+    IFType* exprType = node.type.resultType;
+
+    if (exprType != nil && ([exprType isArrayType] || [exprType isImageRGBAType] || [exprType isMaskType])) {
+      IFExpression* expr = node.expression; // TODO: re-introduce variants
+      if ([exprType isArrayType]) {
+        IFArrayPath* path = cursors.path;
+        expr = [path accessorExpressionFor:expr];
+        exprType = exprType.leafType;
+      }
+      
+      if ([exprType isImageRGBAType]) {
+        IFExpression* backgroundExpr = [IFOperatorExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0];
+        expr = [IFOperatorExpression blendBackground:backgroundExpr withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+      } else {
+        NSAssert([exprType isMaskType], @"unexpected expr. type");
+        expr = [IFOperatorExpression maskToImage:expr];
+        exprType = [IFImageType imageRGBAType];
+      }
+      self.displayedExpression = expr;
+    } else
+      self.displayedExpression = [IFOperatorExpression nop];
+  } else
+    self.displayedExpression = [IFOperatorExpression nop];
 }
 
 - (void)updateAnnotations;

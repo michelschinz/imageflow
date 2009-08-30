@@ -15,7 +15,7 @@
 
 @interface IFNodeLayer()
 - (void)setExpression:(IFExpression*)newUnevaluatedExpression;
-@property(readwrite, assign) CALayer<IFExpressionContentsLayer>* expressionLayer;
+@property(readwrite, assign) IFExpressionContentsLayer* expressionLayer;
 @end
 
 @implementation IFNodeLayer
@@ -213,8 +213,8 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
 {
   IFConstantExpression* newExpression = [[IFExpressionEvaluator sharedEvaluator] evaluateExpression:newUnevaluatedExpression];
   
-  CALayer<IFExpressionContentsLayer>* currentExpressionLayer = self.expressionLayer;
-  CALayer<IFExpressionContentsLayer>* newExpressionLayer;
+  IFExpressionContentsLayer* currentExpressionLayer = self.expressionLayer;
+  IFExpressionContentsLayer* newExpressionLayer;
   
   if (newExpression.isImage) {
     newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFImageOrMaskLayer class]])
@@ -229,18 +229,20 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
     if (errorExpression.message != nil) {
       newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFErrorLayer class]])
       ? currentExpressionLayer
-      : [IFErrorLayer layer];
+      : [IFErrorLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];
     } else
       newExpressionLayer = nil;
   } else
     NSAssert(NO, @"unexpected expression");
   
-  if (newExpressionLayer != nil)
-    [newExpressionLayer setExpression:newExpression];
+  if (newExpressionLayer != nil) {
+    newExpressionLayer.reversedPath = [IFArrayPath emptyPath];
+    newExpressionLayer.expression = newExpression;
+  }
   self.expressionLayer = newExpressionLayer;
 }
 
-- (void)setExpressionLayer:(CALayer<IFExpressionContentsLayer>*)newExpressionLayer;
+- (void)setExpressionLayer:(IFExpressionContentsLayer*)newExpressionLayer;
 {
   CALayer* currentExpressionLayer = self.expressionLayer;
   if (newExpressionLayer == currentExpressionLayer)

@@ -14,10 +14,7 @@
 #import "IFCompositeLayer.h"
 #import "IFLayoutParameters.h"
 #import "IFStaticImageLayer.h"
-
-@protocol IFExpressionContentsLayer
-- (void)setExpression:(IFConstantExpression*)newExpression;
-@end
+#import "IFExpressionContentsLayer.h"
 
 @interface IFNodeLayer : CALayer<IFBaseLayer> {
   IFTreeNode* node;
@@ -30,7 +27,7 @@
   CATextLayer* labelLayer;
   IFStaticImageLayer* aliasArrowLayer;
   CALayer* foldingSeparatorLayer;
-  CALayer<IFExpressionContentsLayer>* expressionLayer;
+  IFExpressionContentsLayer* expressionLayer;
   CATextLayer* nameLayer;
 }
 
@@ -41,7 +38,7 @@
 @property(readonly) IFTreeNode* node;
 
 @property(readonly) CATextLayer* labelLayer;
-@property(readonly) CALayer<IFExpressionContentsLayer>* expressionLayer;
+@property(readonly) IFExpressionContentsLayer* expressionLayer;
 @property(readonly) CATextLayer* nameLayer;
 
 @property(readonly) NSImage* dragImage;

@@ -16,6 +16,7 @@
 @property(retain) NSArray* componentLayers;
 @end
 
+static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 @implementation IFStackLayer
 
@@ -26,12 +27,9 @@
 
 - (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  if (![super init])
+  if (![super initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar])
     return nil;
 
-  layoutParameters = [theLayoutParameters retain];
-  canvasBoundsVar = [theCanvasBoundsVar retain];
-    
   // TODO: replace all these colors by layout parameters
   CGColorRef bg = CGColorCreateGenericGray(0, 0.15);
   CGColorRef borderC = CGColorCreateGenericGray(0, 0.25);
@@ -48,9 +46,9 @@
   countLayer.font = [IFLayoutParameters labelFont];
   countLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
   countLayer.foregroundColor = labelC;
-  // TODO: rotate count layer (the code below behaves strangely)
-//  [countLayer setAffineTransform:CGAffineTransformMakeRotation(pi / 2.0)];
   [self addSublayer:countLayer];
+
+  [self addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
   
   return self;
 }
@@ -58,22 +56,10 @@
 - (void)dealloc;
 {
   countLayer = nil;
-  OBJC_RELEASE(canvasBoundsVar);
-  OBJC_RELEASE(layoutParameters);
-  OBJC_RELEASE(expression);
+  // If canvasBoundsVar is nil, this is a presentation layer (there doesn't seem to be a better way to know this currently)
+  if (canvasBoundsVar != nil)
+    [self removeObserver:self forKeyPath:@"expression"];
   [super dealloc];
-}
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
-{
-  NSAssert(newExpression == nil || [newExpression isArray], @"invalid expression");
-  
-  if (newExpression == expression)
-    return;
-  [expression release];
-  expression = [newExpression retain];
-  
-  [self updateComponentLayers];
 }
 
 - (void)layoutSublayers;
@@ -100,6 +86,14 @@
   [self.superlayer setNeedsLayout];
 }
 
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
+{
+  if (context == IFExpressionChangedContext)
+    [self updateComponentLayers];
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
 // MARK: -
 // MARK: PRIVATE
 
@@ -113,7 +107,7 @@
   unsigned i = 0;
   for (IFConstantExpression* componentExpression in componentExpressions) {
     CALayer* recyclableLayer = (i < [recyclableLayers count]) ? [recyclableLayers objectAtIndex:i] : nil;
-    CALayer<IFExpressionContentsLayer>* newComponentLayer;
+    IFExpressionContentsLayer* newComponentLayer;
 
     if (componentExpression.isImage) {
       newComponentLayer = (recyclableLayer != nil && [recyclableLayer isKindOfClass:[IFImageOrMaskLayer class]])
@@ -126,7 +120,8 @@
     } else
       NSAssert(NO, @"unexpected component expression");
     
-    [newComponentLayer setExpression:componentExpression];
+    newComponentLayer.reversedPath = [IFArrayPath pathElementWithIndex:i next:reversedPath];
+    newComponentLayer.expression = componentExpression;
     [newComponentLayers addObject:newComponentLayer];
     ++i;
   }

@@ -113,11 +113,13 @@
 		FA8B03B80E87B54B00E3679C /* IFInputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B03B70E87B54B00E3679C /* IFInputConnectorLayer.m */; };
 		FA8B04070E87BAAD00E3679C /* IFOutputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D2BB0E7107EE00873FA0 /* IFOutputConnectorLayer.m */; };
 		FA8BFFBE0E8763CF00E3679C /* IFConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8BFFBD0E8763CF00E3679C /* IFConnectorLayer.m */; };
+		FA8C82F010496149004BCBD4 /* IFArrayPath.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8C82EF10496149004BCBD4 /* IFArrayPath.m */; };
 		FA8D66DC0EEC26A500E6A244 /* IFGhostNodeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8D66DB0EEC26A500E6A244 /* IFGhostNodeLayer.m */; };
 		FA9097CE0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9097CC0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.m */; };
 		FA92AD8E0E547A6C00DDE237 /* IFLayerSubset.m in Sources */ = {isa = PBXBuildFile; fileRef = FA92AD8D0E547A6C00DDE237 /* IFLayerSubset.m */; };
 		FA9923B90E13ECFA004BDED9 /* IFImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9923B80E13ECFA004BDED9 /* IFImageView.xib */; };
 		FA9924380E140679004BDED9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9924370E140679004BDED9 /* MainMenu.xib */; };
+		FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */; };
 		FA9C6CEE0E1E26F8004A6953 /* IFForestView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C6CED0E1E26F8004A6953 /* IFForestView.m */; };
 		FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E241E0B03ADE3001EC346 /* alias_arrow.png */; };
 		FA9E24590B03B10F001EC346 /* locked_view.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E24580B03B10F001EC346 /* locked_view.png */; };
@@ -435,6 +437,8 @@
 		FA8B03B70E87B54B00E3679C /* IFInputConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFInputConnectorLayer.m; sourceTree = "<group>"; };
 		FA8BFFBC0E8763CF00E3679C /* IFConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConnectorLayer.h; sourceTree = "<group>"; };
 		FA8BFFBD0E8763CF00E3679C /* IFConnectorLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConnectorLayer.m; sourceTree = "<group>"; };
+		FA8C82EE10496149004BCBD4 /* IFArrayPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFArrayPath.h; sourceTree = "<group>"; };
+		FA8C82EF10496149004BCBD4 /* IFArrayPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFArrayPath.m; sourceTree = "<group>"; };
 		FA8D66DA0EEC26A500E6A244 /* IFGhostNodeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGhostNodeLayer.h; sourceTree = "<group>"; };
 		FA8D66DB0EEC26A500E6A244 /* IFGhostNodeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGhostNodeLayer.m; sourceTree = "<group>"; };
 		FA9097CB0AA4B8D1008EEE6A /* IFCropImageWithMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCropImageWithMaskCIFilter.h; sourceTree = "<group>"; };
@@ -443,6 +447,8 @@
 		FA92AD8D0E547A6C00DDE237 /* IFLayerSubset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSubset.m; sourceTree = "<group>"; };
 		FA9923B80E13ECFA004BDED9 /* IFImageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFImageView.xib; sourceTree = "<group>"; };
 		FA9924370E140679004BDED9 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		FA993CB2104A47F600E66D90 /* IFExpressionContentsLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionContentsLayer.h; sourceTree = "<group>"; };
+		FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionContentsLayer.m; sourceTree = "<group>"; };
 		FA9C6CEC0E1E26F8004A6953 /* IFForestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFForestView.h; sourceTree = "<group>"; };
 		FA9C6CED0E1E26F8004A6953 /* IFForestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFForestView.m; sourceTree = "<group>"; };
 		FA9E241E0B03ADE3001EC346 /* alias_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alias_arrow.png; sourceTree = "<group>"; };
@@ -1088,6 +1094,8 @@
 		FA4DCCD50EE8213800ED5870 /* Thumbnail */ = {
 			isa = PBXGroup;
 			children = (
+				FA993CB2104A47F600E66D90 /* IFExpressionContentsLayer.h */,
+				FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */,
 				FA4DCC510EE8047700ED5870 /* IFImageOrMaskLayer.h */,
 				FA4DCC520EE8047700ED5870 /* IFImageOrMaskLayer.m */,
 				FA4DCCD60EE8214E00ED5870 /* IFStackLayer.h */,
@@ -1209,6 +1217,8 @@
 				FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */,
 				FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */,
 				FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */,
+				FA8C82EE10496149004BCBD4 /* IFArrayPath.h */,
+				FA8C82EF10496149004BCBD4 /* IFArrayPath.m */,
 			);
 			name = Cursors;
 			sourceTree = "<group>";
@@ -1914,6 +1924,8 @@
 				FA3B82780FEE29DE00D4687B /* IFPathLayer.m in Sources */,
 				FA0527FA0FF39ECA00F8F15B /* IFAverageFilter.m in Sources */,
 				FA0527FE0FF3A1D600F8F15B /* IFAverageCIFilter.m in Sources */,
+				FA8C82F010496149004BCBD4 /* IFArrayPath.m in Sources */,
+				FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

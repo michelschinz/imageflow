@@ -15,9 +15,80 @@
 
 #import <caml/memory.h>
 
+static void camlTypeToObjcType(value camlType, IFType** objcType);
+
 @implementation IFType
 
-void camlTypeToObjcType(value camlType, IFType** objcType) {
++ (id)typeWithCamlType:(value)camlType;
+{
+  IFType* type = nil;
+  camlTypeToObjcType(camlType, &type);
+  return type;
+}
+
+- (void)dealloc;
+{
+  if (camlRepresentationIsValid) {
+    caml_remove_global_root(&camlRepresentation);
+    camlRepresentation = 0;
+    camlRepresentationIsValid = NO;
+  }
+  [super dealloc];
+}
+
+- (BOOL) isArrayType;
+{
+  return NO;
+}
+
+- (BOOL)isImageRGBAType;
+{
+  return NO;
+}
+
+- (BOOL)isMaskType;
+{
+  return NO;
+}
+
+- (unsigned)arity;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
+}
+
+- (IFType*)resultType;
+{
+  return self;
+}
+
+- (IFType*)leafType;
+{
+  return self;
+}
+
+- (value)asCaml;
+{
+  if (!camlRepresentationIsValid) {
+    caml_register_global_root(&camlRepresentation);
+    camlRepresentation = [self camlRepresentation];
+    camlRepresentationIsValid = YES;
+  }
+  return camlRepresentation;
+}
+
+// MARK: -
+// MARK: PROTECTED
+
+- (value)camlRepresentation;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return Val_unit;
+}
+
+@end
+
+static void camlTypeToObjcType(value camlType, IFType** objcType) {
   CAMLparam1(camlType);
   CAMLlocal1(camlArgTypes);
   
@@ -56,48 +127,3 @@ void camlTypeToObjcType(value camlType, IFType** objcType) {
   CAMLreturn0;
 }
 
-+ (id)typeWithCamlType:(value)camlType;
-{
-  IFType* type = nil;
-  camlTypeToObjcType(camlType, &type);
-  return type;
-}
-
-- (void)dealloc;
-{
-  if (camlRepresentationIsValid) {
-    caml_remove_global_root(&camlRepresentation);
-    camlRepresentation = 0;
-    camlRepresentationIsValid = NO;
-  }
-  [super dealloc];
-}
-
-- (int)arity;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
-- (IFType*)resultType;
-{
-  return self;
-}
-
-- (value)asCaml;
-{
-  if (!camlRepresentationIsValid) {
-    caml_register_global_root(&camlRepresentation);
-    camlRepresentation = [self camlRepresentation];
-    camlRepresentationIsValid = YES;
-  }
-  return camlRepresentation;
-}
-
-- (value)camlRepresentation;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return Val_unit;
-}
-
-@end

@@ -23,24 +23,19 @@ static CGImageRef warningImage = nil;
   CFRelease(imageSource);
 }
 
-- (id)init;
++ (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  if (![super init])
+  return [[[self alloc] initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar] autorelease];
+}
+
+- (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
+{
+  if (![super initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar])
     return nil;
   self.anchorPoint = CGPointZero;
   self.contents = (id)warningImage;
   self.bounds = CGRectMake(0, 0, CGImageGetWidth(warningImage), CGImageGetHeight(warningImage));
   return self;
-}
-
-+ (id)layer;
-{
-  return [[[self alloc] init] autorelease];
-}
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
-{
-  // ignore expression
 }
 
 @end

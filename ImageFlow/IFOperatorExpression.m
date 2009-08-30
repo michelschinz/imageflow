@@ -52,6 +52,21 @@
   return [self expressionWithOperatorNamed:@"histogram-rgb" operands:imageExpr,nil];
 }
 
++ (id)checkerboardCenteredAt:(NSPoint)center color0:(NSColor*)color0 color1:(NSColor*)color1 width:(float)width sharpness:(float)sharpness;
+{
+  return [self expressionWithOperatorNamed:@"checkerboard" operands:[IFConstantExpression expressionWithPointNS:center], [IFConstantExpression expressionWithColorNS:color0], [IFConstantExpression expressionWithColorNS:color1], [IFConstantExpression expressionWithFloat:width], [IFConstantExpression expressionWithFloat:sharpness], nil];
+}
+
++ (id)maskToImage:(IFExpression*)maskExpression;
+{
+  return [self expressionWithOperatorNamed:@"mask-to-image" operands:maskExpression, nil];
+}
+
++ (id)arrayGet:(IFExpression*)arrayExpression index:(unsigned)index;
+{
+  return [self expressionWithOperatorNamed:@"array-get" operands:arrayExpression, [IFConstantExpression expressionWithInt:index], nil];
+}
+
 + (id)expressionWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
 {
   return [[[self alloc] initWithOperator:theOperator operands:theOperands] autorelease];

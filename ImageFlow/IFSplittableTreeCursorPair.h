@@ -9,15 +9,16 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFUnsplittableTreeCursorPair.h"
+#import "IFArrayPath.h"
 
 @interface IFSplittableTreeCursorPair : IFTreeCursorPair {
   IFTree* tree;
   IFTreeNode* node;
-  unsigned index;
+  IFArrayPath* path;
   
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
-  unsigned viewLockedIndex;
+  IFArrayPath* viewLockedPath;
   
   BOOL isViewLocked;
   NSAffineTransform* editViewTransform;

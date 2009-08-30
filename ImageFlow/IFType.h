@@ -17,12 +17,18 @@
 
 + (id)typeWithCamlType:(value)camlType;
 
-- (int)arity;
-- (IFType*)resultType;
+@property(readonly) BOOL isArrayType;
+@property(readonly) BOOL isImageRGBAType;
+@property(readonly) BOOL isMaskType;
+
+@property(readonly) unsigned arity;
+@property(readonly) IFType* resultType;
+@property(readonly) IFType* leafType;
 
 - (value)asCaml;
 
-// protected
+// MARK: -
+// MARK: PROTECTED
 - (value)camlRepresentation;
 
 @end

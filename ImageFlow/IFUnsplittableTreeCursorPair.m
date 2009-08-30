@@ -11,7 +11,7 @@
 @interface IFTreeCursorPair ()
 @property(retain) IFTree* tree;
 @property(retain) IFTreeNode* node;
-@property unsigned index;
+@property(retain) IFArrayPath* path;
 @end
 
 @implementation IFUnsplittableTreeCursorPair
@@ -26,9 +26,9 @@
   return [NSSet setWithObject:@"node"];
 }
 
-+ (NSSet*)keyPathsForValuesAffectingViewLockedIndex;
++ (NSSet*)keyPathsForValuesAffectingViewLockedPath;
 {
-  return [NSSet setWithObject:@"index"];
+  return [NSSet setWithObject:@"path"];
 }
 
 + (IFUnsplittableTreeCursorPair*)unsplittableTreeCursorPair;
@@ -38,19 +38,20 @@
 
 - (void)dealloc;
 {
+  OBJC_RELEASE(path);
   OBJC_RELEASE(node);
   OBJC_RELEASE(tree);
   [super dealloc];
 }
 
-- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode index:(unsigned)newIndex;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode path:(IFArrayPath*)newPath;
 {
   self.tree = newTree;
   self.node = newNode;
-  self.index = newIndex;
+  self.path = newPath;
 }
 
-@synthesize tree, node, index;
+@synthesize tree, node, path;
 
 - (IFTree*)viewLockedTree;
 {
@@ -62,9 +63,9 @@
   return node;
 }
 
-- (unsigned)viewLockedIndex;
+- (IFArrayPath*)viewLockedPath;
 {
-  return index;
+  return path;
 }
 
 - (BOOL)isViewLocked;

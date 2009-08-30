@@ -8,25 +8,14 @@
 
 #import "IFBasicType.h"
 
-
-@implementation IFBasicType
-
 static NSArray* types = nil;
 
-// private
+@interface IFBasicType()
 - (IFBasicType*)initWithTag:(int)theTag;
-{
-  if (![super init])
-    return nil;
-  tag = theTag;
-  return self;
-}
-
-// private
 + (IFBasicType*)freshBasicTypeWithTag:(int)theTag;
-{
-  return [[[self alloc] initWithTag:theTag] autorelease];
-}
+@end
+
+@implementation IFBasicType
 
 + (void)initialize;
 {
@@ -136,14 +125,33 @@ static NSArray* types = nil;
   }
 }
 
-- (int)arity;
+- (unsigned)arity;
 {
   return 0;
 }
 
+// MARK: -
+// MARK: PROTECTED
+
 - (value)camlRepresentation;
 {
   return Val_int(tag);
+}
+
+// MARK: -
+// MARK: PRIVATE
+
++ (IFBasicType*)freshBasicTypeWithTag:(int)theTag;
+{
+  return [[[self alloc] initWithTag:theTag] autorelease];
+}
+
+- (IFBasicType*)initWithTag:(int)theTag;
+{
+  if (![super init])
+    return nil;
+  tag = theTag;
+  return self;
 }
 
 @end

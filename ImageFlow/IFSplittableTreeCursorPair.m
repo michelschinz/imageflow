@@ -11,10 +11,10 @@
 @interface IFSplittableTreeCursorPair ()
 @property(retain) IFTree* tree;
 @property(retain) IFTreeNode* node;
-@property unsigned index;
+@property(retain) IFArrayPath* path;
 @property(retain) IFTree* viewLockedTree;
 @property(retain) IFTreeNode* viewLockedNode;
-@property unsigned viewLockedIndex;
+@property(retain) IFArrayPath* viewLockedPath;
 @property(retain) NSAffineTransform* editViewTransform;
 @property(retain) NSAffineTransform* viewEditTransform;
 - (void)updateTransforms;
@@ -38,21 +38,21 @@
   [super dealloc];
 }
 
-- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode index:(unsigned)newIndex;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode path:(IFArrayPath*)newPath;
 {
   self.tree = newTree;
   self.node = newNode;
-  self.index = newIndex;
+  self.path = newPath;
   if (!isViewLocked) {
     self.viewLockedTree = newTree;
     self.viewLockedNode = newNode;
-    self.viewLockedIndex = newIndex;
+    self.viewLockedPath = newPath;
   }
   [self updateTransforms];
 }
 
-@synthesize tree, node, index;
-@synthesize viewLockedTree, viewLockedNode, viewLockedIndex;
+@synthesize tree, node, path;
+@synthesize viewLockedTree, viewLockedNode, viewLockedPath;
 @synthesize isViewLocked;
 
 - (void)setIsViewLocked:(BOOL)newIsViewLocked;
@@ -64,7 +64,7 @@
   if (!isViewLocked) {
     self.viewLockedTree = tree;
     self.viewLockedNode = node;
-    self.viewLockedIndex = index;
+    self.viewLockedPath = path;
     [self updateTransforms];
   }
 }

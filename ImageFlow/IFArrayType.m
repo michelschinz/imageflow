@@ -48,14 +48,24 @@
   return [contentType hash] * 5101;
 }
 
+- (BOOL)isArrayType;
+{
+  return YES;
+}
+
 - (IFType*)contentType;
 {
   return contentType;
 }
 
-- (int)arity;
+- (unsigned)arity;
 {
   return 0;
+}
+
+- (IFType*)leafType;
+{
+  return contentType.leafType;
 }
 
 - (value)camlRepresentation;

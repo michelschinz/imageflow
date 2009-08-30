@@ -11,20 +11,20 @@
 @interface IFCompositeTreeCursorPair ()
 @property(retain) IFTree* tree;
 @property(retain) IFTreeNode* node;
-@property unsigned index;
+@property(retain) IFArrayPath* path;
 @property(retain) IFTree* viewLockedTree;
 @property(retain) IFTreeNode* viewLockedNode;
-@property unsigned viewLockedIndex;
+@property(retain) IFArrayPath* viewLockedPath;
 @end
 
 @implementation IFCompositeTreeCursorPair
 
 static NSString* IFEditTreeDidChange = @"IFEditTreeDidChange";
 static NSString* IFEditNodeDidChange = @"IFEditNodeDidChange";
-static NSString* IFEditIndexDidChange = @"IFEditIndexDidChange";
+static NSString* IFEditPathDidChange = @"IFEditPathDidChange";
 static NSString* IFViewTreeDidChange = @"IFViewTreeDidChange";
 static NSString* IFViewNodeDidChange = @"IFViewNodeDidChange";
-static NSString* IFViewIndexDidChange = @"IFViewIndexDidChange";
+static NSString* IFViewPathDidChange = @"IFViewPathDidChange";
 
 + (IFCompositeTreeCursorPair*)compositeWithEditCursor:(IFTreeCursorPair*)theEditCursor viewCursor:(IFTreeCursorPair*)theViewCursor;
 {
@@ -41,27 +41,29 @@ static NSString* IFViewIndexDidChange = @"IFViewIndexDidChange";
 
   [editCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFEditTreeDidChange];  
   [editCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFEditNodeDidChange];
-  [editCursor addObserver:self forKeyPath:@"index" options:NSKeyValueObservingOptionInitial context:IFEditIndexDidChange];
+  [editCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFEditPathDidChange];
   [viewCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFViewTreeDidChange];  
   [viewCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFViewNodeDidChange];
-  [viewCursor addObserver:self forKeyPath:@"index" options:NSKeyValueObservingOptionInitial context:IFViewIndexDidChange];
+  [viewCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFViewPathDidChange];
   
   return self;
 }
 
 - (void)dealloc;
 {
-  [viewCursor removeObserver:self forKeyPath:@"index"];
+  [viewCursor removeObserver:self forKeyPath:@"path"];
   [viewCursor removeObserver:self forKeyPath:@"node"];
   [viewCursor removeObserver:self forKeyPath:@"tree"];
-  [editCursor removeObserver:self forKeyPath:@"index"];
+  [editCursor removeObserver:self forKeyPath:@"path"];
   [editCursor removeObserver:self forKeyPath:@"node"];
   [editCursor removeObserver:self forKeyPath:@"tree"];
   
+  OBJC_RELEASE(viewLockedPath);
   OBJC_RELEASE(viewLockedNode);
   OBJC_RELEASE(viewLockedTree);
   OBJC_RELEASE(viewCursor);
   
+  OBJC_RELEASE(path);
   OBJC_RELEASE(node);
   OBJC_RELEASE(tree);
   OBJC_RELEASE(editCursor);
@@ -69,8 +71,8 @@ static NSString* IFViewIndexDidChange = @"IFViewIndexDidChange";
 }
 
 
-@synthesize tree, node, index;
-@synthesize viewLockedTree, viewLockedNode, viewLockedIndex;
+@synthesize tree, node, path;
+@synthesize viewLockedTree, viewLockedNode, viewLockedPath;
 
 - (BOOL)isViewLocked;
 {
@@ -93,14 +95,14 @@ static NSString* IFViewIndexDidChange = @"IFViewIndexDidChange";
     self.tree = editCursor.tree;
   else if (context == IFEditNodeDidChange)
     self.node = editCursor.node;
-  else if (context == IFEditIndexDidChange)
-    self.index = editCursor.index;
+  else if (context == IFEditPathDidChange)
+    self.path = editCursor.path;
   else if (context == IFViewTreeDidChange)
     self.viewLockedTree = viewCursor.tree;
   else if (context == IFViewNodeDidChange)
     self.viewLockedNode = viewCursor.node;
-  else if (context == IFViewIndexDidChange)
-    self.viewLockedIndex = viewCursor.index;
+  else if (context == IFViewPathDidChange)
+    self.viewLockedPath = viewCursor.path;
   else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }

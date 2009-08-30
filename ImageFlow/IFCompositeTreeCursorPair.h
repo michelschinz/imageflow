@@ -9,17 +9,18 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeCursorPair.h"
+#import "IFArrayPath.h"
 
 @interface IFCompositeTreeCursorPair : IFTreeCursorPair {
   IFTreeCursorPair* editCursor;
   IFTree* tree;
   IFTreeNode* node;
-  unsigned index;
+  IFArrayPath* path;
 
   IFTreeCursorPair* viewCursor;
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
-  unsigned viewLockedIndex;
+  IFArrayPath* viewLockedPath;
 }
 
 + (IFCompositeTreeCursorPair*)compositeWithEditCursor:(IFTreeCursorPair*)theEditCursor viewCursor:(IFTreeCursorPair*)theViewCursor;

@@ -18,6 +18,8 @@ let eval expr =
     (* Array operators *)
     Op("array", xs) ->
       Array xs
+  | Op("array-get", [|Array a; Int i|]) ->
+      a.(i)
 
     (* Rectangle operators *)
   | Op("rect-intersection", [|Rect r1; Rect r2|]) ->

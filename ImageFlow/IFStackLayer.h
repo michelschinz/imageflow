@@ -8,25 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFNodeLayer.h"
-#import "IFConstantExpression.h"
+#import "IFExpressionContentsLayer.h"
 #import "IFVariable.h"
 
-@interface IFStackLayer : CALayer<IFExpressionContentsLayer> {
-  IFConstantExpression* expression;
-  
-  IFLayoutParameters* layoutParameters;
-  IFVariable* canvasBoundsVar;
-  
+@interface IFStackLayer : IFExpressionContentsLayer {
   // Sublayers (not retained)
   CATextLayer* countLayer;
-  CALayer* foldingButtonLayer;
-  CALayer* displayedImageIndicatorLayer;
 }
 
 + (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
 
 @end

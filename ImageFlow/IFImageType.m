@@ -70,7 +70,17 @@
   return pixelType;
 }
 
-- (int)arity;
+- (BOOL)isImageRGBAType;
+{
+  return pixelType == [IFBasicType colorRGBAType];
+}
+
+- (BOOL)isMaskType;
+{
+  return pixelType == [IFBasicType floatType];
+}
+
+- (unsigned)arity;
 {
   return 0;
 }

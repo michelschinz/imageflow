@@ -8,25 +8,18 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFImageConstantExpression.h"
+#import "IFExpressionContentsLayer.h"
 #import "IFVariable.h"
-#import "IFNodeLayer.h"
 #import "IFStaticImageLayer.h"
 #import "IFLayoutParameters.h"
+#import "IFArrayPath.h"
 
-@interface IFImageOrMaskLayer : CALayer<IFExpressionContentsLayer> {
-  IFConstantExpression* expression;
-  
-  IFLayoutParameters* layoutParameters;
-  IFVariable* canvasBoundsVar;
-  
+@interface IFImageOrMaskLayer : IFExpressionContentsLayer {
   // Sublayers (not retained)
   IFStaticImageLayer* maskIndicatorLayer;
 }
 
 + (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
 
 @end

@@ -73,7 +73,7 @@
   return returnType;
 }
 
-- (int)arity;
+- (unsigned)arity;
 {
   return [argumentTypes count];
 }
@@ -86,6 +86,9 @@
 static value elemAsCaml(const char* elem) {
   return [(IFType*)elem asCaml];
 }
+
+// MARK: -
+// MARK: PROTECTED
 
 - (value)camlRepresentation;
 {

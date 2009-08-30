@@ -14,6 +14,7 @@
 
 static NSString* IFCanvasBoundsChangedContext = @"IFCanvasBoundsChangedContext";
 static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedContext";
+static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 + (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
@@ -22,11 +23,8 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
 
 - (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 {
-  if (![super init])
+  if (![super initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar])
     return nil;
-  
-  layoutParameters = [theLayoutParameters retain];
-  canvasBoundsVar = [theCanvasBoundsVar retain];
   
   self.anchorPoint = CGPointZero;
   self.needsDisplayOnBoundsChange = YES;
@@ -39,6 +37,7 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
 
   [canvasBoundsVar addObserver:self forKeyPath:@"value" options:NSKeyValueObservingOptionInitial context:IFCanvasBoundsChangedContext];
   [layoutParameters addObserver:self forKeyPath:@"thumbnailWidth" options:NSKeyValueObservingOptionInitial context:IFThumbnailWidthChangedContext];
+  [self addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
 
   return self;
 }
@@ -47,26 +46,11 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
 {
   // If canvasBoundsVar is nil, this is a presentation layer (there doesn't seem to be a better way to know this currently)
   if (canvasBoundsVar != nil) {
-    OBJC_RELEASE(expression);
+    [self removeObserver:self forKeyPath:@"expression"];
     [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
-    OBJC_RELEASE(canvasBoundsVar);
     [layoutParameters removeObserver:self forKeyPath:@"thumbnailWidth"];
-    OBJC_RELEASE(layoutParameters);
   }
   [super dealloc];
-}
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
-{
-  NSAssert(newExpression == nil || [newExpression isImage], @"invalid expression");
-  
-  if (newExpression == expression)
-    return;
-  [expression release];
-  expression = [newExpression retain];
-  
-  maskIndicatorLayer.hidden = (((IFImageConstantExpression*)expression).image.kind != IFImageKindMask);
-  [self setNeedsDisplay];
 }
 
 - (void)drawInContext:(CGContextRef)ctx;
@@ -88,6 +72,9 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
     const NSSize canvasSize = ((NSValue*)canvasBoundsVar.value).rectValue.size;
     const float thumbnailWidth = layoutParameters.thumbnailWidth;
     self.bounds = CGRectMake(0, 0, thumbnailWidth, floor(thumbnailWidth * (canvasSize.height / canvasSize.width)));
+  } else if (context == IFExpressionChangedContext) {
+    maskIndicatorLayer.hidden = (((IFImageConstantExpression*)expression).image.kind != IFImageKindMask);
+    [self setNeedsDisplay];
   } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }

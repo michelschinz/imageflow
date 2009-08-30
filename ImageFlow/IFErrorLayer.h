@@ -10,12 +10,11 @@
 
 #import "IFNodeLayer.h"
 
-@interface IFErrorLayer : CALayer<IFExpressionContentsLayer> {
+@interface IFErrorLayer : IFExpressionContentsLayer {
 
 }
 
-+ (id)layer;
-
-- (void)setExpression:(IFConstantExpression*)newExpression;
++ (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
+- (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
 @end

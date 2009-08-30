@@ -40,10 +40,13 @@
   return index;
 }
 
-- (int)arity;
+- (unsigned)arity;
 {
   return 0;
 }
+
+// MARK: -
+// MARK: PROTECTED
 
 - (value)camlRepresentation;
 {

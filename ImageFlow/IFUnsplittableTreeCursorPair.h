@@ -9,11 +9,12 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeCursorPair.h"
+#import "IFArrayPath.h"
 
 @interface IFUnsplittableTreeCursorPair : IFTreeCursorPair {
   IFTree* tree;
   IFTreeNode* node;
-  unsigned index;
+  IFArrayPath* path;
 }
 
 + (IFUnsplittableTreeCursorPair*)unsplittableTreeCursorPair;

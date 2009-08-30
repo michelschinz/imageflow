@@ -9,18 +9,19 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTree.h"
+#import "IFArrayPath.h"
 
 @interface IFTreeCursorPair : NSObject {
 }
 
-- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode index:(unsigned)newIndex;
+- (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode path:(IFArrayPath*)newPath;
 @property(readonly, retain) IFTree* tree;
 @property(readonly, retain) IFTreeNode* node;
-@property(readonly) unsigned index;
+@property(readonly, retain) IFArrayPath* path;
 
 @property(readonly, retain) IFTree* viewLockedTree;
 @property(readonly, retain) IFTreeNode* viewLockedNode;
-@property(readonly) unsigned viewLockedIndex;
+@property(readonly, retain) IFArrayPath* viewLockedPath;
 
 @property(readonly) BOOL isViewLocked;
 

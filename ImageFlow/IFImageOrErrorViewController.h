@@ -27,7 +27,7 @@ typedef enum {
 
   IFImageViewMode mode;
 
-  IFExpression* expression;
+  IFExpression* displayedExpression;
   NSString* errorMessage;
   NSArray* variants;
   NSString* activeVariant;
