@@ -66,4 +66,39 @@
 
 @synthesize displayedImageLayer, baseLayer, cursorLayer, highlightLayer;
 
+- (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
+{
+  switch (newIndicator) {
+    case IFLayerCursorIndicatorNone:
+      cursorLayer.hidden = YES;
+      break;
+    case IFLayerCursorIndicatorCursor:
+      cursorLayer.hidden = NO;
+      cursorLayer.borderWidth = [IFLayoutParameters cursorWidth];
+      break;
+    case IFLayerCursorIndicatorSelection:
+      cursorLayer.hidden = NO;
+      cursorLayer.borderWidth = [IFLayoutParameters selectionWidth];
+      break;
+  }
+}
+
+- (IFLayerCursorIndicator)cursorIndicator;
+{
+  if (cursorLayer.hidden)
+    return IFLayerCursorIndicatorNone;
+  else if (cursorLayer.borderWidth == [IFLayoutParameters cursorWidth])
+    return IFLayerCursorIndicatorCursor;
+  else
+    return IFLayerCursorIndicatorSelection;
+}
+
+- (void)layoutSublayers;
+{
+  CGRect baseFrame = self.baseLayer.frame;
+  self.displayedImageLayer.frame = CGRectInset(baseFrame, -25, 0);
+  self.cursorLayer.frame = baseFrame;
+  [super layoutSublayers];
+}
+
 @end

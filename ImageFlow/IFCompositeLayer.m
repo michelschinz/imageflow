@@ -35,49 +35,10 @@
   return NO;
 }
 
-- (CALayer*)displayedImageLayer;
-{
-  return nil;
-}
-
 - (CALayer<IFBaseLayer>*)baseLayer;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;
-}
-
-- (CALayer*)cursorLayer;
-{
-  return nil;
-}
-
-- (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
-{
-  CALayer* cursorLayer = self.cursorLayer;
-  switch (newIndicator) {
-    case IFLayerCursorIndicatorNone:
-      cursorLayer.hidden = YES;
-      break;
-    case IFLayerCursorIndicatorCursor:
-      cursorLayer.hidden = NO;
-      cursorLayer.borderWidth = [IFLayoutParameters cursorWidth];
-      break;
-    case IFLayerCursorIndicatorSelection:
-      cursorLayer.hidden = NO;
-      cursorLayer.borderWidth = [IFLayoutParameters selectionWidth];
-      break;
-  }
-}
-
-- (IFLayerCursorIndicator)cursorIndicator;
-{
-  CALayer* cursorLayer = self.cursorLayer;
-  if (cursorLayer.hidden)
-    return IFLayerCursorIndicatorNone;
-  else if (cursorLayer.borderWidth == [IFLayoutParameters cursorWidth])
-    return IFLayerCursorIndicatorCursor;
-  else
-    return IFLayerCursorIndicatorSelection;
 }
 
 - (CALayer*)highlightLayer;
@@ -105,10 +66,6 @@
 {
   CGRect baseFrame = self.baseLayer.frame;
   self.frame = baseFrame;
-  if (self.displayedImageLayer != nil)
-    self.displayedImageLayer.frame = CGRectInset(baseFrame, -25, 0);
-  if (self.cursorLayer != nil)
-    self.cursorLayer.frame = baseFrame;
   self.highlightLayer.frame = baseFrame;
   [self.superlayer setNeedsLayout];
 }

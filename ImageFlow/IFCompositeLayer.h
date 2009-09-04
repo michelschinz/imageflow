@@ -14,12 +14,6 @@
 @property(readonly) IFTreeNode* node;
 @end
 
-typedef enum {
-  IFLayerCursorIndicatorNone,
-  IFLayerCursorIndicatorCursor,
-  IFLayerCursorIndicatorSelection
-} IFLayerCursorIndicator;
-
 @interface IFCompositeLayer : CALayer {
 
 }
@@ -28,11 +22,8 @@ typedef enum {
 @property(readonly) BOOL isInputConnector;
 @property(readonly) BOOL isOutputConnector;
 
-@property(readonly) CALayer* displayedImageLayer; // optional (can be nil)
 @property(readonly) CALayer<IFBaseLayer>* baseLayer;
-@property(readonly) CALayer* cursorLayer; // optional (can be nil)
 @property(readonly) CALayer* highlightLayer;
-@property IFLayerCursorIndicator cursorIndicator;
 @property BOOL highlighted;
 
 @property(readonly) IFTreeNode* node;

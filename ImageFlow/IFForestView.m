@@ -905,7 +905,7 @@ static enum {
 
 - (void)updateViewLockButton;
 {
-  for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
+  for (IFNodeCompositeLayer* nodeLayer in self.visibleNodeLayers) {
     const CALayer* displayedImageLayer = nodeLayer.displayedImageLayer;
     if (displayedImageLayer.hidden == NO) {
       CGRect diLayerFrame = [displayedImageLayer.superlayer convertRect:displayedImageLayer.frame toLayer:self.layer];
@@ -926,7 +926,7 @@ static enum {
   NSSet* selNodes = self.selectedNodes;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
 
-  for (IFCompositeLayer* nodeLayer in self.visibleNodeLayers) {
+  for (IFNodeCompositeLayer* nodeLayer in self.visibleNodeLayers) {
     IFTreeNode* node = nodeLayer.node;
 
     if (node == displayedNode) {
