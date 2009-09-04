@@ -53,7 +53,6 @@
 @implementation IFForestView
 
 static NSString* IFTreePboardType = @"IFTreePboardType";
-static NSString* IFMarkPboardType = @"IFMarkPboardType";
 static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidChangeContext";
 
 - (id)initWithFrame:(NSRect)theFrame;
@@ -62,7 +61,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     return nil;
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
 
-  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,IFMarkPboardType,nil]];
+  [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,IFTreePboardType,nil]];
   [self addObserver:self forKeyPath:@"visualisedCursor.node" options:0 context:IFVisualisedCursorDidChangeContext];
   [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
   [self addObserver:self forKeyPath:@"visualisedCursor.isViewLocked" options:0 context:IFVisualisedCursorDidChangeContext];
@@ -486,14 +485,10 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
         [document deleteSubtree:[self selectedSubtree]];
       break;
       
-    case NSDragOperationDelete: {
-      if ([types containsObject:IFMarkPboardType]) {
-        int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-        NSLog(@"remove mark #%d", markIndex);
-//        [(IFTreeMark*)[marks objectAtIndex:markIndex] unset];
-      } else if ([types containsObject:IFTreePboardType])
+    case NSDragOperationDelete:
+      if ([types containsObject:IFTreePboardType])
         [document deleteSubtree:[self selectedSubtree]];
-    } break;
+      break;
       
     default:
       ; // do nothing
@@ -505,7 +500,6 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 static enum {
   IFDragKindNode,
   IFDragKindFileName,
-  IFDragKindMark,
   IFDragKindUnknown
 } dragKind;
 
@@ -516,8 +510,6 @@ static enum {
     dragKind = IFDragKindNode;
   else if ([types containsObject:NSFilenamesPboardType])
     dragKind = IFDragKindFileName; // TODO check that we can load the files being dragged
-  else if ([types containsObject:IFMarkPboardType])
-    dragKind = IFDragKindMark;
   else
     dragKind = IFDragKindUnknown;
   return [self draggingUpdated:sender];
@@ -540,6 +532,7 @@ static enum {
       highlightTarget = (targetNode != nil && ([targetNode isGhost] || targetCompositeLayer.isInputConnector || targetCompositeLayer.isOutputConnector));
       allowedOperationsMask = NSDragOperationEvery;
       break;
+      
     case IFDragKindFileName: {
       if (targetCompositeLayer != nil) {
         IFTreeNode* node = targetCompositeLayer.node;
@@ -548,10 +541,7 @@ static enum {
       } else
         allowedOperationsMask = NSDragOperationLink;
     } break;
-    case IFDragKindMark:
-      highlightTarget = YES;
-      allowedOperationsMask = NSDragOperationMove|NSDragOperationDelete;
-      break;
+
     default:
       NSAssert(NO,@"unexpected drag kind");
   }
@@ -688,15 +678,6 @@ static enum {
         return YES;
       } else
         return NO;
-    }
-      
-    case IFDragKindMark: {
-      if (targetCompositeLayer == nil)
-        return NO;
-      int markIndex = [(NSNumber*)[NSUnarchiver unarchiveObjectWithData:[pboard dataForType:IFMarkPboardType]] intValue];
-      NSLog(@"move mark #%d", markIndex);
-//      [(IFTreeMark*)[marks objectAtIndex:markIndex] setNode:targetNode];
-      return YES;
     }
       
     default:
