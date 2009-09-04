@@ -12,6 +12,7 @@
 
 @protocol IFBaseLayer
 @property(readonly) IFTreeNode* node;
+@property(readonly) NSImage* dragImage;
 @end
 
 @interface IFCompositeLayer : CALayer {

@@ -34,14 +34,13 @@
 + (id)layerForNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initWithNode:(IFTreeNode*)theNode ofTree:(IFTree*)theTree layoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
-// IFBaseLayer method
+// IFBaseLayer methods
 @property(readonly) IFTreeNode* node;
+@property(readonly) NSImage* dragImage;
 
 @property(readonly) CATextLayer* labelLayer;
 @property(readonly) IFExpressionContentsLayer* expressionLayer;
 @property(readonly) CATextLayer* nameLayer;
 @property(readonly) NSArray* thumbnailLayers;
-
-@property(readonly) NSImage* dragImage;
 
 @end

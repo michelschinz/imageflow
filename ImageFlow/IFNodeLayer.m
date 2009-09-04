@@ -159,6 +159,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   CGContextStrokePath(ctx);
 }
 
+// TODO: avoid code duplication with IFGhostNodeLayer.m
 - (NSImage*)dragImage;
 {
   size_t width = round(CGRectGetWidth(self.bounds));

@@ -39,6 +39,12 @@
 
 @synthesize node;
 
+- (NSImage*)dragImage;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 - (IFConnectorKind)kind;
 {
   [self doesNotRecognizeSelector:_cmd];
