@@ -38,4 +38,9 @@ static CGImageRef warningImage = nil;
   return self;
 }
 
+- (NSArray*)thumbnailLayers;
+{
+  return [NSArray array];
+}
+
 @end

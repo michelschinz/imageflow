@@ -66,6 +66,14 @@
 
 @synthesize displayedImageLayer, baseLayer, cursorLayer, highlightLayer;
 
+- (NSArray*)thumbnailLayers;
+{
+  if (self.node.isGhost)
+    return [NSArray array];
+  else
+    return ((IFNodeLayer*)baseLayer).thumbnailLayers;
+}
+
 - (void)setCursorIndicator:(IFLayerCursorIndicator)newIndicator;
 {
   switch (newIndicator) {

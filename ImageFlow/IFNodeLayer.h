@@ -40,6 +40,7 @@
 @property(readonly) CATextLayer* labelLayer;
 @property(readonly) IFExpressionContentsLayer* expressionLayer;
 @property(readonly) CATextLayer* nameLayer;
+@property(readonly) NSArray* thumbnailLayers;
 
 @property(readonly) NSImage* dragImage;
 

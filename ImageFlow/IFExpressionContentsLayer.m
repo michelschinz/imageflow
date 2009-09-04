@@ -40,4 +40,10 @@
 
 @synthesize expression, reversedPath;
 
+- (NSArray*)thumbnailLayers;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
 @end

@@ -26,8 +26,12 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   if (![super initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar])
     return nil;
   
+  borderHighlighted = NO;
+  
   self.anchorPoint = CGPointZero;
   self.needsDisplayOnBoundsChange = YES;
+  self.borderWidth = 1.0;
+  self.borderColor = [IFLayoutParameters thumbnailBorderColor];
   
   maskIndicatorLayer = [IFStaticImageLayer layerWithImageNamed:@"mask_tag"];
   maskIndicatorLayer.position = CGPointMake(CGRectGetWidth(self.frame) - CGRectGetWidth(maskIndicatorLayer.bounds), 0);
@@ -51,6 +55,18 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
     [layoutParameters removeObserver:self forKeyPath:@"thumbnailWidth"];
   }
   [super dealloc];
+}
+
+- (NSArray*)thumbnailLayers;
+{
+  return [NSArray arrayWithObject:self];
+}
+
+@synthesize borderHighlighted;
+- (void)setBorderHighlighted:(BOOL)newValue;
+{
+  self.borderColor = newValue ? [IFLayoutParameters displayedThumbnailBorderColor] : [IFLayoutParameters thumbnailBorderColor];
+  borderHighlighted = newValue;
 }
 
 - (void)drawInContext:(CGContextRef)ctx;

@@ -27,6 +27,9 @@
 + (NSFont*)labelFont;
 + (float)labelFontHeight;
 
++ (CGColorRef)thumbnailBorderColor;
++ (CGColorRef)displayedThumbnailBorderColor;
+
 + (CGColorRef)connectorColor;
 + (CGColorRef)connectorLabelColor;
 + (float)connectorArrowSize;

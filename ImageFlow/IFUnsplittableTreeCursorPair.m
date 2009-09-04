@@ -16,6 +16,13 @@
 
 @implementation IFUnsplittableTreeCursorPair
 
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
+  static NSSet* manualKeys = nil;
+  if (manualKeys == nil)
+    manualKeys = [[NSSet setWithObjects:@"tree", @"node", @"path", nil] retain];
+  return ![manualKeys containsObject:key];
+}
+
 + (NSSet*)keyPathsForValuesAffectingViewLockedTree;
 {
   return [NSSet setWithObject:@"tree"];
@@ -46,9 +53,15 @@
 
 - (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode path:(IFArrayPath*)newPath;
 {
+  [self willChangeValueForKey:@"tree"];
+  [self willChangeValueForKey:@"node"];
+  [self willChangeValueForKey:@"path"];
   self.tree = newTree;
   self.node = newNode;
   self.path = newPath;
+  [self didChangeValueForKey:@"path"];
+  [self didChangeValueForKey:@"node"];
+  [self didChangeValueForKey:@"tree"];
 }
 
 @synthesize tree, node, path;

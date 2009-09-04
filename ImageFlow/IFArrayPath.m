@@ -56,6 +56,11 @@ static IFArrayPath* emptyPath = nil;
   [super dealloc];
 }
 
+- (BOOL)isEmpty;
+{
+  return self == emptyPath;
+}
+
 @synthesize index, next;
 
 - (IFArrayPath*)reversed;
@@ -65,15 +70,31 @@ static IFArrayPath* emptyPath = nil;
 
 - (IFExpression*)accessorExpressionFor:(IFExpression*)arrayExpression;
 {
-  if (self == emptyPath)
+  if (self.isEmpty)
     return arrayExpression;
   else
     return [IFOperatorExpression arrayGet:[next accessorExpressionFor:arrayExpression] index:index];
 }
 
+- (NSUInteger)hash;
+{
+  return self.isEmpty ? 7 : (index ^ [next hash] << 3);
+}
+
+- (BOOL)isEqual:(id)otherO;
+{
+  if (self.isEmpty)
+    return otherO == emptyPath;
+  else if ([otherO isKindOfClass:[IFArrayPath class]]) {
+    IFArrayPath* other = (IFArrayPath*)otherO;
+    return (index == other.index) && [next isEqual:other.next];
+  } else
+    return NO;
+}
+
 - (NSString*)description;
 {
-  if (self == emptyPath)
+  if (self.isEmpty)
     return @"nil";
   else
     return [NSString stringWithFormat:@"%d:%@", index, [next description]];
@@ -84,7 +105,7 @@ static IFArrayPath* emptyPath = nil;
 
 - (IFArrayPath*)reversedOn:(IFArrayPath*)tail;
 {
-  if (self == emptyPath)
+  if (self.isEmpty)
     return tail;
   else
     return [next reversedOn:[IFArrayPath pathElementWithIndex:index next:tail]];

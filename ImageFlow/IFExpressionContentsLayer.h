@@ -26,4 +26,6 @@
 @property(retain) IFConstantExpression* expression;
 @property(retain) IFArrayPath* reversedPath;
 
+@property(readonly) NSArray* thumbnailLayers;
+
 @end

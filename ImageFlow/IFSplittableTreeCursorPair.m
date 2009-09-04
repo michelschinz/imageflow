@@ -22,6 +22,13 @@
 
 @implementation IFSplittableTreeCursorPair
 
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
+  static NSSet* manualKeys = nil;
+  if (manualKeys == nil)
+    manualKeys = [[NSSet setWithObjects:@"tree", @"node", @"path", @"viewLockedTree", @"viewLockedNode", @"viewLockedPath", nil] retain];
+  return ![manualKeys containsObject:key];
+}
+
 + (IFSplittableTreeCursorPair*)splittableTreeCursorPair;
 {
   return [[[self alloc] init] autorelease];
@@ -40,13 +47,25 @@
 
 - (void)setTree:(IFTree*)newTree node:(IFTreeNode*)newNode path:(IFArrayPath*)newPath;
 {
+  [self willChangeValueForKey:@"tree"];
+  [self willChangeValueForKey:@"node"];
+  [self willChangeValueForKey:@"path"];
   self.tree = newTree;
   self.node = newNode;
   self.path = newPath;
+  [self didChangeValueForKey:@"path"];
+  [self didChangeValueForKey:@"node"];
+  [self didChangeValueForKey:@"tree"];
   if (!isViewLocked) {
+    [self willChangeValueForKey:@"viewLockedTree"];
+    [self willChangeValueForKey:@"viewLockedNode"];
+    [self willChangeValueForKey:@"viewLockedPath"];
     self.viewLockedTree = newTree;
     self.viewLockedNode = newNode;
     self.viewLockedPath = newPath;
+    [self didChangeValueForKey:@"viewLockedPath"];
+    [self didChangeValueForKey:@"viewLockedNode"];
+    [self didChangeValueForKey:@"viewLockedTree"];
   }
   [self updateTransforms];
 }

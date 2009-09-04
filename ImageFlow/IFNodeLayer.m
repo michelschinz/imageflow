@@ -102,6 +102,11 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
 
 @synthesize labelLayer, expressionLayer, nameLayer;
 
+- (NSArray*)thumbnailLayers;
+{
+  return (expressionLayer != nil) ? expressionLayer.thumbnailLayers : [NSArray array];
+}
+
 - (void)layoutSublayers;
 {
   const float internalMargin = [IFLayoutParameters nodeInternalMargin];

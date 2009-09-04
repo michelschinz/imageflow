@@ -11,6 +11,7 @@
 #import "IFConnectorCompositeLayer.h"
 #import "IFNodeLayer.h"
 #import "IFForestLayoutManager.h"
+#import "IFImageOrMaskLayer.h"
 #import "IFLayerSetExplicit.h"
 #import "IFLayerPredicateSubset.h"
 #import "IFLayerSubsetComposites.h"
@@ -31,21 +32,21 @@
 @property(retain) IFVariable* canvasBoundsVar;
 - (void)syncLayersWithTree;
 - (void)documentTreeChanged:(NSNotification*)notification;
-- (IFCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
+- (IFNodeCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
 - (void)updateBounds;
-- (void)startEditingGhost:(IFCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
+- (void)startEditingGhost:(IFNodeCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
 @property(retain) NSInvocation* delayedMouseEventInvocation;
-- (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
-- (void)moveToNodeRepresentedBy:(IFCompositeLayer*)layer extendingSelection:(BOOL)extendSelection;
+- (void)moveToNode:(IFTreeNode*)node path:(IFArrayPath*)path extendingSelection:(BOOL)extendSelection;
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 - (void)updateViewLockButton;
 - (void)updateCursorLayers;
 @property(copy) NSSet* selectedNodes;
 @property(readonly) IFSubtree* selectedSubtree;
-@property(copy) IFTreeNode* cursorNode;
-- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
+- (void)setCursorNode:(IFTreeNode*)newCursorNode path:(IFArrayPath*)newPath;
+@property(readonly) IFTreeNode* cursorNode;
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node path:(IFArrayPath*)path extendingSelection:(BOOL)extendSelection;
 - (BOOL)canExtendSelectionTo:(IFTreeNode*)node;
-- (void)extendSelectionTo:(IFTreeNode*)node;
+- (void)extendSelectionTo:(IFTreeNode*)node path:(IFArrayPath*)path;
 @property(assign) IFCompositeLayer* highlightedLayer;
 @end
 
@@ -180,10 +181,10 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)moveUpExtendingSelection:(BOOL)extendSelection;
 {
-  IFTreeNode* node = [self cursorNode];
+  IFTreeNode* node = self.cursorNode;
   if (![node isFolded] && [[document tree] parentsCountOfNode:node] > 0) {
     NSArray* parents = [[document tree] parentsOfNode:node];
-    [self moveToNode:[parents objectAtIndex:(([parents count] - 1) / 2)] extendingSelection:extendSelection];
+    [self moveToNode:[parents objectAtIndex:(([parents count] - 1) / 2)] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
   } else
     [self moveToClosestNodeInDirection:IFUp extendingSelection:extendSelection];
 }
@@ -200,9 +201,9 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)moveDownExtendingSelection:(BOOL)extendSelection;
 {
-  IFTreeNode* current = [self cursorNode];
+  IFTreeNode* current = self.cursorNode;
   if ([[document roots] indexOfObject:current] == NSNotFound)
-    [self moveToNode:[[document tree] childOfNode:current] extendingSelection:extendSelection];
+    [self moveToNode:[[document tree] childOfNode:current] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
   else
     [self moveToClosestNodeInDirection:IFDown extendingSelection:extendSelection];
 }
@@ -219,13 +220,19 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)moveLeftExtendingSelection:(BOOL)extendSelection;
 {
-  IFTreeNode* current = [self cursorNode];
-  NSArray* siblings = [[document tree] siblingsOfNode:current];
-  int indexInSiblings = [siblings indexOfObject:current];
-  if (indexInSiblings != NSNotFound && indexInSiblings > 0)
-    [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)] extendingSelection:extendSelection];
-  else
-    [self moveToClosestNodeInDirection:IFLeft extendingSelection:extendSelection];
+  IFTreeNode* currentNode = self.cursorNode;
+  IFArrayPath* pathAtLeft = nil; // TODO: implement
+
+  if (pathAtLeft != nil)
+    [self moveToNode:currentNode path:pathAtLeft extendingSelection:extendSelection];
+  else {
+    NSArray* siblings = [[document tree] siblingsOfNode:currentNode];
+    int indexInSiblings = [siblings indexOfObject:currentNode];
+    if (indexInSiblings != NSNotFound && indexInSiblings > 0)
+      [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
+    else
+      [self moveToClosestNodeInDirection:IFLeft extendingSelection:extendSelection];
+  }
 }
 
 - (void)moveLeft:(id)sender;
@@ -240,13 +247,19 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)moveRightExtendingSelection:(BOOL)extendSelection;
 {
-  IFTreeNode* current = [self cursorNode];
-  NSArray* siblings = [[document tree] siblingsOfNode:current];
-  int indexInSiblings = [siblings indexOfObject:current];
-  if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
-    [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)] extendingSelection:extendSelection];
-  else
-    [self moveToClosestNodeInDirection:IFRight extendingSelection:extendSelection];
+  IFTreeNode* currentNode = self.cursorNode;
+  IFArrayPath* pathAtRight = nil; // TODO: implement
+  
+  if (pathAtRight != nil)
+    [self moveToNode:currentNode path:pathAtRight extendingSelection:extendSelection];
+  else {
+    NSArray* siblings = [[document tree] siblingsOfNode:currentNode];
+    int indexInSiblings = [siblings indexOfObject:currentNode];
+    if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
+      [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
+    else
+      [self moveToClosestNodeInDirection:IFRight extendingSelection:extendSelection];
+  }
 }
 
 - (void)moveRight:(id)sender;
@@ -277,7 +290,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     IFTreeNode* newCursorNode = (maybeGhost != nil)
     ? maybeGhost
     : [[document.tree parentsOfNode:deletedSubtreeChild] objectAtIndex:deletedSubtreeChildIndex];
-    [self moveToNode:newCursorNode extendingSelection:NO];
+    [self moveToNode:newCursorNode path:nil extendingSelection:NO];
   } else
     NSBeep();
 }
@@ -290,7 +303,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)insertNewline:(id)sender
 {
   [document insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:self.cursorNode];
-  [self moveToNode:[document.tree childOfNode:self.cursorNode] extendingSelection:NO];
+  [self moveToNode:[document.tree childOfNode:self.cursorNode] path:nil extendingSelection:NO];
 }
 
 - (void)keyDown:(NSEvent*)event;
@@ -316,17 +329,25 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     return;
 
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFCompositeLayer* clickedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
+  IFNodeCompositeLayer* clickedLayer = (IFNodeCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   if (clickedLayer != nil) {
     IFTreeNode* clickedNode = [clickedLayer node];
+
+    CGPoint layerLocalPoint = [clickedLayer convertPoint:localPoint fromLayer:self.layer];
+    CALayer* pathLayer;
+    for (pathLayer = [clickedLayer.baseLayer hitTest:layerLocalPoint]; pathLayer != nil && [pathLayer valueForKey:@"reversedPath"] == nil; pathLayer = pathLayer.superlayer)
+      ;
+    IFArrayPath* path = [pathLayer valueForKey:@"reversedPath"];
+    
     BOOL extendSelection = ([event modifierFlags] & NSShiftKeyMask) != 0;
     switch ([event clickCount]) {
       case 1: {
-        NSInvocation* movementInvocation = [NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(moveToNode:extendingSelection:)]];
-        [movementInvocation setSelector:@selector(moveToNode:extendingSelection:)];
+        NSInvocation* movementInvocation = [NSInvocation invocationWithMethodSignature:[[self class] instanceMethodSignatureForSelector:@selector(moveToNode:path:extendingSelection:)]];
+        [movementInvocation setSelector:@selector(moveToNode:path:extendingSelection:)];
         [movementInvocation setTarget:self];
         [movementInvocation setArgument:&clickedNode atIndex:2];
-        [movementInvocation setArgument:&extendSelection atIndex:3];
+        [movementInvocation setArgument:&path atIndex:3];
+        [movementInvocation setArgument:&extendSelection atIndex:4];
         
         if ([self.selectedNodes containsObject:clickedNode]) {
           [movementInvocation retainArguments];
@@ -338,10 +359,10 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
         }
       } break;
       case 2:
-        [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
+        [self selectNodes:[document ancestorsOfNode:clickedNode] puttingCursorOn:clickedNode path:path extendingSelection:extendSelection];
         break;
       case 3:
-        [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode extendingSelection:extendSelection];
+        [self selectNodes:[document nodesOfTreeContainingNode:clickedNode] puttingCursorOn:clickedNode path:path extendingSelection:extendSelection];
         break;
       default:
         ; // ignore
@@ -357,7 +378,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   self.delayedMouseEventInvocation = nil;
   
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
-  IFCompositeLayer* draggedLayer = (IFCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
+  IFNodeCompositeLayer* draggedLayer = (IFNodeCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
   
   if (draggedLayer != nil && [self.selectedNodes containsObject:draggedLayer.node]) {
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
@@ -419,7 +440,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)paste:(id)sender;
 {
-  if (![[self cursorNode] isGhost]) {
+  if (!self.cursorNode.isGhost) {
     NSBeep(); // TODO: error message
     return;
   }
@@ -432,9 +453,9 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   }
   
   IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
-  if ([document canCopyTree:tree toReplaceGhostNode:[self cursorNode]]) {
-    IFTreeNode* pastedRoot = [document copyTree:tree toReplaceGhostNode:[self cursorNode]];
-    [self moveToNode:pastedRoot extendingSelection:NO];
+  if ([document canCopyTree:tree toReplaceGhostNode:self.cursorNode]) {
+    IFTreeNode* pastedRoot = [document copyTree:tree toReplaceGhostNode:self.cursorNode];
+    [self moveToNode:pastedRoot path:nil extendingSelection:NO];
   } else
     NSBeep();
 }
@@ -776,9 +797,9 @@ static enum {
   [self syncLayersWithTree];
 }
 
-- (IFCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
+- (IFNodeCompositeLayer*)compositeLayerForNode:(IFTreeNode*)node;
 {
-  for (IFCompositeLayer* layer in self.nodeLayers) {
+  for (IFNodeCompositeLayer* layer in self.nodeLayers) {
     if (layer.node == node)
       return layer;
   }
@@ -802,7 +823,7 @@ static enum {
 
 // MARK: Ghost node editing
 
-- (void)startEditingGhost:(IFCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
+- (void)startEditingGhost:(IFNodeCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
 {
   NSTextField* textField = [[[NSTextField alloc] init] autorelease];
   
@@ -834,7 +855,7 @@ static enum {
   IFTreeTemplate* treeTemplate = [delegate selectedTreeTemplate];
   if (treeTemplate != nil) {
     IFTreeNode* newRoot = [document copyTree:treeTemplate.tree toReplaceGhostNode:self.cursorNode];
-    [self moveToNode:newRoot extendingSelection:NO];
+    [self moveToNode:newRoot path:nil extendingSelection:NO];
   } else
     NSBeep();
 }
@@ -858,7 +879,6 @@ static enum {
 }
 
 // text field delegate method
-
 - (void)controlTextDidChange:(NSNotification*)notification;
 {
   [self.delegate previewFilterStringDidChange:((NSTextField*)notification.object).stringValue];
@@ -876,29 +896,24 @@ static enum {
 
 @synthesize delayedMouseEventInvocation;
 
-- (void)moveToNode:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
+- (void)moveToNode:(IFTreeNode*)node path:(IFArrayPath*)path extendingSelection:(BOOL)extendSelection;
 {
   if (extendSelection) {
     if ([self canExtendSelectionTo:node])
-      [self extendSelectionTo:node];
+      [self extendSelectionTo:node path:path];
     else
       NSBeep();
   } else {
     self.selectedNodes = [NSSet set];
-    self.cursorNode = node;
+    [self setCursorNode:node path:path];
   }
-}
-
-- (void)moveToNodeRepresentedBy:(IFCompositeLayer*)layer extendingSelection:(BOOL)extendSelection;
-{
-  [self moveToNode:layer.node extendingSelection:extendSelection];
 }
 
 - (void)moveToClosestNodeInDirection:(IFDirection)direction extendingSelection:(BOOL)extendSelection;
 {
   CALayer* closestLayer = closestLayerInDirection([self compositeLayerForNode:self.cursorNode], [self.visibleNodeLayers toArray], direction);
   if (closestLayer != nil)
-    [self moveToNodeRepresentedBy:(IFCompositeLayer*)closestLayer extendingSelection:extendSelection];
+    [self moveToNode:((IFNodeCompositeLayer*)closestLayer).node path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
   else
     NSBeep();
 }
@@ -939,10 +954,18 @@ static enum {
     if (node == cursorNode) {
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorCursor;
       [self scrollRectToVisible:NSRectFromCGRect(nodeLayer.frame)];
-    } else if ([selNodes containsObject:node])
-      nodeLayer.cursorIndicator = IFLayerCursorIndicatorSelection;
-    else
-      nodeLayer.cursorIndicator = IFLayerCursorIndicatorNone;
+      
+      IFArrayPath* reversedPath = self.cursors.viewLockedPath.reversed;
+      for (IFImageOrMaskLayer* thumbnailLayer in nodeLayer.thumbnailLayers)
+        thumbnailLayer.borderHighlighted = ([thumbnailLayer.reversedPath isEqual:reversedPath]);
+    } else {
+      if ([selNodes containsObject:node])
+        nodeLayer.cursorIndicator = IFLayerCursorIndicatorSelection;
+      else
+        nodeLayer.cursorIndicator = IFLayerCursorIndicatorNone;
+      for (IFImageOrMaskLayer* thumbnailLayer in nodeLayer.thumbnailLayers)
+        thumbnailLayer.borderHighlighted = NO;
+    }
   }
   [self updateViewLockButton];
 }
@@ -965,10 +988,10 @@ static enum {
 
 - (NSSet*)selectedNodes;
 {
-  if ([self cursorNode] == nil)
+  if (self.cursorNode == nil)
     return [NSSet set];
   else if ([selectedNodes count] == 0) {
-    IFTreeNode* cursorNode = [self cursorNode];
+    IFTreeNode* cursorNode = self.cursorNode;
     return [cursorNode isFolded] ? [document ancestorsOfNode:cursorNode] : [NSSet setWithObject:cursorNode];
   } else
     return selectedNodes;
@@ -979,9 +1002,11 @@ static enum {
   return [IFSubtree subtreeOf:[document tree] includingNodes:[self selectedNodes]];
 }
 
-- (void)setCursorNode:(IFTreeNode*)newCursorNode;
+- (void)setCursorNode:(IFTreeNode*)newCursorNode path:(IFArrayPath*)newPath;
 {
-  [cursors setTree:document.tree node:newCursorNode path:[IFArrayPath leftmostPathForType:newCursorNode.type.resultType]]; // FIXME: use correct index
+  if (newPath == nil)
+    newPath = [IFArrayPath leftmostPathForType:newCursorNode.type.resultType];
+  [cursors setTree:document.tree node:newCursorNode path:newPath];
 }
 
 - (IFTreeNode*)cursorNode;
@@ -989,7 +1014,7 @@ static enum {
   return cursors.node;
 }
 
-- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node extendingSelection:(BOOL)extendSelection;
+- (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node path:(IFArrayPath*)path extendingSelection:(BOOL)extendSelection;
 {
   NSAssert([nodes containsObject:node], @"invalid selection");
   if (extendSelection) {
@@ -998,18 +1023,18 @@ static enum {
     nodes = allNodes;
   }
   self.selectedNodes = nodes;
-  self.cursorNode = node;
+  [self setCursorNode:node path:path];
 }
 
 - (BOOL)canExtendSelectionTo:(IFTreeNode*)node;
 {
-  return [document rootOfTreeContainingNode:node] == [document rootOfTreeContainingNode:[self cursorNode]];
+  return [document rootOfTreeContainingNode:node] == [document rootOfTreeContainingNode:self.cursorNode];
 }
 
-- (void)extendSelectionTo:(IFTreeNode*)node;
+- (void)extendSelectionTo:(IFTreeNode*)node path:(IFArrayPath*)path;
 {
   NSArray* nodeRootPath = [document pathFromRootTo:node];
-  NSArray* cursorRootPath = [document pathFromRootTo:[self cursorNode]];
+  NSArray* cursorRootPath = [document pathFromRootTo:self.cursorNode];
   NSAssert([nodeRootPath objectAtIndex:0] == [cursorRootPath objectAtIndex:0], @"unexpected paths!");
   
   int i = 0;
@@ -1023,7 +1048,7 @@ static enum {
   [newSelection unionSet:[NSSet setWithArray:nodeRootPath]];
   [newSelection unionSet:[NSSet setWithArray:cursorRootPath]];
   [newSelection minusSet:[NSSet setWithArray:[nodeRootPath subarrayWithRange:NSMakeRange(0,commonPrefixLen - 1)]]];
-  [self selectNodes:newSelection puttingCursorOn:node extendingSelection:YES];
+  [self selectNodes:newSelection puttingCursorOn:node path:path extendingSelection:YES];
 }
 
 // MARK: highlighting

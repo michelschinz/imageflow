@@ -23,6 +23,7 @@
 + (IFArrayPath*)pathElementWithIndex:(unsigned)theIndex next:(IFArrayPath*)theNext;
 - (IFArrayPath*)initWithIndex:(unsigned)theIndex next:(IFArrayPath*)theNext;
 
+@property(readonly) BOOL isEmpty;
 @property(readonly) unsigned index;
 @property(readonly) IFArrayPath* next;
 

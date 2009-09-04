@@ -22,6 +22,9 @@ static CGColorRef nodeLabelColor;
 static NSFont* labelFont;
 static float labelFontHeight;
 
+static CGColorRef thumbnailBorderColor;
+static CGColorRef displayedThumbnailBorderColor;
+
 static CGColorRef connectorColor;
 static CGColorRef connectorLabelColor;
 static float connectorArrowSize;
@@ -58,6 +61,9 @@ static float dragBadgeFontHeight;
   NSLayoutManager* layoutManager = [[[NSLayoutManager alloc] init] autorelease];
   labelFontHeight = [layoutManager defaultLineHeightForFont:labelFont];
 
+  thumbnailBorderColor = CGColorCreateGenericGray(0.5, 1.0);
+  displayedThumbnailBorderColor = CGColorCreateGenericRGB(0.9, 0.7, 0.7, 1.0);
+  
   connectorColor = CGColorCreateGenericGray(0.3, 1.0);
   connectorLabelColor = CGColorCreateGenericGray(0.6, 1.0);
   connectorArrowSize = 5.0;
@@ -136,6 +142,16 @@ static float dragBadgeFontHeight;
 + (float)labelFontHeight;
 {
   return labelFontHeight;
+}
+
++ (CGColorRef)thumbnailBorderColor;
+{
+  return thumbnailBorderColor;
+}
+
++ (CGColorRef)displayedThumbnailBorderColor;
+{
+  return displayedThumbnailBorderColor;
 }
 
 + (CGColorRef)connectorColor;

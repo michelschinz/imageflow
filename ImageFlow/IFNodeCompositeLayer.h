@@ -33,6 +33,8 @@ typedef enum {
 
 @property(readonly) CALayer* displayedImageLayer;
 @property(readonly) CALayer* cursorLayer;
+@property(readonly) NSArray* thumbnailLayers;
+
 @property IFLayerCursorIndicator cursorIndicator;
 
 @end

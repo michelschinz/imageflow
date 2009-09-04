@@ -62,6 +62,14 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   [super dealloc];
 }
 
+- (NSArray*)thumbnailLayers;
+{
+  NSMutableArray* thumbnailLayers = [NSMutableArray array];
+  for (IFExpressionContentsLayer* layer in self.componentLayers)
+    [thumbnailLayers addObjectsFromArray:layer.thumbnailLayers];
+  return thumbnailLayers;
+}
+
 - (void)layoutSublayers;
 {
   const float xMargin = [IFLayoutParameters nodeInternalMargin];
