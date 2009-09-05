@@ -25,4 +25,6 @@
 @property(readonly) IFTreeNode* node;
 @property(readonly) NSImage* dragImage;
 
+- (NSArray*)thumbnailLayers;
+
 @end

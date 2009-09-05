@@ -220,7 +220,17 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)moveLeftExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* currentNode = self.cursorNode;
-  IFArrayPath* pathAtLeft = nil; // TODO: implement
+
+  NSArray* arraySiblings = [[self compositeLayerForNode:currentNode].baseLayer valueForKey:@"thumbnailLayers"];
+  IFArrayPath* currentReversedPath = self.cursors.path.reversed;
+  IFArrayPath* pathAtLeft = nil;
+  for (int i = 0; i < [arraySiblings count]; ++i) {
+    if ([[[arraySiblings objectAtIndex:i] reversedPath] isEqual:currentReversedPath]) {
+      if (i > 0)
+        pathAtLeft = [[[arraySiblings objectAtIndex:i-1] reversedPath] reversed];
+      break;
+    }
+  }
 
   if (pathAtLeft != nil)
     [self moveToNode:currentNode path:pathAtLeft extendingSelection:extendSelection];
@@ -247,7 +257,17 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)moveRightExtendingSelection:(BOOL)extendSelection;
 {
   IFTreeNode* currentNode = self.cursorNode;
-  IFArrayPath* pathAtRight = nil; // TODO: implement
+
+  NSArray* arraySiblings = [[self compositeLayerForNode:currentNode].baseLayer valueForKey:@"thumbnailLayers"];
+  IFArrayPath* currentReversedPath = self.cursors.path.reversed;
+  IFArrayPath* pathAtRight = nil;
+  for (int i = 0; i < [arraySiblings count]; ++i) {
+    if ([[[arraySiblings objectAtIndex:i] reversedPath] isEqual:currentReversedPath]) {
+      if (i < [arraySiblings count] - 1)
+        pathAtRight = [[[arraySiblings objectAtIndex:i+1] reversedPath] reversed];
+      break;
+    }
+  }
   
   if (pathAtRight != nil)
     [self moveToNode:currentNode path:pathAtRight extendingSelection:extendSelection];

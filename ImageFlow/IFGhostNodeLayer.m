@@ -71,6 +71,11 @@ static NSString* IFThumbnailWidthChangedContext = @"IFThumbnailWidthChangedConte
   return dragImage;
 }
 
+- (NSArray*)thumbnailLayers;
+{
+  return [NSArray array];
+}
+
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
   if (context == IFThumbnailWidthChangedContext)
