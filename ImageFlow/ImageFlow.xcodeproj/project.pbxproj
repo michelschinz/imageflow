@@ -132,6 +132,8 @@
 		FAB17A050E4C8872008BEC70 /* IFLayerSetExplicit.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */; };
 		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
 		FAB599700EE92A5600D75030 /* IFStackLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCCD70EE8214E00ED5870 /* IFStackLayer.m */; };
+		FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */; };
+		FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */; };
 		FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABB51A80E9605A300480196 /* IFTemplateLayer.m */; };
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
@@ -470,6 +472,10 @@
 		FAB17A030E4C8872008BEC70 /* IFLayerSetExplicit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerSetExplicit.h; sourceTree = "<group>"; };
 		FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSetExplicit.m; sourceTree = "<group>"; };
 		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
+		FAB65D9C1052EA4900385A80 /* IFLambdaExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLambdaExpression.h; sourceTree = "<group>"; };
+		FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLambdaExpression.m; sourceTree = "<group>"; };
+		FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFArgumentExpression.h; sourceTree = "<group>"; };
+		FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFArgumentExpression.m; sourceTree = "<group>"; };
 		FABB51A70E9605A300480196 /* IFTemplateLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTemplateLayer.h; sourceTree = "<group>"; };
 		FABB51A80E9605A300480196 /* IFTemplateLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTemplateLayer.m; sourceTree = "<group>"; };
 		FABC93B60E6FC6C600459364 /* IFCompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCompositeLayer.h; sourceTree = "<group>"; };
@@ -809,12 +815,16 @@
 				FA447E7E0ACD196D001C9718 /* IFExpressionTags.h */,
 				FA690ACA0905256F0096B97D /* IFExpression.h */,
 				FA690ACB0905256F0096B97D /* IFExpression.m */,
+				FAB65D9C1052EA4900385A80 /* IFLambdaExpression.h */,
+				FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */,
 				FAEFA87709062A9C00F76B8A /* IFOperatorExpression.h */,
 				FAEFA87809062A9C00F76B8A /* IFOperatorExpression.m */,
 				FAF0D9CA090E66AE00A9788A /* IFParentExpression.h */,
 				FAF0D9CB090E66AE00A9788A /* IFParentExpression.m */,
 				FAEFA87B09062AED00F76B8A /* IFVariableExpression.h */,
 				FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */,
+				FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */,
+				FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */,
 				FAF934FB0908094E00558366 /* IFConstantExpression.h */,
 				FAF934FC0908094E00558366 /* IFConstantExpression.m */,
 				FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */,
@@ -1926,6 +1936,8 @@
 				FA0527FE0FF3A1D600F8F15B /* IFAverageCIFilter.m in Sources */,
 				FA8C82F010496149004BCBD4 /* IFArrayPath.m in Sources */,
 				FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */,
+				FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */,
+				FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

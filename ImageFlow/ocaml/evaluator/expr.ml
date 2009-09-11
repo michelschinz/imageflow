@@ -3,8 +3,10 @@ type action_kind = Save | Print
 type t =
     Op of string * t array
   | Var of string
+  | Arg of int
   | Parent of int
   | Array of t array
+  | Lambda of t
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t
@@ -21,9 +23,11 @@ type t =
 let is_value = function
     Op _
   | Var _
+  | Arg _
   | Parent _ ->
       false
   | Array _
+  | Lambda _
   | Image _
   | Mask _
   | Color _
@@ -59,7 +63,9 @@ let rec equal e1 e2 =
       (n1 = n2) && (equalArray a1 a2)
   | (Array a1, Array a2) ->
       equalArray a1 a2
+  | (Lambda _, Lambda _)
   | (Var _, Var _)
+  | (Arg _, Arg _)
   | (Parent _, Parent _)
   | (Color _, Color _)
   | (Rect _, Rect _)

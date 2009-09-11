@@ -10,7 +10,7 @@
 #import "IFXMLCoder.h"
 #import "IFDirectoryManager.h"
 
-@interface IFOperator (Private)
+@interface IFOperator ()
 - (id)initWithName:(NSString*)theName;
 @end
 
@@ -45,6 +45,7 @@ static NSDictionary* allOperatorsByName;
                    [[[self alloc] initWithName:@"invert"] autorelease],
                    [[[self alloc] initWithName:@"invert-mask"] autorelease],
                    [[[self alloc] initWithName:@"load"] autorelease],
+                   [[[self alloc] initWithName:@"map"] autorelease],
                    [[[self alloc] initWithName:@"mask"] autorelease],
                    [[[self alloc] initWithName:@"mask-overlay"] autorelease],
                    [[[self alloc] initWithName:@"mask-to-image"] autorelease],                   
@@ -91,7 +92,7 @@ static NSDictionary* allOperatorsByName;
   return name;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -110,9 +111,8 @@ static NSDictionary* allOperatorsByName;
   [encoder encodeObject:name forKey:@"name"];
 }
 
-@end
-
-@implementation IFOperator (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (id)initWithName:(NSString*)theName;
 {

@@ -37,7 +37,7 @@
   [self doesNotRecognizeSelector:_cmd];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   [self doesNotRecognizeSelector:_cmd];
   return 0;
@@ -71,7 +71,7 @@
   }
 }
 
-#pragma mark XML input/output
+// MARK: XML input/output
 
 - (id)initWithXML:(NSXMLElement*)xml;
 {
@@ -85,7 +85,7 @@
   return nil;
 }
 
-#pragma mark Caml representation
+// MARK: Caml representation
 
 - (value)asCaml;
 {

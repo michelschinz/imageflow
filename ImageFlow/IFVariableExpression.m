@@ -39,17 +39,14 @@
   return [@"_" stringByAppendingString:name];
 }
 
-- (NSString*)name;
-{
-  return name;
-}
+@synthesize name;
 
 - (void)accept:(IFExpressionVisitor*)visitor;
 {
   [visitor caseVariableExpression:self];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return [name hash] * 3;
 }
@@ -59,7 +56,7 @@
   return [other isKindOfClass:[IFVariableExpression class]] && [name isEqualToString:[other name]];
 }
 
-#pragma mark XML input/output
+// MARK: XML input/output
 
 - (id)initWithXML:(NSXMLElement*)xmlTree;
 {
@@ -73,7 +70,7 @@
   return elem;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -85,7 +82,7 @@
   [encoder encodeObject:name forKey:@"name"];
 }
 
-#pragma mark Caml representation
+// MARK: Caml representation
 
 - (value)camlRepresentation;
 {

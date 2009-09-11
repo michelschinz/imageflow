@@ -1,5 +1,7 @@
 open Expr
 
+exception EvalError of Expr.t
+
 (* Execution of actions *)
 
 let execute = function
@@ -9,7 +11,41 @@ let execute = function
 
 (* Evaluation of expressions *)
 
-let eval expr =
+let rec eval cache env expr =
+  match env with
+    [] -> eval_cached cache expr
+  | _ -> eval_deep cache env expr
+
+and eval_cached cache expr =
+  try
+    Cache.lookup cache expr
+  with Not_found ->
+    let res = eval_deep cache [] expr in
+    begin match res with
+      Image res_image when not (is_value expr) ->
+        Cache.store cache expr res_image
+    | _ -> ()
+    end;
+    res
+
+and eval_deep cache env expr =
+  match expr with
+    Op(op, args) ->
+      let evaluated_args =
+        try
+          Array.map (eval cache env) args
+        with EvalError _ ->
+          raise (EvalError (Error None))
+      in
+      eval_shallow cache env (Op(op, evaluated_args))
+  | Array elems ->
+      eval_shallow cache env (Array (Array.map (eval cache env) elems))
+  | other when not (is_value other) ->
+      eval_shallow cache env other
+  | value ->
+      value
+
+and eval_shallow cache env expr =
   let out_image filter =
     Image (Image.of_ciimage (Coreimage.output_image filter))
   and out_mask filter =
@@ -20,6 +56,8 @@ let eval expr =
       Array xs
   | Op("array-get", [|Array a; Int i|]) ->
       a.(i)
+  | Op("map", [|Lambda b; Array a|]) ->
+      Array (Array.map (fun e -> eval cache (e :: env) b) a)
 
     (* Rectangle operators *)
   | Op("rect-intersection", [|Rect r1; Rect r2|]) ->
@@ -76,7 +114,7 @@ let eval expr =
         Image (Load.eval_load f)
       with Failure _ ->
         let name = if f = "" then "(no name given)" else f in
-        Error (Some ("Unable to load file "^name^""))
+        raise (EvalError (Error (Some ("Unable to load file "^name^""))))
       end
   | Op("mask", [|Image i; Mask m|]) ->
       out_image (Coreimage.mask i m)
@@ -123,11 +161,13 @@ let eval expr =
               (pt ps.(0))
               ps)
   | Op("nop", _) ->
-      Error None                        (* TODO *)
+      raise (EvalError (Error None))    (* TODO *)
   | Var _ ->
-      Error None                        (* TODO *)
+      raise (EvalError (Error None))    (* TODO *)
+  | Arg i ->
+      List.nth env i
   | Parent _ ->
-      Error None                        (* TODO *)
+      raise (EvalError (Error None))    (* TODO *)
   | other when is_value other ->
       other
   | unknown_expr ->

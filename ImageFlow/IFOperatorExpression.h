@@ -13,7 +13,7 @@
 @interface IFOperatorExpression : IFExpression {
   IFOperator* operator;
   NSArray* operands;
-  unsigned hash;
+  NSUInteger hash;
 }
 
 + (id)nop;
@@ -31,8 +31,8 @@
 + (id)expressionWithOperatorNamed:(NSString*)theOperatorName operands:(IFExpression*)firstOperand, ...;
 - (id)initWithOperator:(IFOperator*)theOperator operands:(NSArray*)theOperands;
 
-- (IFOperator*)operator;
-- (NSArray*)operands;
+@property(readonly) IFOperator* operator;
+@property(readonly) NSArray* operands;
 - (IFExpression*)operandAtIndex:(int)index;
 
 @end

@@ -101,7 +101,7 @@
   return self;
 }
 
-- (void) dealloc {
+- (void)dealloc {
   OBJC_RELEASE(operands);
   OBJC_RELEASE(operator);
   [super dealloc];
@@ -116,15 +116,7 @@
   return desc;
 }
 
-- (IFOperator*)operator;
-{
-  return operator;
-}
-
-- (NSArray*)operands;
-{
-  return operands;
-}
+@synthesize operator, operands;
 
 - (IFExpression*)operandAtIndex:(int)index;
 {
@@ -134,11 +126,6 @@
 - (void)accept:(IFExpressionVisitor*)visitor;
 {
   [visitor caseOperatorExpression:self];
-}
-
-- (unsigned)hash;
-{
-  return hash;
 }
 
 - (BOOL)isEqualAtRoot:(id)other;
@@ -158,7 +145,12 @@
     return NO;
 }
 
-#pragma mark XML input/output
+- (NSUInteger)hash;
+{
+  return hash;
+}
+
+// MARK: XML input/output
 
 - (id)initWithXML:(NSXMLElement*)xmlTree;
 {
@@ -175,7 +167,7 @@
   return root;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -188,7 +180,7 @@
   [encoder encodeObject:operands forKey:@"operands"];
 }
 
-#pragma mark Caml representation
+// MARK: Caml representation
 
 static value operandAsCaml(const char* operand) {
   return [(IFExpression*)operand asCaml];

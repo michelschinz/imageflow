@@ -6,8 +6,10 @@ type action_kind = Save | Print
 type t =
     Op of string * t array
   | Var of string
+  | Arg of int
   | Parent of int
   | Array of t array
+  | Lambda of t
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t

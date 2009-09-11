@@ -1,5 +1,6 @@
 open Expr
 
+(* TODO: add lambda, map, var *)
 let rec delta cache old_expr new_expr =
   let extent expr =
     match Optevaluator.eval_extent cache expr with

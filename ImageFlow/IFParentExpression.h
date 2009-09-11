@@ -11,12 +11,12 @@
 #import "IFExpression.h"
 
 @interface IFParentExpression : IFExpression {
-  int index;
+  unsigned index;
 }
 
-+ (id)parentExpressionWithIndex:(int)index;
-- (id)initWithIndex:(int)index;
++ (id)parentExpressionWithIndex:(unsigned)index;
+- (id)initWithIndex:(unsigned)index;
 
-- (int)index;
+@property(readonly) unsigned index;
 
 @end

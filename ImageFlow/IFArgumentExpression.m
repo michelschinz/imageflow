@@ -1,13 +1,13 @@
 //
-//  IFParentExpression.m
+//  IFArgumentExpression.m
 //  ImageFlow
 //
-//  Created by Michel Schinz on 25.10.05.
-//  Copyright 2005 Michel Schinz. All rights reserved.
+//  Created by Michel Schinz on 05.09.09.
+//  Copyright 2009 Michel Schinz. All rights reserved.
 //
 
-#import "IFParentExpression.h"
-#import "IFOperatorExpression.h"
+#import "IFArgumentExpression.h"
+
 #import "IFXMLCoder.h"
 #import "IFExpressionVisitor.h"
 #import "IFExpressionTags.h"
@@ -15,14 +15,14 @@
 #import <caml/memory.h>
 #import <caml/alloc.h>
 
-@implementation IFParentExpression
+@implementation IFArgumentExpression
 
-+ (id)parentExpressionWithIndex:(unsigned)index;
++ (IFArgumentExpression*)argumentExpressionWithIndex:(unsigned)theIndex;
 {
-  return [[[self alloc] initWithIndex:index] autorelease];
+  return [[[self alloc] initWithIndex:theIndex] autorelease];
 }
 
-- (id)initWithIndex:(unsigned)theIndex;
+- (IFArgumentExpression*)initWithIndex:(unsigned)theIndex;
 {
   if (![super init])
     return nil;
@@ -32,26 +32,26 @@
 
 - (NSString*)description;
 {
-  return [NSString stringWithFormat:@"@%d",index];
+  return [NSString stringWithFormat:@"#%d", index];
 }
 
 @synthesize index;
 
 - (void)accept:(IFExpressionVisitor*)visitor;
 {
-  [visitor caseParentExpression:self];
+  [visitor caseArgumentExpression:self];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
-  return index * 1973;
+  return index * 19;
 }
 
 - (BOOL)isEqualAtRoot:(id)other;
 {
-  return [other isKindOfClass:[IFParentExpression class]] && (index == [other index]);
+  return [other isKindOfClass:[IFArgumentExpression class]] && (index == ((IFArgumentExpression*)other).index);
 }
-  
+
 // MARK: XML input/output
 
 - (id)initWithXML:(NSXMLElement*)xmlTree;
@@ -63,7 +63,7 @@
 - (NSXMLElement*)asXML;
 {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
-  NSXMLElement* elem = [NSXMLElement elementWithName:@"parent"];
+  NSXMLElement* elem = [NSXMLElement elementWithName:@"arg"];
   [elem addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[xmlCoder encodeData:[NSNumber numberWithInt:index]]]];
   return elem;
 }
@@ -86,7 +86,7 @@
 {
   CAMLparam0();
   CAMLlocal1(block);
-  block = caml_alloc(1, IFExpressionTag_Parent);
+  block = caml_alloc(1, IFExpressionTag_Arg);
   Store_field(block, 0, Val_int([self index]));
   CAMLreturn(block);
 }

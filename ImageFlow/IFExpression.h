@@ -22,7 +22,7 @@
 
 - (void)accept:(IFExpressionVisitor*)visitor;
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 - (BOOL)isEqualAtRoot:(id)other;
 - (BOOL)isEqual:(id)other;
 
@@ -31,7 +31,9 @@
 
 - (value)asCaml;
 
-// MARK: (protected)
+// MARK: -
+// MARK: PROTECTED
+
 - (id)initWithXML:(NSXMLElement*)xml;
 - (value)camlRepresentation;
 

@@ -11,6 +11,10 @@
 
 @implementation IFExpressionVisitor
 
+- (void)caseLambdaExpression:(IFLambdaExpression*)expression;
+{
+}
+
 - (void)caseOperatorExpression:(IFOperatorExpression*)expression;
 {
 }
@@ -20,6 +24,10 @@
 }
 
 - (void)caseVariableExpression:(IFVariableExpression*)expression;
+{
+}
+
+- (void)caseArgumentExpression:(IFArgumentExpression*)expression;
 {
 }
 

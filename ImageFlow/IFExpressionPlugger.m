@@ -13,7 +13,7 @@ typedef enum {
   IFExpressionPluggerModeParents,
 } IFExpressionPluggerMode;
 
-@interface IFExpressionPlugger (Private)
+@interface IFExpressionPlugger ()
 + (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromEnvironment:(NSDictionary*)environment mode:(IFExpressionPluggerMode)mode;
 - (id)initWithEnvironment:(NSDictionary*)theEnvironment mode:(IFExpressionPluggerMode)theMode;
 - (void)substituteUsingKey:(NSObject*)key ifInMode:(IFExpressionPluggerMode)expectedMode defaultExpression:(IFExpression*)expression;
@@ -40,10 +40,14 @@ typedef enum {
   return theResult;
 }
 
+- (void)caseLambdaExpression:(IFLambdaExpression*)expression;
+{
+  result = [IFLambdaExpression lambdaExpressionWithBody:[self plugValuesInExpression:expression.body]];
+}
+
 - (void)caseOperatorExpression:(IFOperatorExpression*)expression;
 {
-  result = [IFOperatorExpression expressionWithOperator:[expression operator]
-                                               operands:(NSArray*)[[self collect] plugValuesInExpression:[[expression operands] each]]];
+  result = [IFOperatorExpression expressionWithOperator:[expression operator] operands:(NSArray*)[[self collect] plugValuesInExpression:[[expression operands] each]]];
 }
 
 - (void)caseParentExpression:(IFParentExpression*)expression;
@@ -58,14 +62,18 @@ typedef enum {
     result = [IFConstantExpression expressionWithObject:result];
 }
 
+- (void)caseArgumentExpression:(IFArgumentExpression*)expression;
+{
+  result = expression;
+}
+
 - (void)caseConstantExpression:(IFConstantExpression*)expression;
 {
   result = expression;
 }
 
-@end
-
-@implementation IFExpressionPlugger (Private)
+// MARK: -
+// MARK: PRIVATE
 
 + (IFExpression*)plugValuesInExpression:(IFExpression*)expression withValuesFromEnvironment:(NSDictionary*)environment mode:(IFExpressionPluggerMode)mode;
 {
@@ -84,7 +92,7 @@ typedef enum {
   return self;
 }
 
-- (void) dealloc {
+- (void)dealloc {
   OBJC_RELEASE(environment);
   [super dealloc];
 }
