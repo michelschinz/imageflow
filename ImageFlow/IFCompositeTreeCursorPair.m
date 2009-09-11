@@ -19,12 +19,15 @@
 
 @implementation IFCompositeTreeCursorPair
 
-static NSString* IFEditTreeDidChange = @"IFEditTreeDidChange";
-static NSString* IFEditNodeDidChange = @"IFEditNodeDidChange";
-static NSString* IFEditPathDidChange = @"IFEditPathDidChange";
-static NSString* IFViewTreeDidChange = @"IFViewTreeDidChange";
-static NSString* IFViewNodeDidChange = @"IFViewNodeDidChange";
-static NSString* IFViewPathDidChange = @"IFViewPathDidChange";
+static NSString* IFEditCursorDidChange = @"IFEditCursorDidChange";
+static NSString* IFViewCursorDidChange = @"IFViewCursorDidChange";
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
+  static NSSet* manualKeys = nil;
+  if (manualKeys == nil)
+    manualKeys = [[NSSet setWithObjects:@"tree", @"node", @"path", @"viewLockedTree", @"viewLockedNode", @"viewLockedPath", nil] retain];
+  return ![manualKeys containsObject:key];
+}
 
 + (IFCompositeTreeCursorPair*)compositeWithEditCursor:(IFTreeCursorPair*)theEditCursor viewCursor:(IFTreeCursorPair*)theViewCursor;
 {
@@ -39,12 +42,12 @@ static NSString* IFViewPathDidChange = @"IFViewPathDidChange";
   editCursor = [theEditCursor retain];
   viewCursor = [theViewCursor retain];
 
-  [editCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFEditTreeDidChange];  
-  [editCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFEditNodeDidChange];
-  [editCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFEditPathDidChange];
-  [viewCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFViewTreeDidChange];  
-  [viewCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFViewNodeDidChange];
-  [viewCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFViewPathDidChange];
+  [editCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];  
+  [editCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];
+  [editCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];
+  [viewCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];  
+  [viewCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];
+  [viewCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];
   
   return self;
 }
@@ -91,19 +94,52 @@ static NSString* IFViewPathDidChange = @"IFViewPathDidChange";
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
-  if (context == IFEditTreeDidChange)
-    self.tree = editCursor.tree;
-  else if (context == IFEditNodeDidChange)
-    self.node = editCursor.node;
-  else if (context == IFEditPathDidChange)
-    self.path = editCursor.path;
-  else if (context == IFViewTreeDidChange)
-    self.viewLockedTree = viewCursor.tree;
-  else if (context == IFViewNodeDidChange)
-    self.viewLockedNode = viewCursor.node;
-  else if (context == IFViewPathDidChange)
-    self.viewLockedPath = viewCursor.path;
-  else
+  // The complex code below is necessary to preserve the atomicity of the changes.
+  if (context == IFEditCursorDidChange) {
+    BOOL treeChanged = (editCursor.tree != tree);
+    BOOL nodeChanged = (editCursor.node != node);
+    BOOL pathChanged = ![editCursor.path isEqual:path];
+
+    if (treeChanged) {
+      [self willChangeValueForKey:@"tree"];
+      self.tree = editCursor.tree;
+    }
+    if (nodeChanged) {
+      [self willChangeValueForKey:@"node"];
+      self.node = editCursor.node;
+    }
+    if (pathChanged) {
+      [self willChangeValueForKey:@"path"];
+      self.path = editCursor.path;
+      [self didChangeValueForKey:@"path"];
+    }
+    if (nodeChanged)
+      [self didChangeValueForKey:@"node"];
+    if (treeChanged)
+      [self didChangeValueForKey:@"tree"];    
+  } else if (context == IFViewCursorDidChange) {
+    BOOL treeChanged = (viewCursor.tree != tree);
+    BOOL nodeChanged = (viewCursor.node != node);
+    BOOL pathChanged = ![viewCursor.path isEqual:path];
+    
+    if (treeChanged) {
+      [self willChangeValueForKey:@"viewLockedTree"];
+      self.viewLockedTree = viewCursor.tree;
+    }
+    if (nodeChanged) {
+      [self willChangeValueForKey:@"viewLockedNode"];
+      self.viewLockedNode = viewCursor.node;
+    }
+    if (pathChanged) {
+      [self willChangeValueForKey:@"viewLockedPath"];
+      self.viewLockedPath = viewCursor.path;
+      [self didChangeValueForKey:@"viewLockedPath"];
+    }
+    if (nodeChanged)
+      [self didChangeValueForKey:@"viewLockedNode"];
+    if (treeChanged)
+      [self didChangeValueForKey:@"viewLockedTree"];
+  } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 

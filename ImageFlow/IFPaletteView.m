@@ -151,7 +151,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   IFTemplateLayer* prev = (IFTemplateLayer*)self.visibleTemplateLayers.lastLayer;
   for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
     if (layer.treeNode == cursorNode) {
-      [cursors setTree:prev.tree node:prev.treeNode path:[IFArrayPath emptyPath]]; // FIXME: compute correct path based on type
+      [cursors setTree:prev.tree node:prev.treeNode path:[IFArrayPath leftmostPathForType:cursorNode.type.resultType]]; // TODO: allow other paths
       [self updateCursorLayers];
       return YES;
     }
@@ -166,7 +166,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   BOOL selectNext = NO;
   for (IFTemplateLayer* layer in self.visibleTemplateLayers) {
     if (selectNext) {
-      [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath emptyPath]]; // FIXME: compute correct path based on type
+      [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath leftmostPathForType:layer.treeNode.type.resultType]]; // TODO: allow other paths
       [self updateCursorLayers];
       return YES;
     } else if (layer.treeNode == cursorNode)
@@ -176,7 +176,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   }
   if (selectNext) {
     IFTemplateLayer* firstLayer = (IFTemplateLayer*)self.visibleTemplateLayers.firstLayer;
-    [cursors setTree:firstLayer.tree node:firstLayer.treeNode path:[IFArrayPath emptyPath]];
+    [cursors setTree:firstLayer.tree node:firstLayer.treeNode path:[IFArrayPath leftmostPathForType:firstLayer.treeNode.type.resultType]]; // TODO: allow other paths
   }
   return selectNext;
 }
@@ -375,7 +375,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
   for (IFTemplateLayer* layer in self.templateLayers) {
     if (!layer.hidden) {
-      [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath emptyPath]]; // FIXME: compute correct path based on type
+      [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath leftmostPathForType:layer.treeNode.type.resultType]]; // TODO: allow other paths
       break;
     }
   }
@@ -416,7 +416,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)moveToNodeRepresentedBy:(IFTemplateLayer*)layer;
 {
-  [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath emptyPath]]; // FIXME: compute path based on type
+  [cursors setTree:layer.tree node:layer.treeNode path:[IFArrayPath leftmostPathForType:layer.treeNode.type.resultType]]; // TODO: allow other paths
   [self scrollRectToVisible:NSRectFromCGRect(layer.frame)];
 }
 

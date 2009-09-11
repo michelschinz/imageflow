@@ -235,7 +235,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     if (exprType != nil && ([exprType isArrayType] || [exprType isImageRGBAType] || [exprType isMaskType])) {
       IFExpression* expr = node.expression; // TODO: re-introduce variants
       if ([exprType isArrayType]) {
-        IFArrayPath* path = cursors.path;
+        IFArrayPath* path = cursors.viewLockedPath;
         expr = [path accessorExpressionFor:expr];
         exprType = exprType.leafType;
       }
