@@ -181,8 +181,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 // MARK: -
 // MARK: PRIVATE
 
-@synthesize activeView;
-@synthesize errorMessage;
 @synthesize viewedNode;
 
 @synthesize displayedExpression;
