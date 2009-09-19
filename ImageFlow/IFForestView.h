@@ -30,7 +30,7 @@
 - (void)endPreview;
 @end
 
-@interface IFForestView : NSView<IFForestLayoutManagerDelegate> {
+@interface IFForestView : NSView<IFForestLayoutManagerDelegate, NSTextFieldDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
   
   IFDocument* document;

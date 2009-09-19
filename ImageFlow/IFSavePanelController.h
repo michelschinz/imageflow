@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface IFSavePanelController : NSObject {
+@interface IFSavePanelController : NSObject<NSOpenSavePanelDelegate> {
   IBOutlet NSObject* savePanel;
   IBOutlet NSMatrix* directoryMatrix;
   int directoryIndex;
