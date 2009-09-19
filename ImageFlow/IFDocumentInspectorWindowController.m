@@ -7,7 +7,6 @@
 //
 
 #import "IFDocumentInspectorWindowController.h"
-#import "IFColorProfile.h"
 
 @implementation IFDocumentInspectorWindowController
 
@@ -21,12 +20,6 @@
 - (void)dealloc;
 {
   [super dealloc];
-}
-
-- (void)windowDidLoad;
-{
-  [super windowDidLoad];
-  [rgbProfilesController setContent:[IFColorProfile arrayOfAllProfilesWithSpace:cmRGBData]];
 }
 
 - (void)documentDidChange:(IFDocument*)newDocument;

@@ -66,7 +66,6 @@
 		FA34AD950AA3152E00C8A63A /* IFTransparentPopupButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AD930AA3152E00C8A63A /* IFTransparentPopupButton.m */; };
 		FA34AE340AA34DE300C8A63A /* IFAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AE320AA34DE300C8A63A /* IFAnnotation.m */; };
 		FA34AE400AA3673900C8A63A /* IFAnnotationRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AE3E0AA3673900C8A63A /* IFAnnotationRect.m */; };
-		FA38ACF508AB1D0B00D0292A /* IFFileSource.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA38ACF408AB1D0B00D0292A /* IFFileSource.nib */; };
 		FA3B82780FEE29DE00D4687B /* IFPathLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3B82770FEE29DE00D4687B /* IFPathLayer.m */; };
 		FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA402732091A35E6001626A2 /* IFFileSink.nib */; };
 		FA40702A0B5A8B1900BDE37F /* IFTypeChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */; };
@@ -107,6 +106,8 @@
 		FA77523E0E56C84B00B8E837 /* IFNodeCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77523D0E56C84B00B8E837 /* IFNodeCompositeLayer.m */; };
 		FA830EE00E2765FB00887676 /* IFForestLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA830EDF0E2765FB00887676 /* IFForestLayoutManager.m */; };
 		FA8492B00CDA23E700F78F29 /* IFSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8492AE0CDA23E700F78F29 /* IFSubtree.m */; };
+		FA891C2C1065597B0038E8A3 /* IFFileSource.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA891C2B1065597B0038E8A3 /* IFFileSource.xib */; };
+		FA891C33106559BC0038E8A3 /* IFDocumentSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA891C32106559BC0038E8A3 /* IFDocumentSettings.xib */; };
 		FA8B016C0E87854000E3679C /* IFLayoutParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B016B0E87854000E3679C /* IFLayoutParameters.m */; };
 		FA8B03B80E87B54B00E3679C /* IFInputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B03B70E87B54B00E3679C /* IFInputConnectorLayer.m */; };
 		FA8B04070E87BAAD00E3679C /* IFOutputConnectorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D2BB0E7107EE00873FA0 /* IFOutputConnectorLayer.m */; };
@@ -164,8 +165,6 @@
 		FAE5A50408A7931B00BBBB16 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE5A50308A7931B00BBBB16 /* OpenGL.framework */; };
 		FAE5A50908A7933C00BBBB16 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */; };
 		FAE63B5A0AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE63B580AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m */; };
-		FAE653DC08F1847B00FE2949 /* IFDocumentSettings.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */; };
-		FAE6553508F1A8F600FE2949 /* IFColorProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6553408F1A8F600FE2949 /* IFColorProfile.m */; };
 		FAE6A41D0ACBD9050059BA3B /* IFGrabableViewMixin.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */; };
 		FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE8129908CF307C00B43274 /* IFImageView.m */; };
 		FAE874DB0908C4E300E856B9 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = FAE8749F0908C2B800E856B9 /* Templates */; };
@@ -173,9 +172,7 @@
 		FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F5C0B2821A100D5DC62 /* IFVariable.m */; };
 		FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F650B28220700D5DC62 /* IFVariableKVO.m */; };
 		FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */; };
-		FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */; };
 		FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */; };
-		FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */; };
 		FAEEBA680EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */; };
 		FAEEBAF60EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBAF50EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.m */; };
 		FAEEBAF90EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEEBAF80EC2FD2D00FBC424 /* IFUnsplittableTreeCursorPair.m */; };
@@ -361,7 +358,6 @@
 		FA34AE320AA34DE300C8A63A /* IFAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAnnotation.m; sourceTree = "<group>"; };
 		FA34AE3D0AA3673800C8A63A /* IFAnnotationRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAnnotationRect.h; sourceTree = "<group>"; };
 		FA34AE3E0AA3673900C8A63A /* IFAnnotationRect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAnnotationRect.m; sourceTree = "<group>"; };
-		FA38ACF408AB1D0B00D0292A /* IFFileSource.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFileSource.nib; sourceTree = "<group>"; };
 		FA3B82760FEE29DE00D4687B /* IFPathLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPathLayer.h; sourceTree = "<group>"; };
 		FA3B82770FEE29DE00D4687B /* IFPathLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPathLayer.m; sourceTree = "<group>"; };
 		FA402732091A35E6001626A2 /* IFFileSink.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFileSink.nib; sourceTree = "<group>"; };
@@ -429,6 +425,8 @@
 		FA830EDF0E2765FB00887676 /* IFForestLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFForestLayoutManager.m; sourceTree = "<group>"; };
 		FA8492AD0CDA23E700F78F29 /* IFSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSubtree.h; sourceTree = "<group>"; };
 		FA8492AE0CDA23E700F78F29 /* IFSubtree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSubtree.m; sourceTree = "<group>"; };
+		FA891C2B1065597B0038E8A3 /* IFFileSource.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFFileSource.xib; sourceTree = "<group>"; };
+		FA891C32106559BC0038E8A3 /* IFDocumentSettings.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFDocumentSettings.xib; sourceTree = "<group>"; };
 		FA8B016A0E87854000E3679C /* IFLayoutParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayoutParameters.h; sourceTree = "<group>"; };
 		FA8B016B0E87854000E3679C /* IFLayoutParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayoutParameters.m; sourceTree = "<group>"; };
 		FA8B03B60E87B54B00E3679C /* IFInputConnectorLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFInputConnectorLayer.h; sourceTree = "<group>"; };
@@ -527,9 +525,6 @@
 		FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		FAE63B570AB9789500B6A1C0 /* NSAffineTransformIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAffineTransformIFAdditions.h; sourceTree = "<group>"; };
 		FAE63B580AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSAffineTransformIFAdditions.m; sourceTree = "<group>"; };
-		FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFDocumentSettings.nib; sourceTree = "<group>"; };
-		FAE6553308F1A8F600FE2949 /* IFColorProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFColorProfile.h; sourceTree = "<group>"; };
-		FAE6553408F1A8F600FE2949 /* IFColorProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFColorProfile.m; sourceTree = "<group>"; };
 		FAE6A41A0ACBD9050059BA3B /* IFGrabableViewMixin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGrabableViewMixin.h; sourceTree = "<group>"; };
 		FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGrabableViewMixin.m; sourceTree = "<group>"; };
 		FAE8129808CF307C00B43274 /* IFImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageView.h; sourceTree = "<group>"; };
@@ -543,12 +538,8 @@
 		FAED0F650B28220700D5DC62 /* IFVariableKVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariableKVO.m; sourceTree = "<group>"; };
 		FAED107C0B285E9D00D5DC62 /* IFRectIVarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRectIVarController.h; sourceTree = "<group>"; };
 		FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRectIVarController.m; sourceTree = "<group>"; };
-		FAEE959C0935AF8100583BDB /* IFProfileNamePathValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFProfileNamePathValueTransformer.h; sourceTree = "<group>"; };
-		FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFProfileNamePathValueTransformer.m; sourceTree = "<group>"; };
 		FAEE95CD0935B5AB00583BDB /* IFObjectNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFObjectNamer.h; sourceTree = "<group>"; };
 		FAEE95CE0935B5AB00583BDB /* IFObjectNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFObjectNamer.m; sourceTree = "<group>"; };
-		FAEE95D10935B90100583BDB /* IFColorProfileNamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFColorProfileNamer.h; sourceTree = "<group>"; };
-		FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFColorProfileNamer.m; sourceTree = "<group>"; };
 		FAEEBA660EC2D6E500FBC424 /* IFSplittableTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSplittableTreeCursorPair.h; sourceTree = "<group>"; };
 		FAEEBA670EC2D6E500FBC424 /* IFSplittableTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSplittableTreeCursorPair.m; sourceTree = "<group>"; };
 		FAEEBAF40EC2F5CB00FBC424 /* IFCompositeTreeCursorPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCompositeTreeCursorPair.h; sourceTree = "<group>"; };
@@ -877,17 +868,6 @@
 			name = "Drop Shadow";
 			sourceTree = "<group>";
 		};
-		FA11DCCC08F23EB800A3AF61 /* Profiles */ = {
-			isa = PBXGroup;
-			children = (
-				FAE6553308F1A8F600FE2949 /* IFColorProfile.h */,
-				FAE6553408F1A8F600FE2949 /* IFColorProfile.m */,
-				FAEE95D10935B90100583BDB /* IFColorProfileNamer.h */,
-				FAEE95D20935B90100583BDB /* IFColorProfileNamer.m */,
-			);
-			name = Profiles;
-			sourceTree = "<group>";
-		};
 		FA1BF2380918E67F00E288BB /* Blend */ = {
 			isa = PBXGroup;
 			children = (
@@ -1013,7 +993,7 @@
 			isa = PBXGroup;
 			children = (
 				FAFCF84A0C9ABA3100B69055 /* IFBitmapDrawingSource.nib */,
-				FA38ACF408AB1D0B00D0292A /* IFFileSource.nib */,
+				FA891C2B1065597B0038E8A3 /* IFFileSource.xib */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -1311,7 +1291,7 @@
 		FAD718A208B5E2AF00CF732B /* Inspectors */ = {
 			isa = PBXGroup;
 			children = (
-				FAE653DB08F1847B00FE2949 /* IFDocumentSettings.nib */,
+				FA891C32106559BC0038E8A3 /* IFDocumentSettings.xib */,
 				FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */,
 			);
 			name = Inspectors;
@@ -1473,8 +1453,6 @@
 			children = (
 				FA68DE9C092DBC14009D02CB /* IFPercentValueTransformer.h */,
 				FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */,
-				FAEE959C0935AF8100583BDB /* IFProfileNamePathValueTransformer.h */,
-				FAEE959D0935AF8100583BDB /* IFProfileNamePathValueTransformer.m */,
 			);
 			name = "Value transformers";
 			sourceTree = "<group>";
@@ -1607,7 +1585,6 @@
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
 				FAE0DE5208C3621500595ED4 /* Histograms */,
-				FA11DCCC08F23EB800A3AF61 /* Profiles */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1712,10 +1689,8 @@
 			files = (
 				FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */,
 				FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */,
-				FA38ACF508AB1D0B00D0292A /* IFFileSource.nib in Resources */,
 				FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */,
 				FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */,
-				FAE653DC08F1847B00FE2949 /* IFDocumentSettings.nib in Resources */,
 				FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */,
 				FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */,
 				FAE874DB0908C4E300E856B9 /* Templates in Resources */,
@@ -1768,6 +1743,8 @@
 				FA001F7D0ED419A00016630E /* dragBadge3.tiff in Resources */,
 				FA001F7E0ED419A00016630E /* dragBadge4.tiff in Resources */,
 				FA001F7F0ED419A00016630E /* dragBadge5.tiff in Resources */,
+				FA891C2C1065597B0038E8A3 /* IFFileSource.xib in Resources */,
+				FA891C33106559BC0038E8A3 /* IFDocumentSettings.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1786,7 +1763,6 @@
 				FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */,
 				FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */,
 				FAE55BF908E2F9F200BA87AC /* IFHistogramView.m in Sources */,
-				FAE6553508F1A8F600FE2949 /* IFColorProfile.m in Sources */,
 				FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */,
 				FAE59D2308F3CABE00EF20ED /* IFInspectorWindowController.m in Sources */,
 				FAE59F3C08F3D23600EF20ED /* IFDocumentInspectorWindowController.m in Sources */,
@@ -1817,9 +1793,7 @@
 				FA68E05A092DCEC1009D02CB /* IFPrintView.m in Sources */,
 				FA68E09A092DE516009D02CB /* IFPrintSinkController.m in Sources */,
 				FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */,
-				FAEE959F0935AF8100583BDB /* IFProfileNamePathValueTransformer.m in Sources */,
 				FAEE95D00935B5AB00583BDB /* IFObjectNamer.m in Sources */,
-				FAEE95D40935B90100583BDB /* IFColorProfileNamer.m in Sources */,
 				FA2F6BAC095AFEEE00CB2780 /* IFTreeNodeAlias.m in Sources */,
 				FA2413110962EFE000173105 /* IFTreeIdentifier.m in Sources */,
 				FA34AD950AA3152E00C8A63A /* IFTransparentPopupButton.m in Sources */,

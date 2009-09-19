@@ -109,7 +109,7 @@ and eval_shallow cache env expr =
       out_image (Coreimage.invert i)
   | Op("invert-mask", [|Mask m|]) ->
       out_mask (Coreimage.invert_mask m)
-  | Op("load", [|String f; _; _; _; _; _; _; _; _|]) ->
+  | Op("load", [|String f|]) ->
       begin try
         Image (Load.eval_load f)
       with Failure _ ->

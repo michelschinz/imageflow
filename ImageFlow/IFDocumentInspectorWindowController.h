@@ -14,7 +14,6 @@
 @interface IFDocumentInspectorWindowController : IFInspectorWindowController {
   IBOutlet NSObjectController* documentController;
   IBOutlet IFRectIVarController* canvasController;
-  IBOutlet NSArrayController* rgbProfilesController;
 }
 
 - (IBAction)applySettings:(id)sender;

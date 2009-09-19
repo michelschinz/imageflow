@@ -40,8 +40,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [tree setPropagateNewParentExpressions:YES];
   
   canvasBounds = NSMakeRect(0,0,800,600);
-  workingSpaceProfile = nil;
-  [self setWorkingSpaceProfile:[IFColorProfile profileDefaultRGB]];
   [self setResolutionX:300];
   [self setResolutionY:300];
   
@@ -54,7 +52,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 {
   OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(tree);
-  OBJC_RELEASE(workingSpaceProfile);
   OBJC_RELEASE(documentDescription);
   OBJC_RELEASE(authorName);
   OBJC_RELEASE(title);
@@ -91,7 +88,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 @synthesize title, authorName, documentDescription;
 @synthesize canvasBounds;
-@synthesize workingSpaceProfile;
 @synthesize resolutionX, resolutionY;
 
 @synthesize layoutParameters;

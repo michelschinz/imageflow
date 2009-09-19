@@ -33,14 +33,6 @@
       [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"load"]
                                           operands:[NSArray arrayWithObjects:
                                             [IFVariableExpression expressionWithName:@"fileName"],
-                                            [IFVariableExpression expressionWithName:@"useEmbeddedProfile"],
-                                            [IFVariableExpression expressionWithName:@"defaultRGBProfileFileName"],
-                                            [IFVariableExpression expressionWithName:@"defaultGrayProfileFileName"],
-                                            [IFVariableExpression expressionWithName:@"defaultCMYKProfileFileName"],
-                                            [IFVariableExpression expressionWithName:@"useEmbeddedResolution"],
-                                            [IFVariableExpression expressionWithName:@"useDocumentResolutionAsDefault"],
-                                            [IFVariableExpression expressionWithName:@"defaultResolutionX"],
-                                            [IFVariableExpression expressionWithName:@"defaultResolutionY"],
                                             nil]]] retain];
   }
   return (arity == 0) ? exprs : [NSArray array];

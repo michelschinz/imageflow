@@ -13,7 +13,6 @@
 #import "IFHistogramInspectorWindowController.h"
 
 #import "IFPercentValueTransformer.h"
-#import "IFProfileNamePathValueTransformer.h"
 
 #import "IFAverageCIFilter.h"
 #import "IFCropImageWithMaskCIFilter.h"
@@ -70,7 +69,6 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 {
   // Register value transformers
   [IFPercentValueTransformer class];
-  [IFProfileNamePathValueTransformer class];
   
   // Register filters
   [IFAverageCIFilter class];

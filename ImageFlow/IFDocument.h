@@ -9,7 +9,6 @@
 #import "IFTree.h"
 #import "IFSubtree.h"
 #import "IFTreeNode.h"
-#import "IFColorProfile.h"
 #import "IFTypeChecker.h"
 #import "IFLayoutParameters.h"
 
@@ -22,7 +21,6 @@ extern NSString* IFTreeChangedNotification;
   NSString* authorName;
   NSString* documentDescription;
   NSRect canvasBounds;
-  IFColorProfile* workingSpaceProfile;
   float resolutionX, resolutionY; // in DPI
 
   IFTree* tree;
@@ -39,7 +37,6 @@ extern NSString* IFTreeChangedNotification;
 @property(copy) NSString* documentDescription;
 
 @property NSRect canvasBounds;
-@property(retain) IFColorProfile* workingSpaceProfile;
 @property float resolutionX, resolutionY;
 
 @property(readonly) IFLayoutParameters* layoutParameters;

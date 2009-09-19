@@ -10,23 +10,7 @@
 
 @interface IFFileSourceController : NSObject {
   IBOutlet NSObjectController* filterController;
-  IBOutlet NSArrayController* profilesController;
-  NSString* selectedProfileName;
-  int resolutionTag;
-  NSDictionary* fileProperties;
 }
-
-- (NSArray*)profileNames;
-- (void)setSelectedProfileName:(NSString*)newSelectedProfileName;
-- (NSString*)selectedProfileName;
-
-- (BOOL)hasEmbeddedProfile;
-- (NSString*)useEmbeddedProfileTitle;
-
-- (BOOL)hasEmbeddedResolution;
-- (NSString*)useEmbeddedResolutionTitle;
-
-- (int)resolutionTag;
 
 - (IBAction)browseFile:(id)sender;
 

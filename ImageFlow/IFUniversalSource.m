@@ -53,14 +53,6 @@ static NSArray* sourceFileNames;
   
     IFExpression* rgbaImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"load" operands:
                                          [IFConstantExpression expressionWithString:fileName],
-                                         [IFConstantExpression expressionWithInt:YES],
-                                         [IFConstantExpression expressionWithString:@""],
-                                         [IFConstantExpression expressionWithString:@""],
-                                         [IFConstantExpression expressionWithString:@""],
-                                         [IFConstantExpression expressionWithInt:NO],
-                                         [IFConstantExpression expressionWithInt:YES],
-                                         [IFConstantExpression expressionWithInt:1],
-                                         [IFConstantExpression expressionWithInt:1],
                                          nil];
     
     IFExpression* maskImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];

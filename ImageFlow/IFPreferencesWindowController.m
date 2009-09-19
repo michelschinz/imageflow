@@ -7,7 +7,6 @@
 //
 
 #import "IFPreferencesWindowController.h"
-#import "IFColorProfile.h"
 
 @implementation IFPreferencesWindowController
 

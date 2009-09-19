@@ -7,7 +7,6 @@
 //
 
 #import "IFXMLCoder.h"
-#import "IFColorProfile.h"
 #import "NSDataAdditions.h"
 #import "IFExpression.h"
 #import "IFEnvironment.h"
@@ -17,7 +16,7 @@
 #import "IFTreeNodeAlias.h"
 #import "IFObjectNumberer.h"
 
-@interface IFXMLCoder (Private)
+@interface IFXMLCoder ()
 - (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
 - (NSXMLElement*)encodeFilterSettings:(IFEnvironment*)settings;
 
@@ -41,7 +40,7 @@ static IFXMLCoder* sharedCoder = nil;
 {
   if (![super init])
     return nil;
-  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"profile",@"expression",@"data",nil] retain];
+  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"expression",@"data",nil] retain];
   return self;
 }
 
@@ -79,8 +78,6 @@ static IFXMLCoder* sharedCoder = nil;
     }
   } else if ([data isKindOfClass:[NSColor class]])
     return IFXMLDataTypeColor;
-  else if ([data isKindOfClass:[IFColorProfile class]])
-    return IFXMLDataTypeProfile;
   else if ([data isKindOfClass:[IFExpression class]])
     return IFXMLDataTypeExpression;
   else if ([data isKindOfClass:[NSData class]])
@@ -96,7 +93,7 @@ static IFXMLCoder* sharedCoder = nil;
   return [typeNames objectAtIndex:[self typeForData:data]];
 }
 
-#pragma mark High-level encoding
+// MARK: High-level encoding
 
 - (NSXMLDocument*)encodeDocument:(IFDocument*)document;
 {
@@ -138,7 +135,7 @@ static IFXMLCoder* sharedCoder = nil;
   return xmlTree;
 }
 
-#pragma mark Low-level encoding
+// MARK: Low-level encoding
 
 - (NSString*)encodeData:(id)data;
 {
@@ -158,8 +155,6 @@ static IFXMLCoder* sharedCoder = nil;
       // TODO color space???
       return [NSString stringWithFormat:@"%f %f %f %f",[color redComponent],[color greenComponent],[color blueComponent],[color alphaComponent]];
     }
-    case IFXMLDataTypeProfile:
-      return [[(IFColorProfile*)data asData] base64Encoding];
     case IFXMLDataTypeExpression:
       return [[(IFExpression*)data asXML] XMLStringWithOptions:NSXMLNodeCompactEmptyElement];
     case IFXMLDataTypeData:
@@ -185,8 +180,7 @@ static IFXMLCoder* sharedCoder = nil;
   return [self encodeData:[NSNumber numberWithInt:data]];
 }
 
-#pragma mark -
-#pragma mark High-level decoding
+// MARK: High-level decoding
 
 - (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
 {
@@ -294,7 +288,7 @@ static IFXMLCoder* sharedCoder = nil;
   return tree;
 }
 
-#pragma mark Low-level decoding
+// MARK: Low-level decoding
 
 - (id)decodeString:(NSString*)string type:(IFXMLDataType)type;
 {
@@ -350,11 +344,8 @@ static IFXMLCoder* sharedCoder = nil;
   return [[self decodeString:string type:IFXMLDataTypeNumber] unsignedIntValue];
 }
 
-@end
-
-@implementation IFXMLCoder (Private)
-
-#pragma mark encoding
+// MARK: -
+// MARK: PRIVATE
 
 - (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
 {
@@ -394,8 +385,6 @@ static IFXMLCoder* sharedCoder = nil;
   }
   return xmlSettings;
 }
-
-#pragma mark decoding
 
 - (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
 {
