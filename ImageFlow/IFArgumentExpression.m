@@ -19,7 +19,7 @@
 
 + (IFArgumentExpression*)argumentExpressionWithIndex:(unsigned)theIndex;
 {
-  return [[[self alloc] initWithIndex:theIndex] autorelease];
+  return [[(IFArgumentExpression*)[self alloc] initWithIndex:theIndex] autorelease];
 }
 
 - (IFArgumentExpression*)initWithIndex:(unsigned)theIndex;

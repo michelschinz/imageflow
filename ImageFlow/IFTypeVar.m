@@ -22,7 +22,7 @@
 + (id)typeVar;
 {
   static int currentIndex = 0;
-  return [[[self alloc] initWithIndex:currentIndex++] autorelease];
+  return [[(IFTypeVar*)[self alloc] initWithIndex:currentIndex++] autorelease];
 }
 
 - (NSString*)description;

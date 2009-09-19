@@ -19,7 +19,7 @@
 
 + (id)parentExpressionWithIndex:(unsigned)index;
 {
-  return [[[self alloc] initWithIndex:index] autorelease];
+  return [[(IFParentExpression*)[self alloc] initWithIndex:index] autorelease];
 }
 
 - (id)initWithIndex:(unsigned)theIndex;
@@ -49,7 +49,7 @@
 
 - (BOOL)isEqualAtRoot:(id)other;
 {
-  return [other isKindOfClass:[IFParentExpression class]] && (index == [other index]);
+  return [other isKindOfClass:[IFParentExpression class]] && (index == [(IFParentExpression*)other index]);
 }
   
 // MARK: XML input/output
