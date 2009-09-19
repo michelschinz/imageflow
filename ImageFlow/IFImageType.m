@@ -60,7 +60,7 @@
   return [other isKindOfClass:[self class]] && [pixelType isEqual:[other pixelType]];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return [pixelType hash] * 2503;
 }

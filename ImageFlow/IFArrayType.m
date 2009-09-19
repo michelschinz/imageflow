@@ -43,7 +43,7 @@
   return [other isKindOfClass:[self class]] && [contentType isEqual:[other contentType]];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return [contentType hash] * 5101;
 }

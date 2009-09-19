@@ -186,7 +186,7 @@
   [visitor caseConstantExpression:self];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return [object hash];
 }

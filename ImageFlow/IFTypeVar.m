@@ -35,7 +35,7 @@
   return [other isKindOfClass:[IFTypeVar class]] && index == ((IFTypeVar*)other)->index;
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return index;
 }

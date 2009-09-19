@@ -54,9 +54,9 @@
     return false;
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
-  unsigned hash = 7;
+  NSUInteger hash = 7;
   for (int i = 0, count = [argumentTypes count]; i < count; ++i)
     hash = hash * 1973 + [[argumentTypes objectAtIndex:i] hash];
   hash ^= [returnType hash];

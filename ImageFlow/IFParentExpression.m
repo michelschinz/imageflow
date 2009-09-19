@@ -42,7 +42,7 @@
   [visitor caseParentExpression:self];
 }
 
-- (unsigned)hash;
+- (NSUInteger)hash;
 {
   return index * 1973;
 }
