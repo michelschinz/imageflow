@@ -16,6 +16,5 @@
 
 - (BOOL)checkDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
 - (NSArray*)configureDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes;
-- (NSArray*)inferTypesForDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes parametersCount:(int)paramsCount;
 
 @end

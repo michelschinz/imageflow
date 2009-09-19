@@ -5,7 +5,6 @@ open Callback
 let _ =
   register "Cache.make" Cache.make;
   register "Typechecker.check" Typechecker.check;
-  register "Typechecker.infer" Typechecker.infer;
   register "Typechecker.first_valid_configuration" Typechecker.first_valid_configuration;
   register "Optevaluator.eval" Optevaluator.eval;
   register "Optevaluator.eval_as_image" Optevaluator.eval_as_image;

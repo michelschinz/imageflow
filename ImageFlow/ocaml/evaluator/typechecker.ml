@@ -87,19 +87,6 @@ let check preds types =
     [] -> false
   | _ -> true
 
-let infer paramsCount preds types =
-  let res_type = function
-      TFun(_, res_type) -> res_type
-    | other -> other
-  in
-  if paramsCount = 0 then
-    List.map (fun conf -> res_type (Mlist.last conf))
-      (valid_types preds types)
-  else
-    List.map (fun conf -> TFun(Array.of_list (Mlist.take paramsCount conf),
-                               res_type (Mlist.last conf)))
-      (valid_types preds types)
-
 let first_valid_configuration preds possible_types =
   match valid_types preds possible_types with
     [] ->

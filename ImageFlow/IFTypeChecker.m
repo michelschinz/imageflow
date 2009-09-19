@@ -40,13 +40,6 @@ static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** co
   return configuration;
 }
 
-- (NSArray*)inferTypesForDAG:(NSArray*)dag withPotentialTypes:(NSArray*)potentialTypes parametersCount:(int)paramsCount;
-{
-  NSArray* inferredTypes;
-  camlInferTypes(paramsCount, dag, potentialTypes, &inferredTypes);
-  return inferredTypes;
-}
-
 @end
 
 static value camlCons(value h, value t) {
@@ -90,26 +83,6 @@ static value potentialTypesToCaml(NSArray* potentialTypes) {
     camlPotentialTypes = camlCons(camlTypes,camlPotentialTypes);
   }
   CAMLreturn(camlPotentialTypes);
-}
-
-static void camlInferTypes(int paramsCount, NSArray* dag, NSArray* types, NSArray** inferredTypes) {
-  CAMLparam0();
-  CAMLlocal3(camlDAG, camlTypes, camlInferredTypes);
-  
-  camlDAG = dagToCaml(dag);
-  camlTypes = potentialTypesToCaml(types);
-  static value* inferClosure = NULL;
-  if (inferClosure == NULL)
-    inferClosure = caml_named_value("Typechecker.infer");
-  camlInferredTypes = caml_callback3(*inferClosure, Val_int(paramsCount), camlDAG, camlTypes);
-  
-  NSMutableArray* iTypes = [NSMutableArray array];
-  while (camlInferredTypes != Val_int(0)) {
-    [iTypes addObject:[IFType typeWithCamlType:Field(camlInferredTypes,0)]];
-    camlInferredTypes = Field(camlInferredTypes,1);
-  }
-  *inferredTypes = iTypes;
-  CAMLreturn0;
 }
 
 static value camlTypecheck(NSArray* dag, NSArray* potentialTypes) {
