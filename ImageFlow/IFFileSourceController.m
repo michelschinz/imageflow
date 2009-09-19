@@ -275,10 +275,12 @@ static NSString* kContextResolutionTag = @"resolutionTag";
     @"hasEmbeddedResolution", @"useEmbeddedResolutionTitle",
     @"profileNames", @"selectedProfileName",
     nil];
-  [[self do] willChangeValueForKey:(id)[keys objectEnumerator]];
+  for (NSString* key in keys)
+    [self willChangeValueForKey:key];
   OBJC_RELEASE(fileProperties);
   selectedProfileName = nil;
-  [[self do] didChangeValueForKey:(id)[keys reverseObjectEnumerator]];
+  for (NSString* key in [keys reverseObjectEnumerator])
+    [self didChangeValueForKey:key];
 }
 
 @end

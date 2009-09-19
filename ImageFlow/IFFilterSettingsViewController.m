@@ -104,10 +104,14 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
     if (nibObjects == nil)
       tabIndex = [NSNumber numberWithInt:0];
     else {
-      NSArray* nibViews = (NSArray*)[[nibObjects select] __isKindOfClass:[NSView class]];
-      NSAssert1([nibViews count] == 1, @"incorrect number of views in NIB file for filter %@", nodeToEditClassName);
-      
-      NSView* nibView = [nibViews objectAtIndex:0];
+      NSView* nibView = nil;
+      for (id nibObject in nibObjects) {
+        if ([nibObject isKindOfClass:[NSView class]]) {
+          NSAssert(nibView == nil, @"incorrect number of views in NIB file for filter %@", nodeToEditClassName);
+          nibView = nibObject;
+        }
+      }
+        
       [panelSizes setObject:[NSValue valueWithSize:[nibView bounds].size] forKey:nodeToEditClassName];
       NSTabViewItem* filterSettingsTabViewItem = [[[NSTabViewItem alloc] initWithIdentifier:nil] autorelease];
       [filterSettingsTabViewItem setView:nibView];

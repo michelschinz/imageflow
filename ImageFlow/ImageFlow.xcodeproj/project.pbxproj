@@ -77,8 +77,6 @@
 		FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA45019F0AD2B4AE0097C977 /* IFImage.m */; };
 		FA4501A60AD2B5200097C977 /* IFImageCGImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A40AD2B5200097C977 /* IFImageCGImage.m */; };
 		FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4501A80AD2B5560097C977 /* IFImageCIImage.m */; };
-		FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
-		FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FA47F50308F6587800C906A8 /* MPWFoundation.framework */; };
 		FA4DCC530EE8047700ED5870 /* IFImageOrMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCC520EE8047700ED5870 /* IFImageOrMaskLayer.m */; };
 		FA4DCC5A0EE8067E00ED5870 /* IFStaticImageLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCC590EE8067E00ED5870 /* IFStaticImageLayer.m */; };
 		FA4DCCE70EE83C3F00ED5870 /* IFErrorLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCCE60EE83C3F00ED5870 /* IFErrorLayer.m */; };
@@ -254,7 +252,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FA47F5A908F65D3900C906A8 /* MPWFoundation.framework in Copy Frameworks */,
 				FAFCF5CA0C9A921D00B69055 /* IFCropFilter.h in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -383,7 +380,6 @@
 		FA4501A40AD2B5200097C977 /* IFImageCGImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCGImage.m; sourceTree = "<group>"; };
 		FA4501A70AD2B5560097C977 /* IFImageCIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageCIImage.h; sourceTree = "<group>"; };
 		FA4501A80AD2B5560097C977 /* IFImageCIImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageCIImage.m; sourceTree = "<group>"; };
-		FA47F50308F6587800C906A8 /* MPWFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MPWFoundation.framework; path = Frameworks/MPWFoundation.framework; sourceTree = "third-party-cocoa-libraries"; };
 		FA4DCC510EE8047700ED5870 /* IFImageOrMaskLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageOrMaskLayer.h; sourceTree = "<group>"; };
 		FA4DCC520EE8047700ED5870 /* IFImageOrMaskLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageOrMaskLayer.m; sourceTree = "<group>"; };
 		FA4DCC580EE8067E00ED5870 /* IFStaticImageLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFStaticImageLayer.h; sourceTree = "<group>"; };
@@ -658,7 +654,6 @@
 				FAE5A50408A7931B00BBBB16 /* OpenGL.framework in Frameworks */,
 				FAE5A50908A7933C00BBBB16 /* QuartzCore.framework in Frameworks */,
 				FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */,
-				FA47F50408F6587800C906A8 /* MPWFoundation.framework in Frameworks */,
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
 				FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */,
 				FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */,
@@ -672,7 +667,6 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA47F50308F6587800C906A8 /* MPWFoundation.framework */,
 				FAE0DF2308C3876C00595ED4 /* Accelerate.framework */,
 				FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */,
 				FAE5A50308A7931B00BBBB16 /* OpenGL.framework */,

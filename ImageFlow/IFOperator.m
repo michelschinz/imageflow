@@ -67,7 +67,10 @@ static NSDictionary* allOperatorsByName;
                    [[[self alloc] initWithName:@"translate"] autorelease],
                    [[[self alloc] initWithName:@"unsharp-mask"] autorelease],
                    nil] retain];
-  allOperatorsByName = [[NSDictionary dictionaryWithObjects:allOperators forKeys:(NSArray*)[[allOperators collect] name]] retain];
+
+  allOperatorsByName = [[NSMutableDictionary dictionary] retain];
+  for (IFOperator* op in allOperators)
+    [(NSMutableDictionary*)allOperatorsByName setObject:op forKey:op.name];
 }
 
 + (IFOperator*)operatorForName:(NSString*)name;

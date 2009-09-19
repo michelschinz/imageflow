@@ -47,7 +47,10 @@ typedef enum {
 
 - (void)caseOperatorExpression:(IFOperatorExpression*)expression;
 {
-  result = [IFOperatorExpression expressionWithOperator:[expression operator] operands:(NSArray*)[[self collect] plugValuesInExpression:[[expression operands] each]]];
+  NSMutableArray* pluggedOperands = [NSMutableArray array];
+  for (IFExpression* operand in expression.operands)
+    [pluggedOperands addObject:[self plugValuesInExpression:operand]];
+  result = [IFOperatorExpression expressionWithOperator:expression.operator operands:pluggedOperands];
 }
 
 - (void)caseParentExpression:(IFParentExpression*)expression;

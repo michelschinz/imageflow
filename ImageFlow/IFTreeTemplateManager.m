@@ -35,7 +35,10 @@ static IFTreeTemplateManager* sharedManager;
       }
     }
 
-    sharedManager = [[IFTreeTemplateManager alloc] initWithCollections:[[IFTreeTemplateCollection collect] treeTemplateCollectionWithDirectory:[dirs each]]];
+    NSMutableSet* collections = [NSMutableSet set];
+    for (NSString* dir in dirs)
+      [collections addObject:[IFTreeTemplateCollection treeTemplateCollectionWithDirectory:dir]];
+    sharedManager = [[IFTreeTemplateManager alloc] initWithCollections:collections];
   }
   return sharedManager;
 }

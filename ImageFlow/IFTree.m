@@ -192,10 +192,14 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
   NSMutableSet* nodes = [NSMutableSet setWithSet:[graph nodes]];
   [nodes removeObject:[self root]];
-  if (newValue)
-    [[nodes do] addObserver:self forKeyPath:@"expression" options:0 context:IFTreeNodeExpressionChangedContext];
-  else
-    [[nodes do] removeObserver:self forKeyPath:@"expression"];
+  if (newValue) {
+    for (IFTreeNode* node in nodes)
+      [node addObserver:self forKeyPath:@"expression" options:0 context:IFTreeNodeExpressionChangedContext];
+  }
+  else {
+    for (IFTreeNode* node in nodes)
+      [node removeObserver:self forKeyPath:@"expression"];
+  }
   propagateNewParentExpressions = newValue;
 }
 
@@ -460,7 +464,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 - (void)dfsCollectAncestorsOfNode:(IFTreeNode*)node inArray:(NSMutableArray*)accumulator;
 {
-  [[self do] dfsCollectAncestorsOfNode:[[self parentsOfNode:node] each] inArray:accumulator];
+  for (IFTreeNode* parent in [self parentsOfNode:node])
+    [self dfsCollectAncestorsOfNode:parent inArray:accumulator];
   [accumulator addObject:node];
 }
 
@@ -489,8 +494,10 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   if ([root isHole])
     [result addObject:root];
-  else
-    [[self do] collectHolesInSubtreeRootedAt:[[self parentsOfNode:root] each] into:result];
+  else {
+    for (IFTreeNode* parent in [self parentsOfNode:root])
+      [self collectHolesInSubtreeRootedAt:parent into:result];
+  }
 }
 
 - (NSArray*)holesInSubtreeRootedAt:(IFTreeNode*)root;
@@ -588,7 +595,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
       [self copyTree:[IFTree ghostTreeWithArity:0] toReplaceNode:node];
   }
 
-  [[graph do] removeNode:[nodesToRemove each]];
+  for (IFTreeNode* node in nodesToRemove)
+    [graph removeNode:node];
 }
 
 - (void)plugHole:(IFTreeNode*)hole withNode:(IFTreeNode*)node;
@@ -606,7 +614,8 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   [self plugHole:subtreeHole withNode:root];
 
   NSArray* subtreeParents = [self parentsOfSubtree:subtree];
-  [[self do] detachNode:[subtreeParents each]];
+  for (IFTreeNode* parent in subtreeParents)
+    [self detachNode:parent];
   const unsigned parentsCount = [subtreeParents count];
 
   NSArray* treeHoles = [self holesInSubtreeRootedAt:root];

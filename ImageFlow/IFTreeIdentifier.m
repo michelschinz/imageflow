@@ -42,7 +42,8 @@
     [accumulator setObject:hint forKey:boxedRoot];
     [freeIndices removeIndex:[hint intValue]];
   }
-  [[self do] identifyTree:tree startingAt:[[tree parentsOfNode:root] each] usingOnlyHints:hints freeIndices:freeIndices accumulator:accumulator];
+  for (IFTreeNode* parent in [tree parentsOfNode:root])
+    [self identifyTree:tree startingAt:parent usingOnlyHints:hints freeIndices:freeIndices accumulator:accumulator];
 }
 
 - (void)identifyTree:(IFTree*)tree startingAt:(IFTreeNode*)root freeIndices:(NSMutableIndexSet*)freeIndices accumulator:(NSMutableDictionary*)accumulator;
@@ -53,7 +54,8 @@
     [accumulator setObject:[NSNumber numberWithInt:index] forKey:boxedRoot];
     [freeIndices removeIndex:index];
   }
-  [[self do] identifyTree:tree startingAt:[[tree parentsOfNode:root] each] freeIndices:freeIndices accumulator:accumulator];
+  for (IFTreeNode* parent in [tree parentsOfNode:root])
+    [self identifyTree:tree startingAt:parent freeIndices:freeIndices accumulator:accumulator];
 }
 
 @end

@@ -108,9 +108,11 @@
         if (oldValue.y != newValue.y) [dependentKeys addObject:[key stringByAppendingString:@"@y"]];
       }
     }
-    [[self do] willChangeValueForKey:[dependentKeys each]];
+    for (NSString* dependentKey in dependentKeys)
+      [self willChangeValueForKey:dependentKey];
     [env setObject:value forKey:key];
-    [[self do] didChangeValueForKey:[dependentKeys each]];
+    for (NSString* dependentKey in [dependentKeys reverseObjectEnumerator])
+      [self didChangeValueForKey:dependentKey];
     if (!containsKey)
       [self didChangeValueForKey:@"keys" withSetMutation:NSKeyValueUnionSetMutation usingObjects:[NSSet setWithObject:key]];
   }

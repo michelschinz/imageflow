@@ -155,15 +155,18 @@
 - (id)initWithXML:(NSXMLElement*)xmlTree;
 {
   NSString* operatorName = [[xmlTree attributeForName:@"name"] stringValue];
-  return [self initWithOperator:[IFOperator operatorForName:operatorName]
-                       operands:([xmlTree childCount] == 0 ? [NSArray array] : [[IFExpression collect] expressionWithXML:[[xmlTree children] each]])];
+  NSMutableArray* theOperands = [NSMutableArray array];
+  for (NSXMLElement* child in xmlTree.children)
+    [theOperands addObject:[IFExpression expressionWithXML:child]];
+  return [self initWithOperator:[IFOperator operatorForName:operatorName] operands:theOperands];
 }
 
 - (NSXMLElement*)asXML;
 {
   NSXMLElement* root = [NSXMLElement elementWithName:@"operation"];
   [root addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:[operator name]]];
-  [[root do] addChild:[[[operands collect] asXML] each]];
+  for (IFExpression* operand in operands)
+    [root addChild:[operand asXML]];
   return root;
 }
 

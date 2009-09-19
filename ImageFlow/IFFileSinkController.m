@@ -15,21 +15,17 @@ static NSArray* fileTypes = nil;
 static NSArray* fileTypesNames = nil;
 static NSDictionary* fileTypesOptions = nil;
 
-+ (NSString*)imageIOLocalizedString:(NSString*)key;
-{
-  static NSBundle* b = nil;
-  if (b == nil)
-    b = [NSBundle bundleWithIdentifier:@"com.apple.ImageIO.framework"];
-  return [b localizedStringForKey:key value:key table: @"CGImageSource"];
-}
-
 + (void)initialize;
 {
   if (self != [IFFileSinkController class])
     return; // avoid repeated initialisation
 
+  NSBundle* imageIO = [NSBundle bundleWithIdentifier:@"com.apple.ImageIO.framework"];
+  
   fileTypes = (NSArray*)CGImageDestinationCopyTypeIdentifiers();
-  fileTypesNames = [(NSArray*)[[self collect] imageIOLocalizedString:[fileTypes each]] retain];
+  fileTypesNames = [NSMutableArray array];
+  for (NSString* fileType in fileTypes)
+    [(NSMutableArray*)fileTypesNames addObject:[imageIO localizedStringForKey:fileType value:fileType table: @"CGImageSource"]];
   fileTypesOptions = [[NSDictionary dictionaryWithObjectsAndKeys:
     [NSNumber numberWithInt:1], kUTTypeJPEG,
     [NSNumber numberWithInt:1], kUTTypeJPEG2000,

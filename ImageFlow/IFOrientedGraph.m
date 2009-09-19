@@ -54,7 +54,9 @@
 - (void)removeNode:(id)node;
 {
   [nodes removeObject:node];
-  [[self do] removeEdge:[[[[nodeToEdgeSet objectForKey:node] collect] data] each]];
+  NSSet* edgesToRemove = [NSSet setWithSet:[nodeToEdgeSet objectForKey:node]];
+  for (IFOrientedGraphEdge* edge in edgesToRemove)
+    [self removeEdge:edge.data];
   CFDictionaryRemoveValue((CFMutableDictionaryRef)nodeToEdgeSet,node);
 }
 
@@ -237,12 +239,16 @@
   
   // Work-around the problem of keys that get copied.
   NSArray* edgeToRealEdgeKeys = [edgeToRealEdge allKeys];
-  NSArray* edgeToRealEdgeVals = [[edgeToRealEdge collect] objectForKey:[edgeToRealEdgeKeys each]];
+  NSMutableArray* edgeToRealEdgeVals = [NSMutableArray array];
+  for (IFOrientedGraphEdge* edge in edgeToRealEdgeKeys)
+    [edgeToRealEdgeVals addObject:[edgeToRealEdge objectForKey:edge]];
   [encoder encodeObject:edgeToRealEdgeKeys forKey:@"edgeToRealEdgeKeys"];
   [encoder encodeObject:edgeToRealEdgeVals forKey:@"edgeToRealEdgeVals"];
   
   NSArray* nodeToEdgeSetKeys = [nodeToEdgeSet allKeys];
-  NSArray* nodeToEdgeSetVals = [[nodeToEdgeSet collect] objectForKey:[nodeToEdgeSetKeys each]];
+  NSMutableArray* nodeToEdgeSetVals = [NSMutableArray array];
+  for (id node in nodeToEdgeSetKeys)
+    [nodeToEdgeSetVals addObject:[nodeToEdgeSet objectForKey:node]];
   [encoder encodeObject:nodeToEdgeSetKeys forKey:@"nodeToEdgeSetKeys"];
   [encoder encodeObject:nodeToEdgeSetVals forKey:@"nodeToEdgeSetVals"];
 }
