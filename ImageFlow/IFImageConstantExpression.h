@@ -21,6 +21,5 @@
 
 - (IFImage*)image;
 - (CIImage*)imageValueCI;
-- (CGImageRef)imageValueCG;
 
 @end

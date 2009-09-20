@@ -41,12 +41,6 @@
   return ciImage;
 }
 
-- (CGImageRef)imageCG;
-{
-  CGImageRetain(image);
-  return image;
-}
-
 - (BOOL)isLocked;
 {
   return [self retainCount] > 1 || CFGetRetainCount(image) > 1 || (ciImage != nil && [ciImage retainCount] > 1);

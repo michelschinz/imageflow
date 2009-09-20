@@ -87,10 +87,4 @@ static IFImage* emptyImage = nil;
   return nil;
 }
 
-- (CGImageRef)imageCG;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return NULL;
-}
-
 @end

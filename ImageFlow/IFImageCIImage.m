@@ -55,21 +55,6 @@
   return (cache != nil) ? [cache image] : image;
 }
 
-- (CGImageRef)imageCG;
-{
-  CGRect extent = [image extent];
-  size_t width = CGRectGetWidth(extent), height = CGRectGetHeight(extent);
-  size_t bitsPerComponent = 8;
-  size_t bytesPerRow = width * 4;
-  
-  CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB); // TODO
-  CGContextRef cgContext = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, cs, kCGImageAlphaPremultipliedLast);
-  CGColorSpaceRelease(cs);
-  CIContext* ciContext = [CIContext contextWithCGContext:cgContext options:nil]; // TODO options?
-  CGContextRelease(cgContext);
-  return [ciContext createCGImage:image fromRect:[image extent]];  
-}
-
 - (BOOL)isLocked;
 {
   return [self retainCount] > 1 || [image retainCount] > 1 || (cache != nil && [cache retainCount] > 1);

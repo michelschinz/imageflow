@@ -39,29 +39,7 @@
   return @"file";
 }
 
-// TODO obsolete
-- (void)exportImage:(IFImageConstantExpression*)imageExpr document:(IFDocument*)document;
-{
-  NSString* fileName = [settings valueForKey:@"fileName"];
-  NSString* fileType = [settings valueForKey:@"fileType"];
-  NSURL* url = [NSURL fileURLWithPath:fileName];
-  
-  CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL((CFURLRef)url,(CFStringRef)fileType,1,NULL);
-  if (imageDestination != NULL) {
-    CGImageRef image = [imageExpr imageValueCG];
-    NSMutableDictionary* imageProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-      [NSNumber numberWithFloat:[document resolutionX]], kCGImagePropertyDPIWidth,
-      [NSNumber numberWithFloat:[document resolutionY]], kCGImagePropertyDPIHeight,
-      [settings valueForKey:@"quality"], kCGImageDestinationLossyCompressionQuality,
-      [NSDictionary dictionaryWithObject:[settings valueForKey:@"TIFFCompression"]
-                                  forKey:(id)kCGImagePropertyTIFFCompression], kCGImagePropertyTIFFDictionary,
-      nil]; // TODO add other metadata
-    CGImageDestinationAddImage(imageDestination,image,(CFDictionaryRef)imageProperties);
-    CGImageDestinationFinalize(imageDestination);
-    CGImageRelease(image);
-    CFRelease(imageDestination);
-  }
-}
+// TODO: write export code
 
 - (NSString*)computeLabel;
 {

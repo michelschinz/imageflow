@@ -36,6 +36,5 @@ typedef enum {
 
 - (CGRect)extent;
 - (CIImage*)imageCI;
-- (CGImageRef)imageCG;
 
 @end

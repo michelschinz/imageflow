@@ -52,10 +52,4 @@
   return image;
 }
 
-- (CGImageRef)imageCG;
-{
-  NSAssert(NO, @"TODO");
-  return nil;
-}
-
 @end
