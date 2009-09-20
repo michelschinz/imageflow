@@ -54,7 +54,7 @@
 
 // MARK: High level editing
 
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
@@ -63,14 +63,14 @@
 - (IFTreeNode*)createAliasToNode:(IFTreeNode*)original toReplaceNode:(IFTreeNode*)node;
 
   // Copying trees inside the current tree
-- (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
-- (IFTreeNode*)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (BOOL)canCloneTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)cloneTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 
   // Moving subtrees to some other location
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;

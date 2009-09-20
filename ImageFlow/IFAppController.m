@@ -28,15 +28,16 @@
 #import "IFMaskThresholdCIFilter.h"
 #import "IFRectangularWindowCIFilter.h"
 
-@interface IFAppController (Private)
+NSString* IFCurrentDocumentDidChangeNotification = @"IFCurrentDocumentDidChangeNotification";
+NSString* IFNewDocumentKey = @"IFNewDocumentKey";
+
+@interface IFAppController ()
+- (IFInspectorWindowController*)openInspectorOfClass:(Class)class sender:(id)sender;
 - (void)mainWindowDidChange:(NSNotification*)notification;
 - (void)mainWindowDidResign:(NSNotification*)notification;
 @end
 
 @implementation IFAppController
-
-NSString* IFCurrentDocumentDidChangeNotification = @"IFCurrentDocumentDidChangeNotification";
-NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 
 - (id)init;
 {
@@ -127,7 +128,28 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
   [[doc undoManager] removeAllActions];
 }
 
-- (IFInspectorWindowController*)newInspectorOfClass:(Class)class sender:(id)sender;
+- (void)inspectorWindowWillClose:(NSNotification*)notification;
+{
+  NSWindow* window = [notification object];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];  
+  NSAssert([inspectorControllers containsObject:[window windowController]], @"unexpected window");
+  [inspectorControllers removeObject:[window windowController]];
+}
+
+- (IBAction)openDocumentSettingsInspector:(id)sender;
+{
+  [self openInspectorOfClass:[IFDocumentInspectorWindowController class] sender:sender];
+}
+
+- (IBAction)openHistogramInspector:(id)sender;
+{
+  [self openInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
+}
+
+// MARK: -
+// MARK: PRIVATE
+
+- (IFInspectorWindowController*)openInspectorOfClass:(Class)class sender:(id)sender;
 {
   IFInspectorWindowController* controller = [class new];
   [controller showWindow:sender];
@@ -138,28 +160,6 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
   
   return controller;
 }
-
-- (void)inspectorWindowWillClose:(NSNotification*)notification;
-{
-  NSWindow* window = [notification object];
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];  
-  NSAssert([inspectorControllers containsObject:[window windowController]], @"unexpected window");
-  [inspectorControllers removeObject:[window windowController]];
-}
-
-- (IBAction)newDocumentSettingsInspector:(id)sender;
-{
-  [self newInspectorOfClass:[IFDocumentInspectorWindowController class] sender:sender];
-}
-
-- (IBAction)newHistogramInspector:(id)sender;
-{
-  [self newInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
-}
-
-@end
-
-@implementation IFAppController (Private)
 
 - (void)mainWindowDidChange:(NSNotification*)notification;
 {

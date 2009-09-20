@@ -23,9 +23,7 @@ extern NSString* IFNewDocumentKey;
 
 - (IBAction)showPreferencesPanel:(id)sender;
 
-- (IFInspectorWindowController*)newInspectorOfClass:(Class)class sender:(id)sender;
-
-- (IBAction)newDocumentSettingsInspector:(id)sender;
-- (IBAction)newHistogramInspector:(id)sender;
+- (IBAction)openDocumentSettingsInspector:(id)sender;
+- (IBAction)openHistogramInspector:(id)sender;
 
 @end

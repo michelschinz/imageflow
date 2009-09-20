@@ -49,9 +49,9 @@
  
   free(histograms[0]);
   return [NSArray arrayWithObjects:
-    [IFHistogramData histogramDataWithCountsNoCopy:histograms[1] length:256 total:totalPixels],
-    [IFHistogramData histogramDataWithCountsNoCopy:histograms[2] length:256 total:totalPixels],
-    [IFHistogramData histogramDataWithCountsNoCopy:histograms[3] length:256 total:totalPixels],
+    [IFHistogramData histogramDataWithCountsNoDup:histograms[1] length:256 total:totalPixels],
+    [IFHistogramData histogramDataWithCountsNoDup:histograms[2] length:256 total:totalPixels],
+    [IFHistogramData histogramDataWithCountsNoDup:histograms[3] length:256 total:totalPixels],
     nil];
 }
 

@@ -23,7 +23,7 @@
 #import "IFDragBadgeCreator.h"
 
 @interface IFForestView ()
-- (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
+- (IFTree*)freshLoadTreeForFileNamed:(NSString*)fileName;
 @property(retain) IFTreeCursorPair* cursors;
 @property(readonly) IFLayerSet* nodeConnectorLayers;
 @property(readonly) IFLayerSet* nodeLayers;
@@ -321,7 +321,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 - (void)insertNewline:(id)sender
 {
-  [document insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:self.cursorNode];
+  [document insertCloneOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:self.cursorNode];
   [self moveToNode:[document.tree childOfNode:self.cursorNode] path:nil extendingSelection:NO];
 }
 
@@ -472,8 +472,8 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   }
   
   IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
-  if ([document canCopyTree:tree toReplaceGhostNode:self.cursorNode]) {
-    IFTreeNode* pastedRoot = [document copyTree:tree toReplaceGhostNode:self.cursorNode];
+  if ([document canCloneTree:tree toReplaceGhostNode:self.cursorNode]) {
+    IFTreeNode* pastedRoot = [document cloneTree:tree toReplaceGhostNode:self.cursorNode];
     [self moveToNode:pastedRoot path:nil extendingSelection:NO];
   } else
     NSBeep();
@@ -640,20 +640,20 @@ static enum {
         IFTree* draggedTree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
         switch (operationKind) {
           case IFReplace:
-            if ([document canCopyTree:draggedTree toReplaceGhostNode:targetNode]) {
-              [document copyTree:draggedTree toReplaceGhostNode:targetNode];
+            if ([document canCloneTree:draggedTree toReplaceGhostNode:targetNode]) {
+              [document cloneTree:draggedTree toReplaceGhostNode:targetNode];
               return YES;
             } else
               return NO;
           case IFInsertAsChild:
-            if ([document canInsertCopyOfTree:draggedTree asChildOfNode:targetNode]) {
-              [document insertCopyOfTree:draggedTree asChildOfNode:targetNode];
+            if ([document canInsertCloneOfTree:draggedTree asChildOfNode:targetNode]) {
+              [document insertCloneOfTree:draggedTree asChildOfNode:targetNode];
               return YES;
             } else
               return NO;
           case IFInsertAsParent:
-            if ([document canInsertCopyOfTree:draggedTree asParentOfNode:targetNode]) {
-              [document insertCopyOfTree:draggedTree asParentOfNode:targetNode];
+            if ([document canInsertCloneOfTree:draggedTree asParentOfNode:targetNode]) {
+              [document insertCloneOfTree:draggedTree asParentOfNode:targetNode];
               return YES;
             } else
               return NO;
@@ -682,13 +682,13 @@ static enum {
       if (targetCompositeLayer == nil) {
         // Create new file source nodes for dragged files
         for (int i = 0; i < [fileNames count]; ++i)
-          [document addCopyOfTree:[self newLoadTreeForFileNamed:[fileNames objectAtIndex:i]]];
+          [document addCloneOfTree:[self freshLoadTreeForFileNamed:[fileNames objectAtIndex:i]]];
         return YES;
       } else if ([targetNode isGhost]) {
         // Replace ghost node by "load" node
-        IFTree* loadTree = [self newLoadTreeForFileNamed:[fileNames objectAtIndex:0]];
-        if ([document canCopyTree:loadTree toReplaceGhostNode:targetNode]) {
-          [document copyTree:loadTree toReplaceGhostNode:targetNode];
+        IFTree* loadTree = [self freshLoadTreeForFileNamed:[fileNames objectAtIndex:0]];
+        if ([document canCloneTree:loadTree toReplaceGhostNode:targetNode]) {
+          [document cloneTree:loadTree toReplaceGhostNode:targetNode];
           return YES;
         } else
           return NO;
@@ -709,7 +709,7 @@ static enum {
 // MARK: -
 // MARK: PRIVATE
 
-- (IFTree*)newLoadTreeForFileNamed:(NSString*)fileName;
+- (IFTree*)freshLoadTreeForFileNamed:(NSString*)fileName;
 {
   NSData* archivedClone = [NSKeyedArchiver archivedDataWithRootObject:[[[IFTreeTemplateManager sharedManager] loadFileTemplate] tree]];
   IFTree* clonedTree = [NSKeyedUnarchiver unarchiveObjectWithData:archivedClone];
@@ -855,7 +855,7 @@ static enum {
 {
   IFTreeTemplate* treeTemplate = [delegate selectedTreeTemplate];
   if (treeTemplate != nil) {
-    IFTreeNode* newRoot = [document copyTree:treeTemplate.tree toReplaceGhostNode:self.cursorNode];
+    IFTreeNode* newRoot = [document cloneTree:treeTemplate.tree toReplaceGhostNode:self.cursorNode];
     [self moveToNode:newRoot path:nil extendingSelection:NO];
   } else
     NSBeep();

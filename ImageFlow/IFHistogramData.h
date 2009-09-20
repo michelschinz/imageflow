@@ -15,8 +15,8 @@
   vImagePixelCount total;
 }
 
-+ (id)histogramDataWithCountsNoCopy:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
-- (id)initWithCountsNoCopy:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
++ (id)histogramDataWithCountsNoDup:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
+- (id)initWithCountsNoDup:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
 
 - (IFHistogramData*)addHistogramData:(IFHistogramData*)other;
 

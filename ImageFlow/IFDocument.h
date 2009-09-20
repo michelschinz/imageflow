@@ -49,17 +49,17 @@ extern NSString* IFTreeChangedNotification;
 - (NSArray*)pathFromRootTo:(IFTreeNode*)node;
 
 // MARK: Tree manipulations
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)tree;
 
 - (BOOL)canDeleteSubtree:(IFSubtree*)subtree;
 - (IFTreeNode*)deleteSubtree:(IFSubtree*)subtree;
 
-- (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
-- (IFTreeNode*)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (BOOL)canCloneTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (IFTreeNode*)cloneTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 
 - (BOOL)canMoveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;
 - (void)moveSubtree:(IFSubtree*)subtree toReplaceGhostNode:(IFTreeNode*)node;

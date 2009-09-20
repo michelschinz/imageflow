@@ -134,7 +134,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 // MARK: Tree manipulations
 
-- (IFTreeNode*)addCopyOfTree:(IFTree*)newTree;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)newTree;
 {
   NSArray* roots = [self roots];
   int i;
@@ -144,7 +144,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     ;
   
   [self beginTreeModification];
-  IFTreeNode* newRoot = [tree addCopyOfTree:newTree asNewRootAtIndex:i+1];
+  IFTreeNode* newRoot = [tree addCloneOfTree:newTree asNewRootAtIndex:i+1];
   [self endTreeModification];
   return newRoot;
 }
@@ -162,43 +162,43 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return maybeGhost;
 }
 
-- (BOOL)canCopyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (BOOL)canCloneTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 {
   NSAssert([node isGhost], @"non-ghost node");
-  return [tree canCopyTree:replacement toReplaceNode:node];
+  return [tree canCloneTree:replacement toReplaceNode:node];
 }
 
-- (IFTreeNode*)copyTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
+- (IFTreeNode*)cloneTree:(IFTree*)replacement toReplaceGhostNode:(IFTreeNode*)node;
 {
   NSAssert([node isGhost], @"non-ghost node");
   [self beginTreeModification];
-  IFTreeNode* newRoot = [tree copyTree:replacement toReplaceNode:node];
+  IFTreeNode* newRoot = [tree cloneTree:replacement toReplaceNode:node];
   [self endTreeModification];
   return newRoot;
 }
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
 {
-  return [tree canInsertCopyOfTree:otherTree asChildOfNode:node];
+  return [tree canInsertCloneOfTree:otherTree asChildOfNode:node];
 }
 
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)otherTree asChildOfNode:(IFTreeNode*)node;
 {
   [self beginTreeModification];
-  IFTreeNode* newRoot = [tree insertCopyOfTree:otherTree asChildOfNode:node];
+  IFTreeNode* newRoot = [tree insertCloneOfTree:otherTree asChildOfNode:node];
   [self endTreeModification];
   return newRoot;
 }
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
 {
-  return [tree canInsertCopyOfTree:otherTree asParentOfNode:node];
+  return [tree canInsertCloneOfTree:otherTree asParentOfNode:node];
 }
 
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)otherTree asParentOfNode:(IFTreeNode*)node;
 {
   [self beginTreeModification];
-  IFTreeNode* newRoot = [tree insertCopyOfTree:otherTree asParentOfNode:node];
+  IFTreeNode* newRoot = [tree insertCloneOfTree:otherTree asParentOfNode:node];
   [self endTreeModification];
   return newRoot;
 }
@@ -292,7 +292,6 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
       [[self undoManager] removeAllActions];
     }
   }
-  *outError = nil;
   return YES;
 }
 
@@ -309,10 +308,10 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     if ([root isGhost])
       hasGhostColumn |= ([tree parentsCountOfNode:root] == 0);
     else if (YES) // TODO: check that tree has an image output
-      [tree insertCopyOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:root];
+      [tree insertCloneOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:root];
   }
   if (!hasGhostColumn)
-    [tree addCopyOfTree:[IFTree ghostTreeWithArity:0] asNewRootAtIndex:[tree parentsCountOfNode:[tree root]]];
+    [tree addCloneOfTree:[IFTree ghostTreeWithArity:0] asNewRootAtIndex:[tree parentsCountOfNode:[tree root]]];
 }
 
 - (void)beginTreeModification;

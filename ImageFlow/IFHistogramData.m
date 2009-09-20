@@ -14,12 +14,12 @@
 
 @implementation IFHistogramData
 
-+ (id)histogramDataWithCountsNoCopy:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
++ (id)histogramDataWithCountsNoDup:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
 {
-  return [[[self alloc] initWithCountsNoCopy:theCounts length:theLength total:theTotal] autorelease];
+  return [[[self alloc] initWithCountsNoDup:theCounts length:theLength total:theTotal] autorelease];
 }
 
-- (id)initWithCountsNoCopy:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
+- (id)initWithCountsNoDup:(vImagePixelCount*)theCounts length:(int)theLength total:(vImagePixelCount)theTotal;
 {
   if (![super init]) return nil;
   counts = theCounts;
@@ -44,7 +44,7 @@
   memcpy(sum,other->counts,bufferSize);
   for (int i = 0; i < length; ++i)
     sum[i] += counts[i];
-  return [IFHistogramData histogramDataWithCountsNoCopy:sum length:length total:(other->total + total)];
+  return [IFHistogramData histogramDataWithCountsNoDup:sum length:length total:(other->total + total)];
 }
 
 - (float)maxRatio;

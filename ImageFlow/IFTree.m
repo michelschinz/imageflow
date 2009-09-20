@@ -25,7 +25,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)collectParentsOfSubtree:(IFSubtree*)subtree startingAt:(IFTreeNode*)root into:(NSMutableArray*)result;
 - (IFTreeEdge*)outgoingEdgeForNode:(IFTreeNode*)node;
 - (NSArray*)holesInSubtreeRootedAt:(IFTreeNode*)root;
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)tree;
 - (IFTreeNode*)addGhostTreeWithArity:(unsigned)arity;
 - (IFTreeNode*)insertNewGhostNodeAsChildOf:(IFTreeNode*)node;
 - (IFTreeNode*)insertNewGhostNodeAsParentOf:(IFTreeNode*)node;
@@ -230,7 +230,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 
 // MARK: High level editing
 
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)tree asNewRootAtIndex:(unsigned)index;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
@@ -242,7 +242,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     }
   }
 
-  IFTreeNode* addedTreeRoot = [self addCopyOfTree:tree];
+  IFTreeNode* addedTreeRoot = [self addCloneOfTree:tree];
   [self addEdgeFromNode:addedTreeRoot toNode:root withIndex:index];
   return addedTreeRoot;
 }
@@ -288,45 +288,45 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 }
 
 // Copying trees inside the current tree
-- (BOOL)canCopyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (BOOL)canCloneTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone copyTree:tree toReplaceNode:node];
+  [clone cloneTree:tree toReplaceNode:node];
   return [clone isTypeCorrect];
 }
 
-- (IFTreeNode*)copyTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
+- (IFTreeNode*)cloneTree:(IFTree*)tree toReplaceNode:(IFTreeNode*)node;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
 
-  IFTreeNode* copiedTreeRoot = [self addCopyOfTree:tree];
+  IFTreeNode* copiedTreeRoot = [self addCloneOfTree:tree];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:copiedTreeRoot];
   [self removeTreeRootedAt:node];
   return copiedTreeRoot;
 }
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone insertCopyOfTree:tree asChildOfNode:node];
+  [clone insertCloneOfTree:tree asChildOfNode:node];
   return [clone isTypeCorrect];
 }
 
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asChildOfNode:(IFTreeNode*)node;
 {
-  return [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
+  return [self cloneTree:tree toReplaceNode:[self insertNewGhostNodeAsChildOf:node]];
 }
 
-- (BOOL)canInsertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (BOOL)canInsertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
-  [clone insertCopyOfTree:tree asParentOfNode:node];
+  [clone insertCloneOfTree:tree asParentOfNode:node];
   return [clone isTypeCorrect];
 }
 
-- (IFTreeNode*)insertCopyOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
+- (IFTreeNode*)insertCloneOfTree:(IFTree*)tree asParentOfNode:(IFTreeNode*)node;
 {
-  return [self copyTree:tree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
+  return [self cloneTree:tree toReplaceNode:[self insertNewGhostNodeAsParentOf:node]];
 }
 
   // Moving subtrees to some other location
@@ -518,7 +518,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   }
 }
 
-- (IFTreeNode*)addCopyOfTree:(IFTree*)tree;
+- (IFTreeNode*)addCloneOfTree:(IFTree*)tree;
 {
   IFTree* clone = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:tree]];
   [self addTree:clone startingAtNode:[clone root]];
@@ -592,7 +592,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   // Replace all aliases to nodes about to be deleted by ghosts.
   for (IFTreeNode* node in [self nodes]) {
     if ([node isAlias] && ![nodesToRemove containsObject:node] && [nodesToRemove containsObject:[node original]])
-      [self copyTree:[IFTree ghostTreeWithArity:0] toReplaceNode:node];
+      [self cloneTree:[IFTree ghostTreeWithArity:0] toReplaceNode:node];
   }
 
   for (IFTreeNode* node in nodesToRemove)

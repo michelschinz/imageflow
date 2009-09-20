@@ -50,7 +50,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     [hostTree addNode:parent];
     [hostTree addEdgeFromNode:parent toNode:ghost withIndex:j];
   }
-  [hostTree copyTree:templateTree toReplaceNode:ghost];
+  [hostTree cloneTree:templateTree toReplaceNode:ghost];
   
   [hostTree configureNodes];
   [hostTree setPropagateNewParentExpressions:YES];
@@ -130,7 +130,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   // Create preview tree
   self.previewModeTree = [tree cloneWithoutNewParentExpressionsPropagation];
   NSSet* constNodes = [NSSet setWithSet:previewModeTree.nodes];
-  IFTreeNode* previewTreeNode = [previewModeTree copyTree:treeTemplate.tree toReplaceNode:node];  
+  IFTreeNode* previewTreeNode = [previewModeTree cloneTree:treeTemplate.tree toReplaceNode:node];  
   if ([previewModeTree isTypeCorrect]) {
     [previewModeTree configureAllNodesBut:constNodes];
     self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree layoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
