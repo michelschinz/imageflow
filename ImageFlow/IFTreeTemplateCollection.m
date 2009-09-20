@@ -121,7 +121,7 @@ static NSString* uniqueFileName(NSString* dir, NSString* nameHint) {
       [saneNameHint appendFormat:@"%C",c];
   }
   if ([saneNameHint length] == 0)
-    saneNameHint = @"tree";
+    saneNameHint = [NSMutableString stringWithString:@"tree"];
 
   // Generate non-existing name
   NSString* pathFormat = [dir stringByAppendingPathComponent:[saneNameHint stringByAppendingString:@"%@.xml"]];

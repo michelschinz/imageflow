@@ -111,6 +111,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
           nibView = nibObject;
         }
       }
+      NSAssert(nibView != nil, @"no view in NIB file for filter %@", nodeToEditClassName);
         
       [panelSizes setObject:[NSValue valueWithSize:[nibView bounds].size] forKey:nodeToEditClassName];
       NSTabViewItem* filterSettingsTabViewItem = [[[NSTabViewItem alloc] initWithIdentifier:nil] autorelease];

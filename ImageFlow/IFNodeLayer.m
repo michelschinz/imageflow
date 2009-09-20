@@ -175,6 +175,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   CGContextClearRect(ctx, ctxBounds);
   CGContextSetAlpha(ctx, 0.6);
   CGContextDrawImage(ctx, ctxBounds, cgOpaqueDragImage);
+  CGImageRelease(cgOpaqueDragImage);
   CGImageRef cgTransparentDragImage = CGBitmapContextCreateImage(ctx);
   
   NSImageRep* imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:cgTransparentDragImage] autorelease];

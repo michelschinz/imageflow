@@ -244,7 +244,6 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
       } else {
         NSAssert([exprType isMaskType], @"unexpected expr. type");
         expr = [IFOperatorExpression maskToImage:expr];
-        exprType = [IFImageType imageRGBAType];
       }
       self.displayedExpression = expr;
     } else
