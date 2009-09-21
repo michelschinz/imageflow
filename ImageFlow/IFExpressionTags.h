@@ -20,6 +20,8 @@ typedef enum {
   IFExpressionTag_Parent,
   IFExpressionTag_Array,
   IFExpressionTag_Lambda,
+  IFExpressionTag_Let,
+  IFExpressionTag_Closure,
   IFExpressionTag_Image,
   IFExpressionTag_Mask,
   IFExpressionTag_Color,

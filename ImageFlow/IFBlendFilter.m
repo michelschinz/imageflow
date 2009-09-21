@@ -17,9 +17,10 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFOperatorExpression.h"
 #import "IFVariableExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFBlendFilter
 
@@ -45,20 +46,22 @@ static NSArray* parentNames = nil;
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
+  if (arity == 2) {
     IFExpression* opFgd = [IFOperatorExpression expressionWithOperatorNamed:@"opacity" operands:
-      [IFParentExpression parentExpressionWithIndex:1],
-      [IFVariableExpression expressionWithName:@"alpha"],
-      nil];
+                           [IFArgumentExpression argumentExpressionWithIndex:0],
+                           [IFVariableExpression expressionWithName:@"alpha"],
+                           nil];
     IFExpression* trOpFgd = [IFOperatorExpression expressionWithOperatorNamed:@"translate" operands:
-      opFgd,[IFVariableExpression expressionWithName:@"translation"],nil];
-    exprs = [[NSArray arrayWithObject:
-      [IFOperatorExpression blendBackground:[IFParentExpression parentExpressionWithIndex:0]
-                             withForeground:trOpFgd
-                                     inMode:[IFVariableExpression expressionWithName:@"mode"]]] retain];
+                             opFgd,[IFVariableExpression expressionWithName:@"translation"],nil];
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFLambdaExpression lambdaExpressionWithBody:
+              [IFOperatorExpression blendBackground:[IFArgumentExpression argumentExpressionWithIndex:1]
+                                     withForeground:trOpFgd
+                                             inMode:[IFVariableExpression expressionWithName:@"mode"]]]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 2) ? exprs : [NSArray array];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

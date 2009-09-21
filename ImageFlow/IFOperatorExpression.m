@@ -17,9 +17,9 @@
 
 @implementation IFOperatorExpression
 
-+ (id)nop;
++ (id)fail;
 {
-  return [self expressionWithOperatorNamed:@"nop" operands:nil];
+  return [self expressionWithOperatorNamed:@"fail" operands:nil];
 }
 
 + (id)extentOf:(IFExpression*)imageExpr;

@@ -11,8 +11,9 @@
 #import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFTypeVar.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFGhostFilter
 
@@ -35,10 +36,10 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  NSMutableArray* operands = [NSMutableArray arrayWithCapacity:arity];
+  IFExpression* expr = [IFOperatorExpression fail];
   for (unsigned i = 0; i < arity; ++i)
-    [operands addObject:[IFParentExpression parentExpressionWithIndex:i]];
-  return [NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"nop"] operands:operands]];
+    expr = [IFLambdaExpression lambdaExpressionWithBody:expr];
+  return [NSArray arrayWithObject:expr];
 }
 
 - (NSString*)computeLabel;

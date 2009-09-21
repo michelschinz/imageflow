@@ -67,7 +67,7 @@ let rec rewriteOp = function
   | Op("gaussian-blur", [|Op("constant-color", _) as cc; _|]) -> cc
   | Op("resample", [|Op("constant-color", _) as cc; _|]) -> cc
   | Op("resample", [|Op("empty", _) as empty; _|]) -> empty
-  | Op("resample", [|Op("nop", _) as nop; _|]) -> nop
+  | Op("resample", [|Op("fail", _) as fail; _|]) -> fail
 
         (* Zeroes *)
   | Op("opacity", [|_; Num 0.|]) -> Image (Image.empty)
@@ -120,7 +120,7 @@ let rec rewriteOp = function
       Op("rect-translate", [|Op("extent", [|i|]); v|])
   | Op("extent", [|Op("unsharp-mask", [|i; _; _|])|]) ->
       Op("extent", [|i|])
-  | Op("extent", [|Op("nop", _)|]) ->
+  | Op("extent", [|Op("fail", _)|]) ->
       Rect Rect.zero
 
         (* Default case *)

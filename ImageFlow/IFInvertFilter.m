@@ -12,8 +12,11 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
+#import "IFLambdaExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFParentExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFInvertFilter
 
@@ -32,14 +35,14 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObjects:
-      [IFOperatorExpression expressionWithOperatorNamed:@"invert" operands:[IFParentExpression parentExpressionWithIndex:0],nil],
-      [IFOperatorExpression expressionWithOperatorNamed:@"invert-mask" operands:[IFParentExpression parentExpressionWithIndex:0],nil],
-      nil] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObjects:
+            [IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"invert" operands:[IFArgumentExpression argumentExpressionWithIndex:0],nil]],
+            [IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"invert-mask" operands:[IFArgumentExpression argumentExpressionWithIndex:0],nil]],
+            nil];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

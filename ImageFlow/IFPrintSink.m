@@ -13,6 +13,7 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFPrintSink
 
@@ -28,11 +29,9 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"print" operands:nil]] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObject:[IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"print" operands:nil]]];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)exporterKind;

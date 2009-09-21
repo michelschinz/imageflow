@@ -12,8 +12,9 @@
 #import "IFTypeVar.h"
 #import "IFArrayType.h"
 #import "IFFunType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFStackFilter
 
@@ -35,8 +36,11 @@
 {
   NSMutableArray* operands = [NSMutableArray arrayWithCapacity:arity];
   for (unsigned i = 0; i < arity; ++i)
-    [operands addObject:[IFParentExpression parentExpressionWithIndex:i]];
-  return [NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"array"] operands:operands]];
+    [operands addObject:[IFArgumentExpression argumentExpressionWithIndex:arity - (i + 1)]];
+  IFExpression* expr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"array"] operands:operands];
+  for (unsigned i = 0; i < arity; ++i)
+    expr = [IFLambdaExpression lambdaExpressionWithBody:expr];
+  return [NSArray arrayWithObject:expr];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

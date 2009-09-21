@@ -12,6 +12,7 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFFileSink
 
@@ -27,11 +28,11 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"save" operands:nil]] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObject:[IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"save" operands:nil]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)exporterKind;

@@ -16,7 +16,7 @@
   NSUInteger hash;
 }
 
-+ (id)nop;
++ (id)fail;
 + (id)extentOf:(IFExpression*)imageExpr;
 + (id)resample:(IFExpression*)imageExpr by:(float)scale;
 + (id)translate:(IFExpression*)expression byX:(float)x Y:(float)y;

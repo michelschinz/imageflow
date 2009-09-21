@@ -218,7 +218,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [imageView setVisibleBounds:realCanvasBounds];
   
   // FIXME: should avoid this, to prevent redrawing of the whole image!
-  self.displayedExpression = [IFOperatorExpression nop];
+  self.displayedExpression = [IFOperatorExpression fail];
   [self updateExpression];
 }
 
@@ -247,9 +247,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
       }
       self.displayedExpression = expr;
     } else
-      self.displayedExpression = [IFOperatorExpression nop];
+      self.displayedExpression = [IFOperatorExpression fail];
   } else
-    self.displayedExpression = [IFOperatorExpression nop];
+    self.displayedExpression = [IFOperatorExpression fail];
 }
 
 - (void)updateAnnotations;

@@ -12,9 +12,10 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFThresholdFilter
 
@@ -33,20 +34,22 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObjects:
-      [IFOperatorExpression expressionWithOperatorNamed:@"threshold" operands:
-        [IFParentExpression parentExpressionWithIndex:0],
-        [IFVariableExpression expressionWithName:@"threshold"],
-        nil],
-      [IFOperatorExpression expressionWithOperatorNamed:@"threshold-mask" operands:
-        [IFParentExpression parentExpressionWithIndex:0],
-        [IFVariableExpression expressionWithName:@"threshold"],
-        nil],
-      nil] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObjects:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression expressionWithOperatorNamed:@"threshold" operands:
+              [IFArgumentExpression argumentExpressionWithIndex:0],
+              [IFVariableExpression expressionWithName:@"threshold"],
+              nil]],
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression expressionWithOperatorNamed:@"threshold-mask" operands:
+              [IFArgumentExpression argumentExpressionWithIndex:0],
+              [IFVariableExpression expressionWithName:@"threshold"],
+              nil]],
+            nil];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

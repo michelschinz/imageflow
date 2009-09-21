@@ -13,9 +13,10 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFTypeVar.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFGaussianBlurFilter
 
@@ -32,14 +33,16 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"gaussian-blur" operands:
-      [IFParentExpression parentExpressionWithIndex:0],
-      [IFVariableExpression expressionWithName:@"radius"],
-      nil]] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression expressionWithOperatorNamed:@"gaussian-blur" operands:
+              [IFArgumentExpression argumentExpressionWithIndex:0],
+              [IFVariableExpression expressionWithName:@"radius"],
+              nil]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

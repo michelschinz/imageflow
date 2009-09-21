@@ -10,6 +10,8 @@ type t =
   | Parent of int
   | Array of t array
   | Lambda of t
+  | Let of string * t * t
+  | Closure of (t list) * t
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t

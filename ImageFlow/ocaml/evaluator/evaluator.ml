@@ -30,7 +30,9 @@ and eval_cached cache expr =
 
 and eval_deep cache env expr =
   match expr with
-    Op(op, args) ->
+    Lambda body ->
+      Closure (env, body)
+  | Op(op, args) ->
       let evaluated_args =
         try
           Array.map (eval cache env) args
@@ -51,13 +53,17 @@ and eval_shallow cache env expr =
   and out_mask filter =
     Mask (Image.mask_of_ciimage (Coreimage.output_image filter))
   in match expr with
+    (* Application operators *)
+  | Op("apply", [|Closure (env', b); a|]) ->
+      eval cache (a :: env') b
+  | Op("map", [|Closure (env', b); Array a|]) ->
+      Array (Array.map (fun e -> eval cache (e :: env') b) a)
+
     (* Array operators *)
-    Op("array", xs) ->
+  | Op("array", xs) ->
       Array xs
   | Op("array-get", [|Array a; Int i|]) ->
       a.(i)
-  | Op("map", [|Lambda b; Array a|]) ->
-      Array (Array.map (fun e -> eval cache (e :: env) b) a)
 
     (* Rectangle operators *)
   | Op("rect-intersection", [|Rect r1; Rect r2|]) ->
@@ -160,7 +166,7 @@ and eval_shallow cache env expr =
               (fun e p -> Rect.union e (pt p))
               (pt ps.(0))
               ps)
-  | Op("nop", _) ->
+  | Op("fail", [||]) ->
       raise (EvalError (Error None))    (* TODO *)
   | Var _ ->
       raise (EvalError (Error None))    (* TODO *)

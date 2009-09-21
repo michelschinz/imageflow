@@ -13,7 +13,8 @@
 #import "IFArrayType.h"
 #import "IFTypeVar.h"
 #import "IFOperatorExpression.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFAverageFilter
 
@@ -28,13 +29,14 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"average"] operands:[NSArray arrayWithObject:[IFParentExpression parentExpressionWithIndex:0]]]] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"average"]
+                                                 operands:[NSArray arrayWithObject:[IFArgumentExpression argumentExpressionWithIndex:0]]]]];
+  } else {
+    return [NSArray array];
   }
-  
-  return arity == 1 ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

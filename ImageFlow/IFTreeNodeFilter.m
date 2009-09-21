@@ -77,9 +77,13 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 {
-  IFExpression* expr1 = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressionsForArity:[altParentExpressions count]] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
-  IFExpression* expr2 = [IFExpressionPlugger plugValuesInExpression:expr1 withValuesFromParentsEnvironment:altParentExpressions];
-  return expr2;
+  const unsigned arity = [altParentExpressions count];
+  IFExpression* expr = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressionsForArity:arity] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
+  for (unsigned i = 0; i < arity; ++i) {
+    IFExpression* parentExpr = [altParentExpressions objectForKey:[NSNumber numberWithUnsignedInt:i]];
+    expr = [IFOperatorExpression expressionWithOperatorNamed:@"apply" operands:expr, parentExpr, nil];
+  }
+  return expr;
 }
 
 - (IFExpression*)computeExpression;

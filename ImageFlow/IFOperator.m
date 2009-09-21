@@ -25,6 +25,7 @@ static NSDictionary* allOperatorsByName;
     return; // avoid repeated initialisation
   
   allOperators = [[NSArray arrayWithObjects:
+                   [[[self alloc] initWithName:@"apply"] autorelease],
                    [[[self alloc] initWithName:@"array"] autorelease],
                    [[[self alloc] initWithName:@"array-get"] autorelease],
                    [[[self alloc] initWithName:@"average"] autorelease],
@@ -39,6 +40,7 @@ static NSDictionary* allOperatorsByName;
                    [[[self alloc] initWithName:@"div"] autorelease],
                    [[[self alloc] initWithName:@"empty"] autorelease],
                    [[[self alloc] initWithName:@"extent"] autorelease],
+                   [[[self alloc] initWithName:@"fail"] autorelease],
                    [[[self alloc] initWithName:@"file-extent"] autorelease],
                    [[[self alloc] initWithName:@"gaussian-blur"] autorelease],
                    [[[self alloc] initWithName:@"histogram-rgb"] autorelease],
@@ -50,7 +52,6 @@ static NSDictionary* allOperatorsByName;
                    [[[self alloc] initWithName:@"mask-overlay"] autorelease],
                    [[[self alloc] initWithName:@"mask-to-image"] autorelease],                   
                    [[[self alloc] initWithName:@"mul"] autorelease],
-                   [[[self alloc] initWithName:@"nop"] autorelease],
                    [[[self alloc] initWithName:@"opacity"] autorelease],
                    [[[self alloc] initWithName:@"paint"] autorelease],
                    [[[self alloc] initWithName:@"point-mul"] autorelease],

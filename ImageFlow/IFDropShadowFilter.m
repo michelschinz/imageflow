@@ -12,11 +12,12 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFOperatorExpression.h"
 #import "IFConstantExpression.h"
 #import "IFBlendMode.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFDropShadowFilter
 
@@ -32,20 +33,22 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
+  if (arity == 1) {
     IFExpression* sh = [IFOperatorExpression expressionWithOperatorNamed:@"single-color" operands:
-      [IFParentExpression parentExpressionWithIndex:0],
-      [IFVariableExpression expressionWithName:@"color"],
-      nil];
+                        [IFArgumentExpression argumentExpressionWithIndex:0],
+                        [IFVariableExpression expressionWithName:@"color"],
+                        nil];
     IFExpression* trSh = [IFOperatorExpression expressionWithOperatorNamed:@"translate" operands:sh,[IFVariableExpression expressionWithName:@"offset"], nil];
     IFExpression* blTrSh = [IFOperatorExpression expressionWithOperatorNamed:@"gaussian-blur" operands:trSh,[IFVariableExpression expressionWithName:@"blur"], nil];
-    exprs = [[NSArray arrayWithObject:
-      [IFOperatorExpression blendBackground:blTrSh
-                             withForeground:[IFParentExpression parentExpressionWithIndex:0]
-                                     inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]] retain];
+    
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression blendBackground:blTrSh
+                                    withForeground:[IFArgumentExpression argumentExpressionWithIndex:0]
+                                            inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

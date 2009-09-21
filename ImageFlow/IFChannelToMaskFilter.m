@@ -12,9 +12,10 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFOperatorExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFChannelToMaskFilter
 
@@ -30,14 +31,16 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
-      [IFParentExpression parentExpressionWithIndex:0],
-      [IFVariableExpression expressionWithName:@"channel"],
-      nil]] retain];
+  if (arity == 1) {
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
+              [IFArgumentExpression argumentExpressionWithIndex:0],
+              [IFVariableExpression expressionWithName:@"channel"],
+              nil]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 1) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

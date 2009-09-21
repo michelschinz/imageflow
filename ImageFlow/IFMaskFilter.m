@@ -15,7 +15,8 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFParentExpression.h"
+#import "IFArgumentExpression.h"
+#import "IFLambdaExpression.h"
 
 @implementation IFMaskFilter
 
@@ -45,14 +46,17 @@ static IFConstantExpression* maskColor = nil;
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression expressionWithOperatorNamed:@"mask" operands:
-      [IFParentExpression parentExpressionWithIndex:0],
-      [IFParentExpression parentExpressionWithIndex:1],
-      nil]] retain];
+  if (arity == 2) {
+    return [NSArray arrayWithObject:
+            [IFLambdaExpression lambdaExpressionWithBody:
+             [IFLambdaExpression lambdaExpressionWithBody:
+              [IFOperatorExpression expressionWithOperatorNamed:@"mask" operands:
+               [IFArgumentExpression argumentExpressionWithIndex:1],
+               [IFArgumentExpression argumentExpressionWithIndex:0],
+               nil]]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 2) ? exprs : [NSArray array];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;
