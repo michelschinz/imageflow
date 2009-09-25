@@ -20,9 +20,6 @@ let rec print0 fmt = function
   | Arg index ->
       pp_print_string fmt "#";
       pp_print_int fmt index
-  | Parent index ->
-      pp_print_string fmt "@";
-      pp_print_int fmt index
   | Array elems ->
       pp_open_box fmt(1);
       pp_print_string fmt("[");

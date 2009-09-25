@@ -172,8 +172,6 @@ and eval_shallow cache env expr =
       raise (EvalError (Error None))    (* TODO *)
   | Arg i ->
       List.nth env i
-  | Parent _ ->
-      raise (EvalError (Error None))    (* TODO *)
   | other when is_value other ->
       other
   | unknown_expr ->

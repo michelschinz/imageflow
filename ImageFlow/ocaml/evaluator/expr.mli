@@ -7,7 +7,6 @@ type t =
     Op of string * t array
   | Var of string
   | Arg of int
-  | Parent of int
   | Array of t array
   | Lambda of t
   | Let of string * t * t

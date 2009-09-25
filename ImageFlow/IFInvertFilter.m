@@ -14,7 +14,6 @@
 #import "IFImageType.h"
 #import "IFLambdaExpression.h"
 #import "IFArgumentExpression.h"
-#import "IFParentExpression.h"
 #import "IFOperatorExpression.h"
 #import "IFLambdaExpression.h"
 

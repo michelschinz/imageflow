@@ -4,7 +4,6 @@ type t =
     Op of string * t array
   | Var of string
   | Arg of int
-  | Parent of int
   | Array of t array
   | Lambda of t
   | Let of string * t * t
@@ -26,7 +25,6 @@ let is_value = function
     Op _
   | Var _
   | Arg _
-  | Parent _
   | Lambda _
   | Let _ ->
       false
@@ -72,7 +70,6 @@ let rec equal e1 e2 =
   | (Closure _, Closure _)
   | (Var _, Var _)
   | (Arg _, Arg _)
-  | (Parent _, Parent _)
   | (Color _, Color _)
   | (Rect _, Rect _)
   | (Size _, Size _)

@@ -53,11 +53,6 @@ typedef enum {
   result = [IFOperatorExpression expressionWithOperator:expression.operator operands:pluggedOperands];
 }
 
-- (void)caseParentExpression:(IFParentExpression*)expression;
-{
-  [self substituteUsingKey:[NSNumber numberWithInt:[expression index]] ifInMode:IFExpressionPluggerModeParents defaultExpression:expression];
-}
-
 - (void)caseVariableExpression:(IFVariableExpression*)expression;
 {
   [self substituteUsingKey:[expression name] ifInMode:IFExpressionPluggerModeVariables defaultExpression:expression];

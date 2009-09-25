@@ -19,10 +19,6 @@
 {
 }
 
-- (void)caseParentExpression:(IFParentExpression*)expression;
-{
-}
-
 - (void)caseVariableExpression:(IFVariableExpression*)expression;
 {
 }

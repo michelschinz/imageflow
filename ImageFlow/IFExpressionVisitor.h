@@ -10,7 +10,6 @@
 
 #import "IFLambdaExpression.h"
 #import "IFOperatorExpression.h"
-#import "IFParentExpression.h"
 #import "IFVariableExpression.h"
 #import "IFArgumentExpression.h"
 #import "IFConstantExpression.h"
@@ -21,7 +20,6 @@
 
 - (void)caseLambdaExpression:(IFLambdaExpression*)expression;
 - (void)caseOperatorExpression:(IFOperatorExpression*)expression;
-- (void)caseParentExpression:(IFParentExpression*)expression;
 - (void)caseVariableExpression:(IFVariableExpression*)expression;
 - (void)caseArgumentExpression:(IFArgumentExpression*)expression;
 - (void)caseConstantExpression:(IFConstantExpression*)expression;

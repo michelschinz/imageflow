@@ -7,7 +7,6 @@
 //
 
 #import "IFExpression.h"
-#import "IFParentExpression.h"
 #import "IFOperatorExpression.h"
 #import "IFVariableExpression.h"
 #import "IFConstantExpression.h"
@@ -59,8 +58,6 @@
   NSString* xmlName = [xmlTree name];
   if ([xmlName isEqualToString:@"operation"])
     return [[[IFOperatorExpression alloc] initWithXML:xmlTree] autorelease];
-  else if ([xmlName isEqualToString:@"parent"])
-    return [[[IFParentExpression alloc] initWithXML:xmlTree] autorelease];
   else if ([xmlName isEqualToString:@"variable"])
     return [[[IFVariableExpression alloc] initWithXML:xmlTree] autorelease];
   else if ([xmlName isEqualToString:@"constant"])
