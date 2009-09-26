@@ -42,15 +42,25 @@ typedef enum {
 
 - (void)caseLambdaExpression:(IFLambdaExpression*)expression;
 {
-  result = [IFLambdaExpression lambdaExpressionWithBody:[self plugValuesInExpression:expression.body]];
+  result = [IFExpression lambdaWithBody:[self plugValuesInExpression:expression.body]];
 }
 
-- (void)caseOperatorExpression:(IFOperatorExpression*)expression;
+- (void)caseMapExpression:(IFMapExpression*)expression;
+{
+  result = [IFExpression mapWithFunction:[self plugValuesInExpression:expression.function] array:[self plugValuesInExpression:expression.array]];
+}
+
+- (void)caseApplyExpression:(IFApplyExpression*)expression;
+{
+  result = [IFExpression applyWithFunction:[self plugValuesInExpression:expression.function] argument:[self plugValuesInExpression:expression.argument]];
+}
+
+- (void)casePrimitiveExpression:(IFPrimitiveExpression*)expression;
 {
   NSMutableArray* pluggedOperands = [NSMutableArray array];
   for (IFExpression* operand in expression.operands)
     [pluggedOperands addObject:[self plugValuesInExpression:operand]];
-  result = [IFOperatorExpression expressionWithOperator:expression.operator operands:pluggedOperands];
+  result = [IFExpression primitiveWithTag:expression.tag operandsArray:pluggedOperands];
 }
 
 - (void)caseVariableExpression:(IFVariableExpression*)expression;

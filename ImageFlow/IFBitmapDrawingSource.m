@@ -14,8 +14,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFOperatorExpression.h"
-#import "IFVariableExpression.h"
+#import "IFExpression.h"
 #import "IFConstantExpression.h"
 #import "IFImageView.h"
 
@@ -33,11 +32,9 @@
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
-    IFExpression* bg = [IFOperatorExpression expressionWithOperatorNamed:@"constant-color" operands:
-      [IFVariableExpression expressionWithName:@"defaultColor"],
-      nil];
-    IFExpression* fg = [IFVariableExpression expressionWithName:@"drawing"];
-    exprs = [[NSArray arrayWithObject:[IFOperatorExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]] retain];
+    IFExpression* bg = [IFExpression primitiveWithTag:IFPrimitiveTag_ConstantColor operand:[IFExpression variableWithName:@"defaultColor"]];
+    IFExpression* fg = [IFExpression variableWithName:@"drawing"];
+    exprs = [[NSArray arrayWithObject:[IFExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]] retain];
   }
   return (arity == 0) ? exprs : [NSArray array];
 }
@@ -49,27 +46,23 @@
 
 IFExpression* paintExpr(IFExpression* brushExpr, NSArray* points)
 {
-  return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"paint"]
-                                             operands:[NSArray arrayWithObjects:
-                                               brushExpr,
-                                               [IFConstantExpression expressionWithArray:points],
-                                               nil]];
+  return [IFExpression primitiveWithTag:IFPrimitiveTag_Paint operands:brushExpr, [IFConstantExpression expressionWithArray:points], nil];
 }
 
 - (void)mouseDown:(NSEvent*)event inView:(IFImageView*)view viewFilterTransform:(NSAffineTransform*)vfTransform;
 {
   IFExpression* curExpr = [settings valueForKey:@"drawing"];
-  IFExpression* brushExpr = [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"circle"]
-                                                                operands:[NSArray arrayWithObjects:
-                                                                  [IFConstantExpression expressionWithPointNS:NSZeroPoint],
-                                                                  [IFConstantExpression expressionWithFloat:[[settings valueForKey:@"brushSize"] floatValue]],
-                                                                  [IFConstantExpression expressionWithColorNS:[settings valueForKey:@"brushColor"]],
-                                                                  nil]];
+  IFExpression* brushExpr = [IFExpression primitiveWithTag:IFPrimitiveTag_Circle operands:
+                             [IFConstantExpression expressionWithPointNS:NSZeroPoint],
+                             [IFConstantExpression expressionWithFloat:[[settings valueForKey:@"brushSize"] floatValue]],
+                             [IFConstantExpression expressionWithColorNS:[settings valueForKey:@"brushColor"]],
+                             nil];
+  
   IFConstantExpression* modeExpr = [IFConstantExpression expressionWithInt:[[settings valueForKey:@"brushMode"] intValue]];
 
   NSPoint point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
   NSMutableArray* points = [NSMutableArray arrayWithObject:[IFConstantExpression expressionWithPointNS:point]];
-  [settings setValue:[IFOperatorExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr] forKey:@"drawing"];
+  [settings setValue:[IFExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr] forKey:@"drawing"];
 
   for (;;) {
     NSEvent* event = [[view window] nextEventMatchingMask:NSLeftMouseDraggedMask|NSLeftMouseUpMask];
@@ -78,8 +71,7 @@ IFExpression* paintExpr(IFExpression* brushExpr, NSArray* points)
       case NSLeftMouseDragged: {
         point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
         [points addObject:[IFConstantExpression expressionWithPointNS:point]];
-        [settings setValue:[IFOperatorExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr]
-               forKey:@"drawing"];        
+        [settings setValue:[IFExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr] forKey:@"drawing"];        
       } break;
         
       case NSLeftMouseUp:

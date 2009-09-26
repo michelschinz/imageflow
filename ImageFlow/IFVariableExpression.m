@@ -16,11 +16,6 @@
 
 @implementation IFVariableExpression
 
-+ (id)expressionWithName:(NSString*)theName;
-{
-  return [[[self alloc] initWithName:theName] autorelease];
-}
-
 - (id)initWithName:(NSString*)theName;
 {
   if (![super init])

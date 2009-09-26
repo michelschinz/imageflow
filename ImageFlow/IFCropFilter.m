@@ -8,7 +8,6 @@
 
 #import "IFCropFilter.h"
 
-#import "IFOperatorExpression.h"
 #import "IFEnvironment.h"
 #import "IFAnnotationRect.h"
 #import "IFVariableKVO.h"
@@ -16,9 +15,8 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
+#import "IFPrimitiveExpression.h"
 
 @implementation IFCropFilter
 
@@ -36,10 +34,10 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"crop" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"rectangle"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_Crop operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"rectangle"],
               nil]]];
   } else {
     return [NSArray array];
@@ -68,10 +66,8 @@
 {
   NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: %@", variantName);
   
-  if ([originalExpression isKindOfClass:[IFOperatorExpression class]]
-      && [(IFOperatorExpression*)originalExpression operator]  == [IFOperator operatorForName:@"crop"])
-    return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"crop-overlay"]
-                                               operands:[(IFOperatorExpression*)originalExpression operands]];
+  if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]] && [(IFPrimitiveExpression*)originalExpression tag]  == IFPrimitiveTag_Crop)
+    return [IFPrimitiveExpression primitiveWithTag:IFPrimitiveTag_CropOverlay operandsArray:[(IFPrimitiveExpression*)originalExpression operands]];
   else
     return originalExpression;
 }

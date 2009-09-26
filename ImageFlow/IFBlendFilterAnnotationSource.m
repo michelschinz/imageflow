@@ -9,11 +9,11 @@
 #import "IFDocument.h"
 #import "IFBlendFilterAnnotationSource.h"
 #import "IFExpressionEvaluator.h"
-#import "IFOperatorExpression.h"
+#import "IFPrimitiveExpression.h"
 
 static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
-@interface IFBlendFilterAnnotationSource (Private)
+@interface IFBlendFilterAnnotationSource ()
 - (NSRect)foregroundExtent;
 - (NSRect)rect;
 @end
@@ -56,26 +56,24 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   [super setValue:[NSValue valueWithRect:[self rect]]];
 }
 
-@end
-
-@implementation IFBlendFilterAnnotationSource (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (NSRect)foregroundExtent;
 {
+  // FIXME: redo now that there are lambdas here...
   IFExpression* expression = [node expression];
-  if (![expression isKindOfClass:[IFOperatorExpression class]])
+  if (![expression isKindOfClass:[IFPrimitiveExpression class]])
     return NSZeroRect;
   
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  IFOperatorExpression* blendExpression = (IFOperatorExpression*)expression;
-  NSAssert([blendExpression isKindOfClass:[IFOperatorExpression class]]
-           && [blendExpression operator]  == [IFOperator operatorForName:@"blend"], @"unexpected operator");
-    
-  IFOperatorExpression* translateExpression = (IFOperatorExpression*)[[blendExpression operands] objectAtIndex:1];
-  NSAssert([translateExpression isKindOfClass:[IFOperatorExpression class]]
-           && [translateExpression operator]  == [IFOperator operatorForName:@"translate"], @"unexpected operator");
-    
-  IFConstantExpression* evaluatedExtent = [evaluator evaluateExpression:[IFOperatorExpression extentOf:[[translateExpression operands] objectAtIndex:0]]];
+  IFPrimitiveExpression* blendExpression = (IFPrimitiveExpression*)expression;
+  NSAssert([blendExpression isKindOfClass:[IFPrimitiveExpression class]] && blendExpression.tag == IFPrimitiveTag_Blend, @"unexpected operator");
+
+  IFPrimitiveExpression* translateExpression = (IFPrimitiveExpression*)[[blendExpression operands] objectAtIndex:1];
+  NSAssert([translateExpression isKindOfClass:[IFPrimitiveExpression class]] && translateExpression.tag  == IFPrimitiveTag_Translate, @"unexpected operator");
+
+  IFConstantExpression* evaluatedExtent = [evaluator evaluateExpression:[IFExpression extentOf:[[translateExpression operands] objectAtIndex:0]]];
   
   return [evaluatedExtent isError] ? NSZeroRect : [evaluatedExtent rectValueNS];
 }

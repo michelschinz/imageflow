@@ -10,8 +10,8 @@
 
 #import <caml/mlvalues.h>
 
-#import "IFOperator.h"
 #import "IFEnvironment.h"
+#import "IFExpressionTags.h"
 
 @class IFExpressionVisitor;
 
@@ -20,15 +20,35 @@
   value camlRepresentation;
 }
 
-- (void)accept:(IFExpressionVisitor*)visitor;
-
-- (NSUInteger)hash;
-- (BOOL)isEqualAtRoot:(id)other;
-- (BOOL)isEqual:(id)other;
-
 + (id)expressionWithXML:(NSXMLElement*)xmlTree;
-- (NSXMLElement*)asXML;
 
+// MARK: Constructors
+
++ (IFExpression*)fail;
++ (IFExpression*)extentOf:(IFExpression*)imageExpr;
++ (IFExpression*)resample:(IFExpression*)imageExpr by:(float)scale;
++ (IFExpression*)translate:(IFExpression*)expression byX:(float)x Y:(float)y;
++ (IFExpression*)crop:(IFExpression*)expression along:(NSRect)rectangle;
++ (IFExpression*)blendBackground:(IFExpression*)background withForeground:(IFExpression*)foreground inMode:(IFExpression*)mode;
++ (IFExpression*)histogramOf:(IFExpression*)imageExpr;
++ (IFExpression*)checkerboardCenteredAt:(NSPoint)center color0:(NSColor*)color0 color1:(NSColor*)color1 width:(float)width sharpness:(float)sharpness;
++ (IFExpression*)maskToImage:(IFExpression*)maskExpression;
++ (IFExpression*)arrayGet:(IFExpression*)arrayExpression index:(unsigned)index;
+
++ (IFExpression*)lambdaWithBody:(IFExpression*)body;
++ (IFExpression*)mapWithFunction:(IFExpression*)theFunction array:(IFExpression*)theArray;
++ (IFExpression*)applyWithFunction:(IFExpression*)theFunction argument:(IFExpression*)theArgument;
++ (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operand:(IFExpression*)theOperand;
++ (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operands:(IFExpression*)firstOperand, ...;
++ (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operandsArray:(NSArray*)theOperands;
++ (IFExpression*)variableWithName:(NSString*)theName;
++ (IFExpression*)argumentWithIndex:(unsigned)theIndex;
+// TODO: constant expressions
+
+@property(readonly) NSUInteger hash;
+
+- (void)accept:(IFExpressionVisitor*)visitor;
+- (NSXMLElement*)asXML;
 - (value)asCaml;
 
 // MARK: -

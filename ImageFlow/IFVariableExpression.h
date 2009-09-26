@@ -14,7 +14,6 @@
   NSString* name;
 }
 
-+ (id)expressionWithName:(NSString*)theName;
 - (id)initWithName:(NSString*)theName;
 
 @property(readonly) NSString* name;

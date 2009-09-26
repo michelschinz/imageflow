@@ -8,19 +8,20 @@
  */
 
 // Warning:
-// - those tags must match the ones in ocaml/evaluator/expr.mli
+// - the following tags must match the ones in ocaml/evaluator/expr.mli
 // - constructors with and without arguments must be enumerated
 //   separately
 
 // Constructors with arguments
 typedef enum {
-  IFExpressionTag_Op,
+  IFExpressionTag_Lambda,
+  IFExpressionTag_Map,
+  IFExpressionTag_Apply,
+  IFExpressionTag_Prim,
   IFExpressionTag_Var,
   IFExpressionTag_Arg,
-  IFExpressionTag_Array,
-  IFExpressionTag_Lambda,
-  IFExpressionTag_Let,
   IFExpressionTag_Closure,
+  IFExpressionTag_Array,
   IFExpressionTag_Image,
   IFExpressionTag_Mask,
   IFExpressionTag_Color,
@@ -32,5 +33,55 @@ typedef enum {
   IFExpressionTag_Int,
   IFExpressionTag_Bool,
   IFExpressionTag_Action,
-  IFExpressionTag_Error
+  IFExpressionTag_Error,
 } IFExpressionTag;
+
+// Warning:
+// - the following tags must match the ones in ocaml/evaluator/primitives.mli
+
+typedef enum {
+  IFPrimitiveTag_ArrayCreate,
+  IFPrimitiveTag_ArrayGet,
+  IFPrimitiveTag_Average,
+  IFPrimitiveTag_Blend,
+  IFPrimitiveTag_ChannelToMask,
+  IFPrimitiveTag_Checkerboard,
+  IFPrimitiveTag_Circle,
+  IFPrimitiveTag_ColorControls,
+  IFPrimitiveTag_ConstantColor,
+  IFPrimitiveTag_Crop,
+  IFPrimitiveTag_CropOverlay,
+  IFPrimitiveTag_Div,
+  IFPrimitiveTag_Empty,
+  IFPrimitiveTag_Extent,
+  IFPrimitiveTag_Fail,
+  IFPrimitiveTag_FileExtent,
+  IFPrimitiveTag_GaussianBlur,
+  IFPrimitiveTag_HistogramRGB,
+  IFPrimitiveTag_Invert,
+  IFPrimitiveTag_InvertMask,
+  IFPrimitiveTag_Load,
+  IFPrimitiveTag_Mask,
+  IFPrimitiveTag_MaskOverlay,
+  IFPrimitiveTag_MaskToImage,
+  IFPrimitiveTag_Mul,
+  IFPrimitiveTag_Opacity,
+  IFPrimitiveTag_Paint,
+  IFPrimitiveTag_PaintExtent,
+  IFPrimitiveTag_PointMul,
+  IFPrimitiveTag_Print,
+  IFPrimitiveTag_RectIntersection,
+  IFPrimitiveTag_RectMul,
+  IFPrimitiveTag_RectOutset,
+  IFPrimitiveTag_RectScale,
+  IFPrimitiveTag_RectTranslate,
+  IFPrimitiveTag_RectUnion,
+  IFPrimitiveTag_RectangularWindow,
+  IFPrimitiveTag_Resample,
+  IFPrimitiveTag_Save,
+  IFPrimitiveTag_SingleColor,
+  IFPrimitiveTag_Threshold,
+  IFPrimitiveTag_ThresholdMask,
+  IFPrimitiveTag_Translate,
+  IFPrimitiveTag_UnsharpMask,
+} IFPrimitiveTag;

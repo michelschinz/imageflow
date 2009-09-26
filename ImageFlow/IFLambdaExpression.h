@@ -15,7 +15,6 @@
   NSUInteger hash;
 }
 
-+ (IFLambdaExpression*)lambdaExpressionWithBody:(IFExpression*)theBody;
 - (IFLambdaExpression*)initWithBody:(IFExpression*)theBody;
 
 @property(readonly) IFExpression* body;

@@ -16,11 +16,6 @@
 
 @implementation IFLambdaExpression
 
-+ (IFLambdaExpression*)lambdaExpressionWithBody:(IFExpression*)theBody;
-{
-  return [[[self alloc] initWithBody:theBody] autorelease];
-}
-
 - (IFLambdaExpression*)initWithBody:(IFExpression*)theBody;
 {
   if (![super init])
@@ -48,9 +43,11 @@
   return [other isKindOfClass:[IFLambdaExpression class]] && [self.body isEqual:((IFLambdaExpression*)other).body];
 }
 
-- (NSUInteger)hash;
+@synthesize hash;
+
+- (NSString*)description;
 {
-  return hash;
+  return [NSString stringWithFormat:@"\\.%@", body];
 }
 
 // MARK: XML input/output

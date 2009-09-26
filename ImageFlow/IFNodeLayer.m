@@ -7,7 +7,6 @@
 //
 
 #import "IFNodeLayer.h"
-#import "IFOperatorExpression.h"
 #import "IFErrorConstantExpression.h"
 #import "IFImageOrMaskLayer.h"
 #import "IFStackLayer.h"

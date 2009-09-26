@@ -9,7 +9,7 @@
 #import "IFUniversalSource.h"
 #import "IFImageType.h"
 #import "IFArrayType.h"
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 
 static NSArray* sourceFileNames;
 
@@ -51,17 +51,14 @@ static NSArray* sourceFileNames;
     unsigned fileNameIndex = [[settings valueForKey:@"index"] unsignedIntValue];
     NSString* fileName = [sourceFileNames objectAtIndex:(fileNameIndex % [sourceFileNames count])];
   
-    IFExpression* rgbaImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"load" operands:
-                                         [IFConstantExpression expressionWithString:fileName],
-                                         nil];
-    
-    IFExpression* maskImageExpression = [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];
+    IFExpression* rgbaImageExpression = [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFConstantExpression expressionWithString:fileName]];
+    IFExpression* maskImageExpression = [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];
     
     return [NSArray arrayWithObjects:
             rgbaImageExpression,
             maskImageExpression,
-            [IFOperatorExpression expressionWithOperatorNamed:@"array" operands:rgbaImageExpression, rgbaImageExpression, nil],
-            [IFOperatorExpression expressionWithOperatorNamed:@"array" operands:maskImageExpression, maskImageExpression, nil],
+            [IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operands:rgbaImageExpression, rgbaImageExpression, nil],
+            [IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operands:maskImageExpression, maskImageExpression, nil],
             nil];
   } else
     return [NSArray array];

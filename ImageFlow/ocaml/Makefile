@@ -38,6 +38,7 @@ CAML_SORTED_OBJS += evaluator/coreimage.cmo
 CAML_SORTED_OBJS += evaluator/operators/load.cmo
 CAML_SORTED_OBJS += evaluator/operators/save.cmo
 CAML_SORTED_OBJS += evaluator/operators/paint.cmo
+CAML_SORTED_OBJS += evaluator/primitives.cmo
 CAML_SORTED_OBJS += evaluator/expr.cmo
 CAML_SORTED_OBJS += evaluator/type.cmo
 CAML_SORTED_OBJS += evaluator/typechecker.cmo

@@ -12,10 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFUnsharpMaskFilter
 
@@ -33,11 +30,11 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"unsharp-mask" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"intensity"],
-              [IFVariableExpression expressionWithName:@"radius"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_UnsharpMask operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"intensity"],
+              [IFExpression variableWithName:@"radius"],
               nil]]];
   } else {
     return [NSArray array];

@@ -9,7 +9,7 @@
 #import "IFImageOrErrorViewController.h"
 
 #import "IFErrorConstantExpression.h"
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 #import "NSAffineTransformIFAdditions.h"
 #import "IFImageType.h"
 #import "IFBlendMode.h"
@@ -218,7 +218,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [imageView setVisibleBounds:realCanvasBounds];
   
   // FIXME: should avoid this, to prevent redrawing of the whole image!
-  self.displayedExpression = [IFOperatorExpression fail];
+  self.displayedExpression = [IFExpression fail];
   [self updateExpression];
 }
 
@@ -239,17 +239,17 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
       }
       
       if ([exprType isImageRGBAType]) {
-        IFExpression* backgroundExpr = [IFOperatorExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0];
-        expr = [IFOperatorExpression blendBackground:backgroundExpr withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+        IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0];
+        expr = [IFExpression blendBackground:backgroundExpr withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
       } else {
         NSAssert([exprType isMaskType], @"unexpected expr. type");
-        expr = [IFOperatorExpression maskToImage:expr];
+        expr = [IFExpression maskToImage:expr];
       }
       self.displayedExpression = expr;
     } else
-      self.displayedExpression = [IFOperatorExpression fail];
+      self.displayedExpression = [IFExpression fail];
   } else
-    self.displayedExpression = [IFOperatorExpression fail];
+    self.displayedExpression = [IFExpression fail];
 }
 
 - (void)updateAnnotations;

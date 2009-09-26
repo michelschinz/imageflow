@@ -12,10 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFLambdaExpression.h"
-#import "IFArgumentExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFInvertFilter
 
@@ -36,8 +33,8 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObjects:
-            [IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"invert" operands:[IFArgumentExpression argumentExpressionWithIndex:0],nil]],
-            [IFLambdaExpression lambdaExpressionWithBody:[IFOperatorExpression expressionWithOperatorNamed:@"invert-mask" operands:[IFArgumentExpression argumentExpressionWithIndex:0],nil]],
+            [IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_Invert operand:[IFExpression argumentWithIndex:0]]],
+            [IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_InvertMask operand:[IFExpression argumentWithIndex:0]]],
             nil];
   } else {
     return [NSArray array];

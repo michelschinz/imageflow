@@ -1,16 +1,19 @@
 (* Warning: any change to the type below must be mirrored in file *)
 (* ../../IFExpressionTags.h *)
 
-type action_kind = Save | Print
+type action_kind = ASave | APrint
 
 type t =
-    Op of string * t array
+    (* "real" expressions (non-values) *)
+  | Lambda of t
+  | Map of t * t
+  | Apply of t * t
+  | Prim of Primitives.t * t array
   | Var of string
   | Arg of int
-  | Array of t array
-  | Lambda of t
-  | Let of string * t * t
+    (* values *)
   | Closure of (t list) * t
+  | Array of t array
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t

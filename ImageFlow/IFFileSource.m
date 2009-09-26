@@ -12,8 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFOperatorExpression.h"
-#import "IFVariableExpression.h"
+#import "IFExpression.h"
 
 @implementation IFFileSource
 
@@ -27,15 +26,12 @@
 
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
-  static NSArray* exprs = nil;
-  if (exprs == nil) {
-    exprs = [[NSArray arrayWithObject:
-      [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"load"]
-                                          operands:[NSArray arrayWithObjects:
-                                            [IFVariableExpression expressionWithName:@"fileName"],
-                                            nil]]] retain];
+  if (arity == 0) {
+    return [NSArray arrayWithObject:
+            [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFExpression variableWithName:@"fileName"]]];
+  } else {
+    return [NSArray array];
   }
-  return (arity == 0) ? exprs : [NSArray array];
 }
 
 - (NSString*)computeLabel;

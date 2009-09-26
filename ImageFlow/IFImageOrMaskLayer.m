@@ -7,7 +7,7 @@
 //
 
 #import "IFImageOrMaskLayer.h"
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 #import "IFExpressionEvaluator.h"
 
 @implementation IFImageOrMaskLayer
@@ -74,7 +74,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   const IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   const NSRect canvasBounds = ((NSValue*)canvasBoundsVar.value).rectValue;
   const float scaling = CGRectGetWidth(self.bounds) / NSWidth(canvasBounds);
-  const IFImageConstantExpression* imageExpression = (IFImageConstantExpression*)[evaluator evaluateExpression:[IFOperatorExpression resample:[IFOperatorExpression crop:[evaluator evaluateExpressionAsImage:expression] along:canvasBounds] by:scaling]];
+  const IFImageConstantExpression* imageExpression = (IFImageConstantExpression*)[evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:[evaluator evaluateExpressionAsImage:expression] along:canvasBounds] by:scaling]];
   CIImage* image = [imageExpression imageValueCI];
   
   CIContext* ciContext = [CIContext contextWithCGContext:ctx options:[NSDictionary dictionary]]; // TODO: working color space

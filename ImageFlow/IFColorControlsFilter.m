@@ -12,10 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFColorControlsFilter
 
@@ -33,12 +30,12 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"color-controls" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"contrast"],
-              [IFVariableExpression expressionWithName:@"brightness"],
-              [IFVariableExpression expressionWithName:@"saturation"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_ColorControls operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"contrast"],
+              [IFExpression variableWithName:@"brightness"],
+              [IFExpression variableWithName:@"saturation"],
               nil]]];
   } else {
     return [NSArray array];

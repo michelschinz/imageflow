@@ -12,9 +12,7 @@
 #import "IFFunType.h"
 #import "IFArrayType.h"
 #import "IFTypeVar.h"
-#import "IFOperatorExpression.h"
-#import "IFArgumentExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFAverageFilter
 
@@ -31,9 +29,8 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"average"]
-                                                 operands:[NSArray arrayWithObject:[IFArgumentExpression argumentExpressionWithIndex:0]]]]];
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_Average operand:[IFExpression argumentWithIndex:0]]]];
   } else {
     return [NSArray array];
   }

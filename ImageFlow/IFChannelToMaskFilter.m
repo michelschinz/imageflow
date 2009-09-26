@@ -12,10 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFChannelToMaskFilter
 
@@ -33,10 +30,10 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"channel-to-mask" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"channel"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"channel"],
               nil]]];
   } else {
     return [NSArray array];

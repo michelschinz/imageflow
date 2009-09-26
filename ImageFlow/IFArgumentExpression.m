@@ -17,11 +17,6 @@
 
 @implementation IFArgumentExpression
 
-+ (IFArgumentExpression*)argumentExpressionWithIndex:(unsigned)theIndex;
-{
-  return [[(IFArgumentExpression*)[self alloc] initWithIndex:theIndex] autorelease];
-}
-
 - (IFArgumentExpression*)initWithIndex:(unsigned)theIndex;
 {
   if (![super init])

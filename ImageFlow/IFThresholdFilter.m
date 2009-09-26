@@ -12,10 +12,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFThresholdFilter
 
@@ -36,15 +33,15 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObjects:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"threshold" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"threshold"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_Threshold operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"threshold"],
               nil]],
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"threshold-mask" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"threshold"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_ThresholdMask operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"threshold"],
               nil]],
             nil];
   } else {

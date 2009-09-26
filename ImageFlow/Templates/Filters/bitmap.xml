@@ -7,7 +7,7 @@
       <name>IFBitmapDrawingSource</name>
       <settings>
         <key>drawing</key>
-        <expression>&lt;operation name="empty"/&gt;</expression>
+        <expression>&lt;primitive name="empty"/&gt;</expression>
         <key>defaultColor</key>
         <color>0 0 0 0</color>
         <key>brushShape</key>

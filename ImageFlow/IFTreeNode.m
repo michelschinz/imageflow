@@ -8,7 +8,6 @@
 
 #import "IFTreeNode.h"
 #import "IFTreeNodeFilter.h"
-#import "IFExpressionPlugger.h"
 #import "IFType.h"
 
 @interface IFTreeNode ()

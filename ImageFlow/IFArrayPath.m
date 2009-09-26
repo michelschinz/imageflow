@@ -8,7 +8,7 @@
 
 #import "IFArrayPath.h"
 
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 #import "IFArrayType.h"
 
 @interface IFArrayPath ()
@@ -73,7 +73,7 @@ static IFArrayPath* emptyPath = nil;
   if (self.isEmpty)
     return arrayExpression;
   else
-    return [IFOperatorExpression arrayGet:[next accessorExpressionFor:arrayExpression] index:index];
+    return [IFExpression arrayGet:[next accessorExpressionFor:arrayExpression] index:index];
 }
 
 - (NSUInteger)hash;

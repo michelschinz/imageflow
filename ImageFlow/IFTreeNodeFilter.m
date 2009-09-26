@@ -81,7 +81,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   IFExpression* expr = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressionsForArity:arity] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
   for (unsigned i = 0; i < arity; ++i) {
     IFExpression* parentExpr = [altParentExpressions objectForKey:[NSNumber numberWithUnsignedInt:i]];
-    expr = [IFOperatorExpression expressionWithOperatorNamed:@"apply" operands:expr, parentExpr, nil];
+    expr = [IFExpression applyWithFunction:expr argument:parentExpr];
   }
   return expr;
 }

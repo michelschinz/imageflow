@@ -8,7 +8,7 @@
 
 #import "IFHistogramInspectorWindowController.h"
 #import "IFHistogramConstantExpression.h"
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 
 @interface IFHistogramInspectorWindowController (Private)
 - (void)updateHistogram;
@@ -59,7 +59,7 @@
   IFTreeNode* node = nil; //TODO [[probe mark] node];
   NSArray* histogramRGB = nil;
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFOperatorExpression histogramOf:[node expression]]];
+  IFConstantExpression* evaluatedExpr = [evaluator evaluateExpression:[IFExpression histogramOf:[node expression]]];
   if (node != nil && ![evaluatedExpr isError]) {
     IFHistogramConstantExpression* histogram = (IFHistogramConstantExpression*)evaluatedExpr;
     histogramRGB = [histogram histogramValue];

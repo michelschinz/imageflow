@@ -1,4 +1,5 @@
 open Expr
+open Primitives
 
 let eval cache expr =
   try
@@ -8,7 +9,7 @@ let eval cache expr =
       e
 
 let eval_extent cache expr =
-  match eval cache (Op("extent", [|expr|])) with
+  match eval cache (Prim(Extent, [|expr|])) with
     Rect extent ->
       Some extent
   | Error _ ->
@@ -17,7 +18,7 @@ let eval_extent cache expr =
       failwith ("unexpected result from evaluator: "^(Printer.to_string(o)))
 
 let eval_as_image =
-  let background = Op("checkerboard", [| Point Point.zero;
+  let background = Prim(Checkerboard, [| Point Point.zero;
                                          Color (Color.make 1. 1. 1. 1.);
                                          Color (Color.make 0.8 0.8 0.8 1.);
                                          Num 40.0;
@@ -25,11 +26,11 @@ let eval_as_image =
   in fun cache expr ->
     match eval cache expr with
       Mask _ as mask ->
-        eval cache (Op("mask-to-image", [| mask |]))
+        eval cache (Prim(MaskToImage, [| mask |]))
     | Image _ as image ->
         eval
           cache
-          (Op("blend", [| background;
+          (Prim(Blend, [| background;
                           image;
                           Int (Blendmode.to_int Blendmode.SourceOver) |]))
     | Error _ as error ->
@@ -46,7 +47,7 @@ let eval_as_masked_image =
       Image _ as image ->
         eval
           cache
-          (Op("rectangular-window",
+          (Prim(RectangularWindow,
               [| image;
                  Color mask_color;
                  Rect mask_cutout_bounds;

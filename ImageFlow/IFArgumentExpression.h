@@ -14,7 +14,6 @@
   unsigned index;
 }
 
-+ (IFArgumentExpression*)argumentExpressionWithIndex:(unsigned)index;
 - (IFArgumentExpression*)initWithIndex:(unsigned)index;
 
 @property(readonly) unsigned index;

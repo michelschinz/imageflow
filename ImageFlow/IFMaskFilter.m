@@ -9,14 +9,12 @@
 #import "IFMaskFilter.h"
 
 #import "IFExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFEnvironment.h"
 #import "IFConstantExpression.h"
+#import "IFPrimitiveExpression.h"
+#import "IFEnvironment.h"
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFLambdaExpression.h"
 
 @implementation IFMaskFilter
 
@@ -48,11 +46,11 @@ static IFConstantExpression* maskColor = nil;
 {
   if (arity == 2) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFLambdaExpression lambdaExpressionWithBody:
-              [IFOperatorExpression expressionWithOperatorNamed:@"mask" operands:
-               [IFArgumentExpression argumentExpressionWithIndex:1],
-               [IFArgumentExpression argumentExpressionWithIndex:0],
+            [IFExpression lambdaWithBody:
+             [IFExpression lambdaWithBody:
+              [IFExpression primitiveWithTag:IFPrimitiveTag_Mask operands:
+               [IFExpression argumentWithIndex:1],
+               [IFExpression argumentWithIndex:0],
                nil]]]];
   } else {
     return [NSArray array];
@@ -88,11 +86,10 @@ static IFConstantExpression* maskColor = nil;
 {
   NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: <%@>", variantName);
   
-  if ([originalExpression isKindOfClass:[IFOperatorExpression class]]) {
-    IFOperatorExpression* originalOpExpression = (IFOperatorExpression*)originalExpression;
-    NSAssert([originalOpExpression operator]  == [IFOperator operatorForName:@"mask"], @"unexpected operator");
-    return [IFOperatorExpression expressionWithOperator:[IFOperator operatorForName:@"mask-overlay"]
-                                               operands:[[originalOpExpression operands] arrayByAddingObject:maskColor]];
+  if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]]) {
+    IFPrimitiveExpression* originalOpExpression = (IFPrimitiveExpression*)originalExpression;
+    NSAssert([originalOpExpression tag]  == IFPrimitiveTag_Mask, @"unexpected operator");
+    return [IFExpression primitiveWithTag:IFPrimitiveTag_MaskOverlay operandsArray:[[originalOpExpression operands] arrayByAddingObject:maskColor]];
   } else
     return originalExpression;
 }

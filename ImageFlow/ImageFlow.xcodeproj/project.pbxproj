@@ -95,7 +95,6 @@
 		FA68E17A092E04EF009D02CB /* Portrait.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA68E176092E04EF009D02CB /* Portrait.tiff */; };
 		FA68E17B092E04EF009D02CB /* ReverseLandscape.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA68E177092E04EF009D02CB /* ReverseLandscape.tiff */; };
 		FA690ACD0905256F0096B97D /* IFExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA690ACB0905256F0096B97D /* IFExpression.m */; };
-		FA690AE3090573250096B97D /* IFOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA690AE1090573250096B97D /* IFOperator.m */; };
 		FA6BD00C0AAC6909008B390A /* image_inspector_layout_single.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA6BD00B0AAC6909008B390A /* image_inspector_layout_single.tiff */; };
 		FA6BD0120AAC6B13008B390A /* image_inspector_layout_dual.tiff in Resources */ = {isa = PBXBuildFile; fileRef = FA6BD0110AAC6B13008B390A /* image_inspector_layout_dual.tiff */; };
 		FA6E98070AE691590074184E /* IFPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6E98050AE691590074184E /* IFPair.m */; };
@@ -120,6 +119,7 @@
 		FA9924380E140679004BDED9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9924370E140679004BDED9 /* MainMenu.xib */; };
 		FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */; };
 		FA9C6CEE0E1E26F8004A6953 /* IFForestView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C6CED0E1E26F8004A6953 /* IFForestView.m */; };
+		FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */; };
 		FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E241E0B03ADE3001EC346 /* alias_arrow.png */; };
 		FA9E24590B03B10F001EC346 /* locked_view.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E24580B03B10F001EC346 /* locked_view.png */; };
 		FA9EEF790E8965A000328B8E /* IFPaletteLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EEF780E8965A000328B8E /* IFPaletteLayoutManager.m */; };
@@ -138,6 +138,8 @@
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
 		FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */; };
+		FABF45CA106E33FF00CE58BC /* IFMapExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FABF45C9106E33FF00CE58BC /* IFMapExpression.m */; };
+		FABF45DD106E35C900CE58BC /* IFApplyExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FABF45DC106E35C900CE58BC /* IFApplyExpression.m */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
@@ -181,7 +183,6 @@
 		FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF26990AE7947100BD8954 /* mask-invert.cikernel */; };
 		FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */; };
 		FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA81F0906145B00F76B8A /* IFEnvironment.m */; };
-		FAEFA87A09062A9C00F76B8A /* IFOperatorExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA87809062A9C00F76B8A /* IFOperatorExpression.m */; };
 		FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */; };
 		FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */; };
 		FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */; };
@@ -407,8 +408,6 @@
 		FA68E177092E04EF009D02CB /* ReverseLandscape.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ReverseLandscape.tiff; sourceTree = "<group>"; };
 		FA690ACA0905256F0096B97D /* IFExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpression.h; sourceTree = "<group>"; };
 		FA690ACB0905256F0096B97D /* IFExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpression.m; sourceTree = "<group>"; };
-		FA690AE0090573250096B97D /* IFOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFOperator.h; sourceTree = "<group>"; };
-		FA690AE1090573250096B97D /* IFOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFOperator.m; sourceTree = "<group>"; };
 		FA6BD00B0AAC6909008B390A /* image_inspector_layout_single.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = image_inspector_layout_single.tiff; sourceTree = "<group>"; };
 		FA6BD0110AAC6B13008B390A /* image_inspector_layout_dual.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = image_inspector_layout_dual.tiff; sourceTree = "<group>"; };
 		FA6E98040AE691590074184E /* IFPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPair.h; sourceTree = "<group>"; };
@@ -446,6 +445,8 @@
 		FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionContentsLayer.m; sourceTree = "<group>"; };
 		FA9C6CEC0E1E26F8004A6953 /* IFForestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFForestView.h; sourceTree = "<group>"; };
 		FA9C6CED0E1E26F8004A6953 /* IFForestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFForestView.m; sourceTree = "<group>"; };
+		FA9CF9A2106CED89005B4A20 /* IFPrimitiveExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPrimitiveExpression.h; sourceTree = "<group>"; };
+		FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPrimitiveExpression.m; sourceTree = "<group>"; };
 		FA9E241E0B03ADE3001EC346 /* alias_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alias_arrow.png; sourceTree = "<group>"; };
 		FA9E24580B03B10F001EC346 /* locked_view.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locked_view.png; sourceTree = "<group>"; };
 		FA9EEF770E8965A000328B8E /* IFPaletteLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPaletteLayoutManager.h; sourceTree = "<group>"; };
@@ -479,6 +480,10 @@
 		FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSubsetComposites.m; sourceTree = "<group>"; };
 		FABEF09B0EC4510000FAADD5 /* IFLayerGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerGeometry.h; sourceTree = "<group>"; };
 		FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerGeometry.m; sourceTree = "<group>"; };
+		FABF45C8106E33FF00CE58BC /* IFMapExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMapExpression.h; sourceTree = "<group>"; };
+		FABF45C9106E33FF00CE58BC /* IFMapExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMapExpression.m; sourceTree = "<group>"; };
+		FABF45DB106E35C900CE58BC /* IFApplyExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFApplyExpression.h; sourceTree = "<group>"; };
+		FABF45DC106E35C900CE58BC /* IFApplyExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFApplyExpression.m; sourceTree = "<group>"; };
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FACF8C140866AC4D00985FA3 /* IFTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNode.h; sourceTree = "<group>"; };
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
@@ -553,8 +558,6 @@
 		FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-threshold.cikernel"; sourceTree = "<group>"; };
 		FAEFA81E0906145B00F76B8A /* IFEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEnvironment.h; sourceTree = "<group>"; };
 		FAEFA81F0906145B00F76B8A /* IFEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEnvironment.m; sourceTree = "<group>"; };
-		FAEFA87709062A9C00F76B8A /* IFOperatorExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFOperatorExpression.h; sourceTree = "<group>"; };
-		FAEFA87809062A9C00F76B8A /* IFOperatorExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFOperatorExpression.m; sourceTree = "<group>"; };
 		FAEFA87B09062AED00F76B8A /* IFVariableExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariableExpression.h; sourceTree = "<group>"; };
 		FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariableExpression.m; sourceTree = "<group>"; };
 		FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageConstantExpression.h; sourceTree = "<group>"; };
@@ -799,8 +802,12 @@
 				FA690ACB0905256F0096B97D /* IFExpression.m */,
 				FAB65D9C1052EA4900385A80 /* IFLambdaExpression.h */,
 				FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */,
-				FAEFA87709062A9C00F76B8A /* IFOperatorExpression.h */,
-				FAEFA87809062A9C00F76B8A /* IFOperatorExpression.m */,
+				FABF45C8106E33FF00CE58BC /* IFMapExpression.h */,
+				FABF45C9106E33FF00CE58BC /* IFMapExpression.m */,
+				FABF45DB106E35C900CE58BC /* IFApplyExpression.h */,
+				FABF45DC106E35C900CE58BC /* IFApplyExpression.m */,
+				FA9CF9A2106CED89005B4A20 /* IFPrimitiveExpression.h */,
+				FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */,
 				FAEFA87B09062AED00F76B8A /* IFVariableExpression.h */,
 				FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */,
 				FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */,
@@ -813,8 +820,6 @@
 				FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */,
 				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
 				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
-				FA690AE0090573250096B97D /* IFOperator.h */,
-				FA690AE1090573250096B97D /* IFOperator.m */,
 				FA0606210914B1FF002A2527 /* IFExpressionVisitor.h */,
 				FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */,
 				FA0607F509151F8C002A2527 /* IFExpressionPlugger.h */,
@@ -1769,9 +1774,7 @@
 				FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */,
 				FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */,
 				FA690ACD0905256F0096B97D /* IFExpression.m in Sources */,
-				FA690AE3090573250096B97D /* IFOperator.m in Sources */,
 				FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */,
-				FAEFA87A09062A9C00F76B8A /* IFOperatorExpression.m in Sources */,
 				FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */,
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
@@ -1903,6 +1906,9 @@
 				FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */,
 				FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */,
 				FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */,
+				FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */,
+				FABF45CA106E33FF00CE58BC /* IFMapExpression.m in Sources */,
+				FABF45DD106E35C900CE58BC /* IFApplyExpression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

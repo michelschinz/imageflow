@@ -15,7 +15,15 @@
 {
 }
 
-- (void)caseOperatorExpression:(IFOperatorExpression*)expression;
+- (void)caseMapExpression:(IFMapExpression*)expression;
+{
+}
+
+- (void)caseApplyExpression:(IFApplyExpression*)expression;
+{
+}
+
+- (void)casePrimitiveExpression:(IFPrimitiveExpression*)expression;
 {
 }
 

@@ -17,10 +17,7 @@
 #import "IFFunType.h"
 #import "IFBasicType.h"
 #import "IFImageType.h"
-#import "IFArgumentExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFVariableExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFBlendFilter
 
@@ -47,18 +44,17 @@ static NSArray* parentNames = nil;
 - (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
 {
   if (arity == 2) {
-    IFExpression* opFgd = [IFOperatorExpression expressionWithOperatorNamed:@"opacity" operands:
-                           [IFArgumentExpression argumentExpressionWithIndex:0],
-                           [IFVariableExpression expressionWithName:@"alpha"],
+    IFExpression* opFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Opacity operands:
+                           [IFExpression argumentWithIndex:0],
+                           [IFExpression variableWithName:@"alpha"],
                            nil];
-    IFExpression* trOpFgd = [IFOperatorExpression expressionWithOperatorNamed:@"translate" operands:
-                             opFgd,[IFVariableExpression expressionWithName:@"translation"],nil];
+    IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFExpression variableWithName:@"translation"], nil];
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFLambdaExpression lambdaExpressionWithBody:
-              [IFOperatorExpression blendBackground:[IFArgumentExpression argumentExpressionWithIndex:1]
-                                     withForeground:trOpFgd
-                                             inMode:[IFVariableExpression expressionWithName:@"mode"]]]]];
+            [IFExpression lambdaWithBody:
+             [IFExpression lambdaWithBody:
+              [IFExpression blendBackground:[IFExpression argumentWithIndex:1]
+                             withForeground:trOpFgd
+                                     inMode:[IFExpression variableWithName:@"mode"]]]]];
   } else {
     return [NSArray array];
   }

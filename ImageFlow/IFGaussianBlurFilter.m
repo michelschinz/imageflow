@@ -13,10 +13,7 @@
 #import "IFBasicType.h"
 #import "IFImageType.h"
 #import "IFTypeVar.h"
-#import "IFArgumentExpression.h"
-#import "IFVariableExpression.h"
-#import "IFOperatorExpression.h"
-#import "IFLambdaExpression.h"
+#import "IFExpression.h"
 
 @implementation IFGaussianBlurFilter
 
@@ -35,10 +32,10 @@
 {
   if (arity == 1) {
     return [NSArray arrayWithObject:
-            [IFLambdaExpression lambdaExpressionWithBody:
-             [IFOperatorExpression expressionWithOperatorNamed:@"gaussian-blur" operands:
-              [IFArgumentExpression argumentExpressionWithIndex:0],
-              [IFVariableExpression expressionWithName:@"radius"],
+            [IFExpression lambdaWithBody:
+             [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:
+              [IFExpression argumentWithIndex:0],
+              [IFExpression variableWithName:@"radius"],
               nil]]];
   } else {
     return [NSArray array];

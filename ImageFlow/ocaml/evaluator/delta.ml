@@ -1,4 +1,5 @@
 open Expr
+open Primitives
 
 (* TODO: add lambda, map, var *)
 let rec delta cache old_expr new_expr =
@@ -10,58 +11,58 @@ let rec delta cache old_expr new_expr =
   if new_expr = old_expr then
     Rect.zero
   else match old_expr, new_expr with
-    b1, Op("blend",[|b2;f;_|]) when b1 = b2 ->
+    b1, Prim(Blend,[|b2;f;_|]) when b1 = b2 ->
       extent f
-  | Op("paint", [|b1;Array ps1|]), Op("paint", [|b2;Array ps2|])
+  | Prim(Paint, [|b1;Array ps1|]), Prim(Paint, [|b2;Array ps2|])
     when b1 = b2 && Marray.is_prefix ps1 ps2 ->
       let l1 = Array.length ps1 and l2 = Array.length ps2 in
       let new_ps = Array.sub ps2 (l1 - 1) (l2 - l1 + 1) in
-      extent (Op("paint", [|b1; Array new_ps|]))
-  | Op("crop-overlay", [|i1;Rect r1|]), Op("crop-overlay", [|i2;Rect r2|])
+      extent (Prim(Paint, [|b1; Array new_ps|]))
+  | Prim(CropOverlay, [|i1;Rect r1|]), Prim(CropOverlay, [|i2;Rect r2|])
     when i1 = i2 ->
       Rect.union r1 r2
 
         (* Recursing rules*)
-  | Op("blend",[|b1;f1;m1|]), Op("blend",[|b2;f2;m2|]) when f1 = f2 && m1 = m2->
+  | Prim(Blend,[|b1;f1;m1|]), Prim(Blend,[|b2;f2;m2|]) when f1 = f2 && m1 = m2->
       delta cache b1 b2
-  | Op("blend",[|b1;f1;m1|]), Op("blend",[|b2;f2;m2|]) when b1 = b2 && m1 = m2->
+  | Prim(Blend,[|b1;f1;m1|]), Prim(Blend,[|b2;f2;m2|]) when b1 = b2 && m1 = m2->
       delta cache f1 f2
-  | Op("channel-to-mask", [|i1;c1|]), Op("channel-to-mask", [|i2;c2|])
+  | Prim(ChannelToMask, [|i1;c1|]), Prim(ChannelToMask, [|i2;c2|])
     when c1 = c2 ->
       delta cache i1 i2
-  | Op("crop", [|i1;Rect r1|]), Op("crop", [|i2; Rect r2|]) when r1 = r2 ->
+  | Prim(Crop, [|i1;Rect r1|]), Prim(Crop, [|i2; Rect r2|]) when r1 = r2 ->
       Rect.intersection r1 (delta cache i1 i2)
-  | Op("gaussian-blur", [|i1;Num r1|]), Op("gaussian-blur", [|i2; Num r2|])
+  | Prim(GaussianBlur, [|i1;Num r1|]), Prim(GaussianBlur, [|i2; Num r2|])
     when r1 = r2 ->
       Rect.outset (delta cache i1 i2) r1 r1
-  | Op("invert",[|i1|]), Op("invert",[|i2|]) ->
+  | Prim(Invert,[|i1|]), Prim(Invert,[|i2|]) ->
       delta cache i1 i2
-  | Op("invert-mask",[|i1|]), Op("invert-mask",[|i2|]) ->
+  | Prim(InvertMask,[|i1|]), Prim(InvertMask,[|i2|]) ->
       delta cache i1 i2
-  | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when i1 = i2 ->
+  | Prim(PMask,[|i1;m1|]), Prim(PMask,[|i2;m2|]) when i1 = i2 ->
       delta cache m1 m2
-  | Op("mask",[|i1;m1|]), Op("mask",[|i2;m2|]) when m1 = m2 ->
+  | Prim(PMask,[|i1;m1|]), Prim(PMask,[|i2;m2|]) when m1 = m2 ->
       delta cache i1 i2
-  | Op("mask-overlay",[|i1;m1;c1|]), Op("mask-overlay",[|i2;m2;c2|])
+  | Prim(MaskOverlay,[|i1;m1;c1|]), Prim(MaskOverlay,[|i2;m2;c2|])
     when i1 = i2 && c1 = c2 ->
       delta cache m1 m2
-  | Op("mask-overlay",[|i1;m1;c1|]), Op("mask-overlay",[|i2;m2;c2|])
+  | Prim(MaskOverlay,[|i1;m1;c1|]), Prim(MaskOverlay,[|i2;m2;c2|])
     when m1 = m2 && c1 = c2 ->
       delta cache i1 i2
-  | Op("opacity",[|i1;a1|]), Op("opacity",[|i2;a2|]) when a1 = a2 ->
+  | Prim(Opacity,[|i1;a1|]), Prim(Opacity,[|i2;a2|]) when a1 = a2 ->
       delta cache i1 i2
-  | Op("resample",[|i1;Num f1|]), Op("resample",[|i2;Num f2|]) when f1 = f2 ->
+  | Prim(Resample,[|i1;Num f1|]), Prim(Resample,[|i2;Num f2|]) when f1 = f2 ->
       delta cache i1 i2
-  | Op("single-color",[|i1;Color c1|]), Op("single-color",[|i2;Color c2|])
+  | Prim(SingleColor,[|i1;Color c1|]), Prim(SingleColor,[|i2;Color c2|])
     when c1 = c2 ->
       delta cache i1 i2
-  | Op("threshold",[|i1;Num t1|]), Op("threshold",[|i2;Num t2|]) when t1 = t2 ->
+  | Prim(Threshold,[|i1;Num t1|]), Prim(Threshold,[|i2;Num t2|]) when t1 = t2 ->
       delta cache i1 i2
-  | Op("threshold-mask",[|i1;Num t1|]), Op("threshold-mask",[|i2;Num t2|]) when t1 = t2 ->
+  | Prim(ThresholdMask,[|i1;Num t1|]), Prim(ThresholdMask,[|i2;Num t2|]) when t1 = t2 ->
       delta cache i1 i2
-  | Op("translate",[|i1;p1|]), Op("translate",[|i2;p2|]) when p1 = p2 ->
+  | Prim(Translate,[|i1;p1|]), Prim(Translate,[|i2;p2|]) when p1 = p2 ->
       delta cache i1 i2
-  | Op("unsharp-mask",[|i1;Num y1; Num r1|]), Op("unsharp-mask",[|i2;Num y2; Num r2|])
+  | Prim(UnsharpMask,[|i1;Num y1; Num r1|]), Prim(UnsharpMask,[|i2;Num y2; Num r2|])
     when y1 = y2 && r1 = r2 ->
       delta cache i1 i2
   | _, _ ->

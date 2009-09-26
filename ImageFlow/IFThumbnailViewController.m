@@ -8,7 +8,7 @@
 
 #import "IFThumbnailViewController.h"
 
-#import "IFOperatorExpression.h"
+#import "IFExpression.h"
 
 @interface IFThumbnailViewController (Private)
 - (void)updateExpression;
@@ -86,7 +86,7 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
   IFExpression* expr = cursors.node.expression;
   [self setExpression:(expr == nil
                        ? nil
-                       : [IFOperatorExpression resample:expr by:(1.0/thumbnailFactor)])];  
+                       : [IFExpression resample:expr by:(1.0/thumbnailFactor)])];  
 }
 
 // TODO
