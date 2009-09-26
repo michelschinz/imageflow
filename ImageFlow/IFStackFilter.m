@@ -9,24 +9,21 @@
 #import "IFStackFilter.h"
 
 #import "IFType.h"
-#import "IFTypeVar.h"
-#import "IFArrayType.h"
-#import "IFFunType.h"
 #import "IFExpression.h"
 
 @implementation IFStackFilter
 
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
-  IFTypeVar* typeVar = [IFTypeVar typeVar];
-  IFType* retType = [IFArrayType arrayTypeWithContentType:typeVar];
+  IFType* typeVar = [IFType typeVariable];
+  IFType* retType = [IFType arrayTypeWithContentType:typeVar];
   if (arity == 0)
     return [NSArray arrayWithObject:retType];
   else {
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
     for (int i = 0; i < arity; ++i)
       [argTypes addObject:typeVar];
-    return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:retType]];
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentTypes:argTypes returnType:retType]];
   }
 }
 

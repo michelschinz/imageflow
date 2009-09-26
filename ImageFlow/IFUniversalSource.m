@@ -7,8 +7,7 @@
 //
 
 #import "IFUniversalSource.h"
-#import "IFImageType.h"
-#import "IFArrayType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 static NSArray* sourceFileNames;
@@ -35,10 +34,10 @@ static NSArray* sourceFileNames;
 {
   if (arity == 0)
     return [NSArray arrayWithObjects:
-            [IFImageType imageRGBAType],
-            [IFImageType maskType],
-            [IFArrayType arrayTypeWithContentType:[IFImageType imageRGBAType]],
-            [IFArrayType arrayTypeWithContentType:[IFImageType maskType]],
+            [IFType imageRGBAType],
+            [IFType maskType],
+            [IFType arrayTypeWithContentType:[IFType imageRGBAType]],
+            [IFType arrayTypeWithContentType:[IFType maskType]],
             nil];
   else
     return [NSArray array];

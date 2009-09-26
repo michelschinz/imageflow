@@ -11,9 +11,7 @@
 #import "IFEnvironment.h"
 #import "IFPair.h"
 #import "IFBlendMode.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 #import "IFConstantExpression.h"
 #import "IFImageView.h"
@@ -23,7 +21,7 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 0)
-    return [NSArray arrayWithObject:[IFImageType imageRGBAType]];
+    return [NSArray arrayWithObject:[IFType imageRGBAType]];
   else
     return [NSArray array];
 }

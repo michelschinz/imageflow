@@ -11,7 +11,6 @@
 #import "IFErrorConstantExpression.h"
 #import "IFExpression.h"
 #import "NSAffineTransformIFAdditions.h"
-#import "IFImageType.h"
 #import "IFBlendMode.h"
 #import "IFArrayPath.h"
 

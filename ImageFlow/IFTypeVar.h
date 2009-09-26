@@ -14,6 +14,6 @@
   int index;
 }
 
-+ (id)typeVar;
++ (IFTypeVar*)typeVariable;
 
 @end

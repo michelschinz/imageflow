@@ -8,9 +8,7 @@
 
 #import "IFFileSink.h"
 #import "IFDocument.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFFileSink
@@ -19,8 +17,8 @@
 {
   if (arity == 1)
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                                     returnType:[IFBasicType actionType]]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
+                                  returnType:[IFType actionType]]];
   else
     return [NSArray array];
 }

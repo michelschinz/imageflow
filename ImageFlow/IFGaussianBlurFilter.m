@@ -9,10 +9,7 @@
 #import "IFGaussianBlurFilter.h"
 
 #import "IFEnvironment.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
-#import "IFTypeVar.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFGaussianBlurFilter
@@ -20,10 +17,10 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 1) {
-    IFImageType* imageType = [IFImageType imageTypeWithPixelType:[IFTypeVar typeVar]];
+    IFType* imageType = [IFType imageTypeWithPixelType:[IFType typeVariable]];
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
-                                     returnType:imageType]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
+                                  returnType:imageType]];
   } else
     return [NSArray array];
 }

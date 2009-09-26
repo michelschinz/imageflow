@@ -15,6 +15,25 @@
   value camlRepresentation;
 }
 
++ (IFType*)colorRGBAType;
++ (IFType*)rectType;
++ (IFType*)sizeType;
++ (IFType*)pointType;
++ (IFType*)stringType;
++ (IFType*)floatType;
++ (IFType*)intType;
++ (IFType*)boolType;
++ (IFType*)actionType;
++ (IFType*)errorType;
+
++ (id)typeVariable;
++ (id)funTypeWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
++ (id)arrayTypeWithContentType:(IFType*)theContentType;
+
++ (id)imageRGBAType;
++ (id)maskType;
++ (id)imageTypeWithPixelType:(IFType*)thePixelType;
+
 + (id)typeWithCamlType:(value)camlType;
 
 @property(readonly) BOOL isArrayType;

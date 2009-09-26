@@ -9,8 +9,7 @@
 #import "IFGhostFilter.h"
 
 #import "IFEnvironment.h"
-#import "IFFunType.h"
-#import "IFTypeVar.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFGhostFilter
@@ -23,12 +22,12 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 0)
-    return [NSArray arrayWithObject:[IFTypeVar typeVar]];
+    return [NSArray arrayWithObject:[IFType typeVariable]];
   else {
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
     for (int i = 1; i <= arity; ++i)
-      [argTypes addObject:[IFTypeVar typeVar]];
-    return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:argTypes returnType:[IFTypeVar typeVar]]];
+      [argTypes addObject:[IFType typeVariable]];
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentTypes:argTypes returnType:[IFType typeVariable]]];
   }
 }
 

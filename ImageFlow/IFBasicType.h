@@ -15,19 +15,8 @@
   IFParameterlessTypeTag tag;
 }
 
-+ (IFBasicType*)colorRGBAType;
-+ (IFBasicType*)rectType;
-+ (IFBasicType*)sizeType;
-+ (IFBasicType*)pointType;
-+ (IFBasicType*)stringType;
-+ (IFBasicType*)floatType;
-+ (IFBasicType*)intType;
-+ (IFBasicType*)boolType;
-+ (IFBasicType*)actionType;
-+ (IFBasicType*)errorType;
-
 + (IFBasicType*)basicTypeWithTag:(int)theTag;
 
-- (int)tag;
+@property(readonly) IFParameterlessTypeTag tag;
 
 @end

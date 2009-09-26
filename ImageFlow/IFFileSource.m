@@ -9,9 +9,7 @@
 #import "IFFileSource.h"
 
 #import "IFEnvironment.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFFileSource
@@ -19,7 +17,7 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 0)
-    return [NSArray arrayWithObject:[IFImageType imageRGBAType]];
+    return [NSArray arrayWithObject:[IFType imageRGBAType]];
   else
     return [NSArray array];
 }

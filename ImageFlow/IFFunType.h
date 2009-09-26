@@ -15,7 +15,6 @@
   IFType* returnType;
 }
 
-+ (id)funTypeWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
 - (id)initWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
 
 - (NSArray*)argumentTypes;

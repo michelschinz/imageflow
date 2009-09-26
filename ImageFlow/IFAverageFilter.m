@@ -8,10 +8,7 @@
 
 #import "IFAverageFilter.h"
 
-#import "IFImageType.h"
-#import "IFFunType.h"
-#import "IFArrayType.h"
-#import "IFTypeVar.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFAverageFilter
@@ -19,8 +16,8 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 1) {
-    IFImageType* imageType = [IFImageType imageTypeWithPixelType:[IFTypeVar typeVar]];
-    return [NSArray arrayWithObject:[IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFArrayType arrayTypeWithContentType:imageType]] returnType:imageType]];
+    IFType* imageType = [IFType imageTypeWithPixelType:[IFType typeVariable]];
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType arrayTypeWithContentType:imageType]] returnType:imageType]];
   } else
     return [NSArray array];
 }

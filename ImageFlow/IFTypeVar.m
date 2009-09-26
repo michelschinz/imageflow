@@ -16,13 +16,12 @@
 - (id)initWithIndex:(int)theIndex;
 @end
 
-
 @implementation IFTypeVar
 
-+ (id)typeVar;
++ (IFTypeVar*)typeVariable;
 {
   static int currentIndex = 0;
-  return [[(IFTypeVar*)[self alloc] initWithIndex:currentIndex++] autorelease];
+  return [[(IFTypeVar*)[IFTypeVar alloc] initWithIndex:currentIndex++] autorelease];
 }
 
 - (NSString*)description;

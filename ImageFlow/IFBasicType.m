@@ -41,60 +41,7 @@ static NSArray* types = nil;
   return [types objectAtIndex:theTag];
 }
 
-+ (IFBasicType*)colorRGBAType;
-{
-  return [types objectAtIndex:IFTypeTag_TColor_RGBA];
-}
-
-+ (IFBasicType*)rectType;
-{
-  return [types objectAtIndex:IFTypeTag_TRect];
-}
-
-+ (IFBasicType*)sizeType;
-{
-  return [types objectAtIndex:IFTypeTag_TSize];
-}
-
-+ (IFBasicType*)pointType;
-{
-  return [types objectAtIndex:IFTypeTag_TPoint];
-}
-
-+ (IFBasicType*)stringType;
-{
-  return [types objectAtIndex:IFTypeTag_TString];
-}
-
-+ (IFBasicType*)floatType;
-{
-  return [types objectAtIndex:IFTypeTag_TFloat];
-}
-
-+ (IFBasicType*)intType;
-{
-  return [types objectAtIndex:IFTypeTag_TInt];
-}
-
-+ (IFBasicType*)boolType;
-{
-  return [types objectAtIndex:IFTypeTag_TBool];
-}
-
-+ (IFBasicType*)actionType;
-{
-  return [types objectAtIndex:IFTypeTag_TAction];
-}
-
-+ (IFBasicType*)errorType;
-{
-  return [types objectAtIndex:IFTypeTag_TError];
-}
-
-- (int)tag;
-{
-  return tag;
-}
+@synthesize tag;
 
 - (NSString*)description;
 {

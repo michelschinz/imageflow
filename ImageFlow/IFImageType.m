@@ -7,34 +7,13 @@
 //
 
 #import "IFImageType.h"
-#import "IFBasicType.h"
+#import "IFType.h"
 #import "IFTypeTags.h"
+
 #import <caml/memory.h>
 #import <caml/alloc.h>
 
 @implementation IFImageType
-
-
-+ (id)imageRGBAType;
-{
-  static IFImageType* t = nil;
-  if (t == nil)
-    t = [self imageTypeWithPixelType:[IFBasicType colorRGBAType]];
-  return t;
-}
-
-+ (id)maskType;
-{
-  static IFImageType* t = nil;
-  if (t == nil)
-    t = [self imageTypeWithPixelType:[IFBasicType floatType]];
-  return t;
-}
-
-+ (id)imageTypeWithPixelType:(IFType*)thePixelType;
-{
-  return [[[self alloc] initWithPixelType:thePixelType] autorelease];
-}
 
 - (id)initWithPixelType:(IFType*)thePixelType;
 {
@@ -72,12 +51,12 @@
 
 - (BOOL)isImageRGBAType;
 {
-  return pixelType == [IFBasicType colorRGBAType];
+  return pixelType == [IFType colorRGBAType];
 }
 
 - (BOOL)isMaskType;
 {
-  return pixelType == [IFBasicType floatType];
+  return pixelType == [IFType floatType];
 }
 
 - (unsigned)arity;

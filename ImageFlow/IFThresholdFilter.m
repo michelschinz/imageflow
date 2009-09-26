@@ -9,9 +9,7 @@
 #import "IFThresholdFilter.h"
 
 #import "IFEnvironment.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFThresholdFilter
@@ -20,10 +18,10 @@
 {
   if (arity == 1)
     return [NSArray arrayWithObjects:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                                     returnType:[IFImageType imageRGBAType]],
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType maskType]]
-                                     returnType:[IFImageType maskType]],
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
+                                  returnType:[IFType imageRGBAType]],
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType maskType]]
+                                  returnType:[IFType maskType]],
             nil];
   else
     return [NSArray array];

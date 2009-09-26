@@ -12,9 +12,7 @@
 #import "IFConstantExpression.h"
 #import "IFPrimitiveExpression.h"
 #import "IFEnvironment.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 
 @implementation IFMaskFilter
 
@@ -36,8 +34,8 @@ static IFConstantExpression* maskColor = nil;
 {
   if (arity == 2)
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType maskType],nil]
-                                     returnType:[IFImageType imageRGBAType]]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFType imageRGBAType],[IFType maskType],nil]
+                                  returnType:[IFType imageRGBAType]]];
   else
     return [NSArray array];
 }

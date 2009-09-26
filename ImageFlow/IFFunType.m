@@ -14,11 +14,6 @@
 
 @implementation IFFunType
 
-+ (id)funTypeWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
-{
-  return [[[self alloc] initWithArgumentTypes:theArgTypes returnType:theRetType] autorelease];
-}
-
 - (id)initWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
 {
   if (![super init])

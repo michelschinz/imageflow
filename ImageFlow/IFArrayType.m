@@ -14,11 +14,6 @@
 
 @implementation IFArrayType
 
-+ (id)arrayTypeWithContentType:(IFType*)theContentType;
-{
-  return [[[self alloc] initWithContentType:theContentType] autorelease];
-}
-
 - (id)initWithContentType:(IFType*)theContentType;
 {
   if (![super init])

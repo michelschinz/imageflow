@@ -14,10 +14,6 @@
   IFType* pixelType;
 }
 
-+ (id)imageRGBAType;
-+ (id)maskType;
-
-+ (id)imageTypeWithPixelType:(IFType*)thePixelType;
 - (id)initWithPixelType:(IFType*)thePixelType;
 
 - (IFType*)pixelType;

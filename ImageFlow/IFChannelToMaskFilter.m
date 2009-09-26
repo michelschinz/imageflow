@@ -9,9 +9,7 @@
 #import "IFChannelToMaskFilter.h"
 #import "IFEnvironment.h"
 #import "IFPair.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFChannelToMaskFilter
@@ -20,8 +18,8 @@
 {
   if (arity == 1)
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                                     returnType:[IFImageType maskType]]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
+                                  returnType:[IFType maskType]]];
   else
     return [NSArray array];
 }

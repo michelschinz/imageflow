@@ -12,9 +12,7 @@
 #import "IFAnnotationRect.h"
 #import "IFVariableKVO.h"
 #import "IFTreeNode.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 #import "IFPrimitiveExpression.h"
 
@@ -24,8 +22,8 @@
 {
   if (arity == 1)
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFImageType imageRGBAType]]
-                                     returnType:[IFImageType imageRGBAType]]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
+                                  returnType:[IFType imageRGBAType]]];
   else
     return [NSArray array];
 }

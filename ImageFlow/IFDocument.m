@@ -12,8 +12,6 @@
 #import "IFTreeNodeFilter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
-#import "IFTypeVar.h"
-#import "IFFunType.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>

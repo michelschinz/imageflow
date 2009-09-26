@@ -14,9 +14,7 @@
 #import "IFAnnotationRect.h"
 #import "IFPair.h"
 #import "IFBlendMode.h"
-#import "IFFunType.h"
-#import "IFBasicType.h"
-#import "IFImageType.h"
+#import "IFType.h"
 #import "IFExpression.h"
 
 @implementation IFBlendFilter
@@ -35,8 +33,8 @@ static NSArray* parentNames = nil;
 {
   if (arity == 2)
     return [NSArray arrayWithObject:
-            [IFFunType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFImageType imageRGBAType],[IFImageType imageRGBAType],nil]
-                                     returnType:[IFImageType imageRGBAType]]];
+            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFType imageRGBAType],[IFType imageRGBAType],nil]
+                                  returnType:[IFType imageRGBAType]]];
   else
     return [NSArray array];
 }
