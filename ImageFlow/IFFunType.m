@@ -14,11 +14,11 @@
 
 @implementation IFFunType
 
-- (id)initWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
+- (id)initWithArgumentType:(IFType*)theArgType returnType:(IFType*)theRetType;
 {
   if (![super init])
     return nil;
-  argumentTypes = [theArgTypes retain];
+  argumentType = [theArgType retain];
   returnType = [theRetType retain];
   return self;
 }
@@ -26,60 +26,32 @@
 - (void)dealloc;
 {
   OBJC_RELEASE(returnType);
-  OBJC_RELEASE(argumentTypes);
+  OBJC_RELEASE(argumentType);
   [super dealloc];
 }
 
 - (NSString*)description;
 {
-  return [NSString stringWithFormat:@"(%@)=>%@",[argumentTypes componentsJoinedByString:@","],returnType];
+  return [NSString stringWithFormat:@"%@=>%@",argumentType,returnType];
 }
 
 - (BOOL)isEqual:(id)other;
 {
-  if ([other isKindOfClass:[self class]]) {
-    NSArray* otherArgTypes = [other argumentTypes];
-    if ([otherArgTypes count] != [argumentTypes count])
-      return false;
-    for (int i = 0, count = [argumentTypes count]; i < count; ++i)
-      if (![[argumentTypes objectAtIndex:i] isEqual:[otherArgTypes objectAtIndex:i]])
-        return false;
-    return [returnType isEqual:[other returnType]];
-  } else
-    return false;
+  return ([other isKindOfClass:[self class]]
+          && [argumentType isEqual:[other argumentType]]
+          && [returnType isEqual:[other returnType]]);
 }
 
 - (NSUInteger)hash;
 {
-  NSUInteger hash = 7;
-  for (int i = 0, count = [argumentTypes count]; i < count; ++i)
-    hash = hash * 1973 + [[argumentTypes objectAtIndex:i] hash];
-  hash ^= [returnType hash];
-  return hash;
+  return [argumentType hash] ^ [returnType hash];
 }
 
-- (NSArray*)argumentTypes;
-{
-  return argumentTypes;
-}
-
-- (IFType*)returnType;
-{
-  return returnType;
-}
-
-- (unsigned)arity;
-{
-  return [argumentTypes count];
-}
+@synthesize argumentType, returnType;
 
 - (IFType*)resultType;
 {
   return returnType;
-}
-
-static value elemAsCaml(const char* elem) {
-  return [(IFType*)elem asCaml];
 }
 
 // MARK: -
@@ -90,10 +62,7 @@ static value elemAsCaml(const char* elem) {
   CAMLparam0();
   CAMLlocal1(block);
   block = caml_alloc(2, IFTypeTag_TFun);
-  IFType** cArray = malloc(([argumentTypes count] + 1) * sizeof(IFType*));
-  [argumentTypes getObjects:cArray];
-  cArray[[argumentTypes count]] = NULL;
-  Store_field(block, 0, caml_alloc_array(elemAsCaml, (char const**)cArray));
+  Store_field(block, 0, [argumentType asCaml]);
   Store_field(block, 1, [returnType asCaml]);
   CAMLreturn(block);
 }

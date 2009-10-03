@@ -25,9 +25,10 @@
     return [NSArray arrayWithObject:[IFType typeVariable]];
   else {
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
-    for (int i = 1; i <= arity; ++i)
+    for (int i = 0; i < arity; ++i)
       [argTypes addObject:[IFType typeVariable]];
-    return [NSArray arrayWithObject:[IFType funTypeWithArgumentTypes:argTypes returnType:[IFType typeVariable]]];
+    IFType* argType = (arity == 1 ? [argTypes objectAtIndex:0] : [IFType tupleTypeWithComponentTypes:argTypes]);
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentType:argType returnType:[IFType typeVariable]]];
   }
 }
 

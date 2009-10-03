@@ -48,15 +48,7 @@
   return YES;
 }
 
-- (IFType*)contentType;
-{
-  return contentType;
-}
-
-- (unsigned)arity;
-{
-  return 0;
-}
+@synthesize contentType;
 
 - (IFType*)leafType;
 {

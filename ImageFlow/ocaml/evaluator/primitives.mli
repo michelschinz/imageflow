@@ -1,3 +1,6 @@
+(* Warning: any change to the type below must be mirrored in file *)
+(* ../../IFExpressionTags.h *)
+
 type t =
   | ArrayCreate
   | ArrayGet
@@ -42,6 +45,8 @@ type t =
   | Threshold
   | ThresholdMask
   | Translate
+  | PTupleCreate
+  | PTupleGet
   | UnsharpMask
 
 val name: t -> string

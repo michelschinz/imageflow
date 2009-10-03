@@ -59,11 +59,6 @@
   return pixelType == [IFType floatType];
 }
 
-- (unsigned)arity;
-{
-  return 0;
-}
-
 - (value)camlRepresentation;
 {
   CAMLparam0();

@@ -11,13 +11,13 @@
 #import "IFType.h"
 
 @interface IFFunType : IFType {
-  NSArray* argumentTypes;
+  IFType* argumentType;
   IFType* returnType;
 }
 
-- (id)initWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
+- (id)initWithArgumentType:(IFType*)theArgType returnType:(IFType*)theRetType;
 
-- (NSArray*)argumentTypes;
-- (IFType*)returnType;
+@property(readonly) IFType* argumentType;
+@property(readonly) IFType* returnType;
 
 @end

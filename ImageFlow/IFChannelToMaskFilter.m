@@ -17,9 +17,7 @@
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 {
   if (arity == 1)
-    return [NSArray arrayWithObject:
-            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
-                                  returnType:[IFType maskType]]];
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentType:[IFType imageRGBAType] returnType:[IFType maskType]]];
   else
     return [NSArray array];
 }

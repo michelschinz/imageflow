@@ -42,6 +42,8 @@ type t =
   | Threshold
   | ThresholdMask
   | Translate
+  | PTupleCreate
+  | PTupleGet
   | UnsharpMask
 
 let name = function
@@ -88,4 +90,6 @@ let name = function
   | Threshold -> "threshold"
   | ThresholdMask -> "threshold-mask"
   | Translate -> "translate"
+  | PTupleCreate -> "tuple-create"
+  | PTupleGet -> "tuple-get"
   | UnsharpMask -> "unsharp-mask"

@@ -39,11 +39,6 @@
   return index;
 }
 
-- (unsigned)arity;
-{
-  return 0;
-}
-
 // MARK: -
 // MARK: PROTECTED
 

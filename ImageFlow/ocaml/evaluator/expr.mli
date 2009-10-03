@@ -14,6 +14,7 @@ type t =
     (* values *)
   | Closure of (t list) * t
   | Array of t array
+  | Tuple of t array
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t

@@ -18,8 +18,7 @@
 {
   if (arity == 1)
     return [NSArray arrayWithObject:
-            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
-                                  returnType:[IFType imageRGBAType]]];
+            [IFType funTypeWithArgumentType:[IFType imageRGBAType] returnType:[IFType imageRGBAType]]];
   else
     return [NSArray array];
 }

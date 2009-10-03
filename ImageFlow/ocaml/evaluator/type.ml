@@ -1,7 +1,8 @@
 type t =
     TVar of int
-  | TFun of (t array) * t
+  | TFun of t * t
   | TArray of t
+  | TTuple of t list
   | TImage of t
   | TColor_RGBA
   | TRect
@@ -17,11 +18,12 @@ type t =
 let rec to_string = function
     TVar i ->
       Printf.sprintf "'t%d" i
-  | TFun (ts, t) ->
-      let tsl = Array.to_list ts in
-      "(" ^ (String.concat "," (List.map to_string tsl)) ^ ")=>" ^ (to_string t)
+  | TFun (ta, tr) ->
+      (to_string ta) ^ "=>" ^ (to_string tr)
   | TArray t ->
       "Array[" ^ (to_string t) ^ "]"
+  | TTuple ts ->
+      "(" ^ (String.concat "," (List.map to_string ts)) ^ ")"
   | TImage t ->
       "Image[" ^ (to_string t) ^ "]"
   | TColor_RGBA ->

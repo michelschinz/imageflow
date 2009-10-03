@@ -10,9 +10,11 @@ let rec apply_subst s = function
           var
       end
   | TFun (ta, tr) ->
-      TFun (Array.map (apply_subst s) ta, apply_subst s tr)
+      TFun (apply_subst s ta, apply_subst s tr)
   | TArray t ->
       TArray (apply_subst s t)
+  | TTuple ts ->
+      TTuple (List.map (apply_subst s) ts)
   | TImage t ->
       TImage (apply_subst s t)
   | basic_type ->
@@ -22,8 +24,9 @@ exception Unification_failure
 
 let rec occurs i = function
     TVar j -> i = j
-  | TFun (ta, tr) -> (occurs i tr) || (Marray.exists (occurs i) ta)
+  | TFun (ta, tr) -> (occurs i ta) || (occurs i tr)
   | TArray t -> occurs i t
+  | TTuple ts -> List.exists (occurs i) ts
   | TImage t -> occurs i t
   | _ -> false
 
@@ -38,11 +41,11 @@ let unify cs =
             cs in
         (v, t) :: (unify' cs')
     | (TFun (ta1, tr1), TFun (ta2, tr2)) :: cs ->
-        unify' ((tr1, tr2)
-                :: (List.combine (Array.to_list ta1) (Array.to_list ta2))
-                @ cs)
+        unify' ((ta1, ta2) :: (tr1, tr2) :: cs)
     | (TArray t1, TArray t2) :: cs ->
         unify' ((t1, t2) :: cs)
+    | (TTuple ts1, TTuple ts2) :: cs ->
+        unify' ((List.combine ts1 ts2) @ cs)
     | (TImage t1, TImage t2) :: cs ->
         unify' ((t1, t2) :: cs)
     | (t1, t2) :: cs when t1 = t2 ->
@@ -67,7 +70,9 @@ let unification_constraints preds conf =
   | [] :: ps, tp :: tps ->
       loop (succ i) ps tps ((tp, node_var i) :: acc)
   | p :: ps, tp :: tps ->
-      let args_tps = Array.map node_var (Array.of_list p) in
+      let args_tps = match p with
+      | [ t ] -> node_var t
+      | ts -> TTuple (List.map node_var ts) in
       loop (succ i) ps tps ((tp, TFun (args_tps, node_var i)) :: acc)
   in loop 0 preds conf []
 

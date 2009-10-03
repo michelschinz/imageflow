@@ -18,9 +18,7 @@
 {
   if (arity == 1) {
     IFType* imageType = [IFType imageTypeWithPixelType:[IFType typeVariable]];
-    return [NSArray arrayWithObject:
-            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:imageType]
-                                  returnType:imageType]];
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentType:imageType returnType:imageType]];
   } else
     return [NSArray array];
 }

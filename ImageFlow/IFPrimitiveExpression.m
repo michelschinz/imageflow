@@ -65,6 +65,8 @@ static NSArray* tagNames;
                @"threshold",
                @"threshold-mask",
                @"translate",
+               @"tuple-create",
+               @"tuple-get",               
                @"unsharp-mask",
                nil] retain];
 }

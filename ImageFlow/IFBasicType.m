@@ -72,11 +72,6 @@ static NSArray* types = nil;
   }
 }
 
-- (unsigned)arity;
-{
-  return 0;
-}
-
 // MARK: -
 // MARK: PROTECTED
 

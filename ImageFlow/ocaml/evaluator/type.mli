@@ -1,7 +1,8 @@
 type t =
     TVar of int
-  | TFun of (t array) * t
+  | TFun of t * t
   | TArray of t
+  | TTuple of t list
   | TImage of t
   | TColor_RGBA
   | TRect

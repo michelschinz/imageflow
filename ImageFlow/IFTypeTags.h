@@ -29,5 +29,6 @@ typedef enum {
   IFTypeTag_TVar,
   IFTypeTag_TFun,
   IFTypeTag_TArray,
+  IFTypeTag_TTuple,
   IFTypeTag_TImage
 } IFParametrisedTypeTag;

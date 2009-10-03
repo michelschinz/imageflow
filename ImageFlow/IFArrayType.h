@@ -16,6 +16,6 @@
 
 - (id)initWithContentType:(IFType*)theContentType;
 
-- (IFType*)contentType;
+@property(readonly) IFType* contentType;
 
 @end

@@ -27,8 +27,9 @@
 + (IFType*)errorType;
 
 + (id)typeVariable;
-+ (id)funTypeWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
++ (id)funTypeWithArgumentType:(IFType*)theArgType returnType:(IFType*)theRetType;
 + (id)arrayTypeWithContentType:(IFType*)theContentType;
++ (id)tupleTypeWithComponentTypes:(NSArray*)theComponentTypes;
 
 + (id)imageRGBAType;
 + (id)maskType;
@@ -40,7 +41,6 @@
 @property(readonly) BOOL isImageRGBAType;
 @property(readonly) BOOL isMaskType;
 
-@property(readonly) unsigned arity;
 @property(readonly) IFType* resultType;
 @property(readonly) IFType* leafType;
 

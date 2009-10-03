@@ -60,6 +60,18 @@ let rec print0 fmt = function
       done;
       pp_print_string fmt "]";
       pp_close_box fmt()
+  | Tuple elems ->
+      pp_open_box fmt(1);
+      pp_print_string fmt("(");
+      for i = 0 to (Array.length elems) - 1 do
+        if i > 0 then begin
+          pp_print_string fmt ";";
+          pp_print_space fmt()
+        end;
+        print0 fmt elems.(i)
+      done;
+      pp_print_string fmt ")";
+      pp_close_box fmt()
   | Image i ->
       pp_print_string fmt ("<image " ^ (Rect.to_string (Image.extent i)) ^ ">")
   | Mask i ->

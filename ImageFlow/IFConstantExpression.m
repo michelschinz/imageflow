@@ -242,6 +242,10 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       }
       *result = [IFConstantExpression expressionWithArray:array];
     } break;
+
+    case IFExpressionTag_Tuple: {
+      NSCAssert(NO, @"TODO"); // TODO: copy code from array, but find out how to represent tuples so that they can be differentiated from arrays...
+    } break;
       
     case IFExpressionTag_Mask:
     case IFExpressionTag_Image: {

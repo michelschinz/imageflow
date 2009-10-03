@@ -66,13 +66,19 @@ and eval_prim op args =
   and out_mask filter =
     Mask (Image.mask_of_ciimage (Coreimage.output_image filter))
   in match (op, args) with
-    (* Array operators *)
+    (* Array primitives *)
   | ArrayCreate, xs ->
       Array xs
   | ArrayGet, [|Array a; Int i|] ->
       a.(i)
 
-    (* Rectangle operators *)
+    (* Tuple primitives *)
+  | PTupleCreate, vs ->
+      Tuple vs
+  | PTupleGet, [|Tuple t; Int i|] ->
+      t.(i)
+
+    (* Rectangle primitives *)
   | RectIntersection, [|Rect r1; Rect r2|] ->
       Rect (Rect.intersection r1 r2)
   | RectOutset, [|Rect r; Num d|] ->
@@ -84,7 +90,7 @@ and eval_prim op args =
   | RectUnion, [|Rect r1; Rect r2|] ->
       Rect (Rect.union r1 r2)
 
-    (* Image and mask operators *)
+    (* Image and mask primitives *)
   | Average, [| Array a |] when Marray.for_all is_image a ->
       let a' = Array.map (function Image i -> i) a in
       out_image (Coreimage.average a')
@@ -164,7 +170,7 @@ and eval_prim op args =
   | UnsharpMask, [| Image i; Num y; Num r |] ->
       out_image (Coreimage.unsharp_mask i y r)
 
-    (* Miscellaneous operators *)
+    (* Miscellaneous primitives *)
   | PaintExtent, [|_; Array [| |]|] ->
       Rect Rect.zero
   | PaintExtent, [|Rect r; Array ps|] ->

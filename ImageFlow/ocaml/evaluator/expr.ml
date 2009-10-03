@@ -11,6 +11,7 @@ type t =
     (* values *)
   | Closure of (t list) * t
   | Array of t array
+  | Tuple of t array
   | Image of Image.t
   | Mask of Image.t
   | Color of Color.t
@@ -34,6 +35,7 @@ let is_value = function
       false
   | Closure _
   | Array _
+  | Tuple _
   | Image _
   | Mask _
   | Color _
@@ -67,7 +69,8 @@ let rec equal (e1 : t) (e2 : t) =
   in match e1, e2 with
     Prim (p1, a1), Prim (p2, a2) ->
       p1 = p2 && (equalArray a1 a2)
-  | Array a1, Array a2 ->
+  | Array a1, Array a2
+  | Tuple a1, Tuple a2 ->
       equalArray a1 a2
   | Lambda _, Lambda _
   | Map _, Map _

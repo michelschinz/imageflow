@@ -22,6 +22,7 @@ typedef enum {
   IFExpressionTag_Arg,
   IFExpressionTag_Closure,
   IFExpressionTag_Array,
+  IFExpressionTag_Tuple,
   IFExpressionTag_Image,
   IFExpressionTag_Mask,
   IFExpressionTag_Color,
@@ -83,5 +84,7 @@ typedef enum {
   IFPrimitiveTag_Threshold,
   IFPrimitiveTag_ThresholdMask,
   IFPrimitiveTag_Translate,
+  IFPrimitiveTag_PTupleCreate,
+  IFPrimitiveTag_PTupleGet,
   IFPrimitiveTag_UnsharpMask,
 } IFPrimitiveTag;

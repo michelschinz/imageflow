@@ -23,7 +23,8 @@
     NSMutableArray* argTypes = [NSMutableArray arrayWithCapacity:arity];
     for (int i = 0; i < arity; ++i)
       [argTypes addObject:typeVar];
-    return [NSArray arrayWithObject:[IFType funTypeWithArgumentTypes:argTypes returnType:retType]];
+    IFType* argType = (arity == 1 ? [argTypes objectAtIndex:0] : [IFType tupleTypeWithComponentTypes:argTypes]);
+    return [NSArray arrayWithObject:[IFType funTypeWithArgumentType:argType returnType:retType]];
   }
 }
 

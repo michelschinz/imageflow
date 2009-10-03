@@ -33,8 +33,8 @@ static NSArray* parentNames = nil;
 {
   if (arity == 2)
     return [NSArray arrayWithObject:
-            [IFType funTypeWithArgumentTypes:[NSArray arrayWithObjects:[IFType imageRGBAType],[IFType imageRGBAType],nil]
-                                  returnType:[IFType imageRGBAType]]];
+            [IFType funTypeWithArgumentType:[IFType tupleTypeWithComponentTypes:[NSArray arrayWithObjects:[IFType imageRGBAType],[IFType imageRGBAType],nil]]
+                                 returnType:[IFType imageRGBAType]]];
   else
     return [NSArray array];
 }

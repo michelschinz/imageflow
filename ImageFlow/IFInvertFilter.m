@@ -18,10 +18,8 @@
 {
   if (arity == 1)
     return  [NSArray arrayWithObjects:
-             [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType imageRGBAType]]
-                                   returnType:[IFType imageRGBAType]],
-             [IFType funTypeWithArgumentTypes:[NSArray arrayWithObject:[IFType maskType]]
-                                   returnType:[IFType maskType]],
+             [IFType funTypeWithArgumentType:[IFType imageRGBAType] returnType:[IFType imageRGBAType]],
+             [IFType funTypeWithArgumentType:[IFType maskType] returnType:[IFType maskType]],
              nil];
   else
     return [NSArray array];

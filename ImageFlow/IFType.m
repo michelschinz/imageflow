@@ -12,6 +12,7 @@
 #import "IFFunType.h"
 #import "IFArrayType.h"
 #import "IFImageType.h"
+#import "IFTupleType.h"
 
 #import <caml/memory.h>
 
@@ -74,14 +75,19 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
   return [IFTypeVar typeVariable];
 }
 
-+ (id)funTypeWithArgumentTypes:(NSArray*)theArgTypes returnType:(IFType*)theRetType;
++ (id)funTypeWithArgumentType:(IFType*)theArgType returnType:(IFType*)theRetType;
 {
-  return [[[IFFunType alloc] initWithArgumentTypes:theArgTypes returnType:theRetType] autorelease];
+  return [[[IFFunType alloc] initWithArgumentType:theArgType returnType:theRetType] autorelease];
 }
 
 + (id)arrayTypeWithContentType:(IFType*)theContentType;
 {
   return [[[IFArrayType alloc] initWithContentType:theContentType] autorelease];
+}
+
++ (id)tupleTypeWithComponentTypes:(NSArray*)theComponentTypes;
+{
+  return [[[IFTupleType alloc] initWithComponentTypes:theComponentTypes] autorelease];
 }
 
 + (id)imageRGBAType;
@@ -137,12 +143,6 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
   return NO;
 }
 
-- (unsigned)arity;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return 0;
-}
-
 - (IFType*)resultType;
 {
   return self;
@@ -176,7 +176,7 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
 
 static void camlTypeToObjcType(value camlType, IFType** objcType) {
   CAMLparam1(camlType);
-  CAMLlocal1(camlArgTypes);
+  CAMLlocal1(camlComponentTypes);
   
   if (Is_long(camlType))
     *objcType = [IFBasicType basicTypeWithTag:Int_val(camlType)];
@@ -185,26 +185,31 @@ static void camlTypeToObjcType(value camlType, IFType** objcType) {
       *objcType = [[[IFTypeVar alloc] initWithIndex:Int_val(Field(camlType,0))] autorelease];
     } break;
     case IFTypeTag_TFun: {
-      camlArgTypes = Field(camlType,0);
-      NSMutableArray* argTypes = [NSMutableArray array];
-      for (int i = 0; i < Wosize_val(camlArgTypes); ++i) {
-        IFType* argType = nil;
-        camlTypeToObjcType(Field(camlArgTypes,i), &argType);
-        [argTypes addObject:argType];
-      }
+      IFType* argType = nil;
+      camlTypeToObjcType(Field(camlType, 0), &argType);
       IFType* retType = nil;
-      camlTypeToObjcType(Field(camlType,1), &retType);
-      *objcType = [IFFunType funTypeWithArgumentTypes:argTypes returnType:retType];
+      camlTypeToObjcType(Field(camlType, 1), &retType);
+      *objcType = [IFType funTypeWithArgumentType:argType returnType:retType];
     } break;
     case IFTypeTag_TArray: {
       IFType* contentType = nil;
       camlTypeToObjcType(Field(camlType,0), &contentType);
-      *objcType = [IFArrayType arrayTypeWithContentType:contentType];
+      *objcType = [IFType arrayTypeWithContentType:contentType];
+    } break;
+    case IFTypeTag_TTuple: {
+      camlComponentTypes = Field(camlType,0);
+      NSMutableArray* componentTypes = [NSMutableArray array];
+      for (int i = 0; i < Wosize_val(camlComponentTypes); ++i) {
+        IFType* argType = nil;
+        camlTypeToObjcType(Field(camlComponentTypes,i), &argType);
+        [componentTypes addObject:argType];
+      }
+      *objcType = [IFType tupleTypeWithComponentTypes:componentTypes];
     } break;
     case IFTypeTag_TImage: {
       IFType* pixelType = nil;
       camlTypeToObjcType(Field(camlType,0), &pixelType);
-      *objcType = [IFImageType imageTypeWithPixelType:pixelType];
+      *objcType = [IFType imageTypeWithPixelType:pixelType];
     } break;
     default:
       NSCAssert1(NO, @"unexpected type tag (%d)",Tag_val(camlType));
