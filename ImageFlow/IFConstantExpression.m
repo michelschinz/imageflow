@@ -10,7 +10,6 @@
 #import "IFXMLCoder.h"
 #import "IFImageConstantExpression.h"
 #import "IFErrorConstantExpression.h"
-#import "IFExpressionVisitor.h"
 #import "IFExpressionTags.h"
 #import "IFExpressionEvaluator.h"
 
@@ -22,24 +21,29 @@
 
 @implementation IFConstantExpression
 
-+ expressionWithArray:(NSArray*)theArray;
++ expressionWithObject:(NSObject*)theObject tag:(int)theTag;
 {
-  return [self expressionWithObject:theArray];
+  return [[[self alloc] initWithObject:theObject tag:theTag] autorelease];
 }
 
-+ expressionWithObject:(NSObject*)theObject;
++ expressionWithArray:(NSArray*)theArray;
 {
-  return [[[self alloc] initWithObject:theObject] autorelease];
+  return [self expressionWithObject:theArray tag:IFExpressionTag_Array];
+}
+
++ expressionWithTupleElements:(NSArray*)theElements;
+{
+  return [self expressionWithObject:theElements tag:IFExpressionTag_Tuple];
 }
 
 + expressionWithPointNS:(NSPoint)thePoint;
 {
-  return [self expressionWithObject:[NSValue valueWithPoint:thePoint]];
+  return [self expressionWithObject:[NSValue valueWithPoint:thePoint] tag:IFExpressionTag_Point];
 }
 
 + expressionWithRectNS:(NSRect)theRect;
 {
-  return [self expressionWithObject:[NSValue valueWithRect:theRect]];
+  return [self expressionWithObject:[NSValue valueWithRect:theRect] tag:IFExpressionTag_Rect];
 }
 
 + expressionWithRectCG:(CGRect)theRect;
@@ -49,33 +53,35 @@
 
 + expressionWithColorNS:(NSColor*)theColor;
 {
-  return [self expressionWithObject:theColor];
+  return [self expressionWithObject:theColor tag:IFExpressionTag_Color];
 }
 
 + expressionWithString:(NSString*)theString;
 {
-  return [self expressionWithObject:theString];
+  return [self expressionWithObject:theString tag:IFExpressionTag_String];
 }
 
 + expressionWithInt:(int)theInt;
 {
-  return [self expressionWithObject:[NSNumber numberWithInt:theInt]];
+  return [self expressionWithObject:[NSNumber numberWithInt:theInt] tag:IFExpressionTag_Int];
 }
 
 + expressionWithFloat:(float)theFloat;
 {
-  return [self expressionWithObject:[NSNumber numberWithFloat:theFloat]];
+  return [self expressionWithObject:[NSNumber numberWithFloat:theFloat] tag:IFExpressionTag_Num];
 }
 
-- initWithObject:(NSObject*)theObject;
+- initWithObject:(NSObject*)theObject tag:(int)theTag;
 {
   if (![super init])
     return nil;
   object = [theObject retain];
+  tag = theTag;
   return self;
 }
 
-- (void) dealloc {
+- (void)dealloc;
+{
   OBJC_RELEASE(object);
   [super dealloc];
 }
@@ -85,6 +91,8 @@
   return [object description];
 }
 
+@synthesize tag;
+
 - (NSObject*)objectValue;
 {
   return object;
@@ -92,7 +100,7 @@
 
 - (NSArray*)arrayValue;
 {
-  NSAssert1([object isKindOfClass:[NSArray class]], @"object is not a value: %@",object);
+  NSAssert1(tag == IFExpressionTag_Array, @"object is not a value: %@",object);
   return (NSArray*)object;
 }
 
@@ -109,9 +117,15 @@
   }
 }
 
+- (NSArray*)tupleValue;
+{
+  NSAssert(tag == IFExpressionTag_Tuple, @"object is not a tuple: %@", object);
+  return (NSArray*)object;
+}
+
 - (NSPoint)pointValueNS;
 {
-  NSAssert1([object isKindOfClass:[NSValue class]], @"object is not a value: %@",object);
+  NSAssert1(tag == IFExpressionTag_Point, @"object is not a value: %@",object);
   NSValue* value = (NSValue*)object;
   NSAssert1(strcmp([value objCType],@encode(NSPoint)) == 0, @"object is not a point: %@",object);
   return [value pointValue];
@@ -119,7 +133,7 @@
 
 - (NSRect)rectValueNS;
 {
-  NSAssert1([object isKindOfClass:[NSValue class]], @"object is not a value: %@",object);
+  NSAssert1(tag == IFExpressionTag_Rect, @"object is not a value: %@",object);
   NSValue* value = (NSValue*)object;
   NSAssert1(strcmp([value objCType],@encode(NSRect)) == 0, @"object is not a rectangle: %@",object);
   return [value rectValue];
@@ -132,43 +146,43 @@
 
 - (NSColor*)colorValueNS;
 {
-  NSAssert1([object isKindOfClass:[NSColor class]], @"object is not a color (NS): %@",object);
+  NSAssert1(tag == IFExpressionTag_Color, @"object is not a color (NS): %@",object);
   return (NSColor*)object;
 }
 
 - (CIColor*)colorValueCI;
 {
-  NSAssert1([object isKindOfClass:[NSColor class]], @"object is not a color (NS): %@",object);
+  NSAssert1(tag == IFExpressionTag_Color, @"object is not a color (NS): %@",object);
   return [[[CIColor alloc] initWithColor:(NSColor*)object] autorelease];
 }
 
 - (NSString*)stringValue;
 {
-  NSAssert1([object isKindOfClass:[NSString class]], @"object is not a string: %@",object);
+  NSAssert1(tag == IFExpressionTag_String, @"object is not a string: %@",object);
   return (NSString*)object;
 }
 
 - (BOOL)boolValue;
 {
-  NSAssert1([object isKindOfClass:[NSNumber class]], @"object is not a number: %@",object);
+  NSAssert1(tag == IFExpressionTag_Bool, @"object is not a number: %@",object);
   return [(NSNumber*)object boolValue] ? YES : NO;
 }
 
 - (int)intValue;
 {
-  NSAssert1([object isKindOfClass:[NSNumber class]], @"object is not a number: %@",object);
+  NSAssert1(tag == IFExpressionTag_Int, @"object is not a number: %@",object);
   return [(NSNumber*)object intValue];
 }
 
 - (float)floatValue;
 {
-  NSAssert1([object isKindOfClass:[NSNumber class]], @"object is not a number: %@",object);
+  NSAssert1(IFExpressionTag_Num, @"object is not a number: %@",object);
   return [(NSNumber*)object floatValue];
 }
 
 - (BOOL)isArray;
 {
-  return [object isKindOfClass:[NSArray class]];
+  return tag == IFExpressionTag_Array;
 }
 
 - (BOOL)isImage;
@@ -181,19 +195,14 @@
   return NO;
 }
 
-- (void)accept:(IFExpressionVisitor*)visitor;
-{
-  [visitor caseConstantExpression:self];
-}
-
 - (NSUInteger)hash;
 {
   return [object hash];
 }
 
-- (BOOL)isEqualAtRoot:(id)other;
+- (BOOL)isEqual:(id)other;
 {
-  return [other isKindOfClass:[IFConstantExpression class]] && [object isEqual:[other objectValue]];
+  return [other isKindOfClass:[IFConstantExpression class]] && (tag == [(IFConstantExpression*)other tag]) && [object isEqual:[other objectValue]];
 }
 
 // MARK: XML input/output
@@ -201,15 +210,93 @@
 - (id)initWithXML:(NSXMLElement*)xml;
 {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
-  return [self initWithObject:[xmlCoder decodeString:[xml stringValue] typeName:[[xml attributeForName:@"type"] stringValue]]];
+  int decodedTag = [xmlCoder decodeInt:[[xml attributeForName:@"typeTag"] stringValue]];
+  id decodedObject = nil;
+  switch (decodedTag) {
+    case IFExpressionTag_Array:
+    case IFExpressionTag_Tuple:
+    case IFExpressionTag_Mask:
+    case IFExpressionTag_Image:
+    case IFExpressionTag_Action:
+      NSAssert(NO, @"not implemented yet"); // FIXME: implement
+      
+    case IFExpressionTag_Color:
+      decodedObject = [xmlCoder decodeColor:[xml stringValue]];
+      break;
+      
+    case IFExpressionTag_Rect:
+      decodedObject = [NSValue valueWithRect:[xmlCoder decodeRect:[xml stringValue]]];
+      break;
+      
+    case IFExpressionTag_Point:
+      decodedObject = [NSValue valueWithPoint:[xmlCoder decodePoint:[xml stringValue]]];
+      break;
+      
+    case IFExpressionTag_String:
+      decodedObject = [xmlCoder decodeString:[xml stringValue]];
+      break;
+      
+    case IFExpressionTag_Num:
+      decodedObject = [NSNumber numberWithFloat:[xmlCoder decodeFloat:[xml stringValue]]];
+      break;
+      
+    case IFExpressionTag_Int:
+    case IFExpressionTag_Bool:
+      decodedObject = [NSNumber numberWithInt:[xmlCoder decodeInt:[xml stringValue]]];
+      break;
+      
+    default:
+      NSAssert(NO, @"unknown tag %d", tag);
+      break;
+  }
+  return [self initWithObject:decodedObject tag:decodedTag];
 }
 
 - (NSXMLElement*)asXML;
 {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
   NSXMLElement* elem = [NSXMLElement elementWithName:@"constant"];
-  [elem addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:[xmlCoder typeNameForData:object]]];
-  [elem setStringValue:[xmlCoder encodeData:object]];
+  [elem addAttribute:[NSXMLNode attributeWithName:@"typeTag" stringValue:[xmlCoder encodeInt:tag]]];
+  switch (tag) {
+    case IFExpressionTag_Array:
+    case IFExpressionTag_Tuple:
+    case IFExpressionTag_Mask:
+    case IFExpressionTag_Image:
+    case IFExpressionTag_Action:
+      NSAssert(NO, @"not implemented yet"); // FIXME: implement
+      
+    case IFExpressionTag_Color:
+      [elem setStringValue:[xmlCoder encodeColor:[self colorValueNS]]];
+      break;
+      
+    case IFExpressionTag_Rect:
+      [elem setStringValue:[xmlCoder encodeRect:[self rectValueNS]]];
+      break;
+      
+    case IFExpressionTag_Point:
+      [elem setStringValue:[xmlCoder encodePoint:[self pointValueNS]]];
+      break;
+      
+    case IFExpressionTag_String:
+      [elem setStringValue:[xmlCoder encodeString:[self stringValue]]];
+      break;
+      
+    case IFExpressionTag_Num:
+      [elem setStringValue:[xmlCoder encodeFloat:[self floatValue]]];
+      break;
+      
+    case IFExpressionTag_Int:
+      [elem setStringValue:[xmlCoder encodeInt:[self intValue]]];
+      break;
+      
+    case IFExpressionTag_Bool:
+      [elem setStringValue:[xmlCoder encodeInt:[self boolValue]]];
+      break;
+      
+    default:
+      NSAssert(NO, @"unknown tag %d", tag);
+      break;
+  }  
   return elem;
 }
 
@@ -217,12 +304,13 @@
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
-  return [self initWithObject:[decoder decodeObjectForKey:@"object"]];
+  return [self initWithObject:[decoder decodeObjectForKey:@"object"] tag:[decoder decodeIntForKey:@"tag"]];
 }
 
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
   [encoder encodeObject:object forKey:@"object"];
+  [encoder encodeInt:tag forKey:@"tag"];
 }
 
 // MARK: Caml representation
@@ -244,7 +332,14 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     } break;
 
     case IFExpressionTag_Tuple: {
-      NSCAssert(NO, @"TODO"); // TODO: copy code from array, but find out how to represent tuples so that they can be differentiated from arrays...
+      contents = Field(camlValue, 0);
+      NSMutableArray* array = [NSMutableArray arrayWithCapacity:Wosize_val(contents)];
+      for (int i = 0; i < Wosize_val(contents); ++i) {
+        IFConstantExpression* elemExpression;
+        expressionWithCamlValue(Field(contents, i), &elemExpression);
+        [array addObject:elemExpression];
+      }
+      *result = [IFConstantExpression expressionWithTupleElements:array];
     } break;
       
     case IFExpressionTag_Mask:
@@ -322,68 +417,76 @@ static value elemAsCaml(const char* elem) {
   CAMLparam0();
   CAMLlocal2(block, contents);
   CAMLlocalN(args,4);
-  int tag = -1;
 
-  if ([object isKindOfClass:[NSString class]]) {
-    tag = IFExpressionTag_String;
-    contents = caml_copy_string([(NSString*)object cStringUsingEncoding:NSISOLatin1StringEncoding]);
-  } else if ([object isKindOfClass:[NSValue class]]) {
-    NSValue* val = (NSValue*)object;
-    const char* objectType = [val objCType];
-    if (strcmp(objectType,@encode(int)) == 0) {
-      tag = IFExpressionTag_Int;
-      contents = Val_int([(NSNumber*)val intValue]);
-    } else if (strcmp(objectType,@encode(float)) == 0) {
-      tag = IFExpressionTag_Num;
-      contents = caml_copy_double([(NSNumber*)val floatValue]);
-    } else if (strcmp(objectType,@encode(double)) == 0) {
-      tag = IFExpressionTag_Num;
-      contents = caml_copy_double([(NSNumber*)val doubleValue]);
-    } else if (strcmp(objectType,@encode(NSPoint)) == 0) {
-      tag = IFExpressionTag_Point;
+  switch (tag) {
+    case IFExpressionTag_String:
+      NSAssert([object isKindOfClass:[NSString class]], @"invalid object");
+      contents = caml_copy_string([(NSString*)object cStringUsingEncoding:NSISOLatin1StringEncoding]);
+      break;
+      
+    case IFExpressionTag_Int:
+      NSAssert([object isKindOfClass:[NSNumber class]], @"invalid object");
+      contents = Val_int([(NSNumber*)object intValue]);
+      break;
+      
+    case IFExpressionTag_Num:
+      NSAssert([object isKindOfClass:[NSNumber class]], @"invalid object");
+      contents = caml_copy_double([(NSNumber*)object doubleValue]);
+      break;
+      
+    case IFExpressionTag_Point: {
+      NSAssert([object isKindOfClass:[NSValue class]], @"invalid object");
       static value* pointMakeClosure = NULL;
       if (pointMakeClosure == NULL)
         pointMakeClosure = caml_named_value("Point.make");
-      NSPoint p = [val pointValue];
+      NSPoint p = [(NSValue*)object pointValue];
       args[0] = caml_copy_double(p.x);
       args[1] = caml_copy_double(p.y);
-      contents = caml_callback2(*pointMakeClosure, args[0], args[1]);      
-    } else if (strcmp(objectType,@encode(NSRect)) == 0) {
-      tag = IFExpressionTag_Rect;
+      contents = caml_callback2(*pointMakeClosure, args[0], args[1]);
+    } break;
+      
+    case IFExpressionTag_Rect: {
+      NSAssert([object isKindOfClass:[NSValue class]], @"invalid object");
       static value* rectMakeClosure = NULL;
       if (rectMakeClosure == NULL)
         rectMakeClosure = caml_named_value("Rect.make");
-      NSRect r = [val rectValue];
+      NSRect r = [(NSValue*)object rectValue];
       args[0] = caml_copy_double(NSMinX(r));
       args[1] = caml_copy_double(NSMinY(r));
       args[2] = caml_copy_double(NSWidth(r));
       args[3] = caml_copy_double(NSHeight(r));
       contents = caml_callbackN(*rectMakeClosure, 4, args);
-    } else
-      NSAssert2(NO, @"invalid value: %@ (type %s)",val,[val objCType]);  
-  } else if ([object isKindOfClass:[NSColor class]]) {
-    tag = IFExpressionTag_Color;
-    static value* colorMakeClosure = NULL;
-    if (colorMakeClosure == NULL)
-      colorMakeClosure = caml_named_value("Color.make");
-    NSColor* color = [(NSColor*)object colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; // TODO use correct color space
-    args[0] = caml_copy_double([color redComponent]);
-    args[1] = caml_copy_double([color greenComponent]);
-    args[2] = caml_copy_double([color blueComponent]);
-    args[3] = caml_copy_double([color alphaComponent]);
-    contents = caml_callbackN(*colorMakeClosure, 4, args);
-  } else if ([object isKindOfClass:[NSArray class]]) {
-    tag = IFExpressionTag_Array;
-    NSArray* array = (NSArray*)object;
-    IFExpression** cArray = malloc(([array count] + 1) * sizeof(IFExpression*));
-    [array getObjects:cArray];
-    cArray[[array count]] = NULL;
-    contents = caml_alloc_array(elemAsCaml, (char const**)cArray);
-    free(cArray);
-  } else
-    NSAssert2(NO, @"invalid object: %@ (class %@)",object,[object class]);  
-
-  NSAssert(tag != -1, @"invalid tag");
+    } break;
+      
+    case IFExpressionTag_Color: {
+      NSAssert([object isKindOfClass:[NSColor class]], @"invalid object");
+      static value* colorMakeClosure = NULL;
+      if (colorMakeClosure == NULL)
+        colorMakeClosure = caml_named_value("Color.make");
+      NSColor* color = [(NSColor*)object colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; // TODO use correct color space
+      args[0] = caml_copy_double([color redComponent]);
+      args[1] = caml_copy_double([color greenComponent]);
+      args[2] = caml_copy_double([color blueComponent]);
+      args[3] = caml_copy_double([color alphaComponent]);
+      contents = caml_callbackN(*colorMakeClosure, 4, args);      
+    } break;
+      
+    case IFExpressionTag_Array:
+    case IFExpressionTag_Tuple: {
+      NSAssert([object isKindOfClass:[NSArray class]], @"invalid object");
+      NSArray* array = (NSArray*)object;
+      IFExpression** cArray = malloc(([array count] + 1) * sizeof(IFExpression*));
+      [array getObjects:cArray];
+      cArray[[array count]] = NULL;
+      contents = caml_alloc_array(elemAsCaml, (char const**)cArray);
+      free(cArray);      
+    } break;
+      
+    default:
+      NSAssert(NO, @"unknown tag %d", tag);
+      break;
+  }
+  
   block = caml_alloc(1, tag);
   Store_field(block, 0, contents);
   CAMLreturn(block);

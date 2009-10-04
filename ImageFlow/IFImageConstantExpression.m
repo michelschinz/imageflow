@@ -19,7 +19,7 @@
 
 + (id)imageConstantExpressionWithIFImage:(IFImage*)theImage;
 {
-  return [[[self alloc] initWithObject:theImage] autorelease];
+  return [[[self alloc] initWithObject:theImage tag:IFExpressionTag_Image] autorelease];
 }
 
 + (id)imageConstantExpressionWithCIImage:(CIImage*)theImage;

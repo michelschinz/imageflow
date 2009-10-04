@@ -9,7 +9,6 @@ type t =
   | Map of t * t
   | Apply of t * t
   | Prim of Primitives.t * t array
-  | Var of string
   | Arg of int
     (* values *)
   | Closure of (t list) * t

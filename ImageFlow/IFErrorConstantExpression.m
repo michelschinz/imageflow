@@ -19,7 +19,7 @@
 
 + (id)errorConstantExpressionWithMessage:(NSString*)theMessage;
 {
-  return [[[self alloc] initWithObject:theMessage] autorelease];
+  return [[[self alloc] initWithObject:theMessage tag:IFExpressionTag_Mask] autorelease];
 }
 
 - (NSString*)message;

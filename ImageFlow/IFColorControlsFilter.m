@@ -29,9 +29,9 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_ColorControls operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"contrast"],
-              [IFExpression variableWithName:@"brightness"],
-              [IFExpression variableWithName:@"saturation"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"contrast"] tag:IFExpressionTag_Num],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"brightness"] tag:IFExpressionTag_Num],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"saturation"] tag:IFExpressionTag_Num],
               nil]]];
   } else {
     return [NSArray array];

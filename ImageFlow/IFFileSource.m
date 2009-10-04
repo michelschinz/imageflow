@@ -26,7 +26,7 @@
 {
   if (arity == 0) {
     return [NSArray arrayWithObject:
-            [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFExpression variableWithName:@"fileName"]]];
+            [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFConstantExpression expressionWithString:[settings valueForKey:@"fileName"]]]];
   } else {
     return [NSArray array];
   }

@@ -30,8 +30,8 @@
 {
   static NSArray* exprs = nil;
   if (exprs == nil) {
-    IFExpression* bg = [IFExpression primitiveWithTag:IFPrimitiveTag_ConstantColor operand:[IFExpression variableWithName:@"defaultColor"]];
-    IFExpression* fg = [IFExpression variableWithName:@"drawing"];
+    IFExpression* bg = [IFExpression primitiveWithTag:IFPrimitiveTag_ConstantColor operand:[IFConstantExpression expressionWithColorNS:[settings valueForKey:@"defaultColor"]]];
+    IFExpression* fg = [settings valueForKey:@"drawing"];
     exprs = [[NSArray arrayWithObject:[IFExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]]] retain];
   }
   return (arity == 0) ? exprs : [NSArray array];

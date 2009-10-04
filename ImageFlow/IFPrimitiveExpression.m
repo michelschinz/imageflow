@@ -7,7 +7,6 @@
 //
 
 #import "IFPrimitiveExpression.h"
-#import "IFExpressionVisitor.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -98,11 +97,6 @@ static NSArray* tagNames;
 - (NSString*)name;
 {
   return [tagNames objectAtIndex:tag];
-}
-
-- (void)accept:(IFExpressionVisitor *)visitor;
-{
-  [visitor casePrimitiveExpression:self];
 }
 
 - (BOOL)isEqual:(id)other;

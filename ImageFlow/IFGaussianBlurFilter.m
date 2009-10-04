@@ -30,7 +30,7 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"radius"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"radius"] tag:IFExpressionTag_Num],
               nil]]];
   } else {
     return [NSArray array];

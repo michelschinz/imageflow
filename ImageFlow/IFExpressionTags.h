@@ -18,7 +18,6 @@ typedef enum {
   IFExpressionTag_Map,
   IFExpressionTag_Apply,
   IFExpressionTag_Prim,
-  IFExpressionTag_Var,
   IFExpressionTag_Arg,
   IFExpressionTag_Closure,
   IFExpressionTag_Array,

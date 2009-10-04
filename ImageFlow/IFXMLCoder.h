@@ -43,10 +43,17 @@ typedef enum {
 
 // MARK: Low-level encoding
 
-- (NSString*)encodeData:(id)data;
-- (NSString*)encodeFloat:(float)data;
+- (NSString*)encodeAny:(id)data;
 - (NSString*)encodeInt:(int)data;
 - (NSString*)encodeUnsignedInt:(unsigned int)data;
+- (NSString*)encodeFloat:(float)data;
+- (NSString*)encodeDouble:(double)data;
+- (NSString*)encodeString:(NSString*)data;
+- (NSString*)encodePoint:(NSPoint)data;
+- (NSString*)encodeRect:(NSRect)data;
+- (NSString*)encodeColor:(NSColor*)data;
+- (NSString*)encodeExpression:(IFExpression*)data;
+- (NSString*)encodeData:(NSData*)data;
 
 // MARK: High-level decoding
 
@@ -56,10 +63,16 @@ typedef enum {
 
 // MARK: Low-level decoding
 
-- (id)decodeString:(NSString*)string type:(IFXMLDataType)type;
-- (id)decodeString:(NSString*)string typeName:(NSString*)typeName;
-- (float)decodeFloat:(NSString*)string;
+- (id)decodeAny:(NSString*)string type:(IFXMLDataType)type;
 - (int)decodeInt:(NSString*)string;
-- (unsigned int)decodeUnsignedInt:(NSString*)string;
+- (unsigned)decodeUnsignedInt:(NSString*)string;
+- (float)decodeFloat:(NSString*)string;
+- (double)decodeDouble:(NSString*)string;
+- (NSString*)decodeString:(NSString*)string;
+- (NSPoint)decodePoint:(NSString*)string;
+- (NSRect)decodeRect:(NSString*)string;
+- (NSColor*)decodeColor:(NSString*)string;
+- (IFExpression*)decodeExpression:(NSString*)string;
+- (NSData*)decodeData:(NSString*)string;
 
 @end

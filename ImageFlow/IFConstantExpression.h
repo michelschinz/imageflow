@@ -12,10 +12,13 @@
 
 @interface IFConstantExpression : IFExpression {
   NSObject* object;
+  int tag;
 }
 
++ expressionWithObject:(NSObject*)theConstant tag:(int)theTag;
+
 + expressionWithArray:(NSArray*)theArray;
-+ expressionWithObject:(NSObject*)theConstant;
++ expressionWithTupleElements:(NSArray*)theElements;
 + expressionWithPointNS:(NSPoint)thePoint;
 + expressionWithRectNS:(NSRect)theRect;
 + expressionWithRectCG:(CGRect)theRect;
@@ -24,10 +27,11 @@
 + expressionWithInt:(int)theInt;
 + expressionWithFloat:(float)theFloat;
 
-- initWithObject:(NSObject*)theConstant;
+@property(readonly) int tag;
 
 - (NSArray*)arrayValue;
 - (NSArray*)flatArrayValue;
+- (NSArray*)tupleValue;
 - (NSObject*)objectValue;
 - (NSPoint)pointValueNS;
 - (NSRect)rectValueNS;
@@ -44,5 +48,10 @@
 - (BOOL)isError;
 
 + (id)expressionWithCamlValue:(value)camlValue;
+
+// MARK: -
+// MARK: PROTECTED
+
+- initWithObject:(NSObject*)theConstant tag:(int)theTag;
 
 @end

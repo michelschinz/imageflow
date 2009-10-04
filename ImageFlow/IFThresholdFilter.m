@@ -32,12 +32,12 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_Threshold operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"threshold"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
               nil]],
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_ThresholdMask operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"threshold"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
               nil]],
             nil];
   } else {

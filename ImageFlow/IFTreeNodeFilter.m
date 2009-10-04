@@ -7,7 +7,6 @@
 //
 
 #import "IFTreeNodeFilter.h"
-#import "IFExpressionPlugger.h"
 
 @interface IFTreeNodeFilter ()
 @property(retain) IFType* type;
@@ -78,12 +77,18 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 {
   const unsigned arity = [altParentExpressions count];
-  IFExpression* expr = [IFExpressionPlugger plugValuesInExpression:[[self potentialRawExpressionsForArity:arity] objectAtIndex:altActiveTypeIndex] withValuesFromVariablesEnvironment:[altSettings asDictionary]];
-  for (unsigned i = 0; i < arity; ++i) {
-    IFExpression* parentExpr = [altParentExpressions objectForKey:[NSNumber numberWithUnsignedInt:i]];
-    expr = [IFExpression applyWithFunction:expr argument:parentExpr];
+  IFExpression* expr = [[self potentialRawExpressionsForArity:arity] objectAtIndex:altActiveTypeIndex];
+
+  if (arity == 0) {
+    return expr;
+  } else if (arity == 1) {
+    return [IFExpression applyWithFunction:expr argument:[altParentExpressions objectForKey:[NSNumber numberWithUnsignedInt:0]]];
+  } else {
+    NSMutableArray* parentExprs = [NSMutableArray arrayWithCapacity:arity];
+    for (int i = 0; i < arity; ++i)
+      [parentExprs addObject:[altParentExpressions objectForKey:[NSNumber numberWithInt:i]]];
+    return [IFExpression applyWithFunction:expr argument:[IFExpression tupleCreate:parentExprs]];
   }
-  return expr;
 }
 
 - (IFExpression*)computeExpression;

@@ -11,7 +11,7 @@
 #import "IFConstantExpression.h"
 #import "IFXMLCoder.h"
 
-@interface IFEnvironment (Private)
+@interface IFEnvironment ()
 - (id)initWithContentsOfDictionary:(NSDictionary*)dict;
 @end
 
@@ -163,7 +163,7 @@
   return env;
 }
 
-#pragma mark NSCoding protocol
+// MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder*)decoder;
 {
@@ -205,9 +205,8 @@
   [encoder encodeObject:pointsDict forKey:@"pointsDictionary"];
 }
 
-@end
-
-@implementation IFEnvironment (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (id)initWithContentsOfDictionary:(NSDictionary*)dict;
 {

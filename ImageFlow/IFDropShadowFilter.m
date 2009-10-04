@@ -29,10 +29,10 @@
   if (arity == 1) {
     IFExpression* sh = [IFExpression primitiveWithTag:IFPrimitiveTag_SingleColor operands:
                         [IFExpression argumentWithIndex:0],
-                        [IFExpression variableWithName:@"color"],
+                        [IFConstantExpression expressionWithObject:[settings valueForKey:@"color"] tag:IFExpressionTag_Color],
                         nil];
-    IFExpression* trSh = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:sh, [IFExpression variableWithName:@"offset"], nil];
-    IFExpression* blTrSh = [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:trSh, [IFExpression variableWithName:@"blur"], nil];
+    IFExpression* trSh = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:sh, [IFConstantExpression expressionWithObject:[settings valueForKey:@"offset"] tag:IFExpressionTag_Point], nil];
+    IFExpression* blTrSh = [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:trSh, [IFConstantExpression expressionWithObject:[settings valueForKey:@"blur"] tag:IFExpressionTag_Num], nil];
     
     return [NSArray arrayWithObject:
             [IFExpression lambdaWithBody:

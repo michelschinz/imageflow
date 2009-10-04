@@ -32,11 +32,8 @@
 {
   NSMutableArray* operands = [NSMutableArray arrayWithCapacity:arity];
   for (unsigned i = 0; i < arity; ++i)
-    [operands addObject:[IFExpression argumentWithIndex:arity - (i + 1)]];
-  IFExpression* expr = [IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:operands];
-  for (unsigned i = 0; i < arity; ++i)
-    expr = [IFExpression lambdaWithBody:expr];
-  return [NSArray arrayWithObject:expr];
+    [operands addObject:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:i]];
+  return [NSArray arrayWithObject:[IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:operands]]];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

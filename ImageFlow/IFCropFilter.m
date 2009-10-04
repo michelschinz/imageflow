@@ -33,7 +33,7 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_Crop operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"rectangle"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"rectangle"] tag:IFExpressionTag_Rect],
               nil]]];
   } else {
     return [NSArray array];

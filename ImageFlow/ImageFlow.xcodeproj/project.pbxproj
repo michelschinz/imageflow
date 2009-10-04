@@ -18,8 +18,6 @@
 		FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA033C780ACD647500D2775B /* libcurses.dylib */; };
 		FA0527FA0FF39ECA00F8F15B /* IFAverageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0527F90FF39ECA00F8F15B /* IFAverageFilter.m */; };
 		FA0527FE0FF3A1D600F8F15B /* IFAverageCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0527FD0FF3A1D600F8F15B /* IFAverageCIFilter.m */; };
-		FA0606240914B1FF002A2527 /* IFExpressionVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */; };
-		FA0607F809151F8C002A2527 /* IFExpressionPlugger.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */; };
 		FA07FE130B3145FA00057249 /* surrogate_parent_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */; };
 		FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */; };
 		FA07FECD0B318D5800057249 /* surrogate_parent_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */; };
@@ -184,7 +182,6 @@
 		FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF26990AE7947100BD8954 /* mask-invert.cikernel */; };
 		FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */; };
 		FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA81F0906145B00F76B8A /* IFEnvironment.m */; };
-		FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */; };
 		FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */; };
 		FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */; };
 		FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */; };
@@ -282,10 +279,6 @@
 		FA0527F90FF39ECA00F8F15B /* IFAverageFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAverageFilter.m; sourceTree = "<group>"; };
 		FA0527FC0FF3A1D600F8F15B /* IFAverageCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAverageCIFilter.h; sourceTree = "<group>"; };
 		FA0527FD0FF3A1D600F8F15B /* IFAverageCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAverageCIFilter.m; sourceTree = "<group>"; };
-		FA0606210914B1FF002A2527 /* IFExpressionVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionVisitor.h; sourceTree = "<group>"; };
-		FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionVisitor.m; sourceTree = "<group>"; };
-		FA0607F509151F8C002A2527 /* IFExpressionPlugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionPlugger.h; sourceTree = "<group>"; };
-		FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionPlugger.m; sourceTree = "<group>"; };
 		FA07FE0F0B3145FA00057249 /* surrogate_parent_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_1.jpg; sourceTree = "<group>"; };
 		FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_2.jpg; sourceTree = "<group>"; };
 		FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = surrogate_parent_3.jpg; sourceTree = "<group>"; };
@@ -561,8 +554,6 @@
 		FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-threshold.cikernel"; sourceTree = "<group>"; };
 		FAEFA81E0906145B00F76B8A /* IFEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEnvironment.h; sourceTree = "<group>"; };
 		FAEFA81F0906145B00F76B8A /* IFEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEnvironment.m; sourceTree = "<group>"; };
-		FAEFA87B09062AED00F76B8A /* IFVariableExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariableExpression.h; sourceTree = "<group>"; };
-		FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariableExpression.m; sourceTree = "<group>"; };
 		FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageConstantExpression.h; sourceTree = "<group>"; };
 		FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageConstantExpression.m; sourceTree = "<group>"; };
 		FAF1B3B10ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBlendFilterAnnotationSource.h; sourceTree = "<group>"; };
@@ -811,8 +802,6 @@
 				FABF45DC106E35C900CE58BC /* IFApplyExpression.m */,
 				FA9CF9A2106CED89005B4A20 /* IFPrimitiveExpression.h */,
 				FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */,
-				FAEFA87B09062AED00F76B8A /* IFVariableExpression.h */,
-				FAEFA87C09062AED00F76B8A /* IFVariableExpression.m */,
 				FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */,
 				FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */,
 				FAF934FB0908094E00558366 /* IFConstantExpression.h */,
@@ -823,10 +812,6 @@
 				FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */,
 				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
 				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
-				FA0606210914B1FF002A2527 /* IFExpressionVisitor.h */,
-				FA0606220914B1FF002A2527 /* IFExpressionVisitor.m */,
-				FA0607F509151F8C002A2527 /* IFExpressionPlugger.h */,
-				FA0607F609151F8C002A2527 /* IFExpressionPlugger.m */,
 			);
 			name = Expressions;
 			sourceTree = "<group>";
@@ -1780,13 +1765,10 @@
 				FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */,
 				FA690ACD0905256F0096B97D /* IFExpression.m in Sources */,
 				FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */,
-				FAEFA87E09062AED00F76B8A /* IFVariableExpression.m in Sources */,
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
 				FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */,
 				FA40F2660912438100C8B8DD /* IFHistogramConstantExpression.m in Sources */,
-				FA0606240914B1FF002A2527 /* IFExpressionVisitor.m in Sources */,
-				FA0607F809151F8C002A2527 /* IFExpressionPlugger.m in Sources */,
 				FAEC284F0916137200AB4196 /* IFHistogramConstantExpressionCI.m in Sources */,
 				FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */,
 				FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */,

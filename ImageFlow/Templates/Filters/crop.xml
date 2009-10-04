@@ -7,7 +7,7 @@
       <name>IFCropFilter</name>
       <settings>
         <key>rectangle</key>
-        <rect>{{0,0}{100,100}}</rect>
+        <rect>0 0 100 100</rect>
       </settings>
       <parents>
         <hole id="2"/>

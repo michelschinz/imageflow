@@ -137,47 +137,81 @@ static IFXMLCoder* sharedCoder = nil;
 
 // MARK: Low-level encoding
 
-- (NSString*)encodeData:(id)data;
+- (NSString*)encodeAny:(id)data;
 {
   switch ([self typeForData:data]) {
     case IFXMLDataTypeString:
-      return (NSString*)data;
+      return [self encodeString:data];
     case IFXMLDataTypeNumber:
-      return [NSString stringWithFormat:@"%lf",[data doubleValue]];
+      return [self encodeDouble:[data doubleValue]];
     case IFXMLDataTypeInteger:
-      return [data description];
+      return [self encodeInt:[data intValue]];
     case IFXMLDataTypePoint:
-      return NSStringFromPoint([(NSValue*)data pointValue]);
+      return [self encodePoint:[data pointValue]];
     case IFXMLDataTypeRectangle:
-      return NSStringFromRect([(NSValue*)data rectValue]);
-    case IFXMLDataTypeColor: {
-      NSColor* color = (NSColor*)data;
-      // TODO color space???
-      return [NSString stringWithFormat:@"%f %f %f %f",[color redComponent],[color greenComponent],[color blueComponent],[color alphaComponent]];
-    }
+      return [self encodeRect:[data rectValue]];
+    case IFXMLDataTypeColor: 
+      return [self encodeColor:data];
     case IFXMLDataTypeExpression:
-      return [[(IFExpression*)data asXML] XMLStringWithOptions:NSXMLNodeCompactEmptyElement];
+      return [self encodeExpression:data];
     case IFXMLDataTypeData:
-      return [(NSData*)data base64Encoding];
+      return [self encodeData:data];
     default:
       NSAssert(NO, @"unexpected type");
       return nil;
   }
 }
 
-- (NSString*)encodeFloat:(float)data;
-{
-  return [self encodeData:[NSNumber numberWithFloat:data]];
-}
-
 - (NSString*)encodeInt:(int)data;
 {
-  return [self encodeData:[NSNumber numberWithInt:data]];
+  return [NSString stringWithFormat:@"%d", data];
 }
 
 - (NSString*)encodeUnsignedInt:(unsigned int)data;
 {
-  return [self encodeData:[NSNumber numberWithInt:data]];
+  return [NSString stringWithFormat:@"%u", data];
+}
+
+- (NSString*)encodeFloat:(float)data;
+{
+  return [NSString stringWithFormat:@"%f", data];
+}
+
+- (NSString*)encodeDouble:(double)data;
+{
+  return [NSString stringWithFormat:@"%lf", data];
+}
+
+- (NSString*)encodeString:(NSString*)data;
+{
+  // Note: escaping will be performed by NSXML classes later
+  return data;
+}
+
+- (NSString*)encodePoint:(NSPoint)data;
+{
+  return [NSString stringWithFormat:@"%f %f", data.x, data.y];
+}
+
+- (NSString*)encodeRect:(NSRect)data;
+{
+  return [NSString stringWithFormat:@"%f %f %f %f", data.origin.x, data.origin.y, data.size.width, data.size.height];
+}
+
+- (NSString*)encodeColor:(NSColor*)data;
+{
+  // TODO: encode color space
+  return [NSString stringWithFormat:@"%f %f %f %f", data.redComponent, data.greenComponent, data.blueComponent, data.alphaComponent];
+}
+
+- (NSString*)encodeExpression:(IFExpression*)data;
+{
+  return [[data asXML] XMLStringWithOptions:NSXMLNodeCompactEmptyElement];
+}
+
+- (NSString*)encodeData:(NSData*)data;
+{
+  return [data base64Encoding];
 }
 
 // MARK: High-level decoding
@@ -198,9 +232,9 @@ static IFXMLCoder* sharedCoder = nil;
     else if ([childName isEqualToString:@"description"])
       [document setDocumentDescription:[child stringValue]];
     else if ([childName isEqualToString:@"resolution-x"])
-      [document setResolutionX:[[self decodeString:[child stringValue] type:IFXMLDataTypeNumber] floatValue]];
+      [document setResolutionX:[self decodeFloat:[child stringValue]]];
     else if ([childName isEqualToString:@"resolution-y"])
-      [document setResolutionY:[[self decodeString:[child stringValue] type:IFXMLDataTypeNumber] floatValue]];
+      [document setResolutionY:[self decodeFloat:[child stringValue]]];
     else if ([childName isEqualToString:@"canvas-bounds"])
       [document setCanvasBounds:NSRectFromString([child stringValue])];
     else if ([childName isEqualToString:@"tree"])
@@ -290,58 +324,90 @@ static IFXMLCoder* sharedCoder = nil;
 
 // MARK: Low-level decoding
 
-- (id)decodeString:(NSString*)string type:(IFXMLDataType)type;
+- (id)decodeAny:(NSString*)string type:(IFXMLDataType)type;
 {
   switch (type) {
     case IFXMLDataTypeString:
-      return string;
+      return [self decodeString:string];
     case IFXMLDataTypeInteger:
-      return [NSNumber numberWithInt:(int)strtod([string UTF8String], NULL)];
+      return [NSNumber numberWithInt:[self decodeInt:string]];
     case IFXMLDataTypeNumber:
-      return [NSNumber numberWithDouble:strtod([string UTF8String], NULL)];
+      return [NSNumber numberWithDouble:[self decodeDouble:string]];
     case IFXMLDataTypePoint:
-      return [NSValue valueWithPoint:NSPointFromString(string)];
+      return [NSValue valueWithPoint:[self decodePoint:string]];
     case IFXMLDataTypeRectangle:
-      return [NSValue valueWithRect:NSRectFromString(string)];
-    case IFXMLDataTypeColor: {
-      NSArray* componentStrs = [string componentsSeparatedByString:@" "];
-      // TODO color space???
-      return [NSColor colorWithCalibratedRed:strtof([[componentStrs objectAtIndex:0] UTF8String], NULL)
-                                       green:strtof([[componentStrs objectAtIndex:1] UTF8String], NULL)
-                                        blue:strtof([[componentStrs objectAtIndex:2] UTF8String], NULL)
-                                       alpha:strtof([[componentStrs objectAtIndex:3] UTF8String], NULL)];
-    }
-    case IFXMLDataTypeExpression: {
-      NSError* outError = nil; // TODO handle errors
-      NSXMLElement* xmlElement = [[[NSXMLElement alloc] initWithXMLString:string error:&outError] autorelease];
-      return [IFExpression expressionWithXML:xmlElement];
-    }
+      return [NSValue valueWithRect:[self decodeRect:string]];
+    case IFXMLDataTypeColor:
+      return [self decodeColor:string];
+    case IFXMLDataTypeExpression:
+      return [self decodeExpression:string];
     case IFXMLDataTypeData:
-      return [NSData dataWithBase64EncodedString:string];
+      return [self decodeData:string];
     default:
       NSAssert1(NO, @"invalid type name %d", type);
       return nil;
   }
 }
 
-- (id)decodeString:(NSString*)string typeName:(NSString*)typeName;
+- (int)decodeInt:(NSString*)string;
 {
-  return [self decodeString:string type:[typeNames indexOfObject:typeName]];
+  return (int)strtol([string UTF8String], NULL, 10);
+}
+
+- (unsigned)decodeUnsignedInt:(NSString*)string;
+{
+  return (unsigned)strtol([string UTF8String], NULL, 10);
 }
 
 - (float)decodeFloat:(NSString*)string;
 {
-  return [[self decodeString:string type:IFXMLDataTypeNumber] floatValue];
+  return strtof([string UTF8String], NULL);
 }
 
-- (int)decodeInt:(NSString*)string;
+- (double)decodeDouble:(NSString*)string;
 {
-  return [[self decodeString:string type:IFXMLDataTypeNumber] intValue];
+  return strtod([string UTF8String], NULL);
 }
 
-- (unsigned int)decodeUnsignedInt:(NSString*)string;
+- (NSString*)decodeString:(NSString*)string;
 {
-  return [[self decodeString:string type:IFXMLDataTypeNumber] unsignedIntValue];
+  return string;
+}
+
+- (NSPoint)decodePoint:(NSString*)string;
+{
+  NSArray* components = [string componentsSeparatedByString:@" "];
+  return NSMakePoint(strtof([[components objectAtIndex:0] UTF8String], NULL),
+                     strtof([[components objectAtIndex:1] UTF8String], NULL));
+}
+
+- (NSRect)decodeRect:(NSString*)string;
+{
+  NSArray* components = [string componentsSeparatedByString:@" "];
+  return NSMakeRect(strtof([[components objectAtIndex:0] UTF8String], NULL),
+                    strtof([[components objectAtIndex:1] UTF8String], NULL),
+                    strtof([[components objectAtIndex:2] UTF8String], NULL),
+                    strtof([[components objectAtIndex:3] UTF8String], NULL));
+}
+
+- (NSColor*)decodeColor:(NSString*)string;
+{
+  NSArray* components = [string componentsSeparatedByString:@" "];
+  return [NSColor colorWithCalibratedRed:strtof([[components objectAtIndex:0] UTF8String], NULL)
+                                   green:strtof([[components objectAtIndex:1] UTF8String], NULL)
+                                    blue:strtof([[components objectAtIndex:2] UTF8String], NULL)
+                                   alpha:strtof([[components objectAtIndex:3] UTF8String], NULL)];
+}
+
+- (IFExpression*)decodeExpression:(NSString*)string;
+{
+  NSError* outError = nil; // TODO: handle errors
+  return [IFExpression expressionWithXML:[[[NSXMLElement alloc] initWithXMLString:string error:&outError] autorelease]];  
+}
+
+- (NSData*)decodeData:(NSString*)string;
+{
+  return [NSData dataWithBase64EncodedString:string];
 }
 
 // MARK: -
@@ -381,7 +447,7 @@ static IFXMLCoder* sharedCoder = nil;
 //    if ([value isKindOfClass:[IFExpression class]])
 //      continue;
     [xmlSettings addChild:[NSXMLElement elementWithName:@"key" stringValue:key]];
-    [xmlSettings addChild:[NSXMLElement elementWithName:[self typeNameForData:value] stringValue:[self encodeData:value]]];
+    [xmlSettings addChild:[NSXMLElement elementWithName:[self typeNameForData:value] stringValue:[self encodeAny:value]]];
   }
   return xmlSettings;
 }
@@ -420,7 +486,7 @@ static IFXMLCoder* sharedCoder = nil;
   for (int i = 0; i < [xml childCount]; i += 2) {
     NSXMLNode* keyNode = [xml childAtIndex:i];
     NSXMLNode* valueNode = [xml childAtIndex:i+1];
-    [env setValue:[self decodeString:[valueNode stringValue] typeName:[valueNode name]] forKey:[keyNode stringValue]];
+    [env setValue:[self decodeAny:[valueNode stringValue] type:[typeNames indexOfObject:[valueNode name]]] forKey:[keyNode stringValue]];
   }
   return env;
 }

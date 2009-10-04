@@ -41,8 +41,6 @@ let rec print0 fmt = function
       done;
       pp_print_string fmt ")";
       pp_close_box fmt()
-  | Var name ->
-      pp_print_string fmt(name)
   | Arg index ->
       pp_print_string fmt "#";
       pp_print_int fmt index
@@ -61,8 +59,9 @@ let rec print0 fmt = function
       pp_print_string fmt "]";
       pp_close_box fmt()
   | Tuple elems ->
-      pp_open_box fmt(1);
-      pp_print_string fmt("(");
+      pp_open_box fmt 7;
+      pp_print_string fmt("(tuple");
+      pp_print_space fmt ();
       for i = 0 to (Array.length elems) - 1 do
         if i > 0 then begin
           pp_print_string fmt ";";

@@ -10,9 +10,9 @@
 #import "IFLambdaExpression.h"
 #import "IFMapExpression.h"
 #import "IFApplyExpression.h"
-#import "IFVariableExpression.h"
 #import "IFConstantExpression.h"
-#import "IFExpressionVisitor.h"
+#import "IFPrimitiveExpression.h"
+#import "IFArgumentExpression.h"
 
 #import <caml/memory.h>
 
@@ -68,6 +68,16 @@
   return [self primitiveWithTag:IFPrimitiveTag_ArrayGet operands:arrayExpression, [IFConstantExpression expressionWithInt:index], nil];
 }
 
++ (IFExpression*)tupleCreate:(NSArray*)tupleElements;
+{
+  return [self primitiveWithTag:IFPrimitiveTag_PTupleCreate operandsArray:tupleElements];
+}
+
++ (IFExpression*)tupleGet:(IFExpression*)tupleExpression index:(unsigned)index;
+{
+  return [self primitiveWithTag:IFPrimitiveTag_PTupleGet operands:tupleExpression, [IFConstantExpression expressionWithInt:index], nil];
+}
+
 + (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operand:(IFExpression*)theOperand;
 {
   return [self primitiveWithTag:theTag operands:theOperand, nil];
@@ -108,11 +118,6 @@
   return [[[IFApplyExpression alloc] initWithFunction:theFunction argument:theArgument] autorelease];
 }
 
-+ (IFExpression*)variableWithName:(NSString*)theName;
-{
-  return [[[IFVariableExpression alloc] initWithName:theName] autorelease];
-}
-
 + (IFExpression*)argumentWithIndex:(unsigned)theIndex;
 {
   return [[(IFArgumentExpression*)[IFArgumentExpression alloc] initWithIndex:theIndex] autorelease];
@@ -134,11 +139,6 @@
   [super dealloc];
 }
 
-- (void)accept:(IFExpressionVisitor*)visitor;
-{
-  [self doesNotRecognizeSelector:_cmd];
-}
-
 - (NSUInteger)hash;
 {
   [self doesNotRecognizeSelector:_cmd];
@@ -150,8 +150,6 @@
   NSString* xmlName = [xmlTree name];
   if ([xmlName isEqualToString:@"primitive"])
     return [[[IFPrimitiveExpression alloc] initWithXML:xmlTree] autorelease];
-  else if ([xmlName isEqualToString:@"variable"])
-    return [[[IFVariableExpression alloc] initWithXML:xmlTree] autorelease];
   else if ([xmlName isEqualToString:@"constant"])
     return [[[IFConstantExpression alloc] initWithXML:xmlTree] autorelease];
   else {

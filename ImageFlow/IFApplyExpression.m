@@ -7,7 +7,6 @@
 //
 
 #import "IFApplyExpression.h"
-#import "IFExpressionVisitor.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -31,11 +30,6 @@
 }
 
 @synthesize function, argument;
-
-- (void)accept:(IFExpressionVisitor*)visitor;
-{
-  [visitor caseApplyExpression:self];
-}
 
 - (BOOL)isEqual:(id)other;
 {

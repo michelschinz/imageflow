@@ -9,7 +9,6 @@
 #import "IFArgumentExpression.h"
 
 #import "IFXMLCoder.h"
-#import "IFExpressionVisitor.h"
 #import "IFExpressionTags.h"
 
 #import <caml/memory.h>
@@ -32,19 +31,14 @@
 
 @synthesize index;
 
-- (void)accept:(IFExpressionVisitor*)visitor;
-{
-  [visitor caseArgumentExpression:self];
-}
-
 - (NSUInteger)hash;
 {
   return index * 19;
 }
 
-- (BOOL)isEqualAtRoot:(id)other;
+- (BOOL)isEqual:(id)other;
 {
-  return [other isKindOfClass:[IFArgumentExpression class]] && (index == ((IFArgumentExpression*)other).index);
+  return [other isKindOfClass:[IFArgumentExpression class]] && (index == [(IFArgumentExpression*)other index]);
 }
 
 // MARK: XML input/output
@@ -52,14 +46,14 @@
 - (id)initWithXML:(NSXMLElement*)xmlTree;
 {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
-  return [self initWithIndex:[(NSNumber*)[xmlCoder decodeString:[[xmlTree attributeForName:@"index"] stringValue] type:IFXMLDataTypeNumber] intValue]];
+  return [self initWithIndex:[xmlCoder decodeInt:[[xmlTree attributeForName:@"index"] stringValue]]];
 }
 
 - (NSXMLElement*)asXML;
 {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
   NSXMLElement* elem = [NSXMLElement elementWithName:@"arg"];
-  [elem addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[xmlCoder encodeData:[NSNumber numberWithInt:index]]]];
+  [elem addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[xmlCoder encodeInt:index]]];
   return elem;
 }
 

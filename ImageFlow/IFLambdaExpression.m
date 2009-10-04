@@ -9,7 +9,6 @@
 #import "IFLambdaExpression.h"
 
 #import "IFExpressionTags.h"
-#import "IFExpressionVisitor.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -32,11 +31,6 @@
 }
 
 @synthesize body;
-
-- (void)accept:(IFExpressionVisitor*)visitor;
-{
-  [visitor caseLambdaExpression:self];
-}
 
 - (BOOL)isEqual:(id)other;
 {

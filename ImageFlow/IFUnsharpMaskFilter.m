@@ -30,8 +30,8 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_UnsharpMask operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"intensity"],
-              [IFExpression variableWithName:@"radius"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"intensity"] tag:IFExpressionTag_Num],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"radius"] tag:IFExpressionTag_Num],
               nil]]];
   } else {
     return [NSArray array];

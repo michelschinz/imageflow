@@ -6,7 +6,6 @@ type t =
   | Map of t * t
   | Apply of t * t
   | Prim of Primitives.t * t array
-  | Var of string
   | Arg of int
     (* values *)
   | Closure of (t list) * t
@@ -30,7 +29,6 @@ let is_value = function
   | Map _
   | Apply _
   | Prim _
-  | Var _
   | Arg _ ->
       false
   | Closure _
@@ -75,7 +73,6 @@ let rec equal (e1 : t) (e2 : t) =
   | Lambda _, Lambda _
   | Map _, Map _
   | Apply _, Apply _
-  | Var _, Var _
   | Arg _, Arg _
   | Closure _, Closure _
   | Color _, Color _

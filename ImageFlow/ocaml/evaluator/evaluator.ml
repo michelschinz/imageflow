@@ -51,7 +51,6 @@ and eval_really cache env expr =
           raise (EvalError (Error None))
       in
       eval_prim op evaluated_args
-  (* TODO: Var ??? *)
   | Arg i ->
       List.nth env i
   | other when is_value other ->

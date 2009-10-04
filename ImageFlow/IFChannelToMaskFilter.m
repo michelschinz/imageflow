@@ -29,7 +29,7 @@
             [IFExpression lambdaWithBody:
              [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:
               [IFExpression argumentWithIndex:0],
-              [IFExpression variableWithName:@"channel"],
+              [IFConstantExpression expressionWithObject:[settings valueForKey:@"channel"] tag:IFExpressionTag_Int],
               nil]]];
   } else {
     return [NSArray array];

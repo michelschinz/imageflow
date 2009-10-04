@@ -44,12 +44,11 @@ static IFConstantExpression* maskColor = nil;
 {
   if (arity == 2) {
     return [NSArray arrayWithObject:
-            [IFExpression lambdaWithBody:
              [IFExpression lambdaWithBody:
               [IFExpression primitiveWithTag:IFPrimitiveTag_Mask operands:
-               [IFExpression argumentWithIndex:1],
-               [IFExpression argumentWithIndex:0],
-               nil]]]];
+               [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0],
+               [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
+               nil]]];
   } else {
     return [NSArray array];
   }

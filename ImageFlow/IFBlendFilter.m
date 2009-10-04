@@ -43,16 +43,15 @@ static NSArray* parentNames = nil;
 {
   if (arity == 2) {
     IFExpression* opFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Opacity operands:
-                           [IFExpression argumentWithIndex:0],
-                           [IFExpression variableWithName:@"alpha"],
+                           [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
+                           [IFConstantExpression expressionWithObject:[settings valueForKey:@"alpha"] tag:IFExpressionTag_Num],
                            nil];
-    IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFExpression variableWithName:@"translation"], nil];
+    IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFConstantExpression expressionWithObject:[settings valueForKey:@"translation"] tag:IFExpressionTag_Point], nil];
     return [NSArray arrayWithObject:
             [IFExpression lambdaWithBody:
-             [IFExpression lambdaWithBody:
-              [IFExpression blendBackground:[IFExpression argumentWithIndex:1]
-                             withForeground:trOpFgd
-                                     inMode:[IFExpression variableWithName:@"mode"]]]]];
+             [IFExpression blendBackground:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0]
+                            withForeground:trOpFgd
+                                    inMode:[IFConstantExpression expressionWithObject:[settings valueForKey:@"mode"] tag:IFExpressionTag_Int]]]];
   } else {
     return [NSArray array];
   }
