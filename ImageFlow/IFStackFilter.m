@@ -28,12 +28,14 @@
   }
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
+  NSAssert(typeIndex == 0, @"invalid arity or type index");
+
   NSMutableArray* operands = [NSMutableArray arrayWithCapacity:arity];
   for (unsigned i = 0; i < arity; ++i)
     [operands addObject:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:i]];
-  return [NSArray arrayWithObject:[IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:operands]]];
+  return [IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:operands]];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

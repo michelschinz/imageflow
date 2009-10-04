@@ -32,12 +32,13 @@
   }
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  IFExpression* expr = [IFExpression fail];
-  for (unsigned i = 0; i < arity; ++i)
-    expr = [IFExpression lambdaWithBody:expr];
-  return [NSArray arrayWithObject:expr];
+  NSAssert(typeIndex == 0, @"invalid type index");
+  if (arity == 0)
+    return [IFExpression fail];
+  else
+    return [IFExpression lambdaWithBody:[IFExpression fail]];
 }
 
 - (NSString*)computeLabel;

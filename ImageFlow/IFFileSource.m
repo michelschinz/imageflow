@@ -22,14 +22,10 @@
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 0) {
-    return [NSArray arrayWithObject:
-            [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFConstantExpression expressionWithString:[settings valueForKey:@"fileName"]]]];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 0 && typeIndex == 0, @"invalid arity or type index");
+  return [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFConstantExpression expressionWithString:[settings valueForKey:@"fileName"]]];
 }
 
 - (NSString*)computeLabel;

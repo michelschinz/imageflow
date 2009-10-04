@@ -25,24 +25,22 @@
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 1) {
-    return [NSArray arrayWithObjects:
-            [IFExpression lambdaWithBody:
-             [IFExpression primitiveWithTag:IFPrimitiveTag_Threshold operands:
-              [IFExpression argumentWithIndex:0],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
-              nil]],
-            [IFExpression lambdaWithBody:
-             [IFExpression primitiveWithTag:IFPrimitiveTag_ThresholdMask operands:
-              [IFExpression argumentWithIndex:0],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
-              nil]],
-            nil];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 1 && typeIndex <= 1, @"invalid arity or type index");
+
+  if (typeIndex == 0)
+    return [IFExpression lambdaWithBody:
+            [IFExpression primitiveWithTag:IFPrimitiveTag_Threshold operands:
+             [IFExpression argumentWithIndex:0],
+             [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
+             nil]];
+  else
+    return [IFExpression lambdaWithBody:
+            [IFExpression primitiveWithTag:IFPrimitiveTag_ThresholdMask operands:
+             [IFExpression argumentWithIndex:0],
+             [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
+             nil]];
 }
 
 - (NSString*)computeLabel;

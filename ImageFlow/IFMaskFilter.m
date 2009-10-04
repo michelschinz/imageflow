@@ -40,18 +40,14 @@ static IFConstantExpression* maskColor = nil;
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 2) {
-    return [NSArray arrayWithObject:
-             [IFExpression lambdaWithBody:
-              [IFExpression primitiveWithTag:IFPrimitiveTag_Mask operands:
-               [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0],
-               [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
-               nil]]];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 2 && typeIndex == 0, @"invalid arity or type index");
+  return [IFExpression lambdaWithBody:
+          [IFExpression primitiveWithTag:IFPrimitiveTag_Mask operands:
+           [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0],
+           [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
+           nil]];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

@@ -26,18 +26,14 @@
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 1) {
-    return [NSArray arrayWithObject:
-            [IFExpression lambdaWithBody:
-             [IFExpression primitiveWithTag:IFPrimitiveTag_Crop operands:
-              [IFExpression argumentWithIndex:0],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"rectangle"] tag:IFExpressionTag_Rect],
-              nil]]];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
+  return [IFExpression lambdaWithBody:
+          [IFExpression primitiveWithTag:IFPrimitiveTag_Crop operands:
+           [IFExpression argumentWithIndex:0],
+           [IFConstantExpression expressionWithObject:[settings valueForKey:@"rectangle"] tag:IFExpressionTag_Rect],
+           nil]];
 }
 
 - (NSString*)computeLabel;

@@ -39,22 +39,19 @@ static NSArray* parentNames = nil;
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 2) {
-    IFExpression* opFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Opacity operands:
-                           [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
-                           [IFConstantExpression expressionWithObject:[settings valueForKey:@"alpha"] tag:IFExpressionTag_Num],
-                           nil];
-    IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFConstantExpression expressionWithObject:[settings valueForKey:@"translation"] tag:IFExpressionTag_Point], nil];
-    return [NSArray arrayWithObject:
-            [IFExpression lambdaWithBody:
-             [IFExpression blendBackground:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0]
-                            withForeground:trOpFgd
-                                    inMode:[IFConstantExpression expressionWithObject:[settings valueForKey:@"mode"] tag:IFExpressionTag_Int]]]];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 2 && typeIndex == 0, @"invalid arity or type index");
+
+  IFExpression* opFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Opacity operands:
+                         [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
+                         [IFConstantExpression expressionWithObject:[settings valueForKey:@"alpha"] tag:IFExpressionTag_Num],
+                         nil];
+  IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFConstantExpression expressionWithObject:[settings valueForKey:@"translation"] tag:IFExpressionTag_Point], nil];
+  return [IFExpression lambdaWithBody:
+          [IFExpression blendBackground:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0]
+                         withForeground:trOpFgd
+                                 inMode:[IFConstantExpression expressionWithObject:[settings valueForKey:@"mode"] tag:IFExpressionTag_Int]]];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

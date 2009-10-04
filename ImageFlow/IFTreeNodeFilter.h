@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeNode.h"
+#import "IFExpression.h"
 #import "IFEnvironment.h"
 #import "IFType.h"
 
@@ -28,6 +29,6 @@
 // MARK: -
 // MARK: PROTECTED
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 
 @end

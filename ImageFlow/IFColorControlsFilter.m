@@ -22,20 +22,16 @@
     return [NSArray array];
 }
 
-- (NSArray*)potentialRawExpressionsForArity:(unsigned)arity;
+- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
-  if (arity == 1) {
-    return [NSArray arrayWithObject:
-            [IFExpression lambdaWithBody:
-             [IFExpression primitiveWithTag:IFPrimitiveTag_ColorControls operands:
-              [IFExpression argumentWithIndex:0],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"contrast"] tag:IFExpressionTag_Num],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"brightness"] tag:IFExpressionTag_Num],
-              [IFConstantExpression expressionWithObject:[settings valueForKey:@"saturation"] tag:IFExpressionTag_Num],
-              nil]]];
-  } else {
-    return [NSArray array];
-  }
+  NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
+  return [IFExpression lambdaWithBody:
+          [IFExpression primitiveWithTag:IFPrimitiveTag_ColorControls operands:
+           [IFExpression argumentWithIndex:0],
+           [IFConstantExpression expressionWithObject:[settings valueForKey:@"contrast"] tag:IFExpressionTag_Num],
+           [IFConstantExpression expressionWithObject:[settings valueForKey:@"brightness"] tag:IFExpressionTag_Num],
+           [IFConstantExpression expressionWithObject:[settings valueForKey:@"saturation"] tag:IFExpressionTag_Num],
+           nil]];
 }
 
 - (NSString*)computeLabel;
