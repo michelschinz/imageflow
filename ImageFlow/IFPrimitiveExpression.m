@@ -7,6 +7,7 @@
 //
 
 #import "IFPrimitiveExpression.h"
+#import "IFFNVHash.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>

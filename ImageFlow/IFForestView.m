@@ -236,7 +236,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     [self moveToNode:currentNode path:pathAtLeft extendingSelection:extendSelection];
   else {
     NSArray* siblings = [[document tree] siblingsOfNode:currentNode];
-    int indexInSiblings = [siblings indexOfObject:currentNode];
+    NSUInteger indexInSiblings = [siblings indexOfObject:currentNode];
     if (indexInSiblings != NSNotFound && indexInSiblings > 0)
       [self moveToNode:[siblings objectAtIndex:(indexInSiblings - 1)] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
     else
@@ -273,7 +273,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     [self moveToNode:currentNode path:pathAtRight extendingSelection:extendSelection];
   else {
     NSArray* siblings = [[document tree] siblingsOfNode:currentNode];
-    int indexInSiblings = [siblings indexOfObject:currentNode];
+    NSUInteger indexInSiblings = [siblings indexOfObject:currentNode];
     if (indexInSiblings != NSNotFound && indexInSiblings < [siblings count] - 1)
       [self moveToNode:[siblings objectAtIndex:(indexInSiblings + 1)] path:nil extendingSelection:extendSelection]; // FIXME: pass correct path
     else
@@ -483,7 +483,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 // NSDraggingSource methods
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 {
   if (isLocal) {
     NSSet* selected = [self selectedNodes];

@@ -270,7 +270,7 @@
 
     for (IFOrientedGraphEdge* edge in [nodeToEdgeSet objectForKey:node]) {
       if ([edge fromNode] == node)
-        fprintf(stderr, "  n%d -> n%d;\n", i, [nodesArray indexOfObject:[edge toNode]]);
+        fprintf(stderr, "  n%d -> n%ld;\n", i, [nodesArray indexOfObject:[edge toNode]]);
     }
   }
   fprintf(stderr, "}\n");

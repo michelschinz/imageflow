@@ -267,7 +267,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
 // Dragging source
 
-- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
+- (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal;
 {
   return NSDragOperationCopy; // TODO: add NSDragOperationDelete, which implies implementing imageEndedAt...
 }
