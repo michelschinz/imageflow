@@ -32,7 +32,7 @@
   }
 }
 
-- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
+- (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(typeIndex == 0, @"invalid type index");
   if (arity == 0)

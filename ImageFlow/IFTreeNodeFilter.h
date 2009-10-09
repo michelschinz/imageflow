@@ -29,6 +29,6 @@
 // MARK: -
 // MARK: PROTECTED
 
-- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
+- (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 
 @end

@@ -77,7 +77,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 {
   const unsigned arity = [altParentExpressions count];
-  IFExpression* expr = [self potentialRawExpressionsForArity:arity typeIndex:altActiveTypeIndex];
+  IFExpression* expr = [self rawExpressionForArity:arity typeIndex:altActiveTypeIndex];
 
   if (arity == 0) {
     return expr;
@@ -200,7 +200,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 // MARK: -
 // MARK: PROTECTED
 
-- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
+- (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   [self doesNotRecognizeSelector:_cmd];
   return nil;

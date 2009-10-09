@@ -40,7 +40,7 @@ static IFConstantExpression* maskColor = nil;
     return [NSArray array];
 }
 
-- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
+- (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 2 && typeIndex == 0, @"invalid arity or type index");
   return [IFExpression lambdaWithBody:

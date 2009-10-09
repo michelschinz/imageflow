@@ -25,7 +25,7 @@
     return [NSArray array];
 }
 
-- (IFExpression*)potentialRawExpressionsForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
+- (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 1 && typeIndex <= 1, @"invalid arity or type index");
 
