@@ -8,8 +8,6 @@
 
 #import "IFExpression.h"
 #import "IFLambdaExpression.h"
-#import "IFMapExpression.h"
-#import "IFApplyExpression.h"
 #import "IFConstantExpression.h"
 #import "IFPrimitiveExpression.h"
 #import "IFArgumentExpression.h"
@@ -110,12 +108,12 @@
 
 + (IFExpression*)mapWithFunction:(IFExpression*)theFunction array:(IFExpression*)theArray;
 {
-  return [[[IFMapExpression alloc] initWithFunction:theFunction array:theArray] autorelease];
+  return [self primitiveWithTag:IFPrimitiveTag_PMap operands:theFunction, theArray, nil];
 }
 
 + (IFExpression*)applyWithFunction:(IFExpression*)theFunction argument:(IFExpression*)theArgument;
 {
-  return [[[IFApplyExpression alloc] initWithFunction:theFunction argument:theArgument] autorelease];
+  return [self primitiveWithTag:IFPrimitiveTag_PApply operands:theFunction, theArgument, nil];
 }
 
 + (IFExpression*)argumentWithIndex:(unsigned)theIndex;

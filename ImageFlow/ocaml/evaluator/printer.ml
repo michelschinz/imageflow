@@ -13,24 +13,6 @@ let rec print0 fmt = function
       print0 fmt b;
       pp_print_string fmt ")";
       pp_close_box fmt ()
-  | Map(f, arr) ->
-      pp_open_box fmt 5;
-      pp_print_string fmt ("(map");
-      pp_print_space fmt ();
-      print0 fmt f;
-      pp_print_space fmt ();
-      print0 fmt arr;
-      pp_print_string fmt ")";
-      pp_close_box fmt ()
-  | Apply(f, arg) ->
-      pp_open_box fmt 1;
-      pp_print_string fmt ("(");
-      pp_print_space fmt ();
-      print0 fmt f;
-      pp_print_space fmt ();
-      print0 fmt arg;
-      pp_print_string fmt ")";
-      pp_close_box fmt ()
   | Prim(op, args) ->
       let name = Primitives.name op in
       pp_open_box fmt ((String.length name) + 2);

@@ -33,24 +33,8 @@ and eval_really cache env expr =
   match expr with
   | Lambda body ->
       Closure (env, body)
-  | Map (f, arr) ->
-      begin match (eval cache env f, eval cache env arr) with
-        Closure (env', b), Array earr ->
-          Array (Array.map (fun e -> eval cache (e :: env') b) earr)
-      end
-  | Apply (f, arg) ->
-      begin match (eval cache env f, eval cache env arg) with
-        Closure (env', b), earg ->
-          eval cache (earg :: env') b
-      end
   | Prim(op, args) ->
-      let evaluated_args =
-        try
-          Array.map (eval cache env) args
-        with EvalError _ ->
-          raise (EvalError (Error None))
-      in
-      eval_prim op evaluated_args
+      eval_prim cache op (Array.map (eval cache env) args)
   | Arg i ->
       List.nth env i
   | other when is_value other ->
@@ -59,12 +43,18 @@ and eval_really cache env expr =
       failwith ("unable to evaluate expression: "
                 ^ (Printer.to_string unknown_expr))
 
-and eval_prim op args =
+and eval_prim cache op args =
   let out_image filter =
     Image (Image.of_ciimage (Coreimage.output_image filter))
   and out_mask filter =
     Mask (Image.mask_of_ciimage (Coreimage.output_image filter))
   in match (op, args) with
+    (* Functional primitives *)
+  | PApply, [|Closure (env', b); arg|] ->
+      eval cache (arg :: env') b
+  | PMap, [|Closure (env', b); Array a|] ->
+      Array (Array.map (fun e -> eval cache (e :: env') b) a)
+
     (* Array primitives *)
   | ArrayCreate, xs ->
       Array xs

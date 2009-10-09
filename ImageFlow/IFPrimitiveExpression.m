@@ -22,6 +22,7 @@ static NSArray* tagNames;
     return; // avoid repeated initialisation
 
   tagNames = [[NSArray arrayWithObjects:
+               @"apply",
                @"array-create",
                @"array-get",
                @"average",
@@ -43,6 +44,7 @@ static NSArray* tagNames;
                @"invert",
                @"invert-mask",
                @"load",
+               @"map",
                @"mask",
                @"mask-overlay",
                @"mask-to-image",

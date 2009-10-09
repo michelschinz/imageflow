@@ -6,8 +6,6 @@ type action_kind = ASave | APrint
 type t =
     (* "real" expressions (non-values) *)
   | Lambda of t
-  | Map of t * t
-  | Apply of t * t
   | Prim of Primitives.t * t array
   | Arg of int
     (* values *)

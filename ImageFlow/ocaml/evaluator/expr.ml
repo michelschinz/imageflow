@@ -3,8 +3,6 @@ type action_kind = ASave | APrint
 type t =
     (* "real" expressions (non-values) *)
   | Lambda of t
-  | Map of t * t
-  | Apply of t * t
   | Prim of Primitives.t * t array
   | Arg of int
     (* values *)
@@ -26,8 +24,6 @@ type t =
 
 let is_value = function
   | Lambda _
-  | Map _
-  | Apply _
   | Prim _
   | Arg _ ->
       false
@@ -71,8 +67,6 @@ let rec equal (e1 : t) (e2 : t) =
   | Tuple a1, Tuple a2 ->
       equalArray a1 a2
   | Lambda _, Lambda _
-  | Map _, Map _
-  | Apply _, Apply _
   | Arg _, Arg _
   | Closure _, Closure _
   | Color _, Color _

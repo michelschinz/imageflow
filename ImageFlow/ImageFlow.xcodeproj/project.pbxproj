@@ -137,8 +137,6 @@
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
 		FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */; };
-		FABF45CA106E33FF00CE58BC /* IFMapExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FABF45C9106E33FF00CE58BC /* IFMapExpression.m */; };
-		FABF45DD106E35C900CE58BC /* IFApplyExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FABF45DC106E35C900CE58BC /* IFApplyExpression.m */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
@@ -476,10 +474,6 @@
 		FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSubsetComposites.m; sourceTree = "<group>"; };
 		FABEF09B0EC4510000FAADD5 /* IFLayerGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerGeometry.h; sourceTree = "<group>"; };
 		FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerGeometry.m; sourceTree = "<group>"; };
-		FABF45C8106E33FF00CE58BC /* IFMapExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMapExpression.h; sourceTree = "<group>"; };
-		FABF45C9106E33FF00CE58BC /* IFMapExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFMapExpression.m; sourceTree = "<group>"; };
-		FABF45DB106E35C900CE58BC /* IFApplyExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFApplyExpression.h; sourceTree = "<group>"; };
-		FABF45DC106E35C900CE58BC /* IFApplyExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFApplyExpression.m; sourceTree = "<group>"; };
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FACF8C140866AC4D00985FA3 /* IFTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNode.h; sourceTree = "<group>"; };
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
@@ -796,10 +790,6 @@
 				FA690ACB0905256F0096B97D /* IFExpression.m */,
 				FAB65D9C1052EA4900385A80 /* IFLambdaExpression.h */,
 				FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */,
-				FABF45C8106E33FF00CE58BC /* IFMapExpression.h */,
-				FABF45C9106E33FF00CE58BC /* IFMapExpression.m */,
-				FABF45DB106E35C900CE58BC /* IFApplyExpression.h */,
-				FABF45DC106E35C900CE58BC /* IFApplyExpression.m */,
 				FA9CF9A2106CED89005B4A20 /* IFPrimitiveExpression.h */,
 				FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */,
 				FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */,
@@ -1894,8 +1884,6 @@
 				FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */,
 				FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */,
 				FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */,
-				FABF45CA106E33FF00CE58BC /* IFMapExpression.m in Sources */,
-				FABF45DD106E35C900CE58BC /* IFApplyExpression.m in Sources */,
 				FAB8F334106F8F6B005BE1FE /* IFTupleType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

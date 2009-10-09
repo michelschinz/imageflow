@@ -15,8 +15,6 @@
 // Constructors with arguments
 typedef enum {
   IFExpressionTag_Lambda,
-  IFExpressionTag_Map,
-  IFExpressionTag_Apply,
   IFExpressionTag_Prim,
   IFExpressionTag_Arg,
   IFExpressionTag_Closure,
@@ -40,6 +38,7 @@ typedef enum {
 // - the following tags must match the ones in ocaml/evaluator/primitives.mli
 
 typedef enum {
+  IFPrimitiveTag_PApply,
   IFPrimitiveTag_ArrayCreate,
   IFPrimitiveTag_ArrayGet,
   IFPrimitiveTag_Average,
@@ -61,6 +60,7 @@ typedef enum {
   IFPrimitiveTag_Invert,
   IFPrimitiveTag_InvertMask,
   IFPrimitiveTag_Load,
+  IFPrimitiveTag_PMap,
   IFPrimitiveTag_Mask,
   IFPrimitiveTag_MaskOverlay,
   IFPrimitiveTag_MaskToImage,

@@ -2,6 +2,7 @@
 (* ../../IFExpressionTags.h *)
 
 type t =
+  | PApply
   | ArrayCreate
   | ArrayGet
   | Average
@@ -23,6 +24,7 @@ type t =
   | Invert
   | InvertMask
   | Load
+  | PMap
   | PMask
   | MaskOverlay
   | MaskToImage

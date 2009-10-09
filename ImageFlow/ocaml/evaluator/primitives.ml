@@ -1,4 +1,5 @@
 type t =
+  | PApply
   | ArrayCreate
   | ArrayGet
   | Average
@@ -20,6 +21,7 @@ type t =
   | Invert
   | InvertMask
   | Load
+  | PMap
   | PMask
   | MaskOverlay
   | MaskToImage
@@ -47,6 +49,7 @@ type t =
   | UnsharpMask
 
 let name = function
+  | PApply -> "apply"
   | ArrayCreate -> "array-create"
   | ArrayGet -> "array-get"
   | Average -> "average"
@@ -68,6 +71,7 @@ let name = function
   | Invert -> "invert"
   | InvertMask -> "invert-mask"
   | Load -> "load"
+  | PMap -> "map"
   | PMask -> "mask"
   | MaskOverlay -> "mask-overlay"
   | MaskToImage -> "mask-to-image"
