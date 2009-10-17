@@ -13,7 +13,6 @@
 @interface IFTreeNode ()
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 @property(retain) NSString* label;
-@property(retain) NSArray* cachedTypes;
 @property(retain) IFExpression* expression;
 @end
 
@@ -39,7 +38,6 @@
 - (void)dealloc;
 {
   OBJC_RELEASE(expression);
-  OBJC_RELEASE(cachedTypes);
   OBJC_RELEASE(label);
   OBJC_RELEASE(name);
   [super dealloc];
@@ -96,11 +94,8 @@
 
 - (NSArray*)potentialTypesForArity:(unsigned)arity;
 {
-  if (cachedTypes == nil || cachedTypesArity != arity) {
-    self.cachedTypes = [self computePotentialTypesForArity:arity];
-    cachedTypesArity = arity;
-  }
-  return cachedTypes;
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
 }
 
 - (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
@@ -208,18 +203,6 @@
   return nil;
 }
 
-- (void)clearPotentialTypesCache;
-{
-  self.cachedTypes = nil;
-  cachedTypesArity = 0;
-}
-
-- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
-}
-
 - (void)updateExpression;
 {
   self.expression = [self computeExpression];
@@ -234,7 +217,7 @@
 // MARK: -
 // MARK: PRIVATE
 
-@synthesize label, cachedTypes, expression;
+@synthesize label, expression;
 
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
 {
@@ -242,8 +225,6 @@
     return nil;
   name = (theName == nil) ? nil : [theName retain];
   isFolded = theIsFolded;
-  cachedTypes = nil;
-  cachedTypesArity = 0;
   expression = nil;
   return self;
 }

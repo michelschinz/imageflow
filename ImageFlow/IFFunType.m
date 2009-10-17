@@ -7,6 +7,7 @@
 //
 
 #import "IFFunType.h"
+#import "IFTupleType.h"
 
 #import "IFTypeTags.h"
 #import <caml/alloc.h>
@@ -48,6 +49,19 @@
 }
 
 @synthesize argumentType, returnType;
+
+- (BOOL)isFunType;
+{
+  return YES;
+}
+
+- (unsigned)arity;
+{
+  if (argumentType.isTupleType)
+    return [((IFTupleType*)argumentType).componentTypes count];
+  else
+    return 1;
+}
 
 - (IFType*)resultType;
 {

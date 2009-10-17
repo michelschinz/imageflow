@@ -37,10 +37,13 @@
 
 + (id)typeWithCamlType:(value)camlType;
 
+@property(readonly) BOOL isFunType;
 @property(readonly) BOOL isArrayType;
+@property(readonly) BOOL isTupleType;
 @property(readonly) BOOL isImageRGBAType;
 @property(readonly) BOOL isMaskType;
 
+@property(readonly) unsigned arity;
 @property(readonly) IFType* resultType;
 @property(readonly) IFType* leafType;
 

@@ -128,7 +128,17 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
   [super dealloc];
 }
 
-- (BOOL) isArrayType;
+- (BOOL)isArrayType;
+{
+  return NO;
+}
+
+- (BOOL)isTupleType;
+{
+  return NO;
+}
+
+- (BOOL)isFunType;
 {
   return NO;
 }
@@ -141,6 +151,12 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
 - (BOOL)isMaskType;
 {
   return NO;
+}
+
+- (unsigned)arity;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return 0;
 }
 
 - (IFType*)resultType;

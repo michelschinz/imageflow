@@ -50,5 +50,6 @@ type t =
   | PTupleCreate
   | PTupleGet
   | UnsharpMask
+  | PZip
 
 val name: t -> string

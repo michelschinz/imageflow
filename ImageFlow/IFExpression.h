@@ -31,6 +31,7 @@
 + (IFExpression*)histogramOf:(IFExpression*)imageExpr;
 + (IFExpression*)checkerboardCenteredAt:(NSPoint)center color0:(NSColor*)color0 color1:(NSColor*)color1 width:(float)width sharpness:(float)sharpness;
 + (IFExpression*)maskToImage:(IFExpression*)maskExpression;
++ (IFExpression*)arrayCreate:(NSArray*)arrayElements;
 + (IFExpression*)arrayGet:(IFExpression*)arrayExpression index:(unsigned)index;
 + (IFExpression*)tupleCreate:(NSArray*)tupleElements;
 + (IFExpression*)tupleGet:(IFExpression*)tupleExpression index:(unsigned)index;

@@ -60,6 +60,16 @@ and eval_prim cache op args =
       Array xs
   | ArrayGet, [|Array a; Int i|] ->
       a.(i)
+  | PZip, boxedArrays ->
+      let arrays = Array.map (function Array a -> a) boxedArrays in
+      let len = Array.fold_left max 0 (Array.map Array.length arrays) in
+      let wget a i = a.(i mod (Array.length a)) in
+      Array (Array.init
+               len
+               (fun i ->
+                 match (Array.map (fun a -> wget a i) arrays) with
+                 | [| e |] -> e
+                 | es -> Tuple es))
 
     (* Tuple primitives *)
   | PTupleCreate, vs ->

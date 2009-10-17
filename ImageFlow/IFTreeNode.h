@@ -16,8 +16,6 @@
   NSString* name;
   NSString* label;
   BOOL isFolded;
-  NSArray* cachedTypes;
-  unsigned cachedTypesArity;
   IFExpression* expression;
 }
 
@@ -38,10 +36,10 @@
 @property(readonly, retain) IFType* type;
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
-- (NSArray*)potentialTypesForArity:(unsigned)arity;
+- (NSArray*)potentialTypesForArity:(unsigned)arity; // abstract
 
-- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index;
-- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex type:(IFType*)type;
+- (void)setParentExpression:(IFExpression*)expression atIndex:(unsigned)index; // abstract
+- (void)setParentExpressions:(NSDictionary*)expressions activeTypeIndex:(unsigned)newActiveTypeIndex type:(IFType*)type; // abstract
 
 // MARK: Tree view support
 
@@ -65,8 +63,6 @@
 
 - (void)updateLabel;
 - (NSString*)computeLabel; // abstract
-- (void)clearPotentialTypesCache;
-- (NSArray*)computePotentialTypesForArity:(unsigned)arity; // abstract
 - (void)updateExpression;
 - (IFExpression*)computeExpression; // abstract
 

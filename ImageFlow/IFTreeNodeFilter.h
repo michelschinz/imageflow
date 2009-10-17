@@ -19,6 +19,12 @@
   NSMutableDictionary* parentExpressions;
   IFType* type;
   NSNib* settingsNib;
+
+  // Potential types cache
+  NSArray* cachedTypes;
+  unsigned firstVectorizedTypeIndex;
+  NSArray* cachedVectorizationInfo;
+  unsigned cachedTypesArity;
 }
 
 + (id)nodeWithFilterNamed:(NSString*)theFilterName settings:(IFEnvironment*)theSettings;
@@ -29,6 +35,8 @@
 // MARK: -
 // MARK: PROTECTED
 
+- (void)clearPotentialTypesCache;
+- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 
 @end

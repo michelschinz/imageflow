@@ -10,6 +10,7 @@
 #import "IFNodeLayer.h"
 #import "IFLayoutParameters.h"
 #import "IFImageOrMaskLayer.h"
+#import "IFErrorLayer.h"
 
 @interface IFStackLayer()
 - (void)updateComponentLayers;
@@ -125,6 +126,10 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
       newComponentLayer = (recyclableLayer != nil && [recyclableLayer isKindOfClass:[IFStackLayer class]])
       ? recyclableLayer
       : [IFStackLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
+    } else if (componentExpression.isError) {
+      newComponentLayer = (recyclableLayer != nil && [recyclableLayer isKindOfClass:[IFErrorLayer class]])
+      ? recyclableLayer
+      : [IFErrorLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
     } else
       NSAssert(NO, @"unexpected component expression");
     

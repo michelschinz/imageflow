@@ -47,6 +47,7 @@ type t =
   | PTupleCreate
   | PTupleGet
   | UnsharpMask
+  | PZip
 
 let name = function
   | PApply -> "apply"
@@ -97,3 +98,4 @@ let name = function
   | PTupleCreate -> "tuple-create"
   | PTupleGet -> "tuple-get"
   | UnsharpMask -> "unsharp-mask"
+  | PZip -> "zip"

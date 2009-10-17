@@ -53,6 +53,11 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
   return original.type;
 }
 
+- (NSArray*)potentialTypesForArity:(unsigned)arity;
+{
+  return [original potentialTypesForArity:arity];
+}
+
 // MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
@@ -131,16 +136,6 @@ static NSString* IFOriginalExpressionChangedContext = @"IFOriginalExpressionChan
 - (NSString*)computeLabel;
 {
   return original.label;
-}
-
-- (void)clearPotentialTypesCache;
-{
-  [original clearPotentialTypesCache];
-}
-
-- (NSArray*)computePotentialTypesForArity:(unsigned)arity;
-{
-  return [original computePotentialTypesForArity:arity];
 }
 
 - (IFExpression*)computeExpression;

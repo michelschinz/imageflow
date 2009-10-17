@@ -47,6 +47,11 @@
   return hash;
 }
 
+- (BOOL)isTupleType;
+{
+  return YES;
+}
+
 @synthesize componentTypes;
 
 static value elemAsCaml(const char* elem) {

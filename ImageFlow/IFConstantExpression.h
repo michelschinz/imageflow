@@ -29,23 +29,23 @@
 
 @property(readonly) int tag;
 
-- (NSArray*)arrayValue;
-- (NSArray*)flatArrayValue;
-- (NSArray*)tupleValue;
-- (NSObject*)objectValue;
-- (NSPoint)pointValueNS;
-- (NSRect)rectValueNS;
-- (CGRect)rectValueCG;
-- (NSColor*)colorValueNS;
-- (CIColor*)colorValueCI;
-- (NSString*)stringValue;
-- (int)intValue;
-- (BOOL)boolValue;
-- (float)floatValue;
+@property(readonly) NSArray* arrayValue;
+@property(readonly) NSArray* flatArrayValue;
+@property(readonly) NSArray* tupleValue;
+@property(readonly) NSObject* objectValue;
+@property(readonly) NSPoint pointValueNS;
+@property(readonly) NSRect rectValueNS;
+@property(readonly) CGRect rectValueCG;
+@property(readonly) NSColor* colorValueNS;
+@property(readonly) CIColor* colorValueCI;
+@property(readonly) NSString* stringValue;
+@property(readonly) int intValue;
+@property(readonly) BOOL boolValue;
+@property(readonly) float floatValue;
 
-- (BOOL)isArray;
-- (BOOL)isImage;
-- (BOOL)isError;
+@property(readonly) BOOL isArray;
+@property(readonly) BOOL isImage;
+@property(readonly) BOOL isError;
 
 + (id)expressionWithCamlValue:(value)camlValue;
 

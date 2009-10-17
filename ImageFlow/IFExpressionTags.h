@@ -86,4 +86,5 @@ typedef enum {
   IFPrimitiveTag_PTupleCreate,
   IFPrimitiveTag_PTupleGet,
   IFPrimitiveTag_UnsharpMask,
+  IFPrimitiveTag_PZip,
 } IFPrimitiveTag;

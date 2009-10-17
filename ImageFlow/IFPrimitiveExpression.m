@@ -70,6 +70,7 @@ static NSArray* tagNames;
                @"tuple-create",
                @"tuple-get",               
                @"unsharp-mask",
+               @"zip",
                nil] retain];
 }
 
