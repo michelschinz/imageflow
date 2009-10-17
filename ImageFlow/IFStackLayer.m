@@ -44,6 +44,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
   // Setup sub-layers
   countLayer = [CATextLayer layer];
+  countLayer.anchorPoint = CGPointZero;
   countLayer.font = [IFLayoutParameters labelFont];
   countLayer.fontSize = [IFLayoutParameters labelFont].pointSize;
   countLayer.foregroundColor = labelC;
@@ -75,23 +76,19 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 {
   const float xMargin = [IFLayoutParameters nodeInternalMargin];
   const float yMargin = xMargin;
-
-  float x = xMargin;
-  float y = yMargin;
-  float maxHeight = 0.0;
+  const CGSize countSize = [countLayer preferredFrameSize];
   
-  [self layoutIfNeeded];
-  CGSize countSize = [countLayer preferredFrameSize];
-  countLayer.frame = (CGRect) { CGPointMake(x, floor((CGRectGetHeight(self.bounds) - countSize.height) / 2.0)), countSize };
-  x += CGRectGetWidth(countLayer.frame) + xMargin;
-
+  float x = countSize.width + 2.0 * xMargin;
+  float maxHeight = 0.0;
   for (CALayer* componentLayer in self.componentLayers) {
-    componentLayer.frame = (CGRect) { CGPointMake(x, y), componentLayer.bounds.size };
+    componentLayer.frame = (CGRect) { CGPointMake(x, yMargin), componentLayer.bounds.size };
     x += CGRectGetWidth(componentLayer.bounds) + xMargin;
     maxHeight = fmax(maxHeight, CGRectGetHeight(componentLayer.bounds));
   }
+  const float totalHeight = maxHeight + 2.0 * yMargin;
   
-  self.bounds = CGRectMake(0, 0, x, y + maxHeight + yMargin);
+  self.bounds = CGRectMake(0, 0, x, totalHeight);
+  countLayer.frame = CGRectMake(xMargin, (totalHeight - countSize.height) / 2.0, countSize.width, countSize.height);
   [self.superlayer setNeedsLayout];
 }
 
