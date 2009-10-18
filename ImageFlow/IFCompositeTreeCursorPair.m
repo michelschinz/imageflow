@@ -118,9 +118,9 @@ static NSString* IFViewCursorDidChange = @"IFViewCursorDidChange";
     if (treeChanged)
       [self didChangeValueForKey:@"tree"];    
   } else if (context == IFViewCursorDidChange) {
-    BOOL treeChanged = (viewCursor.tree != tree);
-    BOOL nodeChanged = (viewCursor.node != node);
-    BOOL pathChanged = ![viewCursor.path isEqual:path];
+    BOOL treeChanged = (viewCursor.tree != viewLockedTree);
+    BOOL nodeChanged = (viewCursor.node != viewLockedNode);
+    BOOL pathChanged = ![viewCursor.path isEqual:viewLockedPath];
     
     if (treeChanged) {
       [self willChangeValueForKey:@"viewLockedTree"];
