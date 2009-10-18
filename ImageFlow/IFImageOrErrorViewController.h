@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFViewController.h"
 #import "IFImageView.h"
 #import "IFTreeNode.h"
 #import "IFExpressionEvaluator.h"
@@ -20,7 +19,7 @@ typedef enum {
   IFImageViewModeEdit,
 } IFImageViewMode;
 
-@interface IFImageOrErrorViewController : IFViewController<IFImageViewDelegate> {
+@interface IFImageOrErrorViewController : NSViewController<IFImageViewDelegate> {
   IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
   NSView* activeView; // not retained, either imageOrErrorTabView or imageView

@@ -50,8 +50,8 @@ static NSString* IFActiveViewDidChange = @"IFActiveViewDidChange";
   NSAssert([views count] == 1, @"unexpected number of sub-views");
   NSSplitView* splitView = [views objectAtIndex:0];
 
-  [splitView replaceSubview:[[splitView subviews] objectAtIndex:0] with:[treeViewController topLevelView]];
-  [splitView replaceSubview:[[splitView subviews] objectAtIndex:1] with:[imageViewController topLevelView]];
+  [splitView replaceSubview:[[splitView subviews] objectAtIndex:0] with:treeViewController.view];
+  [splitView replaceSubview:[[splitView subviews] objectAtIndex:1] with:imageViewController.view];
 
   [treeViewController setDocument:self.document];
 }

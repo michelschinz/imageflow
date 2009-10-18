@@ -21,7 +21,7 @@
 
 - (id)init;
 {
-  if (![super initWithViewNibName:@"IFTreeView"])
+  if (![super initWithNibName:@"IFTreeView" bundle:nil])
     return nil;
   cursorsVar = [IFVariable variable];
   return self;

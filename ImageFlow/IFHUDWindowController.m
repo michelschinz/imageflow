@@ -46,8 +46,8 @@
   [window setHasShadow:NO];
   [window setDisplaysWhenScreenProfileChanges:YES];
   
-  [stackingView addSubview:[filterSettingsViewController topLevelView]];
-  [stackingView addSubview:[thumbnailViewController topLevelView]];
+  [stackingView addSubview:filterSettingsViewController.view];
+  [stackingView addSubview:thumbnailViewController.view];
 
   NSAssert([stackingView postsFrameChangedNotifications] , @"incorrectly configured view");
   [[NSNotificationCenter defaultCenter] addObserver:self

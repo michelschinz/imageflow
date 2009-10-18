@@ -22,7 +22,7 @@ static NSString* IFExpressionDidChangeContext = @"IFExpressionDidChangeContext";
 
 - (id)init;
 {
-  if (![super initWithViewNibName:@"IFThumbnailView"])
+  if (![super initWithNibName:@"IFThumbnailView" bundle:nil])
     return nil;
   cursors = nil;
   expression = nil;

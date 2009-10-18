@@ -8,12 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFViewController.h"
 #import "IFImageView.h"
 #import "IFExpressionEvaluator.h"
 #import "IFTreeCursorPair.h"
 
-@interface IFThumbnailViewController : IFViewController {
+@interface IFThumbnailViewController : NSViewController {
   IBOutlet IFImageView* imageView;
 
   IFTreeCursorPair* cursors;

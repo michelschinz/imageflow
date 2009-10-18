@@ -21,7 +21,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 
 - (id)init;
 {
-  if (![super initWithViewNibName:@"IFFilterSettingsView"])
+  if (![super initWithNibName:@"IFFilterSettingsView" bundle:nil])
     return nil;
   filterName = @"";
   filterControllers = [NSMutableDictionary new];
@@ -125,7 +125,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   NSTabViewItem* item = [tabView tabViewItemAtIndex:[tabIndex intValue]];
   if (item != [tabView selectedTabViewItem]) {
     [tabView selectTabViewItem:item];
-    [[self topLevelView] setFrameSize:[[panelSizes objectForKey:nodeToEditClassName] sizeValue]];
+    [self.view setFrameSize:[[panelSizes objectForKey:nodeToEditClassName] sizeValue]];
   }
 }
 

@@ -8,10 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFViewController.h"
 #import "IFTreeCursorPair.h"
 
-@interface IFFilterSettingsViewController : IFViewController {
+@interface IFFilterSettingsViewController : NSViewController {
   IBOutlet NSTabView* tabView;
   
   IFTreeCursorPair* cursors;

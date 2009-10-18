@@ -8,13 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFViewController.h"
 #import "IFForestView.h"
 #import "IFPaletteView.h"
 #import "IFLayoutParameters.h"
 #import "IFVariable.h"
 
-@interface IFTreePaletteViewController : IFViewController<IFForestViewDelegate, IFPaletteViewDelegate> {
+@interface IFTreePaletteViewController : NSViewController<IFForestViewDelegate, IFPaletteViewDelegate> {
   IBOutlet IFForestView* forestView;
   IBOutlet IFPaletteView* paletteView;
 

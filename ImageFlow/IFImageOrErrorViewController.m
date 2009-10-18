@@ -33,7 +33,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (id)init;
 {
-  if (![super initWithViewNibName:@"IFImageView"])
+  if (![super initWithNibName:@"IFImageView" bundle:nil])
     return nil;
   activeView = nil;
   mode = IFImageViewModeView;
@@ -42,6 +42,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   variants = [[NSArray array] retain];
   activeVariant = nil;
   viewedNode = nil;
+  [self loadView];
   return self;
 }
 
