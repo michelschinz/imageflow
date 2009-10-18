@@ -208,7 +208,6 @@
 		FAFCF5AE0C9A91A700B69055 /* IFBitmapDrawingSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5AC0C9A91A700B69055 /* IFBitmapDrawingSource.m */; };
 		FAFCF5B20C9A91D500B69055 /* IFChannelToMaskFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5B00C9A91D500B69055 /* IFChannelToMaskFilter.m */; };
 		FAFCF5B60C9A91F600B69055 /* IFColorControlsFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5B40C9A91F600B69055 /* IFColorControlsFilter.m */; };
-		FAFCF5CA0C9A921D00B69055 /* IFCropFilter.h in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = FAFCF5C80C9A921D00B69055 /* IFCropFilter.h */; };
 		FAFCF5CB0C9A921D00B69055 /* IFCropFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5C90C9A921D00B69055 /* IFCropFilter.m */; };
 		FAFCF5CF0C9A928B00B69055 /* IFDropShadowFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5CD0C9A928B00B69055 /* IFDropShadowFilter.m */; };
 		FAFCF5D30C9A92AB00B69055 /* IFGaussianBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5D10C9A92AB00B69055 /* IFGaussianBlurFilter.m */; };
@@ -236,21 +235,6 @@
 			script = "m4 --prefix-builtins --include=${INPUT_FILE_DIR} ${INPUT_FILE_PATH} > ${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}";
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		FA47F59508F65CAB00C906A8 /* Copy Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			comments = "Copy frameworks";
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				FAFCF5CA0C9A921D00B69055 /* IFCropFilter.h in Copy Frameworks */,
-			);
-			name = "Copy Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C1660FE840EACC02AAC07 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
@@ -1631,7 +1615,6 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				FA47F59508F65CAB00C906A8 /* Copy Frameworks */,
 			);
 			buildRules = (
 				FAFC1669092C655D0032A19F /* PBXBuildRule */,
