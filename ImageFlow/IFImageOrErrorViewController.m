@@ -240,10 +240,13 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
       if ([exprType isImageRGBAType]) {
         IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0];
         expr = [IFExpression blendBackground:backgroundExpr withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
-      } else {
-        NSAssert([exprType isMaskType], @"unexpected expr. type");
+      } else if ([exprType isMaskType]) {
         expr = [IFExpression maskToImage:expr];
+      } else {
+        // TODO: also handle action previews
+        expr = [IFExpression fail];
       }
+
       self.displayedExpression = expr;
     } else
       self.displayedExpression = [IFExpression fail];
