@@ -16,7 +16,7 @@
 #import "IFOutputConnectorLayer.h"
 #import "IFLayoutParameters.h"
 
-@interface IFForestLayoutManager (Private)
+@interface IFForestLayoutManager ()
 - (BOOL)checkLayersStartingAt:(IFTreeNode*)root withNodeLayers:(NSDictionary*)nodeLayers inConnectorLayers:(NSDictionary*)inConnectorLayers outConnectorLayers:(NSDictionary*)outConnectorLayers;
 - (IFLayerSet*)layoutTreeStartingAt:(IFTreeNode*)root usingNodeLayers:(NSDictionary*)layers inConnectorLayers:(NSDictionary*)inConnectorLayers outConnectorLayers:(NSDictionary*)outConnectorLayers inFoldedSubtree:(BOOL)inFoldedSubtree;
 @end
@@ -96,9 +96,8 @@
     [delegate layoutManager:self didLayoutSublayersOfLayer:parentLayer];
 }
 
-@end
-
-@implementation IFForestLayoutManager (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (BOOL)checkLayersStartingAt:(IFTreeNode*)root withNodeLayers:(NSDictionary*)nodeLayers inConnectorLayers:(NSDictionary*)inConnectorLayers outConnectorLayers:(NSDictionary*)outConnectorLayers;
 {

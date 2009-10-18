@@ -108,6 +108,7 @@
   CGPathCloseSubpath(newPath);
 
   self.path = newPath;
+  [self setNeedsLayout];
 }
 
 @end
