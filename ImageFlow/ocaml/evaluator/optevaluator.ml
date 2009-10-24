@@ -38,25 +38,6 @@ let eval_as_image =
     | other ->
         failwith ("non-image result from evaluator: "
                   ^ (Printer.to_string(other)))
-
-let eval_as_masked_image =
-  let mask_cutout_margin = 20.0
-  and mask_color = Color.make 0.5 0.5 0.5 1.0
-  in fun cache expr mask_cutout_bounds ->
-    match eval_as_image cache expr with
-      Image _ as image ->
-        eval
-          cache
-          (Prim(RectangularWindow,
-              [| image;
-                 Color mask_color;
-                 Rect mask_cutout_bounds;
-                 Num mask_cutout_margin |]))
-    | Error _ as error ->
-        error
-    | other ->
-        failwith ("non-image result from evaluator: "
-                  ^ (Printer.to_string(other)))
         
 (* DEBUG *)
 

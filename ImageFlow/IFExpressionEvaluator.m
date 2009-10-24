@@ -80,26 +80,6 @@ static value camlRect(NSRect r) {
   CAMLreturn(caml_callbackN(*rectMakeClosure, 4, args));
 }  
 
-static void camlEvalAsMaskedImage(value cache, IFExpression* expression, NSRect cutoutRect, IFConstantExpression** result) {
-  CAMLparam1(cache);
-  CAMLlocal3(camlExpr, camlCutoutRect, camlRes);
-  static value* evalClosure = NULL;
-  if (evalClosure == NULL)
-    evalClosure = caml_named_value("Optevaluator.eval_as_masked_image");
-  camlExpr = [expression asCaml];
-  camlCutoutRect = camlRect(cutoutRect);
-  camlRes = caml_callback3(*evalClosure, cache, camlExpr, camlCutoutRect);
-  *result = [IFConstantExpression expressionWithCamlValue:camlRes];
-  CAMLreturn0;
-}
-
-- (IFConstantExpression*)evaluateExpressionAsMaskedImage:(IFExpression*)expression cutout:(NSRect)cutoutRect;
-{
-  IFConstantExpression* result = nil;
-  camlEvalAsMaskedImage(cache, expression, cutoutRect, &result);
-  return result;
-}
-
 static void camlDelta(value cache, IFExpression* oldExpression, IFExpression* newExpression, NSRect* result) {
   CAMLparam1(cache);
   CAMLlocal3(camlOld, camlNew, camlRes);

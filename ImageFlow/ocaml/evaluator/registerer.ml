@@ -8,7 +8,6 @@ let _ =
   register "Typechecker.first_valid_configuration" Typechecker.first_valid_configuration;
   register "Optevaluator.eval" Optevaluator.eval;
   register "Optevaluator.eval_as_image" Optevaluator.eval_as_image;
-  register "Optevaluator.eval_as_masked_image" Optevaluator.eval_as_masked_image;
   register "Delta.delta_array" Delta.delta_array;
   register "Color.make" Color.make;
   register "Rect.make" Rect.make;
