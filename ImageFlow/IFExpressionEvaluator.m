@@ -57,16 +57,6 @@ static void camlEval(value* closurePtr, value cache, IFExpression* expression, I
   return result;
 }
 
-- (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
-{
-  static value* closurePtr = NULL;
-  if (closurePtr == NULL)
-    closurePtr = caml_named_value("Optevaluator.eval_as_image");
-  IFConstantExpression* result = nil;
-  camlEval(closurePtr, cache, expression, &result);
-  return result;
-}
-
 static value camlRect(NSRect r) {
   CAMLparam0();
   CAMLlocalN(args, 4);

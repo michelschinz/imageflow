@@ -9,6 +9,7 @@
 #import "IFImageOrMaskLayer.h"
 #import "IFExpression.h"
 #import "IFExpressionEvaluator.h"
+#import "IFBlendMode.h"
 
 @implementation IFImageOrMaskLayer
 
@@ -72,9 +73,27 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 - (void)drawInContext:(CGContextRef)ctx;
 {
   const IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
+  
+  IFImageConstantExpression* imageOrMaskExpr = (IFImageConstantExpression*)[evaluator evaluateExpression:expression];
+  NSAssert([imageOrMaskExpr isImage], @"unexpected expression");
+
+  IFExpression* imageExpr;
+  switch (imageOrMaskExpr.image.kind) {
+    case IFImageKindRGBImage: {      
+      IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0]; // TODO: replace by user-settable expression
+      imageExpr = [IFExpression blendBackground:backgroundExpr withForeground:imageOrMaskExpr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+    } break;
+    case IFImageKindMask: {
+      imageExpr = [IFExpression maskToImage:imageOrMaskExpr];
+    } break;
+    default:
+      NSAssert(NO, @"unexpected image kind");
+      break;
+  }
+
   const NSRect canvasBounds = ((NSValue*)canvasBoundsVar.value).rectValue;
   const float scaling = CGRectGetWidth(self.bounds) / NSWidth(canvasBounds);
-  const IFImageConstantExpression* imageExpression = (IFImageConstantExpression*)[evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:[evaluator evaluateExpressionAsImage:expression] along:canvasBounds] by:scaling]];
+  const IFImageConstantExpression* imageExpression = (IFImageConstantExpression*)[evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:imageExpr along:canvasBounds] by:scaling]];
   CIImage* image = [imageExpression imageValueCI];
   
   CIContext* ciContext = [CIContext contextWithCGContext:ctx options:[NSDictionary dictionary]]; // TODO: working color space

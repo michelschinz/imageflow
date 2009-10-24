@@ -180,3 +180,8 @@ and eval_prim cache op args =
               ps)
   | Fail, [||] ->
       raise (EvalError (Error None))
+
+  | n, a ->
+      print_endline "cannot eval:";
+      Printer.print (Prim (n, a));
+      failwith "error"

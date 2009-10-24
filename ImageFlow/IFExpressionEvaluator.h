@@ -19,7 +19,6 @@
 + (IFExpressionEvaluator*)sharedEvaluator;
 
 - (IFConstantExpression*)evaluateExpression:(IFExpression*)expression;
-- (IFConstantExpression*)evaluateExpressionAsImage:(IFExpression*)expression;
 - (NSRect)deltaFromOld:(IFExpression*)oldExpression toNew:(IFExpression*)newExpression;
 
 @end
