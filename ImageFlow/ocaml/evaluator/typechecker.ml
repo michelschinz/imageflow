@@ -30,9 +30,9 @@ let rec occurs i = function
   | TImage t -> occurs i t
   | _ -> false
 
-let unify cs =
+let unify t1 t2 =
   let rec unify' = function
-      [] -> []
+    | [] -> []
     | (TVar v, t) :: cs
     | (t, TVar v) :: cs when not (occurs v t) ->
         let cs' = List.map
@@ -44,7 +44,7 @@ let unify cs =
         unify' ((ta1, ta2) :: (tr1, tr2) :: cs)
     | (TArray t1, TArray t2) :: cs ->
         unify' ((t1, t2) :: cs)
-    | (TTuple ts1, TTuple ts2) :: cs ->
+    | (TTuple ts1, TTuple ts2) :: cs when List.length ts1 = List.length ts2 ->
         unify' ((List.combine ts1 ts2) @ cs)
     | (TImage t1, TImage t2) :: cs ->
         unify' ((t1, t2) :: cs)
@@ -52,58 +52,61 @@ let unify cs =
         unify' cs
     | _ ->
         raise Unification_failure
-  in try unify' cs with Invalid_argument _ -> raise Unification_failure
+  in unify' [ (t1, t2) ]
 
 let can_unify t1 t2 =
   try
-    unify [(t1, t2)];
+    unify t1 t2;
     true
   with
     Unification_failure ->
       false
 
-let unification_constraints preds conf =
-  let node_var i = TVar (- (succ i)) in
-  let rec loop i preds conf acc = match preds, conf with
-    [], [] ->
-      acc
-  | [] :: ps, tp :: tps ->
-      loop (succ i) ps tps ((tp, node_var i) :: acc)
-  | p :: ps, tp :: tps ->
-      let args_tps = match p with
-      | [ t ] -> node_var t
-      | ts -> TTuple (List.map node_var ts) in
-      loop (succ i) ps tps ((tp, TFun (args_tps, node_var i)) :: acc)
-  in loop 0 preds conf []
+exception Backtrack
 
-let valid_types preds types =
-  let rec loop valid_confs = function
-      [] -> valid_confs
-    | c :: cs ->
-        try 
-          let subst = unify (unification_constraints preds c) in
-          loop ((List.map (apply_subst subst) c) :: valid_confs) cs
-        with Unification_failure ->
-          loop valid_confs cs
-  in loop [] (Mlist.cartesian_product types)
+let first_valid_types preds possible_types =
+  let rec search preds curr_types = function
+    | [] ->
+        List.rev curr_types
+    | [] :: _ ->
+        raise Backtrack
+    | (pth :: ptt) :: pts ->
+        let arg_types = List.map
+            (fun i ->
+              (* TODO: we should use another technique to get the nodes' *)
+              (* output type, as this one seems potentially incorrect. *)
+              match List.nth (List.rev curr_types) i with
+                TFun (_, tr) -> tr
+              | other -> other)
+            (List.hd preds) in
+        try
+          let subst = match arg_types with
+            [] -> []
+          | [ t1 ] -> unify (TFun (t1, TVar (-1))) pth
+          | ts -> unify (TFun (TTuple ts, TVar (-1))) pth in
+          let new_types = List.map (apply_subst subst) (pth :: curr_types) in
+          search (List.tl preds) new_types pts
+        with Unification_failure | Backtrack ->
+          search preds curr_types (ptt :: pts)
+  in try
+    Some (search preds [] possible_types)
+  with Backtrack ->
+    None
 
-let check preds types =
-  match valid_types preds types with
-    [] -> false
-  | _ -> true
+let check preds possible_types =
+  match first_valid_types preds possible_types with
+  | Some _ -> true
+  | None -> false
 
 let first_valid_configuration preds possible_types =
-  match valid_types preds possible_types with
-    [] ->
+  match first_valid_types preds possible_types with
+  | Some types ->
+      Some (List.map2
+              (fun tp tps -> (Mlist.index (can_unify tp) tps, tp))
+              types
+              possible_types)
+  | None ->
       None
-  | types ->
-      let make_config types = (List.map2
-                                 (fun tp tps ->
-                                   (Mlist.index (can_unify tp) tps, tp))
-                                 types
-                                 possible_types) in
-      (* TODO: sort configs. according to their histogram? *)
-      Some (List.hd (List.sort compare (List.map make_config types)))
 
 (* Debugging *)
 
