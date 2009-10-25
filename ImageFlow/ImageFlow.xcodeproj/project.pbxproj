@@ -189,7 +189,6 @@
 		FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */; };
 		FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */; };
 		FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */; };
-		FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */; };
 		FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
 		FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */; };
@@ -550,8 +549,6 @@
 		FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHUDWindow.nib; sourceTree = "<group>"; };
 		FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFilterSettingsViewController.h; sourceTree = "<group>"; };
 		FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFilterSettingsViewController.m; sourceTree = "<group>"; };
-		FAF7F2D00B08C2DD00BF6B7A /* IFThumbnailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFThumbnailViewController.h; sourceTree = "<group>"; };
-		FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFThumbnailViewController.m; sourceTree = "<group>"; };
 		FAF7F36C0B08D97700BF6B7A /* IFImageInspectorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageInspectorWindow.h; sourceTree = "<group>"; };
 		FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageInspectorWindow.m; sourceTree = "<group>"; };
 		FAF8AA2F08FCD76500557C4D /* IFXMLCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFXMLCoder.h; sourceTree = "<group>"; };
@@ -1427,8 +1424,6 @@
 				FA1323580E0BECF600328ED9 /* IFImageOrErrorViewController.m */,
 				FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */,
 				FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */,
-				FAF7F2D00B08C2DD00BF6B7A /* IFThumbnailViewController.h */,
-				FAF7F2D10B08C2DD00BF6B7A /* IFThumbnailViewController.m */,
 			);
 			name = "View controllers";
 			sourceTree = "<group>";
@@ -1780,7 +1775,6 @@
 				FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */,
 				FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */,
 				FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */,
-				FAF7F2D30B08C2DD00BF6B7A /* IFThumbnailViewController.m in Sources */,
 				FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */,
 				FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */,
 				FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */,

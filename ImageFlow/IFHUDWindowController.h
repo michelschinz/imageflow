@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFFilterSettingsViewController.h"
-#import "IFThumbnailViewController.h"
 #import "IFTreeCursorPair.h"
 #import "IFStackingView.h"
 
@@ -18,7 +17,6 @@
   IBOutlet IFStackingView* stackingView;
   
   IFFilterSettingsViewController* filterSettingsViewController;
-  IFThumbnailViewController* thumbnailViewController;
   NSView* underlyingView;
   NSWindow* underlyingWindow;
 }
@@ -31,6 +29,5 @@
 - (void)setVisible:(BOOL)shouldBeVisible;
 
 - (IFFilterSettingsViewController*)filterSettingsViewController;
-- (IFThumbnailViewController*)thumbnailViewController;
 
 @end

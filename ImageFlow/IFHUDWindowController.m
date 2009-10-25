@@ -21,7 +21,6 @@
   if (![super initWithWindowNibName:@"IFHUDWindow"])
     return nil;
   filterSettingsViewController = [IFFilterSettingsViewController new];
-  thumbnailViewController = [IFThumbnailViewController new];
   underlyingView = nil;
   underlyingWindow = nil;
   return self;
@@ -33,7 +32,6 @@
 
   OBJC_RELEASE(underlyingWindow);
   OBJC_RELEASE(underlyingView);
-  OBJC_RELEASE(thumbnailViewController);
   OBJC_RELEASE(filterSettingsViewController);
   [super dealloc];
 }
@@ -47,7 +45,6 @@
   [window setDisplaysWhenScreenProfileChanges:YES];
   
   [stackingView addSubview:filterSettingsViewController.view];
-  [stackingView addSubview:thumbnailViewController.view];
 
   NSAssert([stackingView postsFrameChangedNotifications] , @"incorrectly configured view");
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -88,7 +85,6 @@
 - (void)setCursorPair:(IFTreeCursorPair*)newCursors;
 {
   [filterSettingsViewController setCursorPair:newCursors];
-  [thumbnailViewController setCursorPair:newCursors];
 }
 
 - (void)setVisible:(BOOL)shouldBeVisible;
@@ -107,11 +103,6 @@
 - (IFFilterSettingsViewController*)filterSettingsViewController;
 {
   return filterSettingsViewController;
-}
-
-- (IFThumbnailViewController*)thumbnailViewController;
-{
-  return thumbnailViewController;
 }
 
 @end
