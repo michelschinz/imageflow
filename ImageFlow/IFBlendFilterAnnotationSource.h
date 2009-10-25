@@ -10,12 +10,13 @@
 
 #import "IFVariable.h"
 #import "IFTreeNode.h"
+#import "IFBlendFilter.h"
 
 @interface IFBlendFilterAnnotationSource : IFVariable {
-  IFTreeNode* node;
+  IFBlendFilter* node;
 }
 
-+ (id)blendAnnotationSourceForNode:(IFTreeNode*)theNode;
-- (id)initWithNode:(IFTreeNode*)theNode;
++ (id)blendAnnotationSourceForNode:(IFBlendFilter*)theNode;
+- (id)initWithNode:(IFBlendFilter*)theNode;
 
 @end

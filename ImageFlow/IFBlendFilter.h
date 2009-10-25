@@ -14,4 +14,6 @@
 
 }
 
+@property(readonly) IFExpression* foregroundExpression;
+
 @end

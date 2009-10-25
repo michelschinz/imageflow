@@ -20,12 +20,12 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 @implementation IFBlendFilterAnnotationSource
 
-+ (id)blendAnnotationSourceForNode:(IFTreeNode*)theNode;
++ (id)blendAnnotationSourceForNode:(IFBlendFilter*)theNode;
 {
   return [[[self alloc] initWithNode:theNode] autorelease];
 }
 
-- (id)initWithNode:(IFTreeNode*)theNode;
+- (id)initWithNode:(IFBlendFilter*)theNode;
 {
   if (![super init])
     return nil;
@@ -61,20 +61,8 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 - (NSRect)foregroundExtent;
 {
-  // FIXME: redo now that there are lambdas here...
-  IFExpression* expression = [node expression];
-  if (![expression isKindOfClass:[IFPrimitiveExpression class]])
-    return NSZeroRect;
-  
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  IFPrimitiveExpression* blendExpression = (IFPrimitiveExpression*)expression;
-  NSAssert([blendExpression isKindOfClass:[IFPrimitiveExpression class]] && blendExpression.tag == IFPrimitiveTag_Blend, @"unexpected operator");
-
-  IFPrimitiveExpression* translateExpression = (IFPrimitiveExpression*)[[blendExpression operands] objectAtIndex:1];
-  NSAssert([translateExpression isKindOfClass:[IFPrimitiveExpression class]] && translateExpression.tag  == IFPrimitiveTag_Translate, @"unexpected operator");
-
-  IFConstantExpression* evaluatedExtent = [evaluator evaluateExpression:[IFExpression extentOf:[[translateExpression operands] objectAtIndex:0]]];
-  
+  IFConstantExpression* evaluatedExtent = [evaluator evaluateExpression:[IFExpression extentOf:node.foregroundExpression]];
   return [evaluatedExtent isError] ? NSZeroRect : [evaluatedExtent rectValueNS];
 }
 

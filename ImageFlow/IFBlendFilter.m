@@ -118,4 +118,9 @@ static NSArray* parentNames = nil;
     nil];
 }
 
+- (IFExpression*)foregroundExpression;
+{
+  return [parentExpressions objectForKey:[NSNumber numberWithInt:1]];
+}
+
 @end
