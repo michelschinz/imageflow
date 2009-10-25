@@ -22,8 +22,6 @@
 		FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FEC90B318D5800057249 /* surrogate_parent_2.jpg */; };
 		FA07FECD0B318D5800057249 /* surrogate_parent_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FECA0B318D5800057249 /* surrogate_parent_3.jpg */; };
 		FA07FECE0B318D5800057249 /* surrogate_parent_4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA07FECB0B318D5800057249 /* surrogate_parent_4.jpg */; };
-		FA0A53560ACB90800077A945 /* IFUnsharpMaskFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = 5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */; };
-		FA0A53570ACB90810077A945 /* IFColorControlsFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = 46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */; };
 		FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA0C40E708FF9AC600BC69CB /* IFSavePanelAccessoryView.nib */; };
 		FA0CF68E0B4CD8550070953C /* IFBasicType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF68C0B4CD8550070953C /* IFBasicType.m */; };
 		FA0CF68F0B4CD85D0070953C /* IFType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0CF67E0B4CD8180070953C /* IFType.m */; };
@@ -39,9 +37,7 @@
 		FA17764C0AED3DCA0013D98B /* IFTreeNodeReference.m in Sources */ = {isa = PBXBuildFile; fileRef = FA17764A0AED3DCA0013D98B /* IFTreeNodeReference.m */; };
 		FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B62800B11DE2700852BC9 /* IFStackingView.m */; };
 		FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */; };
-		FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */; };
 		FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1BF70C091946FE00E288BB /* IFThresholdCIFilter.m */; };
-		FA1BF71709194BDD00E288BB /* IFThresholdFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA1BF71609194BDD00E288BB /* IFThresholdFilter.nib */; };
 		FA21BC2108683CA70019D1B7 /* IFAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA21BC2008683CA70019D1B7 /* IFAppController.m */; };
 		FA2413110962EFE000173105 /* IFTreeIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2411780962C98100173105 /* IFTreeIdentifier.m */; };
 		FA256A970AE379F600077863 /* channel-to-mask.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FA256A900AE379F600077863 /* channel-to-mask.cikernel.m4 */; };
@@ -127,7 +123,6 @@
 		FAAE7AED0EE0029F00D484E0 /* IFStackFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAE7AEC0EE0029F00D484E0 /* IFStackFilter.m */; };
 		FAB179FC0E4C862F008BEC70 /* IFLayerSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB179FB0E4C862F008BEC70 /* IFLayerSet.m */; };
 		FAB17A050E4C8872008BEC70 /* IFLayerSetExplicit.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */; };
-		FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */; };
 		FAB599700EE92A5600D75030 /* IFStackLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCCD70EE8214E00ED5870 /* IFStackLayer.m */; };
 		FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */; };
 		FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */; };
@@ -150,7 +145,15 @@
 		FADFF82B0D07E6A60023B7BF /* IFTreeTemplateCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */; };
 		FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */; };
 		FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0DF2308C3876C00595ED4 /* Accelerate.framework */; };
-		FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */; };
+		FAE3C1251094764400967DD1 /* IFBitmapDrawingSource.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C1241094764400967DD1 /* IFBitmapDrawingSource.xib */; };
+		FAE3C1421094771E00967DD1 /* IFChannelToMaskFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C1411094771E00967DD1 /* IFChannelToMaskFilter.xib */; };
+		FAE3C145109477B300967DD1 /* IFColorControlsFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C144109477B300967DD1 /* IFColorControlsFilter.xib */; };
+		FAE3C1481094780C00967DD1 /* IFUnsharpMaskFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C1471094780C00967DD1 /* IFUnsharpMaskFilter.xib */; };
+		FAE3C14B1094789600967DD1 /* IFGaussianBlurFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C14A1094789600967DD1 /* IFGaussianBlurFilter.xib */; };
+		FAE3C15510947B2800967DD1 /* IFCropFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C15410947B2800967DD1 /* IFCropFilter.xib */; };
+		FAE3C15810947B9200967DD1 /* IFBlendFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C15710947B9200967DD1 /* IFBlendFilter.xib */; };
+		FAE3C15B10947C0B00967DD1 /* IFThresholdFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C15A10947C0B00967DD1 /* IFThresholdFilter.xib */; };
+		FAE3C15E10947CE800967DD1 /* IFDropShadowFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C15D10947CE800967DD1 /* IFDropShadowFilter.xib */; };
 		FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */; };
 		FAE4C335092DAF71003A2555 /* IFSetAlphaCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */; };
 		FAE531E30CD210C200B39F8F /* IFTreeTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE531E10CD210C200B39F8F /* IFTreeTemplate.m */; };
@@ -187,16 +190,13 @@
 		FAF4D62F0ABAEC55000F98B0 /* IFCursorRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */; };
 		FAF7F0E70B083D1700BF6B7A /* IFTreeCursorPair.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */; };
 		FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */; };
-		FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */; };
 		FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */; };
 		FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
-		FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */; };
 		FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */; };
 		FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */; };
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
-		FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */; };
 		FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */; };
 		FAFC1B3C092C76E20032A19F /* IFMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */; };
 		FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAD1C091B91A700D83BBE /* IFFileSinkController.m */; };
@@ -215,8 +215,6 @@
 		FAFCF5E50C9A932C00B69055 /* IFUnsharpMaskFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5E30C9A932C00B69055 /* IFUnsharpMaskFilter.m */; };
 		FAFCF5E90C9A934500B69055 /* IFFileSink.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5E70C9A934500B69055 /* IFFileSink.m */; };
 		FAFCF5ED0C9A935D00B69055 /* IFPrintSink.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFCF5EB0C9A935D00B69055 /* IFPrintSink.m */; };
-		FAFCF7C60C9AB9B600B69055 /* IFChannelToMaskFilter.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCF7C50C9AB9B600B69055 /* IFChannelToMaskFilter.nib */; };
-		FAFCF84B0C9ABA3100B69055 /* IFBitmapDrawingSource.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCF84A0C9ABA3100B69055 /* IFBitmapDrawingSource.nib */; };
 		FAFF37430E7AB87100B3DD04 /* IFLayerPredicateSubset.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFF37420E7AB87100B3DD04 /* IFLayerPredicateSubset.m */; };
 /* End PBXBuildFile section */
 
@@ -244,8 +242,6 @@
 		2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32DBCF750370BD2300C91783 /* ImageFlow_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFlow_Prefix.pch; sourceTree = "<group>"; };
-		46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFColorControlsFilter.nib; sourceTree = "<group>"; };
-		5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFUnsharpMaskFilter.nib; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* ImageFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA001F780ED419A00016630E /* dragBadge1-2.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "dragBadge1-2.tiff"; sourceTree = "<group>"; };
@@ -292,10 +288,8 @@
 		FA1B62800B11DE2700852BC9 /* IFStackingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFStackingView.m; sourceTree = "<group>"; };
 		FA1BF0B20918A1B700E288BB /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSDataAdditions.h; sourceTree = "<group>"; };
 		FA1BF0B30918A1B700E288BB /* NSDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSDataAdditions.m; sourceTree = "<group>"; };
-		FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBlendFilter.nib; sourceTree = "<group>"; };
 		FA1BF70B091946FE00E288BB /* IFThresholdCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFThresholdCIFilter.h; sourceTree = "<group>"; };
 		FA1BF70C091946FE00E288BB /* IFThresholdCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFThresholdCIFilter.m; sourceTree = "<group>"; };
-		FA1BF71609194BDD00E288BB /* IFThresholdFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFThresholdFilter.nib; sourceTree = "<group>"; };
 		FA21BC1F08683CA70019D1B7 /* IFAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAppController.h; sourceTree = "<group>"; };
 		FA21BC2008683CA70019D1B7 /* IFAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAppController.m; sourceTree = "<group>"; };
 		FA2411770962C98100173105 /* IFTreeIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeIdentifier.h; sourceTree = "<group>"; };
@@ -439,7 +433,6 @@
 		FAB179FB0E4C862F008BEC70 /* IFLayerSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSet.m; sourceTree = "<group>"; };
 		FAB17A030E4C8872008BEC70 /* IFLayerSetExplicit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerSetExplicit.h; sourceTree = "<group>"; };
 		FAB17A040E4C8872008BEC70 /* IFLayerSetExplicit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerSetExplicit.m; sourceTree = "<group>"; };
-		FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFGaussianBlurFilter.nib; sourceTree = "<group>"; };
 		FAB65D9C1052EA4900385A80 /* IFLambdaExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLambdaExpression.h; sourceTree = "<group>"; };
 		FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLambdaExpression.m; sourceTree = "<group>"; };
 		FAB65D9F1052EBDB00385A80 /* IFArgumentExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFArgumentExpression.h; sourceTree = "<group>"; };
@@ -481,7 +474,15 @@
 		FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramView.m; sourceTree = "<group>"; };
 		FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHistogramView.nib; sourceTree = "<group>"; };
 		FAE0DF2308C3876C00595ED4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
-		FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFCropFilter.nib; sourceTree = "<group>"; };
+		FAE3C1241094764400967DD1 /* IFBitmapDrawingSource.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFBitmapDrawingSource.xib; sourceTree = "<group>"; };
+		FAE3C1411094771E00967DD1 /* IFChannelToMaskFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFChannelToMaskFilter.xib; sourceTree = "<group>"; };
+		FAE3C144109477B300967DD1 /* IFColorControlsFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFColorControlsFilter.xib; sourceTree = "<group>"; };
+		FAE3C1471094780C00967DD1 /* IFUnsharpMaskFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFUnsharpMaskFilter.xib; sourceTree = "<group>"; };
+		FAE3C14A1094789600967DD1 /* IFGaussianBlurFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFGaussianBlurFilter.xib; sourceTree = "<group>"; };
+		FAE3C15410947B2800967DD1 /* IFCropFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFCropFilter.xib; sourceTree = "<group>"; };
+		FAE3C15710947B9200967DD1 /* IFBlendFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFBlendFilter.xib; sourceTree = "<group>"; };
+		FAE3C15A10947C0B00967DD1 /* IFThresholdFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFThresholdFilter.xib; sourceTree = "<group>"; };
+		FAE3C15D10947CE800967DD1 /* IFDropShadowFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFDropShadowFilter.xib; sourceTree = "<group>"; };
 		FAE43A630AD19A5A0068BAAE /* crop-overlay.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "crop-overlay.cikernel"; sourceTree = "<group>"; };
 		FAE4C332092DAF71003A2555 /* IFSetAlphaCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSetAlphaCIFilter.h; sourceTree = "<group>"; };
 		FAE4C333092DAF71003A2555 /* IFSetAlphaCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSetAlphaCIFilter.m; sourceTree = "<group>"; };
@@ -544,9 +545,6 @@
 		FAF7F0E50B083D1700BF6B7A /* IFTreeCursorPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeCursorPair.m; sourceTree = "<group>"; };
 		FAF7F1130B088E0700BF6B7A /* IFTreePaletteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreePaletteViewController.h; sourceTree = "<group>"; };
 		FAF7F1140B088E0700BF6B7A /* IFTreePaletteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreePaletteViewController.m; sourceTree = "<group>"; };
-		FAF7F2500B08A93D00BF6B7A /* IFHUDWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHUDWindowController.h; sourceTree = "<group>"; };
-		FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHUDWindowController.m; sourceTree = "<group>"; };
-		FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHUDWindow.nib; sourceTree = "<group>"; };
 		FAF7F2CC0B08C24700BF6B7A /* IFFilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFilterSettingsViewController.h; sourceTree = "<group>"; };
 		FAF7F2CD0B08C24700BF6B7A /* IFFilterSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFilterSettingsViewController.m; sourceTree = "<group>"; };
 		FAF7F36C0B08D97700BF6B7A /* IFImageInspectorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageInspectorWindow.h; sourceTree = "<group>"; };
@@ -559,7 +557,6 @@
 		FAF934FC0908094E00558366 /* IFConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConstantExpression.m; sourceTree = "<group>"; };
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
 		FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSingleColorCIFilter.m; sourceTree = "<group>"; };
-		FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFDropShadowFilter.nib; sourceTree = "<group>"; };
 		FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = threshold.cikernel.m4; sourceTree = "<group>"; };
 		FAFC1B2D092C70ED0032A19F /* luminosity.ci */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = luminosity.ci; sourceTree = "<group>"; };
 		FAFC1B39092C76E20032A19F /* IFMaskCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFMaskCIFilter.h; sourceTree = "<group>"; };
@@ -596,8 +593,6 @@
 		FAFCF5E70C9A934500B69055 /* IFFileSink.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFFileSink.m; sourceTree = "<group>"; };
 		FAFCF5EA0C9A935D00B69055 /* IFPrintSink.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFPrintSink.h; sourceTree = "<group>"; };
 		FAFCF5EB0C9A935D00B69055 /* IFPrintSink.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFPrintSink.m; sourceTree = "<group>"; };
-		FAFCF7C50C9AB9B600B69055 /* IFChannelToMaskFilter.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFChannelToMaskFilter.nib; sourceTree = "<group>"; };
-		FAFCF84A0C9ABA3100B69055 /* IFBitmapDrawingSource.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFBitmapDrawingSource.nib; sourceTree = "<group>"; };
 		FAFF37410E7AB87100B3DD04 /* IFLayerPredicateSubset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFLayerPredicateSubset.h; sourceTree = "<group>"; };
 		FAFF37420E7AB87100B3DD04 /* IFLayerPredicateSubset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFLayerPredicateSubset.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -950,7 +945,7 @@
 		FA402735091A3608001626A2 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				FAFCF84A0C9ABA3100B69055 /* IFBitmapDrawingSource.nib */,
+				FAE3C1241094764400967DD1 /* IFBitmapDrawingSource.xib */,
 				FA891C2B1065597B0038E8A3 /* IFFileSource.xib */,
 			);
 			name = Sources;
@@ -959,14 +954,14 @@
 		FA402736091A3625001626A2 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
-				FAFCF7C50C9AB9B600B69055 /* IFChannelToMaskFilter.nib */,
-				46457A4809A882CF009825E9 /* IFColorControlsFilter.nib */,
-				5250C38C09A8805A0089B4FC /* IFUnsharpMaskFilter.nib */,
-				FAB2CDC808A8DA7F00558619 /* IFGaussianBlurFilter.nib */,
-				FAE39E2608E7BC5800DE0074 /* IFCropFilter.nib */,
-				FA1BF22D0918E5A200E288BB /* IFBlendFilter.nib */,
-				FA1BF71609194BDD00E288BB /* IFThresholdFilter.nib */,
-				FAF9F79409325A5200FB2B0B /* IFDropShadowFilter.nib */,
+				FAE3C1411094771E00967DD1 /* IFChannelToMaskFilter.xib */,
+				FAE3C144109477B300967DD1 /* IFColorControlsFilter.xib */,
+				FAE3C1471094780C00967DD1 /* IFUnsharpMaskFilter.xib */,
+				FAE3C14A1094789600967DD1 /* IFGaussianBlurFilter.xib */,
+				FAE3C15410947B2800967DD1 /* IFCropFilter.xib */,
+				FAE3C15710947B9200967DD1 /* IFBlendFilter.xib */,
+				FAE3C15A10947C0B00967DD1 /* IFThresholdFilter.xib */,
+				FAE3C15D10947CE800967DD1 /* IFDropShadowFilter.xib */,
 			);
 			name = Filters;
 			sourceTree = "<group>";
@@ -1393,8 +1388,6 @@
 			children = (
 				FA11DDA408F24EF800A3AF61 /* IFPreferencesWindowController.h */,
 				FA11DDA508F24EF800A3AF61 /* IFPreferencesWindowController.m */,
-				FAF7F2500B08A93D00BF6B7A /* IFHUDWindowController.h */,
-				FAF7F2510B08A93D00BF6B7A /* IFHUDWindowController.m */,
 				FAE59D2108F3CABE00EF20ED /* IFInspectorWindowController.h */,
 				FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */,
 				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
@@ -1442,7 +1435,6 @@
 		FAF90B900B099C0700AC8472 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				FAF7F2930B08AE7A00BF6B7A /* IFHUDWindow.nib */,
 				FA2644390E13A2EC00701326 /* IFSingleWindow.xib */,
 			);
 			name = Windows;
@@ -1644,14 +1636,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */,
-				FAB2CDC908A8DA7F00558619 /* IFGaussianBlurFilter.nib in Resources */,
 				FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */,
-				FAE39E2708E7BC5800DE0074 /* IFCropFilter.nib in Resources */,
 				FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */,
 				FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */,
 				FAE874DB0908C4E300E856B9 /* Templates in Resources */,
-				FA1BF22E0918E5A200E288BB /* IFBlendFilter.nib in Resources */,
-				FA1BF71709194BDD00E288BB /* IFThresholdFilter.nib in Resources */,
 				FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */,
 				FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */,
 				FA68E09E092DE56E009D02CB /* IFPrintSink.nib in Resources */,
@@ -1659,14 +1647,11 @@
 				FA68E179092E04EF009D02CB /* Landscape.tiff in Resources */,
 				FA68E17A092E04EF009D02CB /* Portrait.tiff in Resources */,
 				FA68E17B092E04EF009D02CB /* ReverseLandscape.tiff in Resources */,
-				FAF9F79509325A5200FB2B0B /* IFDropShadowFilter.nib in Resources */,
 				FA6BD00C0AAC6909008B390A /* image_inspector_layout_single.tiff in Resources */,
 				FA6BD0120AAC6B13008B390A /* image_inspector_layout_dual.tiff in Resources */,
 				FA74F0770AB5EBF200027606 /* brushTool.png in Resources */,
 				FA74F07A0AB5EC5B00027606 /* duplicationTool.png in Resources */,
 				FA74F07B0AB5EC5B00027606 /* eraserTool.png in Resources */,
-				FA0A53560ACB90800077A945 /* IFUnsharpMaskFilter.nib in Resources */,
-				FA0A53570ACB90810077A945 /* IFColorControlsFilter.nib in Resources */,
 				FAE43A640AD19A5A0068BAAE /* crop-overlay.cikernel in Resources */,
 				FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */,
 				FA256A970AE379F600077863 /* channel-to-mask.cikernel.m4 in Resources */,
@@ -1681,7 +1666,6 @@
 				FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */,
 				FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */,
 				FA9E24590B03B10F001EC346 /* locked_view.png in Resources */,
-				FAF7F2940B08AE7A00BF6B7A /* IFHUDWindow.nib in Resources */,
 				FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */,
 				FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */,
 				FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */,
@@ -1689,8 +1673,6 @@
 				FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */,
 				FA07FECD0B318D5800057249 /* surrogate_parent_3.jpg in Resources */,
 				FA07FECE0B318D5800057249 /* surrogate_parent_4.jpg in Resources */,
-				FAFCF7C60C9AB9B600B69055 /* IFChannelToMaskFilter.nib in Resources */,
-				FAFCF84B0C9ABA3100B69055 /* IFBitmapDrawingSource.nib in Resources */,
 				FA26443A0E13A2EC00701326 /* IFSingleWindow.xib in Resources */,
 				FA2644DF0E13ACDB00701326 /* IFTreeView.xib in Resources */,
 				FA9923B90E13ECFA004BDED9 /* IFImageView.xib in Resources */,
@@ -1701,6 +1683,15 @@
 				FA001F7F0ED419A00016630E /* dragBadge5.tiff in Resources */,
 				FA891C2C1065597B0038E8A3 /* IFFileSource.xib in Resources */,
 				FA891C33106559BC0038E8A3 /* IFDocumentSettings.xib in Resources */,
+				FAE3C1251094764400967DD1 /* IFBitmapDrawingSource.xib in Resources */,
+				FAE3C1421094771E00967DD1 /* IFChannelToMaskFilter.xib in Resources */,
+				FAE3C145109477B300967DD1 /* IFColorControlsFilter.xib in Resources */,
+				FAE3C1481094780C00967DD1 /* IFUnsharpMaskFilter.xib in Resources */,
+				FAE3C14B1094789600967DD1 /* IFGaussianBlurFilter.xib in Resources */,
+				FAE3C15510947B2800967DD1 /* IFCropFilter.xib in Resources */,
+				FAE3C15810947B9200967DD1 /* IFBlendFilter.xib in Resources */,
+				FAE3C15B10947C0B00967DD1 /* IFThresholdFilter.xib in Resources */,
+				FAE3C15E10947CE800967DD1 /* IFDropShadowFilter.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1776,7 +1767,6 @@
 				FAF7F1160B088E0700BF6B7A /* IFTreePaletteViewController.m in Sources */,
 				FAF7F2CF0B08C24700BF6B7A /* IFFilterSettingsViewController.m in Sources */,
 				FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */,
-				FAF90B7E0B099B0100AC8472 /* IFHUDWindowController.m in Sources */,
 				FA1B62820B11DE2700852BC9 /* IFStackingView.m in Sources */,
 				FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */,
 				FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */,

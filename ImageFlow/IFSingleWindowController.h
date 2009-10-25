@@ -10,13 +10,12 @@
 
 #import "IFTreePaletteViewController.h"
 #import "IFImageOrErrorViewController.h"
-#import "IFHUDWindowController.h"
+#import "IFFilterSettingsViewController.h"
 
 @interface IFSingleWindowController : NSWindowController {
   IFTreePaletteViewController* treeViewController;
-
   IFImageOrErrorViewController* imageViewController;
-  IFHUDWindowController* hudWindowController;
+  IFFilterSettingsViewController* filterSettingsViewController;
 }
 
 @end

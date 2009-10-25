@@ -9,20 +9,16 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeCursorPair.h"
+#import "IFVariable.h"
 
 @interface IFFilterSettingsViewController : NSViewController {
   IBOutlet NSTabView* tabView;
   
-  IFTreeCursorPair* cursors;
-  NSString* filterName;
+  IFVariable* cursorsVar;
   NSMutableDictionary* filterControllers;
   NSMutableDictionary* tabIndices;
-  NSMutableDictionary* panelSizes;  
 }
 
-- (void)setCursorPair:(IFTreeCursorPair*)newCursors;
-
-- (NSTabView*)tabView;
-- (NSString*)filterName;
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar;
 
 @end

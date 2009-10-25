@@ -8,8 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface IFFileSourceController : NSObject {
-  IBOutlet NSObjectController* filterController;
+@interface IFFileSourceController : NSObject<NSPathControlDelegate> {
+  IBOutlet NSObjectController* settingsController;
 }
 
 - (IBAction)browseFile:(id)sender;

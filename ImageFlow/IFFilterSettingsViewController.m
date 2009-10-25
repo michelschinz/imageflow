@@ -10,7 +10,7 @@
 
 #import "IFTreeNodeFilter.h"
 
-@interface IFFilterSettingsViewController (Private)
+@interface IFFilterSettingsViewController ()
 - (void)updateSettingsView;
 - (NSObjectController*)filterControllerForName:(NSString*)filterName;
 @end
@@ -23,45 +23,27 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
 {
   if (![super initWithNibName:@"IFFilterSettingsView" bundle:nil])
     return nil;
-  filterName = @"";
   filterControllers = [NSMutableDictionary new];
   tabIndices = [NSMutableDictionary new];
-  panelSizes = [NSMutableDictionary new];  
-  cursors = nil;
+  cursorsVar = nil;
   return self;
 }
 
 - (void)dealloc;
 {
-  [self setCursorPair:nil];
-  OBJC_RELEASE(panelSizes);
+  NSAssert(cursorsVar != nil, @"post-initialization not done");
+  [cursorsVar removeObserver:self forKeyPath:@"value.node"];
+  OBJC_RELEASE(cursorsVar);
   OBJC_RELEASE(tabIndices);
   OBJC_RELEASE(filterControllers);  
-  OBJC_RELEASE(filterName);
   [super dealloc];
 }
 
-- (void)setCursorPair:(IFTreeCursorPair*)newCursors;
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar;
 {
-  if (cursors != nil) {
-    [cursors removeObserver:self forKeyPath:@"node"];
-    [cursors release];
-  }
-  if (newCursors != nil) {
-    [newCursors addObserver:self forKeyPath:@"node" options:0 context:IFEditedNodeDidChangeContext];
-    [newCursors retain];
-  }
-  cursors = newCursors;
-}
-
-- (NSTabView*)tabView;
-{
-  return tabView;
-}
-
-- (NSString*)filterName;
-{
-  return filterName;
+  NSAssert(cursorsVar == nil, @"repeated post-initialization");
+  cursorsVar = [theCursorsVar retain];
+  [cursorsVar addObserver:self forKeyPath:@"value.node" options:0 context:IFEditedNodeDidChangeContext];
 }
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context;
@@ -72,25 +54,14 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
     NSAssert1(NO, @"unexpected context %@", context);
 }
 
-@end
-
-@implementation IFFilterSettingsViewController (Private)
-
-- (void)setFilterName:(NSString*)newFilterName;
-{
-  if (newFilterName == filterName)
-    return;
-  [filterName release];
-  filterName = [newFilterName copy];
-}
+// MARK: -
+// MARK: PRIVATE
 
 - (void)updateSettingsView;
 {
-  IFTreeNode* nodeToEdit = cursors.node.original;
+  IFTreeNode* nodeToEdit = ((IFTreeCursorPair*)cursorsVar.value).node.original;
   if (nodeToEdit == nil)
     return;
-  
-  [self setFilterName:[nodeToEdit label]];
   
   NSString* nodeToEditClassName = [nodeToEdit className];
   NSObjectController* filterController = [self filterControllerForName:nodeToEditClassName];
@@ -113,7 +84,6 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
       }
       NSAssert(nibView != nil, @"no view in NIB file for filter %@", nodeToEditClassName);
         
-      [panelSizes setObject:[NSValue valueWithSize:[nibView bounds].size] forKey:nodeToEditClassName];
       NSTabViewItem* filterSettingsTabViewItem = [[[NSTabViewItem alloc] initWithIdentifier:nil] autorelease];
       [filterSettingsTabViewItem setView:nibView];
       tabIndex = [NSNumber numberWithInt:[tabView numberOfTabViewItems]];
@@ -125,7 +95,6 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   NSTabViewItem* item = [tabView tabViewItemAtIndex:[tabIndex intValue]];
   if (item != [tabView selectedTabViewItem]) {
     [tabView selectTabViewItem:item];
-    [self.view setFrameSize:[[panelSizes objectForKey:nodeToEditClassName] sizeValue]];
   }
 }
 
