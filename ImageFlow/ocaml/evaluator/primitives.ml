@@ -13,6 +13,7 @@ type t =
   | CropOverlay
   | Div
   | Empty
+  | PExportActionCreate
   | Extent
   | Fail
   | FileExtent
@@ -30,7 +31,6 @@ type t =
   | Paint
   | PaintExtent
   | PointMul
-  | Print
   | RectIntersection
   | RectMul
   | RectOutset
@@ -39,7 +39,6 @@ type t =
   | RectUnion
   | RectangularWindow
   | Resample
-  | Save
   | SingleColor
   | Threshold
   | ThresholdMask
@@ -64,6 +63,7 @@ let name = function
   | CropOverlay -> "crop-overlay"
   | Div -> "div"
   | Empty -> "empty"
+  | PExportActionCreate -> "export-action-create"
   | Extent -> "extent"
   | Fail -> "fail"
   | FileExtent -> "file-extent"
@@ -81,7 +81,6 @@ let name = function
   | Paint -> "paint"
   | PaintExtent -> "paint-extent"
   | PointMul -> "point-mul"
-  | Print -> "print"
   | RectIntersection -> "rect-intersection"
   | RectMul -> "rect-mul"
   | RectOutset -> "rect-outset"
@@ -90,7 +89,6 @@ let name = function
   | RectUnion -> "rect-union"
   | RectangularWindow -> "rectangular-window"
   | Resample -> "resample"
-  | Save -> "save"
   | SingleColor -> "single-color"
   | Threshold -> "threshold"
   | ThresholdMask -> "threshold-mask"

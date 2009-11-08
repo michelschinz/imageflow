@@ -143,6 +143,16 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
   return NO;
 }
 
+- (BOOL)isActionType;
+{
+  return NO;
+}
+
+- (BOOL)isSomeImageType;
+{
+  return NO;
+}
+
 - (BOOL)isImageRGBAType;
 {
   return NO;

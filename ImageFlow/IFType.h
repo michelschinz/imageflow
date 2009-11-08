@@ -40,6 +40,8 @@
 @property(readonly) BOOL isFunType;
 @property(readonly) BOOL isArrayType;
 @property(readonly) BOOL isTupleType;
+@property(readonly) BOOL isActionType;
+@property(readonly) BOOL isSomeImageType;
 @property(readonly) BOOL isImageRGBAType;
 @property(readonly) BOOL isMaskType;
 

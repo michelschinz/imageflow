@@ -238,6 +238,8 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
       : [IFErrorLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];
     } else
       newExpressionLayer = nil;
+  } else if (newExpression.isAction) {
+    newExpressionLayer = nil;
   } else
     NSAssert(NO, @"unexpected expression");
   

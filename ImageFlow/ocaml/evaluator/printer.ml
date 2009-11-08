@@ -73,8 +73,8 @@ let rec print0 fmt = function
       pp_print_int fmt n
   | Bool b ->
       pp_print_bool fmt b
-  | Action (k, _) ->
-      pp_print_string fmt ("<action " ^ (action_kind_to_string k) ^ ">")
+  | Action _ ->
+      pp_print_string fmt ("<action>")
   | Error Some msg ->
       pp_print_string fmt ("<ERROR " ^ msg ^ ">")
   | Error None ->

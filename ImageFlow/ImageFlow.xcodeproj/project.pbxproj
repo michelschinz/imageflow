@@ -134,6 +134,7 @@
 		FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */; };
 		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
+		FAD1EBB710A5DD2600482932 /* IFFileExportConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
 		FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD887A20CD073D100D3DE7D /* IFTree.m */; };
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
@@ -452,6 +453,8 @@
 		FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevaluator.a; path = ocaml/libevaluator.a; sourceTree = "<group>"; };
 		FACF8C140866AC4D00985FA3 /* IFTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNode.h; sourceTree = "<group>"; };
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
+		FAD1EBB510A5DD2600482932 /* IFFileExportConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileExportConstantExpression.h; sourceTree = "<group>"; };
+		FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileExportConstantExpression.m; sourceTree = "<group>"; };
 		FAD4DF6E08D075C1004EA3A0 /* IFUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUtilities.h; sourceTree = "<group>"; };
 		FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUtilities.m; sourceTree = "<group>"; };
 		FAD887A10CD073D100D3DE7D /* IFTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTree.h; sourceTree = "<group>"; };
@@ -775,6 +778,8 @@
 				FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */,
 				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
 				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
+				FAD1EBB510A5DD2600482932 /* IFFileExportConstantExpression.h */,
+				FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */,
 			);
 			name = Expressions;
 			sourceTree = "<group>";
@@ -1846,6 +1851,7 @@
 				FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */,
 				FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */,
 				FAB8F334106F8F6B005BE1FE /* IFTupleType.m in Sources */,
+				FAD1EBB710A5DD2600482932 /* IFFileExportConstantExpression.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

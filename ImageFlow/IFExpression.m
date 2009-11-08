@@ -11,6 +11,7 @@
 #import "IFConstantExpression.h"
 #import "IFPrimitiveExpression.h"
 #import "IFArgumentExpression.h"
+#import "IFFileExportConstantExpression.h"
 
 #import <caml/memory.h>
 
@@ -124,6 +125,11 @@
 + (IFExpression*)argumentWithIndex:(unsigned)theIndex;
 {
   return [[(IFArgumentExpression*)[IFArgumentExpression alloc] initWithIndex:theIndex] autorelease];
+}
+
++ (IFExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
+{
+  return [[[IFFileExportConstantExpression alloc] initWithFileURL:theFileURL image:theImage exportArea:theExportArea] autorelease];
 }
 
 // TODO: why is this needed?

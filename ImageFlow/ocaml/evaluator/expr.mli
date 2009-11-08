@@ -22,7 +22,7 @@ type t =
   | Num of float
   | Int of int
   | Bool of bool
-  | Action of action_kind * (t -> unit)
+  | Action of [`IFConstantExpression] Objc.objc
   | Error of string option
 
 val is_value: t -> bool

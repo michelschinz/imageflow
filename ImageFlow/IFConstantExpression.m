@@ -190,6 +190,11 @@
   return NO;
 }
 
+- (BOOL)isAction;
+{
+  return NO;
+}
+
 - (BOOL)isError;
 {
   return NO;
@@ -217,7 +222,6 @@
     case IFExpressionTag_Tuple:
     case IFExpressionTag_Mask:
     case IFExpressionTag_Image:
-    case IFExpressionTag_Action:
       NSAssert(NO, @"not implemented yet"); // FIXME: implement
       
     case IFExpressionTag_Color:
@@ -244,9 +248,9 @@
     case IFExpressionTag_Bool:
       decodedObject = [NSNumber numberWithInt:[xmlCoder decodeInt:[xml stringValue]]];
       break;
-      
+
     default:
-      NSAssert(NO, @"unknown tag %d", tag);
+      NSAssert(NO, @"invalid tag %d", tag);
       break;
   }
   return [self initWithObject:decodedObject tag:decodedTag];
@@ -262,7 +266,6 @@
     case IFExpressionTag_Tuple:
     case IFExpressionTag_Mask:
     case IFExpressionTag_Image:
-    case IFExpressionTag_Action:
       NSAssert(NO, @"not implemented yet"); // FIXME: implement
       
     case IFExpressionTag_Color:
@@ -291,6 +294,10 @@
       
     case IFExpressionTag_Bool:
       [elem setStringValue:[xmlCoder encodeInt:[self boolValue]]];
+      break;
+      
+    case IFExpressionTag_Action:
+      NSAssert(NO, @"cannot represent actions as XML");
       break;
       
     default:
@@ -387,7 +394,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       *result = [IFConstantExpression expressionWithInt:Bool_val(Field(camlValue, 0))];
       break;
     case IFExpressionTag_Action:
-      *result = [IFErrorConstantExpression errorConstantExpressionWithMessage:@"not implemented yet"]; // TODO: action
+      *result = objc_unwrap(Field(camlValue, 0));
       break;
     case IFExpressionTag_Error: {
       NSString* msg = (Field(camlValue, 0) == Val_int(0/*None*/))
@@ -481,7 +488,7 @@ static value elemAsCaml(const char* elem) {
       contents = caml_alloc_array(elemAsCaml, (char const**)cArray);
       free(cArray);      
     } break;
-      
+
     default:
       NSAssert(NO, @"unknown tag %d", tag);
       break;

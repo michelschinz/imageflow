@@ -43,6 +43,11 @@ static NSArray* types = nil;
 
 @synthesize tag;
 
+- (BOOL)isActionType;
+{
+  return tag == IFTypeTag_TAction;
+}
+
 - (NSString*)description;
 {
   switch (tag) {

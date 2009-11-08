@@ -3,13 +3,6 @@ open Primitives
 
 exception EvalError of Expr.t
 
-(* Execution of actions *)
-
-let execute = function
-    Prim(Save, [|Image i; String f|]) ->
-      Save.exec_save (Image.to_ciimage i) f "public.jpeg"
-  | _ -> failwith "internal error"
-
 (* Evaluation of expressions *)
 
 let rec eval cache env expr =
@@ -76,6 +69,10 @@ and eval_prim cache op args =
       Tuple vs
   | PTupleGet, [|Tuple t; Int i|] ->
       t.(i)
+
+    (* Action primitives *)
+  | PExportActionCreate, [|String f; Image i; Rect r|] ->
+      Export.create_action f i r
 
     (* Rectangle primitives *)
   | RectIntersection, [|Rect r1; Rect r2|] ->
@@ -144,16 +141,12 @@ and eval_prim cache op args =
       out_image (Coreimage.opacity i a)
   | Paint, [|Image b; Array ps|] ->
       Image (Paint.eval_paint b ps)
-  | Print, _ ->
-      Action(APrint, execute)
   | RectangularWindow, [|Image i; Color c; Rect r; Num m|] ->
       out_image (Coreimage.rectangular_window i c r m)
   | Resample, [|Image i; Num f|] ->
       out_image (Coreimage.affine_transform i (Affinetransform.scale f f))
   | Resample, [|Mask m; Num f|] ->
       out_mask (Coreimage.affine_transform m (Affinetransform.scale f f))
-  | Save, _ ->
-      Action(ASave, execute)
   | SingleColor, [|Image i; Color c|] ->
       out_image (Coreimage.single_color i c)
   | Threshold, [|Image i; Num t|] ->

@@ -43,7 +43,9 @@
 + (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operands:(IFExpression*)firstOperand, ...;
 + (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operandsArray:(NSArray*)theOperands;
 + (IFExpression*)argumentWithIndex:(unsigned)theIndex;
-// TODO: constant expressions
+
+// TODO: more constant expressions
++ (IFExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
 
 @property(readonly) NSUInteger hash;
 

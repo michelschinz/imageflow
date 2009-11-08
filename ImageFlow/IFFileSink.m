@@ -24,24 +24,19 @@
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
-  return [IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_Save operands:nil]];
+  // TODO: use correct export rect (either canvas or explicit value from environment).
+  return [IFExpression lambdaWithBody:
+          [IFExpression primitiveWithTag:IFPrimitiveTag_PExportActionCreate operands:[IFConstantExpression expressionWithString:[settings valueForKey:@"fileName"]], [IFExpression argumentWithIndex:0], [IFConstantExpression expressionWithRectCG:CGRectMake(0, 0, 800, 600)], nil]];
 }
-
-- (NSString*)exporterKind;
-{
-  return @"file";
-}
-
-// TODO: write export code
 
 - (NSString*)computeLabel;
 {
-  return [NSString stringWithFormat:@"save %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
+  return [NSString stringWithFormat:@"export %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
 }
 
 - (NSString*)toolTip;
 {
-  return [NSString stringWithFormat:@"save %@",[settings valueForKey:@"fileName"]];
+  return [NSString stringWithFormat:@"export %@",[settings valueForKey:@"fileName"]];
 }
 
 @end

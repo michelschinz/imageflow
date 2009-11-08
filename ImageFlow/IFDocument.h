@@ -41,6 +41,9 @@ extern NSString* IFTreeChangedNotification;
 
 @property(readonly) IFLayoutParameters* layoutParameters;
 
+// MARK: Actions
+- (IBAction)exportAllFiles:(id)sender;
+
 // MARK: Tree navigation
 - (NSSet*)allNodes;
 - (NSSet*)ancestorsOfNode:(IFTreeNode*)node;

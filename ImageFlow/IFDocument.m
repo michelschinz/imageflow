@@ -12,12 +12,13 @@
 #import "IFTreeNodeFilter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
+#import "IFFileExportConstantExpression.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
 #import <caml/callback.h>
 
-@interface IFDocument (Private)
+@interface IFDocument ()
 - (void)ensureGhostNodes;;
 - (void)beginTreeModification;
 - (void)endTreeModification;
@@ -89,6 +90,24 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 @synthesize resolutionX, resolutionY;
 
 @synthesize layoutParameters;
+
+// MARK: Actions
+
+- (IBAction)exportAllFiles:(id)sender;
+{
+  IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
+  
+  NSMutableArray* exportActions = [NSMutableArray array];
+  for (IFTreeNode* root in self.roots) {
+    // TODO: check that the action is of the right kind
+    IFConstantExpression* rootExpression = [evaluator evaluateExpression:root.expression];
+    if (rootExpression.isAction)
+      [exportActions addObject:rootExpression];
+  }
+
+  for (IFFileExportConstantExpression* action in exportActions)
+    [action executeAction];
+}
 
 // MARK: Tree navigation
 
@@ -293,9 +312,8 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   return YES;
 }
 
-@end
-
-@implementation IFDocument (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (void)ensureGhostNodes;
 {
@@ -303,9 +321,9 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   NSArray* roots = [self roots];
   for (unsigned int i = 0; i < [roots count]; i++) {
     IFTreeNode* root = [roots objectAtIndex:i];
-    if ([root isGhost])
+    if (root.isGhost)
       hasGhostColumn |= ([tree parentsCountOfNode:root] == 0);
-    else if (YES) // TODO: check that tree has an image output
+    else if (root.type.resultType.leafType.isSomeImageType)
       [tree insertCloneOfTree:[IFTree ghostTreeWithArity:1] asChildOfNode:root];
   }
   if (!hasGhostColumn)
@@ -321,8 +339,9 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (void)endTreeModification;
 {
   NSAssert(![tree propagateNewParentExpressions], @"internal error");
-  [self ensureGhostNodes];
   [tree configureNodes];
+  [self ensureGhostNodes];
+  [tree configureNodes]; // TODO: ideally, only newly-added ghost nodes should be re-configured
   [tree setPropagateNewParentExpressions:YES];
   [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
 }

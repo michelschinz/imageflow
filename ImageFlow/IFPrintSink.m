@@ -25,12 +25,7 @@
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
-  return [IFExpression lambdaWithBody:[IFExpression primitiveWithTag:IFPrimitiveTag_Print operands:nil]];
-}
-
-- (NSString*)exporterKind;
-{
-  return @"printer";
+  return [IFExpression fail];
 }
 
 // TODO obsolete

@@ -45,6 +45,7 @@
 
 @property(readonly) BOOL isArray;
 @property(readonly) BOOL isImage;
+@property(readonly) BOOL isAction;
 @property(readonly) BOOL isError;
 
 + (id)expressionWithCamlValue:(value)camlValue;

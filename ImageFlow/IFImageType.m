@@ -49,6 +49,11 @@
   return pixelType;
 }
 
+- (BOOL)isSomeImageType;
+{
+  return YES;
+}
+
 - (BOOL)isImageRGBAType;
 {
   return pixelType == [IFType colorRGBAType];

@@ -16,6 +16,7 @@ type t =
   | CropOverlay
   | Div
   | Empty
+  | PExportActionCreate
   | Extent
   | Fail
   | FileExtent
@@ -33,7 +34,6 @@ type t =
   | Paint
   | PaintExtent
   | PointMul
-  | Print
   | RectIntersection
   | RectMul
   | RectOutset
@@ -42,7 +42,6 @@ type t =
   | RectUnion
   | RectangularWindow
   | Resample
-  | Save
   | SingleColor
   | Threshold
   | ThresholdMask
