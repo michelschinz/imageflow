@@ -189,7 +189,6 @@
 		FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
 		FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */; };
-		FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */; };
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
 		FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */; };
@@ -538,7 +537,6 @@
 		FAF8AA2F08FCD76500557C4D /* IFXMLCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFXMLCoder.h; sourceTree = "<group>"; };
 		FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFXMLCoder.m; sourceTree = "<group>"; };
 		FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFilterSettingsView.nib; sourceTree = "<group>"; };
-		FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFThumbnailView.nib; sourceTree = "<group>"; };
 		FAF934FB0908094E00558366 /* IFConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConstantExpression.h; sourceTree = "<group>"; };
 		FAF934FC0908094E00558366 /* IFConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConstantExpression.m; sourceTree = "<group>"; };
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
@@ -1389,7 +1387,6 @@
 			children = (
 				FA9923B80E13ECFA004BDED9 /* IFImageView.xib */,
 				FAF90B9E0B099D2B00AC8472 /* IFFilterSettingsView.nib */,
-				FAF90C210B099D8500AC8472 /* IFThumbnailView.nib */,
 				FA2644DE0E13ACDB00701326 /* IFTreeView.xib */,
 			);
 			name = Views;
@@ -1627,7 +1624,6 @@
 				FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */,
 				FA9E24590B03B10F001EC346 /* locked_view.png in Resources */,
 				FAF90B9F0B099D2B00AC8472 /* IFFilterSettingsView.nib in Resources */,
-				FAF90C220B099D8500AC8472 /* IFThumbnailView.nib in Resources */,
 				FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */,
 				FA07FE130B3145FA00057249 /* surrogate_parent_1.jpg in Resources */,
 				FA07FECC0B318D5800057249 /* surrogate_parent_2.jpg in Resources */,
