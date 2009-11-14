@@ -63,7 +63,6 @@
 		FA3B82780FEE29DE00D4687B /* IFPathLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3B82770FEE29DE00D4687B /* IFPathLayer.m */; };
 		FA402733091A35E6001626A2 /* IFFileSink.nib in Resources */ = {isa = PBXBuildFile; fileRef = FA402732091A35E6001626A2 /* IFFileSink.nib */; };
 		FA40702A0B5A8B1900BDE37F /* IFTypeChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */; };
-		FA40F2660912438100C8B8DD /* IFHistogramConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */; };
 		FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
 		FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */; };
 		FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA4328BC0ADAC14F00109D58 /* circle.cikernel */; };
@@ -144,7 +143,6 @@
 		FADF57A70CECD29B009EE47D /* IFObjectNumberer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF57A50CECD29B009EE47D /* IFObjectNumberer.m */; };
 		FADFB0E10CE3578E00F14E3F /* IFTreeNodeHole.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFB0DF0CE3578E00F14E3F /* IFTreeNodeHole.m */; };
 		FADFF82B0D07E6A60023B7BF /* IFTreeTemplateCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */; };
-		FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */ = {isa = PBXBuildFile; fileRef = FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */; };
 		FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE0DF2308C3876C00595ED4 /* Accelerate.framework */; };
 		FAE3C1251094764400967DD1 /* IFBitmapDrawingSource.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C1241094764400967DD1 /* IFBitmapDrawingSource.xib */; };
 		FAE3C1421094771E00967DD1 /* IFChannelToMaskFilter.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE3C1411094771E00967DD1 /* IFChannelToMaskFilter.xib */; };
@@ -160,18 +158,14 @@
 		FAE531E30CD210C200B39F8F /* IFTreeTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE531E10CD210C200B39F8F /* IFTreeTemplate.m */; };
 		FAE531F30CD2138800B39F8F /* IFTreeTemplateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE531F10CD2138800B39F8F /* IFTreeTemplateManager.m */; };
 		FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE54C76090CD7B1000DC147 /* IFFileSourceController.m */; };
-		FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A705508DE995F00397488 /* IFHistogramData.m */; };
-		FAE55BF908E2F9F200BA87AC /* IFHistogramView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */; };
 		FAE59D2308F3CABE00EF20ED /* IFInspectorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */; };
 		FAE59F3C08F3D23600EF20ED /* IFDocumentInspectorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */; };
-		FAE59F3F08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */; };
 		FAE5A50408A7931B00BBBB16 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE5A50308A7931B00BBBB16 /* OpenGL.framework */; };
 		FAE5A50908A7933C00BBBB16 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */; };
 		FAE63B5A0AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE63B580AB9789500B6A1C0 /* NSAffineTransformIFAdditions.m */; };
 		FAE6A41D0ACBD9050059BA3B /* IFGrabableViewMixin.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6A41B0ACBD9050059BA3B /* IFGrabableViewMixin.m */; };
 		FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE8129908CF307C00B43274 /* IFImageView.m */; };
 		FAE874DB0908C4E300E856B9 /* Templates in Resources */ = {isa = PBXBuildFile; fileRef = FAE8749F0908C2B800E856B9 /* Templates */; };
-		FAEC284F0916137200AB4196 /* IFHistogramConstantExpressionCI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */; };
 		FAED0F5E0B2821A100D5DC62 /* IFVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F5C0B2821A100D5DC62 /* IFVariable.m */; };
 		FAED0F670B28220700D5DC62 /* IFVariableKVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED0F650B28220700D5DC62 /* IFVariableKVO.m */; };
 		FAED107F0B285E9D00D5DC62 /* IFRectIVarController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAED107D0B285E9D00D5DC62 /* IFRectIVarController.m */; };
@@ -315,8 +309,6 @@
 		FA29D2EF0B1EB64C004AE43E /* IFRectangularWindowCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFRectangularWindowCIFilter.h; sourceTree = "<group>"; };
 		FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRectangularWindowCIFilter.m; sourceTree = "<group>"; };
 		FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "rectangular-window.cikernel"; sourceTree = "<group>"; };
-		FA2A705508DE995F00397488 /* IFHistogramData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFHistogramData.m; sourceTree = "<group>"; };
-		FA2A705708DE997300397488 /* IFHistogramData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramData.h; sourceTree = "<group>"; };
 		FA2E97370AFFB591006AE6E8 /* mask_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask_tag.png; sourceTree = "<group>"; };
 		FA2F19E40ADD3F420049C88D /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeAlias.h; sourceTree = "<group>"; };
@@ -332,8 +324,6 @@
 		FA402732091A35E6001626A2 /* IFFileSink.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFFileSink.nib; sourceTree = "<group>"; };
 		FA4070270B5A8B1900BDE37F /* IFTypeChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTypeChecker.h; sourceTree = "<group>"; };
 		FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTypeChecker.m; sourceTree = "<group>"; };
-		FA40F2630912438100C8B8DD /* IFHistogramConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpression.h; sourceTree = "<group>"; };
-		FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpression.m; sourceTree = "<group>"; };
 		FA4327AB0ADA7B1900109D58 /* libbigarray.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbigarray.a; path = lib/ocaml/libbigarray.a; sourceTree = ocaml; };
 		FA43286A0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCircleGeneratorCIFilter.h; sourceTree = "<group>"; };
 		FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFCircleGeneratorCIFilter.m; sourceTree = "<group>"; };
@@ -473,9 +463,6 @@
 		FADFB0DF0CE3578E00F14E3F /* IFTreeNodeHole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeHole.m; sourceTree = "<group>"; };
 		FADFF8280D07E6A60023B7BF /* IFTreeTemplateCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeTemplateCollection.h; sourceTree = "<group>"; };
 		FADFF8290D07E6A60023B7BF /* IFTreeTemplateCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeTemplateCollection.m; sourceTree = "<group>"; };
-		FAE0DE4E08C361AD00595ED4 /* IFHistogramView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramView.h; sourceTree = "<group>"; };
-		FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramView.m; sourceTree = "<group>"; };
-		FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = IFHistogramView.nib; sourceTree = "<group>"; };
 		FAE0DF2308C3876C00595ED4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
 		FAE3C1241094764400967DD1 /* IFBitmapDrawingSource.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFBitmapDrawingSource.xib; sourceTree = "<group>"; };
 		FAE3C1411094771E00967DD1 /* IFChannelToMaskFilter.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFChannelToMaskFilter.xib; sourceTree = "<group>"; };
@@ -499,8 +486,6 @@
 		FAE59D2208F3CABE00EF20ED /* IFInspectorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFInspectorWindowController.m; sourceTree = "<group>"; };
 		FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFDocumentInspectorWindowController.h; sourceTree = "<group>"; };
 		FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFDocumentInspectorWindowController.m; sourceTree = "<group>"; };
-		FAE59F3D08F3D24B00EF20ED /* IFHistogramInspectorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = IFHistogramInspectorWindowController.h; sourceTree = "<group>"; };
-		FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = IFHistogramInspectorWindowController.m; sourceTree = "<group>"; };
 		FAE5A50308A7931B00BBBB16 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		FAE5A50808A7933C00BBBB16 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		FAE63B570AB9789500B6A1C0 /* NSAffineTransformIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSAffineTransformIFAdditions.h; sourceTree = "<group>"; };
@@ -510,8 +495,6 @@
 		FAE8129808CF307C00B43274 /* IFImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageView.h; sourceTree = "<group>"; };
 		FAE8129908CF307C00B43274 /* IFImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageView.m; sourceTree = "<group>"; };
 		FAE8749F0908C2B800E856B9 /* Templates */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Templates; sourceTree = "<group>"; };
-		FAEC284C0916137200AB4196 /* IFHistogramConstantExpressionCI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFHistogramConstantExpressionCI.h; sourceTree = "<group>"; };
-		FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFHistogramConstantExpressionCI.m; sourceTree = "<group>"; };
 		FAED0F5B0B2821A100D5DC62 /* IFVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariable.h; sourceTree = "<group>"; };
 		FAED0F5C0B2821A100D5DC62 /* IFVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFVariable.m; sourceTree = "<group>"; };
 		FAED0F640B28220700D5DC62 /* IFVariableKVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFVariableKVO.h; sourceTree = "<group>"; };
@@ -774,8 +757,6 @@
 				FAF934FC0908094E00558366 /* IFConstantExpression.m */,
 				FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */,
 				FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */,
-				FA40F2630912438100C8B8DD /* IFHistogramConstantExpression.h */,
-				FA40F2640912438100C8B8DD /* IFHistogramConstantExpression.m */,
 				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
 				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
 				FAD1EBB510A5DD2600482932 /* IFFileExportConstantExpression.h */,
@@ -1250,7 +1231,6 @@
 			isa = PBXGroup;
 			children = (
 				FA891C32106559BC0038E8A3 /* IFDocumentSettings.xib */,
-				FAE0DE7C08C363F200595ED4 /* IFHistogramView.nib */,
 			);
 			name = Inspectors;
 			sourceTree = "<group>";
@@ -1264,24 +1244,6 @@
 				FAD888F80CD0A83B00D3DE7D /* IFOrientedGraphEdge.m */,
 			);
 			name = Graph;
-			sourceTree = "<group>";
-		};
-		FAE0DE5108C361B300595ED4 /* Histogram */ = {
-			isa = PBXGroup;
-			children = (
-				FAE0DE4E08C361AD00595ED4 /* IFHistogramView.h */,
-				FAE0DE4F08C361AD00595ED4 /* IFHistogramView.m */,
-			);
-			name = Histogram;
-			sourceTree = "<group>";
-		};
-		FAE0DE5208C3621500595ED4 /* Histograms */ = {
-			isa = PBXGroup;
-			children = (
-				FA2A705708DE997300397488 /* IFHistogramData.h */,
-				FA2A705508DE995F00397488 /* IFHistogramData.m */,
-			);
-			name = Histograms;
 			sourceTree = "<group>";
 		};
 		FAE531EF0CD2135200B39F8F /* Templates */ = {
@@ -1311,8 +1273,6 @@
 			children = (
 				FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */,
 				FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */,
-				FAEC284C0916137200AB4196 /* IFHistogramConstantExpressionCI.h */,
-				FAEC284D0916137200AB4196 /* IFHistogramConstantExpressionCI.m */,
 			);
 			name = Evaluator;
 			sourceTree = "<group>";
@@ -1398,8 +1358,6 @@
 				FAE59F3A08F3D23600EF20ED /* IFDocumentInspectorWindowController.h */,
 				FAE59F3B08F3D23600EF20ED /* IFDocumentInspectorWindowController.m */,
 				FA26447E0E13A71700701326 /* Single window layout */,
-				FAE59F3D08F3D24B00EF20ED /* IFHistogramInspectorWindowController.h */,
-				FAE59F3E08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m */,
 			);
 			name = "Window controllers";
 			sourceTree = "<group>";
@@ -1535,7 +1493,6 @@
 				FA1EB1FF086AAB35007FD6AF /* Tree */,
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
-				FAE0DE5208C3621500595ED4 /* Histograms */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1553,7 +1510,6 @@
 				FAF4D62D0ABAEC55000F98B0 /* IFCursorRepository.m */,
 				FA9C6CEF0E1E2702004A6953 /* Forest & Palette */,
 				FAE5A51408A793E500BBBB16 /* Image */,
-				FAE0DE5108C361B300595ED4 /* Histogram */,
 				FA68E05B092DCEC7009D02CB /* Printing */,
 			);
 			name = View;
@@ -1641,7 +1597,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA4E20720E1383C8002A3CDF /* Credits.rtf in Resources */,
-				FAE0DE7D08C363F200595ED4 /* IFHistogramView.nib in Resources */,
 				FA11DD2708F245E500A3AF61 /* IFPreferences.nib in Resources */,
 				FA0C40E808FF9AC600BC69CB /* IFSavePanelAccessoryView.nib in Resources */,
 				FAE874DB0908C4E300E856B9 /* Templates in Resources */,
@@ -1713,12 +1668,9 @@
 				FA21BC2108683CA70019D1B7 /* IFAppController.m in Sources */,
 				FAE8129A08CF307C00B43274 /* IFImageView.m in Sources */,
 				FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */,
-				FAE55BF708E2F9ED00BA87AC /* IFHistogramData.m in Sources */,
-				FAE55BF908E2F9F200BA87AC /* IFHistogramView.m in Sources */,
 				FA11DDA608F24EF800A3AF61 /* IFPreferencesWindowController.m in Sources */,
 				FAE59D2308F3CABE00EF20ED /* IFInspectorWindowController.m in Sources */,
 				FAE59F3C08F3D23600EF20ED /* IFDocumentInspectorWindowController.m in Sources */,
-				FAE59F3F08F3D24B00EF20ED /* IFHistogramInspectorWindowController.m in Sources */,
 				FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */,
 				FAA2AF2D08FFA1750055AFDD /* IFSavePanelController.m in Sources */,
 				FAA2AFA408FFAB710055AFDD /* IFDirectoryManager.m in Sources */,
@@ -1727,8 +1679,6 @@
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
 				FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */,
-				FA40F2660912438100C8B8DD /* IFHistogramConstantExpression.m in Sources */,
-				FAEC284F0916137200AB4196 /* IFHistogramConstantExpressionCI.m in Sources */,
 				FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */,
 				FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */,
 				FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */,

@@ -10,7 +10,6 @@
 #import "IFDirectoryManager.h"
 
 #import "IFDocumentInspectorWindowController.h"
-#import "IFHistogramInspectorWindowController.h"
 
 #import "IFPercentValueTransformer.h"
 
@@ -139,11 +138,6 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 - (IBAction)openDocumentSettingsInspector:(id)sender;
 {
   [self openInspectorOfClass:[IFDocumentInspectorWindowController class] sender:sender];
-}
-
-- (IBAction)openHistogramInspector:(id)sender;
-{
-  [self openInspectorOfClass:[IFHistogramInspectorWindowController class] sender:sender];
 }
 
 // MARK: -

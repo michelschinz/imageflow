@@ -24,6 +24,5 @@ extern NSString* IFNewDocumentKey;
 - (IBAction)showPreferencesPanel:(id)sender;
 
 - (IBAction)openDocumentSettingsInspector:(id)sender;
-- (IBAction)openHistogramInspector:(id)sender;
 
 @end
