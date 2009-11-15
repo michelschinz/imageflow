@@ -8,7 +8,6 @@
 
 #import "IFImageOrErrorViewController.h"
 
-#import "IFErrorConstantExpression.h"
 #import "IFExpression.h"
 #import "NSAffineTransformIFAdditions.h"
 #import "IFBlendMode.h"
@@ -196,14 +195,14 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     NSRect dirtyRect = (displayedExpression == nil || newDisplayedExpression == nil)
     ? NSRectInfinite()
     : [[cursorsVar.value editViewTransform] transformRect:[evaluator deltaFromOld:displayedExpression toNew:newDisplayedExpression]];
-    [imageView setImage:[(IFImageConstantExpression*)evaluatedNewExpr image] dirtyRect:dirtyRect];
+    [imageView setImage:evaluatedNewExpr.imageValue dirtyRect:dirtyRect];
     self.errorMessage = nil;
     [imageOrErrorTabView selectTabViewItemAtIndex:0];
     self.activeView = imageView;
   } else {
     NSAssert([evaluatedNewExpr isError], @"unexpected expression");
     [imageView setImage:nil dirtyRect:NSRectInfinite()];
-    self.errorMessage = [(IFErrorConstantExpression*)evaluatedNewExpr message];
+    self.errorMessage = evaluatedNewExpr.object;
     [imageOrErrorTabView selectTabViewItemAtIndex:1];
     self.activeView = imageOrErrorTabView;
   }

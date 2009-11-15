@@ -9,30 +9,40 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFExpression.h"
+#import "IFImage.h"
 
 @interface IFConstantExpression : IFExpression {
-  NSObject* object;
   int tag;
+  id object;
 }
 
-+ expressionWithObject:(NSObject*)theConstant tag:(int)theTag;
++ (IFConstantExpression*)expressionWithObject:(id)theObject tag:(int)theTag;
 
-+ expressionWithArray:(NSArray*)theArray;
-+ expressionWithTupleElements:(NSArray*)theElements;
-+ expressionWithPointNS:(NSPoint)thePoint;
-+ expressionWithRectNS:(NSRect)theRect;
-+ expressionWithRectCG:(CGRect)theRect;
-+ expressionWithColorNS:(NSColor*)theColor;
-+ expressionWithString:(NSString*)theString;
-+ expressionWithInt:(int)theInt;
-+ expressionWithFloat:(float)theFloat;
++ (IFConstantExpression*)expressionWithArray:(NSArray*)theArray;
++ (IFConstantExpression*)expressionWithTupleElements:(NSArray*)theElements;
++ (IFConstantExpression*)expressionWithPointNS:(NSPoint)thePoint;
++ (IFConstantExpression*)expressionWithRectNS:(NSRect)theRect;
++ (IFConstantExpression*)expressionWithRectCG:(CGRect)theRect;
++ (IFConstantExpression*)expressionWithColorNS:(NSColor*)theColor;
++ (IFConstantExpression*)expressionWithString:(NSString*)theString;
++ (IFConstantExpression*)expressionWithInt:(int)theInt;
++ (IFConstantExpression*)expressionWithFloat:(float)theFloat;
++ (IFConstantExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
 
-@property(readonly) int tag;
++ (IFConstantExpression*)imageConstantExpressionWithIFImage:(IFImage*)theImage;
++ (IFConstantExpression*)errorConstantExpressionWithMessage:(NSString*)theMessage;
 
+@property(readonly) BOOL isArray;
+@property(readonly) BOOL isImage;
+@property(readonly) BOOL isAction;
+@property(readonly) BOOL isError;
+
+@property(readonly) id object;
+
+@property(readonly) IFImage* imageValue;
 @property(readonly) NSArray* arrayValue;
 @property(readonly) NSArray* flatArrayValue;
 @property(readonly) NSArray* tupleValue;
-@property(readonly) NSObject* objectValue;
 @property(readonly) NSPoint pointValueNS;
 @property(readonly) NSRect rectValueNS;
 @property(readonly) CGRect rectValueCG;
@@ -42,17 +52,5 @@
 @property(readonly) int intValue;
 @property(readonly) BOOL boolValue;
 @property(readonly) float floatValue;
-
-@property(readonly) BOOL isArray;
-@property(readonly) BOOL isImage;
-@property(readonly) BOOL isAction;
-@property(readonly) BOOL isError;
-
-+ (id)expressionWithCamlValue:(value)camlValue;
-
-// MARK: -
-// MARK: PROTECTED
-
-- initWithObject:(NSObject*)theConstant tag:(int)theTag;
 
 @end

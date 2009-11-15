@@ -48,10 +48,3 @@ CAMLprim value IFImage_isLocked(value self) {
   CAMLparam1(self);
   CAMLreturn(Val_bool([objc_unwrap(self) isLocked]));
 }
-
-CAMLprim value IFImage_logRetainCounts(value self) {
-  CAMLparam1(self);
-  [objc_unwrap(self) logRetainCounts];
-  CAMLreturn(Val_unit);
-}
-

@@ -11,11 +11,63 @@
 #import "IFConstantExpression.h"
 #import "IFPrimitiveExpression.h"
 #import "IFArgumentExpression.h"
-#import "IFFileExportConstantExpression.h"
 
 #import <caml/memory.h>
 
 @implementation IFExpression
+
+// MARK: Constructors
+
++ (id)expressionWithXML:(NSXMLElement*)xmlTree;
+{
+  NSString* xmlName = [xmlTree name];
+  // TODO: handle other cases (lambda, argument, etc.)
+  if ([xmlName isEqualToString:@"primitive"])
+    return [[[IFPrimitiveExpression alloc] initWithXML:xmlTree] autorelease];
+  else if ([xmlName isEqualToString:@"constant"])
+    return [[[IFConstantExpression alloc] initWithXML:xmlTree] autorelease];
+  else {
+    NSAssert1(false, @"unknown XML element: %@",xmlName); // TODO: handle errors
+    return nil;
+  }
+}
+
++ (id)expressionWithCamlValue:(value)camlValue;
+{
+  IFExpression* expression;
+  switch (Tag_val(camlValue)) {
+    case IFExpressionTag_Lambda:
+    case IFExpressionTag_Prim:
+    case IFExpressionTag_Arg:
+    case IFExpressionTag_Closure:
+      NSAssert(NO, @"not implemented yet"); // TODO: implement
+      expression = nil;
+      break;
+
+    case IFExpressionTag_Array:
+    case IFExpressionTag_Tuple:
+    case IFExpressionTag_Image:
+    case IFExpressionTag_Mask:
+    case IFExpressionTag_Color:
+    case IFExpressionTag_Rect:
+    case IFExpressionTag_Size:
+    case IFExpressionTag_Point:
+    case IFExpressionTag_String:
+    case IFExpressionTag_Num:
+    case IFExpressionTag_Int:
+    case IFExpressionTag_Bool:
+    case IFExpressionTag_Action:
+    case IFExpressionTag_Error:
+      expression = [IFConstantExpression expressionWithCamlValue:camlValue];
+      break;
+      
+    default:
+      NSAssert(NO, @"unexpected tag");
+      expression = nil;
+      break;
+  }
+  return expression;
+}
 
 + (IFExpression*)fail;
 {
@@ -127,15 +179,13 @@
   return [[(IFArgumentExpression*)[IFArgumentExpression alloc] initWithIndex:theIndex] autorelease];
 }
 
-+ (IFExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
+- (id)init;
 {
-  return [[[IFFileExportConstantExpression alloc] initWithFileURL:theFileURL image:theImage exportArea:theExportArea] autorelease];
-}
-
-// TODO: why is this needed?
-- (id)copyWithZone:(NSZone*)zone;
-{
-  return [self retain];
+  if (![super init])
+    return nil;
+  camlRepresentationIsValid = NO;
+  camlRepresentation = 0;
+  return self;
 }
 
 - (void)dealloc;
@@ -148,32 +198,25 @@
   [super dealloc];
 }
 
+// TODO: why is this needed?
+- (id)copyWithZone:(NSZone*)zone;
+{
+  return [self retain];
+}
+
+- (int)tag;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return -1;
+}
+
 - (NSUInteger)hash;
 {
   [self doesNotRecognizeSelector:_cmd];
   return 0;
 }
 
-+ (id)expressionWithXML:(NSXMLElement*)xmlTree;
-{
-  NSString* xmlName = [xmlTree name];
-  if ([xmlName isEqualToString:@"primitive"])
-    return [[[IFPrimitiveExpression alloc] initWithXML:xmlTree] autorelease];
-  else if ([xmlName isEqualToString:@"constant"])
-    return [[[IFConstantExpression alloc] initWithXML:xmlTree] autorelease];
-  else {
-    NSAssert1(false, @"unknown XML element: %@",xmlName); // TODO handle errors
-    return nil;
-  }
-}
-
 // MARK: XML input/output
-
-- (id)initWithXML:(NSXMLElement*)xml;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
-}
 
 - (NSXMLElement*)asXML;
 {

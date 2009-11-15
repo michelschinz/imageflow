@@ -9,7 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFConstantExpression.h"
-#import "IFImageConstantExpression.h"
 
 @interface IFExpressionEvaluator : NSObject {
   CGColorSpaceRef workingColorSpace;

@@ -58,7 +58,7 @@
 {
   NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: %@", variantName);
   
-  if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]] && [(IFPrimitiveExpression*)originalExpression tag]  == IFPrimitiveTag_Crop)
+  if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]] && [(IFPrimitiveExpression*)originalExpression primitiveTag]  == IFPrimitiveTag_Crop)
     return [IFPrimitiveExpression primitiveWithTag:IFPrimitiveTag_CropOverlay operandsArray:[(IFPrimitiveExpression*)originalExpression operands]];
   else
     return originalExpression;

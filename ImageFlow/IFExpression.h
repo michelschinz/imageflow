@@ -18,9 +18,9 @@
   value camlRepresentation;
 }
 
-+ (id)expressionWithXML:(NSXMLElement*)xmlTree;
-
 // MARK: Constructors
++ (id)expressionWithXML:(NSXMLElement*)xmlTree;
++ (id)expressionWithCamlValue:(value)camlValue;
 
 + (IFExpression*)fail;
 + (IFExpression*)extentOf:(IFExpression*)imageExpr;
@@ -44,10 +44,12 @@
 + (IFExpression*)primitiveWithTag:(IFPrimitiveTag)theTag operandsArray:(NSArray*)theOperands;
 + (IFExpression*)argumentWithIndex:(unsigned)theIndex;
 
-// TODO: more constant expressions
-+ (IFExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
+// MARK: Properties
 
+@property(readonly) int tag;
 @property(readonly) NSUInteger hash;
+
+// MARK: Caml / XML conversion
 
 - (NSXMLElement*)asXML;
 - (value)asCaml;
@@ -55,7 +57,6 @@
 // MARK: -
 // MARK: PROTECTED
 
-- (id)initWithXML:(NSXMLElement*)xml;
 - (value)camlRepresentation;
 
 @end

@@ -12,7 +12,7 @@
 #import "IFTreeNodeFilter.h"
 #import "IFTreeNodeAlias.h"
 #import "IFTypeChecker.h"
-#import "IFFileExportConstantExpression.h"
+#import "IFAction.h"
 
 #import <caml/memory.h>
 #import <caml/alloc.h>
@@ -102,11 +102,11 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
     // TODO: check that the action is of the right kind
     IFConstantExpression* rootExpression = [evaluator evaluateExpression:root.expression];
     if (rootExpression.isAction)
-      [exportActions addObject:rootExpression];
+      [exportActions addObject:rootExpression.object];
   }
 
-  for (IFFileExportConstantExpression* action in exportActions)
-    [action executeAction];
+  for (IFAction* action in exportActions)
+    [action execute];
 }
 
 // MARK: Tree navigation

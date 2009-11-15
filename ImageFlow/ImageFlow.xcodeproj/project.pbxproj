@@ -75,7 +75,6 @@
 		FA50F5890E25EFB80017433F /* IFNodeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA50F5880E25EFB80017433F /* IFNodeLayer.m */; };
 		FA57F9D80924CFA8002AAA68 /* IFFNVHash.c in Sources */ = {isa = PBXBuildFile; fileRef = FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */; };
 		FA6101BF0B592BEA00841DCE /* IFImageType.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6101BD0B592BEA00841DCE /* IFImageType.m */; };
-		FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */; };
 		FA64BB6A0E96772D001ABDD3 /* IFPaletteView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA64BB690E96772D001ABDD3 /* IFPaletteView.m */; };
 		FA6609170AF7D6270049AD02 /* warning-sign.png in Resources */ = {isa = PBXBuildFile; fileRef = FA6609160AF7D6270049AD02 /* warning-sign.png */; };
 		FA68DE9F092DBC14009D02CB /* IFPercentValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA68DE9D092DBC14009D02CB /* IFPercentValueTransformer.m */; };
@@ -110,6 +109,8 @@
 		FA9923B90E13ECFA004BDED9 /* IFImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9923B80E13ECFA004BDED9 /* IFImageView.xib */; };
 		FA9924380E140679004BDED9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9924370E140679004BDED9 /* MainMenu.xib */; };
 		FA993CB4104A47F600E66D90 /* IFExpressionContentsLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */; };
+		FA9C18F810AFFEF900B35714 /* IFAction.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C18F710AFFEF900B35714 /* IFAction.m */; };
+		FA9C18FC10AFFF1100B35714 /* IFFileExportAction.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C18FB10AFFF1100B35714 /* IFFileExportAction.m */; };
 		FA9C6CEE0E1E26F8004A6953 /* IFForestView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C6CED0E1E26F8004A6953 /* IFForestView.m */; };
 		FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9CF9A3106CED89005B4A20 /* IFPrimitiveExpression.m */; };
 		FA9E241F0B03ADE3001EC346 /* alias_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9E241E0B03ADE3001EC346 /* alias_arrow.png */; };
@@ -134,7 +135,6 @@
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FAD077D210AF195D000C93B9 /* IFFilterSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD077D110AF195D000C93B9 /* IFFilterSettingsView.xib */; };
 		FAD077EB10AF19E4000C93B9 /* IFFileSink.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD077EA10AF19E4000C93B9 /* IFFileSink.xib */; };
-		FAD1EBB710A5DD2600482932 /* IFFileExportConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */; };
 		FAD4DF7008D075C1004EA3A0 /* IFUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */; };
 		FAD887A40CD073D100D3DE7D /* IFTree.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD887A20CD073D100D3DE7D /* IFTree.m */; };
 		FAD888FA0CD0A83B00D3DE7D /* IFOrientedGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD888F60CD0A83B00D3DE7D /* IFOrientedGraph.m */; };
@@ -179,7 +179,6 @@
 		FAEF269B0AE7947100BD8954 /* mask-invert.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF26990AE7947100BD8954 /* mask-invert.cikernel */; };
 		FAEF269C0AE7947100BD8954 /* mask-threshold.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */; };
 		FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEFA81F0906145B00F76B8A /* IFEnvironment.m */; };
-		FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */; };
 		FAF1B3B40ABE63F0008A4EF2 /* IFBlendFilterAnnotationSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */; };
 		FAF470BC0AA6C81B005F5617 /* IFCursorRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF470BA0AA6C81B005F5617 /* IFCursorRect.m */; };
 		FAF4A5740CF6E0F3001274E9 /* IFUniversalSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4A5720CF6E0F3001274E9 /* IFUniversalSource.m */; };
@@ -347,8 +346,6 @@
 		FA57F9D60924CFA8002AAA68 /* IFFNVHash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IFFNVHash.c; sourceTree = "<group>"; };
 		FA6101BC0B592BEA00841DCE /* IFImageType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageType.h; sourceTree = "<group>"; };
 		FA6101BD0B592BEA00841DCE /* IFImageType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageType.m; sourceTree = "<group>"; };
-		FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFErrorConstantExpression.h; sourceTree = "<group>"; };
-		FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFErrorConstantExpression.m; sourceTree = "<group>"; };
 		FA64BB680E96772D001ABDD3 /* IFPaletteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPaletteView.h; sourceTree = "<group>"; };
 		FA64BB690E96772D001ABDD3 /* IFPaletteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFPaletteView.m; sourceTree = "<group>"; };
 		FA6609160AF7D6270049AD02 /* warning-sign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warning-sign.png"; sourceTree = "<group>"; };
@@ -400,6 +397,10 @@
 		FA9924370E140679004BDED9 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		FA993CB2104A47F600E66D90 /* IFExpressionContentsLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFExpressionContentsLayer.h; sourceTree = "<group>"; };
 		FA993CB3104A47F600E66D90 /* IFExpressionContentsLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFExpressionContentsLayer.m; sourceTree = "<group>"; };
+		FA9C18F610AFFEF900B35714 /* IFAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFAction.h; sourceTree = "<group>"; };
+		FA9C18F710AFFEF900B35714 /* IFAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFAction.m; sourceTree = "<group>"; };
+		FA9C18FA10AFFF1100B35714 /* IFFileExportAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileExportAction.h; sourceTree = "<group>"; };
+		FA9C18FB10AFFF1100B35714 /* IFFileExportAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileExportAction.m; sourceTree = "<group>"; };
 		FA9C6CEC0E1E26F8004A6953 /* IFForestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFForestView.h; sourceTree = "<group>"; };
 		FA9C6CED0E1E26F8004A6953 /* IFForestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFForestView.m; sourceTree = "<group>"; };
 		FA9CF9A2106CED89005B4A20 /* IFPrimitiveExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFPrimitiveExpression.h; sourceTree = "<group>"; };
@@ -443,8 +444,6 @@
 		FACF8C150866AC4D00985FA3 /* IFTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNode.m; sourceTree = "<group>"; };
 		FAD077D110AF195D000C93B9 /* IFFilterSettingsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFFilterSettingsView.xib; sourceTree = "<group>"; };
 		FAD077EA10AF19E4000C93B9 /* IFFileSink.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IFFileSink.xib; sourceTree = "<group>"; };
-		FAD1EBB510A5DD2600482932 /* IFFileExportConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileExportConstantExpression.h; sourceTree = "<group>"; };
-		FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileExportConstantExpression.m; sourceTree = "<group>"; };
 		FAD4DF6E08D075C1004EA3A0 /* IFUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFUtilities.h; sourceTree = "<group>"; };
 		FAD4DF6F08D075C1004EA3A0 /* IFUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFUtilities.m; sourceTree = "<group>"; };
 		FAD887A10CD073D100D3DE7D /* IFTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTree.h; sourceTree = "<group>"; };
@@ -517,8 +516,6 @@
 		FAEF269A0AE7947100BD8954 /* mask-threshold.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "mask-threshold.cikernel"; sourceTree = "<group>"; };
 		FAEFA81E0906145B00F76B8A /* IFEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFEnvironment.h; sourceTree = "<group>"; };
 		FAEFA81F0906145B00F76B8A /* IFEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFEnvironment.m; sourceTree = "<group>"; };
-		FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFImageConstantExpression.h; sourceTree = "<group>"; };
-		FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFImageConstantExpression.m; sourceTree = "<group>"; };
 		FAF1B3B10ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFBlendFilterAnnotationSource.h; sourceTree = "<group>"; };
 		FAF1B3B20ABE63EF008A4EF2 /* IFBlendFilterAnnotationSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFBlendFilterAnnotationSource.m; sourceTree = "<group>"; };
 		FAF470B90AA6C81B005F5617 /* IFCursorRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFCursorRect.h; sourceTree = "<group>"; };
@@ -753,12 +750,6 @@
 				FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */,
 				FAF934FB0908094E00558366 /* IFConstantExpression.h */,
 				FAF934FC0908094E00558366 /* IFConstantExpression.m */,
-				FAF0D6EF090E0CEE00A9788A /* IFImageConstantExpression.h */,
-				FAF0D6F0090E0CEE00A9788A /* IFImageConstantExpression.m */,
-				FA64828D0ADE7D0D00956713 /* IFErrorConstantExpression.h */,
-				FA64828E0ADE7D0D00956713 /* IFErrorConstantExpression.m */,
-				FAD1EBB510A5DD2600482932 /* IFFileExportConstantExpression.h */,
-				FAD1EBB610A5DD2600482932 /* IFFileExportConstantExpression.m */,
 			);
 			name = Expressions;
 			sourceTree = "<group>";
@@ -979,13 +970,15 @@
 			name = File;
 			sourceTree = "<group>";
 		};
-		FA406FAF0B5A8AFC00BDE37F /* Type checker */ = {
+		FA406FAF0B5A8AFC00BDE37F /* Type checker and evaluator */ = {
 			isa = PBXGroup;
 			children = (
 				FA4070270B5A8B1900BDE37F /* IFTypeChecker.h */,
 				FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */,
+				FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */,
+				FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */,
 			);
-			name = "Type checker";
+			name = "Type checker and evaluator";
 			sourceTree = "<group>";
 		};
 		FA43286E0ADA8D4300109D58 /* Circle */ = {
@@ -1107,11 +1100,11 @@
 		FA690ACE090525750096B97D /* Language */ = {
 			isa = PBXGroup;
 			children = (
-				FA406FAF0B5A8AFC00BDE37F /* Type checker */,
+				FA406FAF0B5A8AFC00BDE37F /* Type checker and evaluator */,
 				FA0CF6810B4CD81E0070953C /* Types */,
 				FA0607EB09151CBC002A2527 /* Expressions */,
 				FA22EC550980EE2200C79632 /* Environment */,
-				FAE5520A090D62BC000DC147 /* Evaluator */,
+				FA9C18F910AFFEFF00B35714 /* Actions */,
 			);
 			name = Language;
 			sourceTree = "<group>";
@@ -1142,6 +1135,17 @@
 				FA8C82EF10496149004BCBD4 /* IFArrayPath.m */,
 			);
 			name = Cursors;
+			sourceTree = "<group>";
+		};
+		FA9C18F910AFFEFF00B35714 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				FA9C18F610AFFEF900B35714 /* IFAction.h */,
+				FA9C18F710AFFEF900B35714 /* IFAction.m */,
+				FA9C18FA10AFFF1100B35714 /* IFFileExportAction.h */,
+				FA9C18FB10AFFF1100B35714 /* IFFileExportAction.m */,
+			);
+			name = Actions;
 			sourceTree = "<group>";
 		};
 		FA9C6CEF0E1E2702004A6953 /* Forest & Palette */ = {
@@ -1264,15 +1268,6 @@
 				FAFCF3D60C9A74DD00B69055 /* IFGhostFilter.m */,
 			);
 			name = Ghost;
-			sourceTree = "<group>";
-		};
-		FAE5520A090D62BC000DC147 /* Evaluator */ = {
-			isa = PBXGroup;
-			children = (
-				FA164C9B0AD1132A0007C9EA /* IFExpressionEvaluator.h */,
-				FA164C9C0AD1132A0007C9EA /* IFExpressionEvaluator.m */,
-			);
-			name = Evaluator;
 			sourceTree = "<group>";
 		};
 		FAE5A51408A793E500BBBB16 /* Image */ = {
@@ -1674,7 +1669,6 @@
 				FAEFA8210906145B00F76B8A /* IFEnvironment.m in Sources */,
 				FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */,
 				FAE54C78090CD7B1000DC147 /* IFFileSourceController.m in Sources */,
-				FAF0D6F2090E0CEE00A9788A /* IFImageConstantExpression.m in Sources */,
 				FA1BF0B50918A1B700E288BB /* NSDataAdditions.m in Sources */,
 				FA1BF70E091946FE00E288BB /* IFThresholdCIFilter.m in Sources */,
 				FAFCAD1E091B91A700D83BBE /* IFFileSinkController.m in Sources */,
@@ -1704,7 +1698,6 @@
 				FA4501AA0AD2B5560097C977 /* IFImageCIImage.m in Sources */,
 				FA150A320ADA2FC0007DA372 /* IFImageCGLayer.m in Sources */,
 				FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */,
-				FA6482900ADE7D0D00956713 /* IFErrorConstantExpression.m in Sources */,
 				FA256AB80AE37EDB00077863 /* IFChannelToMaskCIFilter.m in Sources */,
 				FA256ACA0AE38BF500077863 /* IFMaskToImageCIFilter.m in Sources */,
 				FA256BF00AE3B85000077863 /* IFMaskOverlayCIFilter.m in Sources */,
@@ -1797,7 +1790,8 @@
 				FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */,
 				FA9CF9A4106CED89005B4A20 /* IFPrimitiveExpression.m in Sources */,
 				FAB8F334106F8F6B005BE1FE /* IFTupleType.m in Sources */,
-				FAD1EBB710A5DD2600482932 /* IFFileExportConstantExpression.m in Sources */,
+				FA9C18F810AFFEF900B35714 /* IFAction.m in Sources */,
+				FA9C18FC10AFFF1100B35714 /* IFFileExportAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

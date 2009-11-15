@@ -81,7 +81,7 @@ static IFConstantExpression* maskColor = nil;
   
   if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]]) {
     IFPrimitiveExpression* originalOpExpression = (IFPrimitiveExpression*)originalExpression;
-    NSAssert([originalOpExpression tag]  == IFPrimitiveTag_Mask, @"unexpected operator");
+    NSAssert([originalOpExpression primitiveTag]  == IFPrimitiveTag_Mask, @"unexpected operator");
     return [IFExpression primitiveWithTag:IFPrimitiveTag_MaskOverlay operandsArray:[[originalOpExpression operands] arrayByAddingObject:maskColor]];
   } else
     return originalExpression;

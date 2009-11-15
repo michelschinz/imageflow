@@ -8,8 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "IFImageConstantExpression.h"
-
 @interface IFPrintView : NSView {
   CIImage* image;
 }

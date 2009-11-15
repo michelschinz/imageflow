@@ -8,7 +8,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "IFFileExportConstantExpression.h"
+#import "IFConstantExpression.h"
 #import "corefoundation.h"
 #import "objc.h"
 
@@ -23,10 +23,10 @@ value export_action_create(value filePath, value image, value exportAreaA) {
                                  Double_field(exportAreaA, 2),
                                  Double_field(exportAreaA, 3));
 
-  IFFileExportConstantExpression* exportAction =
-    [IFExpression exportActionWithFileURL:fileURL
-                  image:imageCI
-                  exportArea:exportArea];
+  IFConstantExpression* exportAction =
+    [IFConstantExpression exportActionWithFileURL:fileURL
+                          image:imageCI
+                          exportArea:exportArea];
 
   CAMLreturn(objc_wrap(exportAction));
 }

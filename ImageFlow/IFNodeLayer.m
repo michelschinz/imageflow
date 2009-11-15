@@ -7,7 +7,6 @@
 //
 
 #import "IFNodeLayer.h"
-#import "IFErrorConstantExpression.h"
 #import "IFImageOrMaskLayer.h"
 #import "IFStackLayer.h"
 #import "IFErrorLayer.h"
@@ -231,8 +230,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
     ? currentExpressionLayer
     : [IFStackLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];
   } else if (newExpression.isError) {
-    IFErrorConstantExpression* errorExpression = (IFErrorConstantExpression*)newExpression;
-    if (errorExpression.message != nil) {
+    if (newExpression.object != nil) {
       newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFErrorLayer class]])
       ? currentExpressionLayer
       : [IFErrorLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBounds];

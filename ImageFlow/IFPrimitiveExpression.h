@@ -12,14 +12,15 @@
 #import "IFExpressionTags.h"
 
 @interface IFPrimitiveExpression : IFExpression {
-  IFPrimitiveTag tag;
+  IFPrimitiveTag primitiveTag;
   NSArray* operands;
   NSUInteger hash;
 }
 
 - (id)initWithTag:(IFPrimitiveTag)theTag operands:(NSArray*)theOperands;
+- (id)initWithXML:(NSXMLElement*)xmlTree;
 
-@property(readonly) IFPrimitiveTag tag;
+@property(readonly) IFPrimitiveTag primitiveTag;
 @property(readonly) NSString* name;
 @property(readonly) NSArray* operands;
 

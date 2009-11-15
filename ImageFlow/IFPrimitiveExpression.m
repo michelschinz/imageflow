@@ -79,10 +79,10 @@ static NSArray* tagNames;
 
   if (![super init])
     return nil;
-  tag = theTag;
+  primitiveTag = theTag;
   operands = [theOperands retain];
 
-  hash = FNV_step32(FNV_init(), tag);
+  hash = FNV_step32(FNV_init(), primitiveTag);
   for (IFExpression* operand in operands)
     hash = FNV_step32(hash, [operand hash]);
 
@@ -95,18 +95,23 @@ static NSArray* tagNames;
   [super dealloc];
 }
 
-@synthesize tag, operands;
+@synthesize primitiveTag, operands;
 
 - (NSString*)name;
 {
-  return [tagNames objectAtIndex:tag];
+  return [tagNames objectAtIndex:primitiveTag];
+}
+
+- (int)tag;
+{
+  return IFExpressionTag_Prim;
 }
 
 - (BOOL)isEqual:(id)other;
 {
   return ([other isKindOfClass:[IFPrimitiveExpression class]]
           && hash == [other hash]
-          && tag == [(IFPrimitiveExpression*)other tag]
+          && primitiveTag == [(IFPrimitiveExpression*)other primitiveTag]
           && [operands isEqual:[other operands]]);
 }
 
@@ -146,7 +151,7 @@ static NSArray* tagNames;
 
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
-  [encoder encodeInt:tag forKey:@"primitive"];
+  [encoder encodeInt:primitiveTag forKey:@"primitive"];
   [encoder encodeObject:operands forKey:@"operands"];
 }
 
@@ -161,7 +166,7 @@ static value operandAsCaml(const char* operand) {
   CAMLparam0();
   CAMLlocal1(block);
   block = caml_alloc(2, IFExpressionTag_Prim);
-  Store_field(block, 0, Val_int(tag));
+  Store_field(block, 0, Val_int(primitiveTag));
   int operandsCount = [operands count];
   IFExpression** operandsArray = malloc(sizeof(IFExpression*) * (operandsCount + 1));
   [operands getObjects:operandsArray];

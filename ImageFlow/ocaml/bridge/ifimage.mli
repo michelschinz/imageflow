@@ -22,5 +22,3 @@ external imageCI: [ `IFImage ] objc -> [ `CIImage ] objc
 external isLocked: [ `IFImage ] objc -> bool
     = "IFImage_isLocked"
 
-external logRetainCounts: [ `IFImage ] objc -> unit
-    = "IFImage_logRetainCounts"

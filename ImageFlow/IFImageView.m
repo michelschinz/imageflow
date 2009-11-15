@@ -7,7 +7,6 @@
 //
 
 #import "IFImageView.h"
-#import "IFImageConstantExpression.h"
 #import "IFAnnotationRect.h"
 #import "IFCursorRect.h"
 #import "IFUtilities.h"

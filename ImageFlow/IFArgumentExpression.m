@@ -36,6 +36,11 @@
   return index * 19;
 }
 
+- (int)tag;
+{
+  return IFExpressionTag_Arg;
+}
+
 - (BOOL)isEqual:(id)other;
 {
   return [other isKindOfClass:[IFArgumentExpression class]] && (index == [(IFArgumentExpression*)other index]);

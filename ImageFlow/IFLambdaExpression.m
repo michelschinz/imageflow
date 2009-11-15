@@ -32,6 +32,11 @@
 
 @synthesize body;
 
+- (int)tag;
+{
+  return IFExpressionTag_Lambda;
+}
+
 - (BOOL)isEqual:(id)other;
 {
   return [other isKindOfClass:[IFLambdaExpression class]] && [self.body isEqual:((IFLambdaExpression*)other).body];

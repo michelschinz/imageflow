@@ -74,11 +74,11 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 {
   const IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   
-  IFImageConstantExpression* imageOrMaskExpr = (IFImageConstantExpression*)[evaluator evaluateExpression:expression];
+  IFConstantExpression* imageOrMaskExpr = [evaluator evaluateExpression:expression];
   NSAssert([imageOrMaskExpr isImage], @"unexpected expression");
 
   IFExpression* imageExpr;
-  switch (imageOrMaskExpr.image.kind) {
+  switch (imageOrMaskExpr.imageValue.kind) {
     case IFImageKindRGBImage: {      
       IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0]; // TODO: replace by user-settable expression
       imageExpr = [IFExpression blendBackground:backgroundExpr withForeground:imageOrMaskExpr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
@@ -93,8 +93,8 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
   const NSRect canvasBounds = ((NSValue*)canvasBoundsVar.value).rectValue;
   const float scaling = CGRectGetWidth(self.bounds) / NSWidth(canvasBounds);
-  const IFImageConstantExpression* imageExpression = (IFImageConstantExpression*)[evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:imageExpr along:canvasBounds] by:scaling]];
-  CIImage* image = [imageExpression imageValueCI];
+  const IFConstantExpression* imageExpression = [evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:imageExpr along:canvasBounds] by:scaling]];
+  CIImage* image = imageExpression.imageValue.imageCI;
   
   CIContext* ciContext = [CIContext contextWithCGContext:ctx options:[NSDictionary dictionary]]; // TODO: working color space
   CGRect sourceRect = CGRectMake(CGRectGetMinX(image.extent), CGRectGetMinY(image.extent), CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
@@ -108,7 +108,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
     const float thumbnailWidth = layoutParameters.thumbnailWidth;
     self.bounds = CGRectMake(0, 0, thumbnailWidth, floor(thumbnailWidth * (canvasSize.height / canvasSize.width)));
   } else if (context == IFExpressionChangedContext) {
-    maskIndicatorLayer.hidden = (((IFImageConstantExpression*)expression).image.kind != IFImageKindMask);
+    maskIndicatorLayer.hidden = (expression.imageValue.kind != IFImageKindMask);
     [self setNeedsDisplay];
   } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
