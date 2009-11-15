@@ -105,9 +105,11 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 
 - (void)updateComponentLayers;
 {
-  countLayer.string = [NSString stringWithFormat:@"%d",[[expression arrayValue] count]];
+  IFConstantExpression* evaluatedExpression = [[IFExpressionEvaluator sharedEvaluator] evaluateExpression:expression];
 
-  NSArray* componentExpressions = [expression arrayValue];
+  NSArray* componentExpressions = [evaluatedExpression arrayValue];
+  countLayer.string = [NSString stringWithFormat:@"%d",[componentExpressions count]];
+
   NSArray* recyclableLayers = self.componentLayers;
   NSMutableArray* newComponentLayers = [NSMutableArray arrayWithCapacity:[componentExpressions count]];
   unsigned i = 0;
@@ -131,7 +133,8 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
       NSAssert(NO, @"unexpected component expression");
     
     newComponentLayer.reversedPath = [IFArrayPath pathElementWithIndex:i next:reversedPath];
-    newComponentLayer.expression = componentExpression;
+    // Pass unevaluated expression to enable as many rewrite optimisations as possible
+    newComponentLayer.expression = [IFExpression arrayGet:expression index:i];
     [newComponentLayers addObject:newComponentLayer];
     ++i;
   }

@@ -4,8 +4,13 @@ open Primitives
 (* Optimisation by rewriting *)
 
 let rec rewritePrim = function
+  | Prim(ArrayGet, [| Prim(ArrayCreate, a); Int i |]) ->
+      a.(i)
+  | Prim(PTupleGet, [| Prim(PTupleCreate, a); Int i |]) ->
+      a.(i)
+
     (* Commutation with resampling *)
-    Prim(Resample, [|Prim(Blend, [|i1; i2; m|]); Num f|]) when f < 1. ->
+  | Prim(Resample, [|Prim(Blend, [|i1; i2; m|]); Num f|]) when f < 1. ->
       Prim(Blend, [|Prim(Resample, [|i1; Num f|]);
                     Prim(Resample, [|i2; Num f|]); m|])
   | Prim(Resample, [|Prim(ChannelToMask, [|i; c|]); Num f|]) ->
@@ -127,11 +132,43 @@ let rec rewritePrim = function
         (* Default case *)
   | e -> e
 
-let rec rewrite = function
-    Prim _ as e ->
+let rec subst arg = function
+  | Lambda _ as expr ->
+      expr
+  | Prim(op, args) ->
+      Prim(op, Array.map (subst arg) args)
+  | Arg 0 ->
+      arg
+  | value when Expr.is_value value ->
+      value
+
+let rec inline = function
+  | Lambda body ->
+      Lambda (inline body)
+  | Prim(PApply, [| Lambda body; arg |]) ->
+      subst (inline arg) (inline body)
+  | Prim(PMap, [| Lambda body; Prim(ArrayCreate, elems) |]) ->
+      let body' = inline body in
+      Prim(ArrayCreate, Array.map (fun arg -> subst (inline arg) body') elems)
+  | Prim(op, args) ->
+      Prim(op, Array.map inline args)
+  | Arg _ as expr ->
+      expr
+  | value when Expr.is_value value ->
+      value
+
+let rec rewrite expr =
+  match inline expr with
+  | Prim _ as e ->
       begin match rewritePrim e with
         Prim(name, args) ->
           Prim(name, Array.map rewrite args)
       | value -> value
       end
   | e -> e
+
+let verbose_rewrite expr =
+  let expr' = rewrite expr in
+  print_endline (" Original: " ^ (Printer.to_string expr));
+  print_endline ("Optimised: " ^ (Printer.to_string expr'));
+  expr'

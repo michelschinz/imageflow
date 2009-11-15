@@ -243,7 +243,8 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   
   if (newExpressionLayer != nil) {
     newExpressionLayer.reversedPath = [IFArrayPath emptyPath];
-    newExpressionLayer.expression = newExpression;
+    // Pass the unevaluated expression to the layer, to enable as many rewrite-base optimizations as possible
+    newExpressionLayer.expression = newUnevaluatedExpression;
   }
   self.expressionLayer = newExpressionLayer;
 }

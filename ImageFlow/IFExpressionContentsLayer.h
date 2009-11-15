@@ -17,13 +17,13 @@
   IFLayoutParameters* layoutParameters;
   IFVariable* canvasBoundsVar;
   
-  IFConstantExpression* expression;
+  IFExpression* expression;
   IFArrayPath* reversedPath;
 }
 
 - (IFExpressionContentsLayer*)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
-@property(retain) IFConstantExpression* expression;
+@property(retain) IFExpression* expression;
 @property(retain) IFArrayPath* reversedPath;
 
 @property(readonly) NSArray* thumbnailLayers;

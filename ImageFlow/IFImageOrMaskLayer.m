@@ -81,10 +81,12 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   switch (imageOrMaskExpr.imageValue.kind) {
     case IFImageKindRGBImage: {      
       IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0]; // TODO: replace by user-settable expression
-      imageExpr = [IFExpression blendBackground:backgroundExpr withForeground:imageOrMaskExpr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+      imageExpr = [IFExpression blendBackground:backgroundExpr withForeground:expression inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+      maskIndicatorLayer.hidden = YES;
     } break;
     case IFImageKindMask: {
-      imageExpr = [IFExpression maskToImage:imageOrMaskExpr];
+      imageExpr = [IFExpression maskToImage:expression];
+      maskIndicatorLayer.hidden = NO;
     } break;
     default:
       NSAssert(NO, @"unexpected image kind");
@@ -108,7 +110,6 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
     const float thumbnailWidth = layoutParameters.thumbnailWidth;
     self.bounds = CGRectMake(0, 0, thumbnailWidth, floor(thumbnailWidth * (canvasSize.height / canvasSize.width)));
   } else if (context == IFExpressionChangedContext) {
-    maskIndicatorLayer.hidden = (expression.imageValue.kind != IFImageKindMask);
     [self setNeedsDisplay];
   } else
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
