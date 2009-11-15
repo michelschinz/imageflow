@@ -29,7 +29,7 @@
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:
            [IFExpression argumentWithIndex:0],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"radius"] tag:IFExpressionTag_Num],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"radius"]],
            nil]];
 }
 

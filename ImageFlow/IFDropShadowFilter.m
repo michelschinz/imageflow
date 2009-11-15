@@ -29,10 +29,10 @@
   NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
   IFExpression* sh = [IFExpression primitiveWithTag:IFPrimitiveTag_SingleColor operands:
                       [IFExpression argumentWithIndex:0],
-                      [IFConstantExpression expressionWithObject:[settings valueForKey:@"color"] tag:IFExpressionTag_Color],
+                      [IFConstantExpression expressionWithColorNS:[settings valueForKey:@"color"]],
                       nil];
-  IFExpression* trSh = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:sh, [IFConstantExpression expressionWithObject:[settings valueForKey:@"offset"] tag:IFExpressionTag_Point], nil];
-  IFExpression* blTrSh = [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:trSh, [IFConstantExpression expressionWithObject:[settings valueForKey:@"blur"] tag:IFExpressionTag_Num], nil];
+  IFExpression* trSh = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:sh, [IFConstantExpression expressionWithWrappedPointNS:[settings valueForKey:@"offset"]], nil];
+  IFExpression* blTrSh = [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:trSh, [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"blur"]], nil];
     
   return [IFExpression lambdaWithBody:
           [IFExpression blendBackground:blTrSh

@@ -16,17 +16,19 @@
   id object;
 }
 
-+ (IFConstantExpression*)expressionWithObject:(id)theObject tag:(int)theTag;
-
 + (IFConstantExpression*)expressionWithArray:(NSArray*)theArray;
 + (IFConstantExpression*)expressionWithTupleElements:(NSArray*)theElements;
 + (IFConstantExpression*)expressionWithPointNS:(NSPoint)thePoint;
++ (IFConstantExpression*)expressionWithWrappedPointNS:(NSValue*)thePoint;
 + (IFConstantExpression*)expressionWithRectNS:(NSRect)theRect;
++ (IFConstantExpression*)expressionWithWrappedRectNS:(NSValue*)thePoint;
 + (IFConstantExpression*)expressionWithRectCG:(CGRect)theRect;
 + (IFConstantExpression*)expressionWithColorNS:(NSColor*)theColor;
 + (IFConstantExpression*)expressionWithString:(NSString*)theString;
 + (IFConstantExpression*)expressionWithInt:(int)theInt;
++ (IFConstantExpression*)expressionWithWrappedInt:(NSNumber*)theInt;
 + (IFConstantExpression*)expressionWithFloat:(float)theFloat;
++ (IFConstantExpression*)expressionWithWrappedFloat:(NSNumber*)theFloat;
 + (IFConstantExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
 
 + (IFConstantExpression*)imageConstantExpressionWithIFImage:(IFImage*)theImage;

@@ -28,9 +28,9 @@
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_ColorControls operands:
            [IFExpression argumentWithIndex:0],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"contrast"] tag:IFExpressionTag_Num],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"brightness"] tag:IFExpressionTag_Num],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"saturation"] tag:IFExpressionTag_Num],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"contrast"]],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"brightness"]],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"saturation"]],
            nil]];
 }
 

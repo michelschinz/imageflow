@@ -28,7 +28,7 @@
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:
            [IFExpression argumentWithIndex:0],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"channel"] tag:IFExpressionTag_Int],
+           [IFConstantExpression expressionWithWrappedInt:[settings valueForKey:@"channel"]],
            nil]];
 }
 

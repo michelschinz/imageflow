@@ -32,7 +32,7 @@
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_Crop operands:
            [IFExpression argumentWithIndex:0],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"rectangle"] tag:IFExpressionTag_Rect],
+           [IFConstantExpression expressionWithWrappedRectNS:[settings valueForKey:@"rectangle"]],
            nil]];
 }
 

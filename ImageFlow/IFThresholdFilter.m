@@ -33,13 +33,13 @@
     return [IFExpression lambdaWithBody:
             [IFExpression primitiveWithTag:IFPrimitiveTag_Threshold operands:
              [IFExpression argumentWithIndex:0],
-             [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
+             [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"threshold"]],
              nil]];
   else
     return [IFExpression lambdaWithBody:
             [IFExpression primitiveWithTag:IFPrimitiveTag_ThresholdMask operands:
              [IFExpression argumentWithIndex:0],
-             [IFConstantExpression expressionWithObject:[settings valueForKey:@"threshold"] tag:IFExpressionTag_Num],
+             [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"threshold"]],
              nil]];
 }
 

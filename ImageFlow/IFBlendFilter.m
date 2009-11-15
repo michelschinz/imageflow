@@ -45,13 +45,13 @@ static NSArray* parentNames = nil;
 
   IFExpression* opFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Opacity operands:
                          [IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:1],
-                         [IFConstantExpression expressionWithObject:[settings valueForKey:@"alpha"] tag:IFExpressionTag_Num],
+                         [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"alpha"]],
                          nil];
-  IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFConstantExpression expressionWithObject:[settings valueForKey:@"translation"] tag:IFExpressionTag_Point], nil];
+  IFExpression* trOpFgd = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:opFgd, [IFConstantExpression expressionWithWrappedPointNS:[settings valueForKey:@"translation"]], nil];
   return [IFExpression lambdaWithBody:
           [IFExpression blendBackground:[IFExpression tupleGet:[IFExpression argumentWithIndex:0] index:0]
                          withForeground:trOpFgd
-                                 inMode:[IFConstantExpression expressionWithObject:[settings valueForKey:@"mode"] tag:IFExpressionTag_Int]]];
+                                 inMode:[IFConstantExpression expressionWithWrappedInt:[settings valueForKey:@"mode"]]]];
 }
 
 - (NSString*)nameOfParentAtIndex:(int)index;

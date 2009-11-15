@@ -30,8 +30,8 @@
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_UnsharpMask operands:
            [IFExpression argumentWithIndex:0],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"intensity"] tag:IFExpressionTag_Num],
-           [IFConstantExpression expressionWithObject:[settings valueForKey:@"radius"] tag:IFExpressionTag_Num],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"intensity"]],
+           [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"radius"]],
            nil]];
 }
 

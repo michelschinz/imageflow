@@ -52,12 +52,22 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
 
 + (IFConstantExpression*)expressionWithPointNS:(NSPoint)thePoint;
 {
-  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Point object:[NSValue valueWithPoint:thePoint]] autorelease];
+  return [IFConstantExpression expressionWithWrappedPointNS:[NSValue valueWithPoint:thePoint]];
+}
+
++ (IFConstantExpression*)expressionWithWrappedPointNS:(NSValue*)thePoint;
+{
+  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Point object:thePoint] autorelease];
 }
 
 + (IFConstantExpression*)expressionWithRectNS:(NSRect)theRect;
 {
-  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Rect object:[NSValue valueWithRect:theRect]] autorelease];
+  return [IFConstantExpression expressionWithWrappedRectNS:[NSValue valueWithRect:theRect]];
+}
+
++ (IFConstantExpression*)expressionWithWrappedRectNS:(NSValue*)thePoint;
+{
+  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Rect object:thePoint] autorelease];
 }
 
 + (IFConstantExpression*)expressionWithRectCG:(CGRect)theRect;
@@ -77,12 +87,22 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
 
 + (IFConstantExpression*)expressionWithInt:(int)theInt;
 {
-  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Int object:[NSNumber numberWithInt:theInt]] autorelease];
+  return [IFConstantExpression expressionWithWrappedInt:[NSNumber numberWithInt:theInt]];
+}
+
++ (IFConstantExpression*)expressionWithWrappedInt:(NSNumber*)theInt;
+{
+  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Int object:theInt] autorelease];
 }
 
 + (IFConstantExpression*)expressionWithFloat:(float)theFloat;
 {
-  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Num object:[NSNumber numberWithFloat:theFloat]] autorelease];
+  return [IFConstantExpression expressionWithWrappedFloat:[NSNumber numberWithFloat:theFloat]];
+}
+
++ (IFConstantExpression*)expressionWithWrappedFloat:(NSNumber*)theFloat;
+{
+  return [[[IFConstantExpression alloc] initWithTag:IFExpressionTag_Num object:theFloat] autorelease];
 }
 
 + (IFConstantExpression*)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;
