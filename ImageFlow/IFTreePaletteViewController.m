@@ -23,7 +23,7 @@
 {
   if (![super initWithNibName:@"IFTreeView" bundle:nil])
     return nil;
-  cursorsVar = [IFVariable variable];
+  cursorsVar = [[IFVariable variable] retain];
   return self;
 }
 

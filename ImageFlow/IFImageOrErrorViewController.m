@@ -41,6 +41,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   variants = [[NSArray array] retain];
   activeVariant = nil;
   viewedNode = nil;
+  editedNode = nil;
   [self loadView];
   return self;
 }
@@ -66,27 +67,24 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 - (void)dealloc;
 {
   NSAssert(layoutParameters != nil && cursorsVar != nil && canvasBoundsVar != nil, @"post-initialisation not done");
+  activeView = nil;
 
   OBJC_RELEASE(layoutParameters);
+
   [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   OBJC_RELEASE(canvasBoundsVar);
+
   [cursorsVar removeObserver:self forKeyPath:@"value.node"];
   [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedIndex"];  
   [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedNode.expression"];
   OBJC_RELEASE(cursorsVar);
 
-  if (viewedNode != nil)
-    OBJC_RELEASE(viewedNode);
-  if (activeVariant != nil)
-    OBJC_RELEASE(activeVariant);
+  OBJC_RELEASE(editedNode);
+  OBJC_RELEASE(viewedNode);
+  OBJC_RELEASE(activeVariant);
   OBJC_RELEASE(variants);
-  if (errorMessage != nil)
-    OBJC_RELEASE(errorMessage);
-  if (displayedExpression != nil)
-    OBJC_RELEASE(displayedExpression);
-  activeView = nil;
-  OBJC_RELEASE(imageView);
-  OBJC_RELEASE(imageOrErrorTabView);
+  OBJC_RELEASE(errorMessage);
+  OBJC_RELEASE(displayedExpression);
   [super dealloc];
 }
 
