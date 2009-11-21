@@ -100,7 +100,14 @@ static float dragBadgeFontHeight;
   if (![super init])
     return nil;
   thumbnailWidth = 50.0;
+  backgroundExpression = [[IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0] retain];
   return self;
+}
+
+- (void)dealloc;
+{
+  OBJC_RELEASE(backgroundExpression);
+  [super dealloc];
 }
 
 // MARK: Global properties
@@ -232,5 +239,7 @@ static float dragBadgeFontHeight;
 }
 
 @synthesize thumbnailWidth;
+
+@synthesize backgroundExpression;
 
 @end

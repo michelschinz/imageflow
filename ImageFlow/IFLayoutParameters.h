@@ -8,8 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "IFExpression.h"
+
 @interface IFLayoutParameters : NSObject {
   float thumbnailWidth;
+  IFExpression* backgroundExpression;
 }
 
 + (IFLayoutParameters*)layoutParameters;
@@ -50,5 +53,6 @@
 
 // MARK: Local properties
 @property float thumbnailWidth;
+@property(retain) IFExpression* backgroundExpression;
 
 @end

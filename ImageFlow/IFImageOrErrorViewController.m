@@ -45,12 +45,13 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   return self;
 }
 
-- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar;
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar layoutParameters:(IFLayoutParameters*)theLayoutParameters;
 {
   NSAssert(cursorsVar == nil && canvasBoundsVar == nil, @"duplicate post-initialisation");
 
   cursorsVar = [theCursorsVar retain];
   canvasBoundsVar = [theCanvasBoundsVar retain];
+  layoutParameters = [theLayoutParameters retain];
   
   [cursorsVar addObserver:self forKeyPath:@"value.viewLockedNode.expression" options:0 context:IFViewedExpressionDidChange];
   [cursorsVar addObserver:self forKeyPath:@"value.viewLockedIndex" options:0 context:IFViewedExpressionDidChange];
@@ -64,7 +65,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 
 - (void)dealloc;
 {
-  NSAssert(cursorsVar != nil && canvasBoundsVar != nil, @"post-initialisation not done");
+  NSAssert(layoutParameters != nil && cursorsVar != nil && canvasBoundsVar != nil, @"post-initialisation not done");
+
+  OBJC_RELEASE(layoutParameters);
   [canvasBoundsVar removeObserver:self forKeyPath:@"value"];
   OBJC_RELEASE(canvasBoundsVar);
   [cursorsVar removeObserver:self forKeyPath:@"value.node"];
@@ -238,8 +241,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
       }
       
       if ([exprType isImageRGBAType]) {
-        IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0]; // TODO: replace by user-settable expression
-        expr = [IFExpression blendBackground:backgroundExpr withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+        expr = [IFExpression blendBackground:layoutParameters.backgroundExpression withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
       } else if ([exprType isMaskType]) {
         expr = [IFExpression maskToImage:expr];
       } else {

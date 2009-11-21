@@ -16,9 +16,9 @@ let rec rewritePrim = function
   | Prim(Resample, [|Prim(ChannelToMask, [|i; c|]); Num f|]) ->
       Prim(ChannelToMask, [|Prim(Resample, [|i; Num f|]); c|])
   | Prim(Resample,
-       [|Prim(Checkerboard, [|Point c; c1; c2; Num w; Num s|]); Num f|]) ->
+       [|Prim(Checkerboard, [|Point c; c1; c2; Num w; s|]); Num f|]) ->
          Prim(Checkerboard,
-            [|Point (Point.scale c f); c1; c2; Num (w *. f); Num (s *. f)|])
+            [|Point (Point.scale c f); c1; c2; Num (w *. f); s|])
   | Prim(Resample, [|Prim(Circle, [|Point c; Num r; o|]); Num f|])
     when f < 1. ->
       Prim(Circle, [|Point (Point.scale c f); Num (r *. f); o|])

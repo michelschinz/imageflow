@@ -34,7 +34,8 @@
   NSWindow* window = [self window];
   [window setDisplaysWhenScreenProfileChanges:YES];
 
-  [imageViewController postInitWithCursorsVar:treeViewController.cursorsVar canvasBoundsVar:[IFVariableKVO variableWithKVOCompliantObject:self.document key:@"canvasBounds"]];
+  IFDocument* doc = self.document;
+  [imageViewController postInitWithCursorsVar:treeViewController.cursorsVar canvasBoundsVar:[IFVariableKVO variableWithKVOCompliantObject:doc key:@"canvasBounds"] layoutParameters:doc.layoutParameters];
   [filterSettingsViewController postInitWithCursorsVar:treeViewController.cursorsVar];
   
   NSArray* views = [[window contentView] subviews];

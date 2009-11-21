@@ -80,8 +80,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   IFExpression* imageExpr;
   switch (imageOrMaskExpr.imageValue.kind) {
     case IFImageKindRGBImage: {      
-      IFExpression* backgroundExpr = [IFExpression checkerboardCenteredAt:NSZeroPoint color0:[NSColor whiteColor] color1:[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:1.0] width:40.0 sharpness:1.0]; // TODO: replace by user-settable expression
-      imageExpr = [IFExpression blendBackground:backgroundExpr withForeground:expression inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
+      imageExpr = [IFExpression blendBackground:layoutParameters.backgroundExpression withForeground:expression inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
       maskIndicatorLayer.hidden = YES;
     } break;
     case IFImageKindMask: {

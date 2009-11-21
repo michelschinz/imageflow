@@ -13,6 +13,7 @@
 #import "IFExpressionEvaluator.h"
 #import "IFTreeCursorPair.h"
 #import "IFTree.h"
+#import "IFLayoutParameters.h"
 
 typedef enum {
   IFImageViewModeView,
@@ -20,6 +21,8 @@ typedef enum {
 } IFImageViewMode;
 
 @interface IFImageOrErrorViewController : NSViewController<IFImageViewDelegate> {
+  IFLayoutParameters* layoutParameters;
+  
   IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
   NSView* activeView; // not retained, either imageOrErrorTabView or imageView
@@ -39,7 +42,7 @@ typedef enum {
 }
 
 - (id)init;
-- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar;
+- (void)postInitWithCursorsVar:(IFVariable*)theCursorsVar canvasBoundsVar:(IFVariable*)theCanvasBoundsVar layoutParameters:(IFLayoutParameters*)theLayoutParameters;
 
 @property(readonly, retain) IFImageView* imageView;
 @property(readonly, assign) NSView* activeView;
