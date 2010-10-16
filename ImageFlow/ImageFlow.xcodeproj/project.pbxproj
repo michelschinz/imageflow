@@ -55,14 +55,12 @@
 		FA29D2F20B1EB64C004AE43E /* IFRectangularWindowCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */; };
 		FA29D2F90B1EBB89004AE43E /* rectangular-window.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */; };
 		FA2E97380AFFB591006AE6E8 /* mask_tag.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2E97370AFFB591006AE6E8 /* mask_tag.png */; };
-		FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FA2F6BAC095AFEEE00CB2780 /* IFTreeNodeAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */; };
 		FA34AD950AA3152E00C8A63A /* IFTransparentPopupButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AD930AA3152E00C8A63A /* IFTransparentPopupButton.m */; };
 		FA34AE340AA34DE300C8A63A /* IFAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AE320AA34DE300C8A63A /* IFAnnotation.m */; };
 		FA34AE400AA3673900C8A63A /* IFAnnotationRect.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34AE3E0AA3673900C8A63A /* IFAnnotationRect.m */; };
 		FA3B82780FEE29DE00D4687B /* IFPathLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3B82770FEE29DE00D4687B /* IFPathLayer.m */; };
 		FA40702A0B5A8B1900BDE37F /* IFTypeChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4070280B5A8B1900BDE37F /* IFTypeChecker.m */; };
-		FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
 		FA43286D0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA43286B0ADA8D3D00109D58 /* IFCircleGeneratorCIFilter.m */; };
 		FA4328BD0ADAC14F00109D58 /* circle.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = FA4328BC0ADAC14F00109D58 /* circle.cikernel */; };
 		FA4501A10AD2B4AE0097C977 /* IFImage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA45019F0AD2B4AE0097C977 /* IFImage.m */; };
@@ -126,13 +124,15 @@
 		FAB599700EE92A5600D75030 /* IFStackLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DCCD70EE8214E00ED5870 /* IFStackLayer.m */; };
 		FAB65D9E1052EA4900385A80 /* IFLambdaExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65D9D1052EA4900385A80 /* IFLambdaExpression.m */; };
 		FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */; };
+		FAB89A0D1269E3DD001EBD85 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
+		FAB89A141269E441001EBD85 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
+		FAB89A151269E441001EBD85 /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FAB8F334106F8F6B005BE1FE /* IFTupleType.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8F333106F8F6B005BE1FE /* IFTupleType.m */; };
 		FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABB51A80E9605A300480196 /* IFTemplateLayer.m */; };
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
 		FABC94F50E6FE23B00459364 /* IFConnectorCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC94F40E6FE23B00459364 /* IFConnectorCompositeLayer.m */; };
 		FABC951B0E70147A00459364 /* IFLayerSubsetComposites.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC951A0E70147A00459364 /* IFLayerSubsetComposites.m */; };
 		FABEF09D0EC4510000FAADD5 /* IFLayerGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = FABEF09C0EC4510000FAADD5 /* IFLayerGeometry.m */; };
-		FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FACF8C160866AC4D00985FA3 /* IFTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FACF8C150866AC4D00985FA3 /* IFTreeNode.m */; };
 		FAD077D210AF195D000C93B9 /* IFFilterSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD077D110AF195D000C93B9 /* IFFilterSettingsView.xib */; };
 		FAD077EB10AF19E4000C93B9 /* IFFileSink.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD077EA10AF19E4000C93B9 /* IFFileSink.xib */; };
@@ -591,9 +591,9 @@
 				FAE5A50908A7933C00BBBB16 /* QuartzCore.framework in Frameworks */,
 				FAE0DF2408C3876C00595ED4 /* Accelerate.framework in Frameworks */,
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
-				FAC08ACE0ACFE8F1007A3704 /* libevaluator.a in Frameworks */,
-				FA4327AC0ADA7B1900109D58 /* libbigarray.a in Frameworks */,
-				FA2F19E50ADD3F420049C88D /* libcamlrun.a in Frameworks */,
+				FAB89A0D1269E3DD001EBD85 /* libevaluator.a in Frameworks */,
+				FAB89A141269E441001EBD85 /* libbigarray.a in Frameworks */,
+				FAB89A151269E441001EBD85 /* libcamlrun.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1832,7 +1832,6 @@
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = "$(third-party-cocoa-libraries)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -1844,9 +1843,8 @@
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"\"$(SRCROOT)/ocaml\"",
+					/usr/local/lib/ocaml,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
@@ -1863,7 +1861,6 @@
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = "$(third-party-cocoa-libraries)/Frameworks";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G4;
@@ -1873,9 +1870,8 @@
 				INFOPLIST_FILE = Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"\"$(SRCROOT)/ocaml\"",
+					/usr/local/lib/ocaml,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
