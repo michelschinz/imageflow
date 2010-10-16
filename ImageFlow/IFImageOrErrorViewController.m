@@ -17,7 +17,7 @@
 @property(assign) NSView* activeView;
 @property(copy) NSString* errorMessage;
 @property(retain) IFTreeNode* viewedNode;
-@property(retain) IFExpression* displayedExpression;
+@property(retain, nonatomic) IFExpression* displayedExpression;
 - (void)updateImageViewVisibleBounds;
 - (void)updateExpression;
 - (void)updateAnnotations;

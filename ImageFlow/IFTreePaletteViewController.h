@@ -22,7 +22,7 @@
   IFTreeTemplate* cachedSelectedTreeTemplate;
 }
 
-@property(retain) IFDocument* document;
+@property(retain, nonatomic) IFDocument* document;
 @property(readonly) IFVariable* cursorsVar;
 
 // MARK: IFForestView delegate methods

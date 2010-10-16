@@ -17,6 +17,6 @@
 }
 
 @property(retain) NSString* label;
-@property float width, leftReach, rightReach;
+@property(nonatomic) float width, leftReach, rightReach;
 
 @end

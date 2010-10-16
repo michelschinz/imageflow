@@ -47,7 +47,7 @@
 - (void)selectNodes:(NSSet*)nodes puttingCursorOn:(IFTreeNode*)node path:(IFArrayPath*)path extendingSelection:(BOOL)extendSelection;
 - (BOOL)canExtendSelectionTo:(IFTreeNode*)node;
 - (void)extendSelectionTo:(IFTreeNode*)node path:(IFArrayPath*)path;
-@property(assign) IFCompositeLayer* highlightedLayer;
+@property(assign, nonatomic) IFCompositeLayer* highlightedLayer;
 @end
 
 @implementation IFForestView

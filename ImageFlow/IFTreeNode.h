@@ -32,7 +32,7 @@
 
 @property(readonly) IFTreeNode* original;
 @property(readonly) IFEnvironment* settings;
-@property(readonly, retain) IFExpression* expression;
+@property(readonly, retain, nonatomic) IFExpression* expression;
 @property(readonly, retain) IFType* type;
 - (IFExpression*)expressionForSettings:(IFEnvironment*)altSettings parentExpressions:(NSDictionary*)altParentExpressions activeTypeIndex:(unsigned)altActiveTypeIndex;
 
@@ -44,7 +44,7 @@
 // MARK: Tree view support
 
 - (NSString*)nameOfParentAtIndex:(int)index;
-@property(readonly, retain) NSString* label;
+@property(readonly, retain, nonatomic) NSString* label;
 @property(readonly) NSString* toolTip;
 
 // MARK: Image view support

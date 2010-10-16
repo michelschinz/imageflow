@@ -45,7 +45,7 @@
 
 // MARK: Expression propagation
 
-@property BOOL propagateNewParentExpressions;
+@property(nonatomic) BOOL propagateNewParentExpressions;
 
 // MARK: Low level editing
 

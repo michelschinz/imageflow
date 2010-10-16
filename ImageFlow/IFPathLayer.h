@@ -16,9 +16,9 @@
   CGColorRef fillColor;
 }
 
-@property CGPathRef path;
+@property(nonatomic) CGPathRef path;
 @property float lineWidth;
-@property CGColorRef strokeColor;
-@property CGColorRef fillColor;
+@property(nonatomic) CGColorRef strokeColor;
+@property(nonatomic) CGColorRef fillColor;
 
 @end

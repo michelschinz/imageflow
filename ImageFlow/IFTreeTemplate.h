@@ -27,6 +27,6 @@
 @property(readonly) IFTree* tree;
 
 @property(retain) NSString* fileName;
-@property(retain) NSString* tag;
+@property(retain, nonatomic) NSString* tag;
 
 @end

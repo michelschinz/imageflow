@@ -44,7 +44,7 @@ typedef enum {
   id<IFPaletteViewDelegate> delegate;
 }
 
-@property(assign) IFDocument* document;
+@property(assign, nonatomic) IFDocument* document;
 @property(readonly) IFTreeCursorPair* cursors;
 @property(retain) IFTreeCursorPair* visualisedCursor;
 

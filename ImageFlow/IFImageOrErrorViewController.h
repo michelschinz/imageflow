@@ -46,9 +46,9 @@ typedef enum {
 
 @property(readonly, retain) IFImageView* imageView;
 @property(readonly, assign) NSView* activeView;
-@property IFImageViewMode mode;
+@property(nonatomic) IFImageViewMode mode;
 @property(readonly, copy) NSString* errorMessage;
-@property(copy) NSArray* variants;
-@property(retain) NSString* activeVariant;
+@property(copy, nonatomic) NSArray* variants;
+@property(retain, nonatomic) NSString* activeVariant;
 
 @end

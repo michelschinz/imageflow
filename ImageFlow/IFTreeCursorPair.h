@@ -23,7 +23,7 @@
 @property(readonly, retain) IFTreeNode* viewLockedNode;
 @property(readonly, retain) IFArrayPath* viewLockedPath;
 
-@property(readonly) BOOL isViewLocked;
+@property(readonly, nonatomic) BOOL isViewLocked;
 
 @property(readonly) NSAffineTransform* editViewTransform;
 @property(readonly) NSAffineTransform* viewEditTransform;

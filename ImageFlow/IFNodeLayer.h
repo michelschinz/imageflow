@@ -39,7 +39,7 @@
 @property(readonly) NSImage* dragImage;
 
 @property(readonly) CATextLayer* labelLayer;
-@property(readonly) IFExpressionContentsLayer* expressionLayer;
+@property(readonly, nonatomic) IFExpressionContentsLayer* expressionLayer;
 @property(readonly) CATextLayer* nameLayer;
 @property(readonly) NSArray* thumbnailLayers;
 

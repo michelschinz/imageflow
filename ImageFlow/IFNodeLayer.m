@@ -13,7 +13,7 @@
 
 @interface IFNodeLayer()
 - (void)setExpression:(IFExpression*)newUnevaluatedExpression;
-@property(readwrite, assign) IFExpressionContentsLayer* expressionLayer;
+@property(readwrite, assign, nonatomic) IFExpressionContentsLayer* expressionLayer;
 @end
 
 @implementation IFNodeLayer

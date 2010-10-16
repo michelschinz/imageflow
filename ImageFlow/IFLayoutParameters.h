@@ -52,7 +52,7 @@
 + (float)dragBadgeFontHeight;
 
 // MARK: Local properties
-@property float thumbnailWidth;
+@property(nonatomic) float thumbnailWidth;
 @property(retain) IFExpression* backgroundExpression;
 
 @end

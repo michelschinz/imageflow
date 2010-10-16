@@ -23,6 +23,6 @@
 + (id)layerWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 - (id)initWithLayoutParameters:(IFLayoutParameters*)theLayoutParameters canvasBounds:(IFVariable*)theCanvasBoundsVar;
 
-@property BOOL borderHighlighted;
+@property(nonatomic) BOOL borderHighlighted;
 
 @end

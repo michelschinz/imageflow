@@ -14,6 +14,6 @@
   float width;
 }
 
-@property float width;
+@property(nonatomic) float width;
 
 @end

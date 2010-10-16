@@ -12,8 +12,8 @@
 
 @interface IFTreeNode ()
 - (id)initWithName:(NSString*)theName isFolded:(BOOL)theIsFolded;
-@property(retain) NSString* label;
-@property(retain) IFExpression* expression;
+@property(retain, nonatomic) NSString* label;
+@property(retain, nonatomic) IFExpression* expression;
 @end
 
 @implementation IFTreeNode

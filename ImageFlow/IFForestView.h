@@ -56,7 +56,7 @@
   id<IFForestViewDelegate> delegate;
 }
 
-@property(assign) IFDocument* document;
+@property(assign, nonatomic) IFDocument* document;
 @property(readonly, retain) IFTreeCursorPair* cursors;
 @property(retain) IFTreeCursorPair* visualisedCursor;
 

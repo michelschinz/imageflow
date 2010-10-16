@@ -22,7 +22,7 @@ static const unsigned IFVisibilityFlagsVisible = IFVisibilityFlagTypeCorrect | I
 @interface IFTemplateLayer ()
 @property(retain) IFTree* normalModeTree;
 @property(retain) IFTree* previewModeTree;
-@property unsigned visibilityFlags;
+@property(nonatomic) unsigned visibilityFlags;
 @property(retain) IFNodeCompositeLayer* previewNodeCompositeLayer;
 @end
 

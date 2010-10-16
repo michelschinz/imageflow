@@ -27,6 +27,6 @@
 
 + (IFSplittableTreeCursorPair*)splittableTreeCursorPair;
 
-@property BOOL isViewLocked;
+@property(nonatomic) BOOL isViewLocked;
 
 @end
