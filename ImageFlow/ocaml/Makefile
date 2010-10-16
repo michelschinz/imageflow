@@ -35,7 +35,6 @@ CAML_SORTED_OBJS += evaluator/rect.cmo
 CAML_SORTED_OBJS += evaluator/image.cmo
 CAML_SORTED_OBJS += evaluator/affinetransform.cmo
 CAML_SORTED_OBJS += evaluator/coreimage.cmo
-CAML_SORTED_OBJS += evaluator/operators/load.cmo
 CAML_SORTED_OBJS += evaluator/operators/export.cmo
 CAML_SORTED_OBJS += evaluator/operators/paint.cmo
 CAML_SORTED_OBJS += evaluator/primitives.cmo
