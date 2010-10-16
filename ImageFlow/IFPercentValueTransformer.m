@@ -13,11 +13,7 @@
 
 + (void)initialize;
 {
-  if (self != [IFPercentValueTransformer class])
-    return; // avoid repeated initialisation
-
-  [NSValueTransformer setValueTransformer:[[[self alloc] init] autorelease]
-                                  forName:@"IFPercentTransformer"];
+  [NSValueTransformer setValueTransformer:[[[self alloc] init] autorelease] forName:@"IFPercentTransformer"];
 }
 
 + (Class)transformedValueClass;
@@ -32,14 +28,12 @@
 
 - (id)transformedValue:(id)value;
 {
-  if (value == nil) return nil;
-  return [NSNumber numberWithFloat:([value floatValue] * 100.0)];
+  return (value == nil) ? nil : [NSNumber numberWithFloat:([value floatValue] * 100.0)];
 }
 
 - (id)reverseTransformedValue:(id)value;
 {
-  if (value == nil) return nil;
-  return [NSNumber numberWithFloat:([value floatValue] / 100.0)];
+  return (value == nil) ? nil : [NSNumber numberWithFloat:([value floatValue] / 100.0)];
 }
 
 @end
