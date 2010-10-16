@@ -95,7 +95,7 @@ static IFTreeTemplateManager* sharedManager;
 {
   if (loadFileTemplate == nil) {
     for (IFTreeTemplate* template in templates) {
-      if ([[template tag] isEqualToString:@"load"])
+      if ([[template tag] isEqualToString:@"import"])
         loadFileTemplate = template; // not retained
     }
     NSAssert(loadFileTemplate != nil, @"no load template found");
