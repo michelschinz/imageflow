@@ -11,14 +11,24 @@ static void objc_finalize(value v) {
 }
 
 static long objc_hash(value v) {
-  CAMLparam1(v);
-  CAMLreturn(Val_int([objc_unwrap(v) hash]));
+  return [objc_unwrap(v) hash];
+}
+
+static int objc_compare(value v1, value v2) {
+  NSObject* o1 = objc_unwrap(v1);
+  NSObject* o2 = objc_unwrap(v2);
+  if (o1 == o2 || [o1 isEqual:o2])
+    return 0;
+  else if (o1 < o2)
+    return -1;
+  else
+    return 1;
 }
 
 static struct custom_operations objc_custom_ops = {
   "com.imageflow.objc",
   objc_finalize,
-  custom_compare_default,
+  objc_compare,
   objc_hash,
   custom_serialize_default,
   custom_deserialize_default
