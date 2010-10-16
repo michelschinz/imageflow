@@ -49,9 +49,9 @@ and eval_prim cache op args =
       Array (Array.map (fun e -> eval cache (e :: env') b) a)
 
     (* Array primitives *)
-  | ArrayCreate, xs ->
+  | PArrayCreate, xs ->
       Array xs
-  | ArrayGet, [|Array a; Int i|] ->
+  | PArrayGet, [|Array a; Int i|] ->
       a.(i)
   | PZip, boxedArrays ->
       let arrays = Array.map (function Array a -> a) boxedArrays in
@@ -75,96 +75,96 @@ and eval_prim cache op args =
       Export.create_action f i r
 
     (* Rectangle primitives *)
-  | RectIntersection, [|Rect r1; Rect r2|] ->
+  | PRectIntersection, [|Rect r1; Rect r2|] ->
       Rect (Rect.intersection r1 r2)
-  | RectOutset, [|Rect r; Num d|] ->
+  | PRectOutset, [|Rect r; Num d|] ->
       Rect (Rect.outset r d d)
-  | RectScale, [|Rect r; Num f|] ->
+  | PRectScale, [|Rect r; Num f|] ->
       Rect (Rect.scale r f)
-  | RectTranslate, [|Rect r; Point v|] ->
+  | PRectTranslate, [|Rect r; Point v|] ->
       Rect (Rect.translate r (Point.x v) (Point.y v))
-  | RectUnion, [|Rect r1; Rect r2|] ->
+  | PRectUnion, [|Rect r1; Rect r2|] ->
       Rect (Rect.union r1 r2)
 
     (* Image and mask primitives *)
-  | Average, [| Array a |] when Marray.for_all is_image a ->
+  | PAverage, [| Array a |] when Marray.for_all is_image a ->
       let a' = Array.map (function Image i -> i) a in
       out_image (Coreimage.average a')
-  | Average, [| Array a |] when Marray.for_all is_mask a ->
+  | PAverage, [| Array a |] when Marray.for_all is_mask a ->
       let a' = Array.map (function Mask i -> i) a in
       out_mask (Coreimage.average a')
-  | Blend, [|Image i1; Image i2; Int m|] ->
+  | PBlend, [|Image i1; Image i2; Int m|] ->
       let m' = Nsstring.stringWithUTF8String
           (Blendmode.to_coreimage (Blendmode.of_int m)) in
       out_image (Coreimage.compositing_filter m' i1 i2)
-  | ChannelToMask, [|Image i; Int c|] ->
+  | PChannelToMask, [|Image i; Int c|] ->
       out_mask (Coreimage.channel_to_mask i c)
-  | Checkerboard, [|Point c; Color c1; Color c2; Num w; Num s|] ->
+  | PCheckerboard, [|Point c; Color c1; Color c2; Num w; Num s|] ->
       out_image (Coreimage.checkerboard c c1 c2 w s)
-  | Circle, [|Point c; Num r; Color o|] ->
+  | PCircle, [|Point c; Num r; Color o|] ->
       out_image (Coreimage.circle c r o)
-  | ConstantColor, [|Color c|] ->
+  | PConstantColor, [|Color c|] ->
       out_image (Coreimage.constant_color c)
-  | ColorControls, [| Image i; Num c; Num b; Num s |] ->
+  | PColorControls, [| Image i; Num c; Num b; Num s |] ->
       out_image (Coreimage.color_controls i c b s)
-  | Crop, [|Image i; Rect r|] ->
+  | PCrop, [|Image i; Rect r|] ->
       out_image (Coreimage.crop i r)
-  | CropOverlay, [|Image i; Rect r|] ->
+  | PCropOverlay, [|Image i; Rect r|] ->
       out_image (Coreimage.crop_overlay i r)
-  | Empty, [||] ->
+  | PEmpty, [||] ->
       Image (Image.empty)
-  | Extent, [|Image i|]
-  | Extent, [|Mask i|] ->
+  | PExtent, [|Image i|]
+  | PExtent, [|Mask i|] ->
       Rect (Image.extent i)
-  | GaussianBlur, [|Image i; Num r|] ->
+  | PGaussianBlur, [|Image i; Num r|] ->
       out_image (Coreimage.gaussian_blur i r)
-  | GaussianBlur, [|Mask m; Num r|] ->
+  | PGaussianBlur, [|Mask m; Num r|] ->
       out_mask (Coreimage.gaussian_blur m r)
-  | Invert, [|Image i|] ->
+  | PInvert, [|Image i|] ->
       out_image (Coreimage.invert i)
-  | InvertMask, [|Mask m|] ->
+  | PInvertMask, [|Mask m|] ->
       out_mask (Coreimage.invert_mask m)
   | PMask, [|Image i; Mask m|] ->
       out_image (Coreimage.mask i m)
-  | MaskOverlay, [|Image i; Mask m; Color c|] ->
+  | PMaskOverlay, [|Image i; Mask m; Color c|] ->
       out_image (Coreimage.mask_overlay i m c)
-  | MaskToImage, [|Mask m|] ->
+  | PMaskToImage, [|Mask m|] ->
       out_image (Coreimage.mask_to_image m)
-  | Opacity, [|Image i; Num a|] ->
+  | POpacity, [|Image i; Num a|] ->
       out_image (Coreimage.opacity i a)
-  | Paint, [|Image b; Array ps|] ->
+  | PPaint, [|Image b; Array ps|] ->
       Image (Paint.eval_paint b ps)
-  | RectangularWindow, [|Image i; Color c; Rect r; Num m|] ->
+  | PRectangularWindow, [|Image i; Color c; Rect r; Num m|] ->
       out_image (Coreimage.rectangular_window i c r m)
-  | Resample, [|Image i; Num f|] ->
+  | PResample, [|Image i; Num f|] ->
       out_image (Coreimage.affine_transform i (Affinetransform.scale f f))
-  | Resample, [|Mask m; Num f|] ->
+  | PResample, [|Mask m; Num f|] ->
       out_mask (Coreimage.affine_transform m (Affinetransform.scale f f))
-  | SingleColor, [|Image i; Color c|] ->
+  | PSingleColor, [|Image i; Color c|] ->
       out_image (Coreimage.single_color i c)
-  | Threshold, [|Image i; Num t|] ->
+  | PThreshold, [|Image i; Num t|] ->
       out_image (Coreimage.threshold i t)
-  | ThresholdMask, [|Mask m; Num t|] ->
+  | PThresholdMask, [|Mask m; Num t|] ->
       out_mask (Coreimage.threshold_mask m t)
-  | Translate, [|Image i; Point t|] ->
+  | PTranslate, [|Image i; Point t|] ->
       let at = Affinetransform.translation (Point.x t) (Point.y t) in
       out_image (Coreimage.affine_transform i at)
-  | Translate, [|Mask m; Point t|] ->
+  | PTranslate, [|Mask m; Point t|] ->
       let at = Affinetransform.translation (Point.x t) (Point.y t) in
       out_mask (Coreimage.affine_transform m at)
-  | UnsharpMask, [| Image i; Num y; Num r |] ->
+  | PUnsharpMask, [| Image i; Num y; Num r |] ->
       out_image (Coreimage.unsharp_mask i y r)
 
     (* Miscellaneous primitives *)
-  | PaintExtent, [|_; Array [| |]|] ->
+  | PPaintExtent, [|_; Array [| |]|] ->
       Rect Rect.zero
-  | PaintExtent, [|Rect r; Array ps|] ->
+  | PPaintExtent, [|Rect r; Array ps|] ->
       let pt = fun (Point p) -> Rect.translate r (Point.x p) (Point.y p) in
       Rect (Array.fold_left
               (fun e p -> Rect.union e (pt p))
               (pt ps.(0))
               ps)
-  | Fail, [||] ->
+  | PFail, [||] ->
       raise (EvalError (Error None))
 
   | n, a ->

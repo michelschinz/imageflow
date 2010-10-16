@@ -1,97 +1,97 @@
 type t =
   | PApply
-  | ArrayCreate
-  | ArrayGet
-  | Average
-  | Blend
-  | ChannelToMask
-  | Checkerboard
-  | Circle
-  | ColorControls
-  | ConstantColor
-  | Crop
-  | CropOverlay
-  | Div
-  | Empty
+  | PArrayCreate
+  | PArrayGet
+  | PAverage
+  | PBlend
+  | PChannelToMask
+  | PCheckerboard
+  | PCircle
+  | PColorControls
+  | PConstantColor
+  | PCrop
+  | PCropOverlay
+  | PDiv
+  | PEmpty
   | PExportActionCreate
-  | Extent
-  | Fail
-  | FileExtent
-  | GaussianBlur
-  | HistogramRGB
-  | Invert
-  | InvertMask
+  | PExtent
+  | PFail
+  | PFileExtent
+  | PGaussianBlur
+  | PHistogramRGB
+  | PInvert
+  | PInvertMask
   | PMap
   | PMask
-  | MaskOverlay
-  | MaskToImage
-  | Mul
-  | Opacity
-  | Paint
-  | PaintExtent
-  | PointMul
-  | RectIntersection
-  | RectMul
-  | RectOutset
-  | RectScale
-  | RectTranslate
-  | RectUnion
-  | RectangularWindow
-  | Resample
-  | SingleColor
-  | Threshold
-  | ThresholdMask
-  | Translate
+  | PMaskOverlay
+  | PMaskToImage
+  | PMul
+  | POpacity
+  | PPaint
+  | PPaintExtent
+  | PPointMul
+  | PRectIntersection
+  | PRectMul
+  | PRectOutset
+  | PRectScale
+  | PRectTranslate
+  | PRectUnion
+  | PRectangularWindow
+  | PResample
+  | PSingleColor
+  | PThreshold
+  | PThresholdMask
+  | PTranslate
   | PTupleCreate
   | PTupleGet
-  | UnsharpMask
+  | PUnsharpMask
   | PZip
 
 let name = function
   | PApply -> "apply"
-  | ArrayCreate -> "array-create"
-  | ArrayGet -> "array-get"
-  | Average -> "average"
-  | Blend -> "blend"
-  | ChannelToMask -> "channel-to-mask"
-  | Checkerboard -> "checkerboard"
-  | Circle -> "circle"
-  | ColorControls -> "color-controls"
-  | ConstantColor -> "constant-color"
-  | Crop -> "crop"
-  | CropOverlay -> "crop-overlay"
-  | Div -> "div"
-  | Empty -> "empty"
+  | PArrayCreate -> "array-create"
+  | PArrayGet -> "array-get"
+  | PAverage -> "average"
+  | PBlend -> "blend"
+  | PChannelToMask -> "channel-to-mask"
+  | PCheckerboard -> "checkerboard"
+  | PCircle -> "circle"
+  | PColorControls -> "color-controls"
+  | PConstantColor -> "constant-color"
+  | PCrop -> "crop"
+  | PCropOverlay -> "crop-overlay"
+  | PDiv -> "div"
+  | PEmpty -> "empty"
   | PExportActionCreate -> "export-action-create"
-  | Extent -> "extent"
-  | Fail -> "fail"
-  | FileExtent -> "file-extent"
-  | GaussianBlur -> "gaussian-blur"
-  | HistogramRGB -> "histogram-rgb"
-  | Invert -> "invert"
-  | InvertMask -> "invert-mask"
+  | PExtent -> "extent"
+  | PFail -> "fail"
+  | PFileExtent -> "file-extent"
+  | PGaussianBlur -> "gaussian-blur"
+  | PHistogramRGB -> "histogram-rgb"
+  | PInvert -> "invert"
+  | PInvertMask -> "invert-mask"
   | PMap -> "map"
   | PMask -> "mask"
-  | MaskOverlay -> "mask-overlay"
-  | MaskToImage -> "mask-to-image"
-  | Mul -> "mul"
-  | Opacity -> "opacity"
-  | Paint -> "paint"
-  | PaintExtent -> "paint-extent"
-  | PointMul -> "point-mul"
-  | RectIntersection -> "rect-intersection"
-  | RectMul -> "rect-mul"
-  | RectOutset -> "rect-outset"
-  | RectScale -> "rect-scale"
-  | RectTranslate -> "rectt-ranslate"
-  | RectUnion -> "rect-union"
-  | RectangularWindow -> "rectangular-window"
-  | Resample -> "resample"
-  | SingleColor -> "single-color"
-  | Threshold -> "threshold"
-  | ThresholdMask -> "threshold-mask"
-  | Translate -> "translate"
+  | PMaskOverlay -> "mask-overlay"
+  | PMaskToImage -> "mask-to-image"
+  | PMul -> "mul"
+  | POpacity -> "opacity"
+  | PPaint -> "paint"
+  | PPaintExtent -> "paint-extent"
+  | PPointMul -> "point-mul"
+  | PRectIntersection -> "rect-intersection"
+  | PRectMul -> "rect-mul"
+  | PRectOutset -> "rect-outset"
+  | PRectScale -> "rect-scale"
+  | PRectTranslate -> "rectt-ranslate"
+  | PRectUnion -> "rect-union"
+  | PRectangularWindow -> "rectangular-window"
+  | PResample -> "resample"
+  | PSingleColor -> "single-color"
+  | PThreshold -> "threshold"
+  | PThresholdMask -> "threshold-mask"
+  | PTranslate -> "translate"
   | PTupleCreate -> "tuple-create"
   | PTupleGet -> "tuple-get"
-  | UnsharpMask -> "unsharp-mask"
+  | PUnsharpMask -> "unsharp-mask"
   | PZip -> "zip"

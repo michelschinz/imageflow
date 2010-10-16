@@ -3,51 +3,51 @@
 
 type t =
   | PApply
-  | ArrayCreate
-  | ArrayGet
-  | Average
-  | Blend
-  | ChannelToMask
-  | Checkerboard
-  | Circle
-  | ColorControls
-  | ConstantColor
-  | Crop
-  | CropOverlay
-  | Div
-  | Empty
+  | PArrayCreate
+  | PArrayGet
+  | PAverage
+  | PBlend
+  | PChannelToMask
+  | PCheckerboard
+  | PCircle
+  | PColorControls
+  | PConstantColor
+  | PCrop
+  | PCropOverlay
+  | PDiv
+  | PEmpty
   | PExportActionCreate
-  | Extent
-  | Fail
-  | FileExtent
-  | GaussianBlur
-  | HistogramRGB
-  | Invert
-  | InvertMask
+  | PExtent
+  | PFail
+  | PFileExtent
+  | PGaussianBlur
+  | PHistogramRGB
+  | PInvert
+  | PInvertMask
   | PMap
   | PMask
-  | MaskOverlay
-  | MaskToImage
-  | Mul
-  | Opacity
-  | Paint
-  | PaintExtent
-  | PointMul
-  | RectIntersection
-  | RectMul
-  | RectOutset
-  | RectScale
-  | RectTranslate
-  | RectUnion
-  | RectangularWindow
-  | Resample
-  | SingleColor
-  | Threshold
-  | ThresholdMask
-  | Translate
+  | PMaskOverlay
+  | PMaskToImage
+  | PMul
+  | POpacity
+  | PPaint
+  | PPaintExtent
+  | PPointMul
+  | PRectIntersection
+  | PRectMul
+  | PRectOutset
+  | PRectScale
+  | PRectTranslate
+  | PRectUnion
+  | PRectangularWindow
+  | PResample
+  | PSingleColor
+  | PThreshold
+  | PThresholdMask
+  | PTranslate
   | PTupleCreate
   | PTupleGet
-  | UnsharpMask
+  | PUnsharpMask
   | PZip
 
 val name: t -> string

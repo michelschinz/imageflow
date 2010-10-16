@@ -9,7 +9,7 @@ let eval cache expr =
       e
 
 let eval_extent cache expr =
-  match eval cache (Prim(Extent, [|expr|])) with
+  match eval cache (Prim(PExtent, [|expr|])) with
     Rect extent ->
       Some extent
   | Error _ ->
