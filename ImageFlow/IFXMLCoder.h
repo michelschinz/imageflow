@@ -23,7 +23,8 @@ typedef enum {
   IFXMLDataTypeRectangle,
   IFXMLDataTypeColor,
   IFXMLDataTypeExpression,
-  IFXMLDataTypeData
+  IFXMLDataTypeData,
+  IFXMLDataTypeURL,
 } IFXMLDataType;
 
 @interface IFXMLCoder : NSObject {
@@ -54,6 +55,7 @@ typedef enum {
 - (NSString*)encodeColor:(NSColor*)data;
 - (NSString*)encodeExpression:(IFExpression*)data;
 - (NSString*)encodeData:(NSData*)data;
+- (NSString*)encodeURL:(NSURL*)url;
 
 // MARK: High-level decoding
 
@@ -74,5 +76,6 @@ typedef enum {
 - (NSColor*)decodeColor:(NSString*)string;
 - (IFExpression*)decodeExpression:(NSString*)string;
 - (NSData*)decodeData:(NSString*)string;
+- (NSURL*)decodeURL:(NSString*)string;
 
 @end

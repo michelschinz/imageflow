@@ -9,9 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 #import "IFTreeNodeFilter.h"
+#import "IFImageFile.h"
 
 @interface IFFileSource : IFTreeNodeFilter {
-
+  IFImageFile* cachedImage;
 }
 
 @end

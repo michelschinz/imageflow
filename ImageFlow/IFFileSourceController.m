@@ -13,15 +13,14 @@
 
 - (IBAction)browseFile:(id)sender;
 {
+  IFEnvironment* env = [settingsController content];
   NSOpenPanel* panel = [NSOpenPanel openPanel];
+
   [panel setCanChooseDirectories:NO];
   [panel setAllowsMultipleSelection:NO];
-  IFEnvironment* env = [settingsController content];
-  if ([panel runModalForDirectory:nil file:[env valueForKey:@"fileName"]] != NSOKButton)
-    return;
-
-  NSString* fileName = [[panel filenames] objectAtIndex:0];
-  [env setValue:fileName forKey:@"fileName"];
+  [panel setDirectoryURL:[env valueForKey:@"fileURL"]];
+  if ([panel runModal] == NSOKButton)
+    [env setValue:[[panel URLs] objectAtIndex:0] forKey:@"fileURL"];
 }
 
 // MARK: NSPathControlDelegate methods

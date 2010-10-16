@@ -21,7 +21,6 @@ type t =
   | HistogramRGB
   | Invert
   | InvertMask
-  | Load
   | PMap
   | PMask
   | MaskOverlay
@@ -71,7 +70,6 @@ let name = function
   | HistogramRGB -> "histogram-rgb"
   | Invert -> "invert"
   | InvertMask -> "invert-mask"
-  | Load -> "load"
   | PMap -> "map"
   | PMask -> "mask"
   | MaskOverlay -> "mask-overlay"

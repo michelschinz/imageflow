@@ -12,11 +12,11 @@
 #import "corefoundation.h"
 #import "objc.h"
 
-value export_action_create(value filePath, value image, value exportAreaA) {
-  CAMLparam3(filePath, image, exportAreaA);
+value export_action_create(value URLString, value image, value exportAreaA) {
+  CAMLparam3(URLString, image, exportAreaA);
 
-  NSString* filePathNS = [NSString stringWithUTF8String:String_val(filePath)];
-  NSURL* fileURL = [NSURL fileURLWithPath:filePathNS];
+  NSString* URLStringNS = [NSString stringWithUTF8String:String_val(URLString)];
+  NSURL* URL = [NSURL URLWithString:URLStringNS];
   CIImage* imageCI = objc_unwrap(image);
   CGRect exportArea = CGRectMake(Double_field(exportAreaA, 0),
                                  Double_field(exportAreaA, 1),
@@ -24,7 +24,7 @@ value export_action_create(value filePath, value image, value exportAreaA) {
                                  Double_field(exportAreaA, 3));
 
   IFConstantExpression* exportAction =
-    [IFConstantExpression exportActionWithFileURL:fileURL
+    [IFConstantExpression exportActionWithFileURL:URL
                           image:imageCI
                           exportArea:exportArea];
 

@@ -124,13 +124,6 @@ and eval_prim cache op args =
       out_image (Coreimage.invert i)
   | InvertMask, [|Mask m|] ->
       out_mask (Coreimage.invert_mask m)
-  | Load, [|String f|] ->
-      begin try
-        Image (Load.eval_load f)
-      with Failure _ ->
-        let name = if f = "" then "(no name given)" else f in
-        raise (EvalError (Error (Some ("Unable to load file "^name^""))))
-      end
   | PMask, [|Image i; Mask m|] ->
       out_image (Coreimage.mask i m)
   | MaskOverlay, [|Image i; Mask m; Color c|] ->

@@ -24,7 +24,6 @@ type t =
   | HistogramRGB
   | Invert
   | InvertMask
-  | Load
   | PMap
   | PMask
   | MaskOverlay

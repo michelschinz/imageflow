@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<tree-template>
+  <tag>import</tag>
+  <name>Import file</name>
+  <description>Import image from file</description>
+  <tree>
+    <filter id="1">
+      <name>IFFileSource</name>
+      <settings>
+        <key>fileURL</key>
+        <url>file://localhost/Users/michelschinz/Pictures/fractals/Mandelbrot_08.png</url>
+      </settings>
+    </filter>
+  </tree>
+</tree-template>

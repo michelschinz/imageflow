@@ -10,6 +10,7 @@
 #import "IFImageCGImage.h"
 #import "IFImageCGLayer.h"
 #import "IFImageCIImage.h"
+#import "IFImageFile.h"
 
 @implementation IFImage
 
@@ -17,12 +18,8 @@ static IFImage* emptyImage = nil;
 
 + (id)emptyImage;
 {
-  if (emptyImage == nil) {
-    CIFilter* ccFilter = [CIFilter filterWithName:@"CIConstantColorGenerator" keysAndValues:
-      @"inputColor", [CIColor colorWithRed:0 green:0 blue:0 alpha:0],
-      nil];
-    emptyImage = [[self imageWithCIImage:[ccFilter valueForKey:@"outputImage"]] retain];
-  }
+  if (emptyImage == nil)
+    emptyImage = [[self imageWithCIImage:[CIImage emptyImage]] retain];
   return emptyImage;
 }
 
@@ -46,6 +43,11 @@ static IFImage* emptyImage = nil;
   return [[[IFImageCIImage alloc] initWithCIImage:theMask kind:IFImageKindMask] autorelease];
 }
 
++ (id)imageWithContentsOfURL:(NSURL*)theURL;
+{
+  return [[[IFImageFile alloc] initWithFileURL:theURL] autorelease];
+}
+
 - (id)initWithKind:(IFImageKind)theKind;
 {
   if (![super init])
@@ -54,9 +56,45 @@ static IFImage* emptyImage = nil;
   return self;
 }
 
-- (IFImageKind)kind;
+@synthesize kind;
+
+- (CGRect)extent;
 {
-  return kind;
+  return self.imageCI.extent;
+}
+
+- (CIImage*)imageCI;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSData*)encodedData;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (NSString*)encodingFormat;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (void)setEncodingFormat:(NSString *)newEncodingFormat;
+{
+  [self doesNotRecognizeSelector:_cmd];
+}
+
+- (NSDictionary*)encodingOptions;
+{
+  [self doesNotRecognizeSelector:_cmd];
+  return nil;
+}
+
+- (void)setEncodingOptions:(NSDictionary *)newEncodingOptions;
+{
+  [self doesNotRecognizeSelector:_cmd];
 }
 
 - (BOOL)isLocked;
@@ -65,7 +103,7 @@ static IFImage* emptyImage = nil;
   return NO;
 }
 
-- (void)setUsagesBeforeCacheHint:(unsigned)cacheCountHint;
+- (void)setUsagesBeforeCache:(unsigned)cacheCountHint;
 {
   // ignore hint by default.
 }
@@ -73,18 +111,6 @@ static IFImage* emptyImage = nil;
 - (unsigned)usagesBeforeCache;
 {
   return 0;
-}
-
-- (CGRect)extent;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return CGRectZero;
-}
-
-- (CIImage*)imageCI;
-{
-  [self doesNotRecognizeSelector:_cmd];
-  return nil;
 }
 
 @end

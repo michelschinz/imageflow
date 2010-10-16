@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">10B504</string>
+		<string key="IBDocument.SystemVersion">10C540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">740</string>
-		<string key="IBDocument.AppKitVersion">1038.2</string>
-		<string key="IBDocument.HIToolboxVersion">437.00</string>
+		<string key="IBDocument.AppKitVersion">1038.25</string>
+		<string key="IBDocument.HIToolboxVersion">458.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">740</string>
@@ -154,6 +154,7 @@
 					<string>defaultResolutionX</string>
 					<string>useEmbeddedResolution</string>
 					<string>defaultResolutionY</string>
+					<string>fileURL</string>
 				</array>
 				<string key="NSObjectClassName">NSString</string>
 				<bool key="NSEditable">YES</bool>
@@ -181,22 +182,6 @@
 						</object>
 					</object>
 					<int key="connectionID">460</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.fileName</string>
-						<reference key="source" ref="879670967"/>
-						<reference key="destination" ref="67952226"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="879670967"/>
-							<reference key="NSDestination" ref="67952226"/>
-							<string key="NSLabel">value: selection.fileName</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.fileName</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">484</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -237,6 +222,22 @@
 						</object>
 					</object>
 					<int key="connectionID">492</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.fileURL</string>
+						<reference key="source" ref="879670967"/>
+						<reference key="destination" ref="67952226"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="879670967"/>
+							<reference key="NSDestination" ref="67952226"/>
+							<string key="NSLabel">value: selection.fileURL</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.fileURL</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">493</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -348,7 +349,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">492</int>
+			<int key="maxID">493</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

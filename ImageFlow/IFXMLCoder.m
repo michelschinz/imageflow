@@ -40,7 +40,7 @@ static IFXMLCoder* sharedCoder = nil;
 {
   if (![super init])
     return nil;
-  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"expression",@"data",nil] retain];
+  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"expression",@"data",@"url",nil] retain];
   return self;
 }
 
@@ -82,6 +82,8 @@ static IFXMLCoder* sharedCoder = nil;
     return IFXMLDataTypeExpression;
   else if ([data isKindOfClass:[NSData class]])
     return IFXMLDataTypeData;
+  else if ([data isKindOfClass:[NSURL class]])
+    return IFXMLDataTypeURL;
   else {
     NSAssert2(NO, @"invalid data: %@ (class %@)",data,[data class]);  
     return IFXMLDataTypeInvalid;
@@ -156,6 +158,8 @@ static IFXMLCoder* sharedCoder = nil;
       return [self encodeExpression:data];
     case IFXMLDataTypeData:
       return [self encodeData:data];
+    case IFXMLDataTypeURL:
+      return [self encodeURL:data];
     default:
       NSAssert(NO, @"unexpected type");
       return nil;
@@ -212,6 +216,11 @@ static IFXMLCoder* sharedCoder = nil;
 - (NSString*)encodeData:(NSData*)data;
 {
   return [data base64Encoding];
+}
+
+- (NSString*)encodeURL:(NSURL*)data;
+{
+  return [data absoluteString];
 }
 
 // MARK: High-level decoding
@@ -343,6 +352,8 @@ static IFXMLCoder* sharedCoder = nil;
       return [self decodeExpression:string];
     case IFXMLDataTypeData:
       return [self decodeData:string];
+    case IFXMLDataTypeURL:
+      return [self decodeURL:string];
     default:
       NSAssert1(NO, @"invalid type name %d", type);
       return nil;
@@ -410,6 +421,11 @@ static IFXMLCoder* sharedCoder = nil;
   return [NSData dataWithBase64EncodedString:string];
 }
 
+- (NSURL*)decodeURL:(NSString*)string;
+{
+  return [NSURL URLWithString:string];
+}
+
 // MARK: -
 // MARK: PRIVATE
 
@@ -444,8 +460,6 @@ static IFXMLCoder* sharedCoder = nil;
   NSDictionary* env = [settings asDictionary];
   for (NSString* key in env) {
     NSObject* value = [env objectForKey:key];
-//    if ([value isKindOfClass:[IFExpression class]])
-//      continue;
     [xmlSettings addChild:[NSXMLElement elementWithName:@"key" stringValue:key]];
     [xmlSettings addChild:[NSXMLElement elementWithName:[self typeNameForData:value] stringValue:[self encodeAny:value]]];
   }

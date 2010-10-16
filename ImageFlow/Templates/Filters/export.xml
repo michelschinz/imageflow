@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <tree-template>
-  <name>Save file</name>
-  <description>Save image to file</description>
+  <name>Export file</name>
+  <description>Export image to file</description>
   <tree>
     <filter id="1">
       <name>IFFileSink</name>
       <settings>
-        <key>fileName</key>
-        <string>/tmp/out.jpg</string>
+        <key>fileURL</key>
+        <url>file://localhost/tmp/out.jpeg</url>
         <key>fileType</key>
         <string>public.jpeg</string>
         <key>quality</key>

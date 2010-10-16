@@ -8,7 +8,7 @@
 
 #import "IFImageCIImage.h"
 
-@interface IFImageCIImage (Private)
+@interface IFImageCIImage ()
 - (void)incrementUsagesAndCacheIfNeeded;
 @end
 
@@ -18,8 +18,8 @@
 {
   if (![super initWithKind:theKind])
     return nil;
-  image = [theImage retain];
-  isInfinite = CGRectIsInfinite([image extent]);
+  imageCI = [theImage retain];
+  isInfinite = CGRectIsInfinite([imageCI extent]);
   cache = nil;
   usages = 0;
   usagesBeforeCache = 2;
@@ -29,52 +29,42 @@
 - (void)dealloc;
 {
   OBJC_RELEASE(cache);
-  OBJC_RELEASE(image);
+  OBJC_RELEASE(imageCI);
   [super dealloc];
 }
 
-- (void)setUsagesBeforeCacheHint:(unsigned)hint;
+@synthesize usagesBeforeCache;
+- (void)setUsagesBeforeCache:(unsigned)hint;
 {
   if (cache == nil)
     usagesBeforeCache = hint;
 }
 
-- (unsigned)usagesBeforeCache;
-{
-  return usagesBeforeCache;
-}
-
 - (CGRect)extent;
 {
-  return [image extent];
+  return [imageCI extent];
 }
 
 - (CIImage*)imageCI;
 {
   [self incrementUsagesAndCacheIfNeeded];
-  return (cache != nil) ? [cache image] : image;
+  return (cache != nil) ? [cache image] : imageCI;
 }
 
 - (BOOL)isLocked;
 {
-  return [self retainCount] > 1 || [image retainCount] > 1 || (cache != nil && [cache retainCount] > 1);
+  return [self retainCount] > 1 || [imageCI retainCount] > 1 || (cache != nil && [cache retainCount] > 1);
 }
 
-- (void)logRetainCounts;
-{
-  NSLog(@"%@  self=%d  image=%d  cache=%d",self,[self retainCount],[image retainCount],cache == nil ? 0 : [cache retainCount]);
-}
-
-@end
-
-@implementation IFImageCIImage (Private)
+// MARK: -
+// MARK: PRIVATE
 
 - (void)incrementUsagesAndCacheIfNeeded;
 {
   ++usages;
   if (!isInfinite && cache == nil && usages >= usagesBeforeCache) {
     cache = [[CIImageAccumulator imageAccumulatorWithExtent:[self extent] format:kCIFormatARGB8] retain]; // TODO color space, format
-    [cache setImage:image];
+    [cache setImage:imageCI];
   }
 }
 

@@ -22,19 +22,24 @@ typedef enum {
 + (id)imageWithCGImage:(CGImageRef)theImage;
 + (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
 + (id)imageWithCIImage:(CIImage*)theImage;
++ (id)imageWithContentsOfURL:(NSURL*)theURL;
 
 + (id)maskWithCIImage:(CIImage*)theMask;
 
+@property(readonly) IFImageKind kind;
+@property(readonly) CGRect extent;
+@property(readonly) CIImage* imageCI;
+
+@property(readonly) NSData* encodedData;
+@property(retain) NSString* encodingFormat;
+@property(retain) NSDictionary* encodingOptions;
+
+@property(readonly) BOOL isLocked;
+@property unsigned usagesBeforeCache;
+
+// MARK: -
+// MARK: PROTECTED
+
 - (id)initWithKind:(IFImageKind)theKind;
-
-- (IFImageKind)kind;
-
-- (BOOL)isLocked;
-
-- (void)setUsagesBeforeCacheHint:(unsigned)cacheCountHint;
-- (unsigned)usagesBeforeCache;
-
-- (CGRect)extent;
-- (CIImage*)imageCI;
 
 @end

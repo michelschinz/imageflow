@@ -60,8 +60,8 @@ static NSDictionary* fileTypesOptions = nil;
   [self updateOptionTabIndex];
   
   NSString* newExtension = [(NSString*)UTTypeCopyPreferredTagWithClass((CFStringRef)fileType,kUTTagClassFilenameExtension) autorelease];
-  NSString* fileName = [env valueForKey:@"fileName"];
-  [env setValue:[[fileName stringByDeletingPathExtension] stringByAppendingPathExtension:newExtension] forKey:@"fileName"];
+  NSURL* fileURL = [env valueForKey:@"fileURL"];
+  [env setValue:[[fileURL URLByDeletingPathExtension] URLByAppendingPathExtension:newExtension] forKey:@"fileURL"];
 }
 
 - (int)fileTypeIndex;
@@ -93,15 +93,15 @@ static NSDictionary* fileTypesOptions = nil;
 {
   IFEnvironment* env = [[filterController content] settings];
 
-  NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
-  NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];
-  NSString* fileName = [fileNameComponents lastObject];
-
+  NSURL* fileURL = [env valueForKey:@"fileURL"];
   NSSavePanel* panel = [NSSavePanel savePanel];
-  [panel setCanCreateDirectories:YES];
-  [panel runModalForDirectory:dirName file:fileName];
+  [panel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
+  [panel setNameFieldStringValue:[fileURL lastPathComponent]];
   
-  [env setValue:[panel filename] forKey:@"fileName"];
+  [panel setCanCreateDirectories:YES];
+  [panel runModal];
+  
+  [env setValue:[panel URL] forKey:@"fileURL"];
 }
 
 @end

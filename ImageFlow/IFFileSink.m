@@ -26,17 +26,17 @@
   NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
   // TODO: use correct export rect (either canvas or explicit value from environment).
   return [IFExpression lambdaWithBody:
-          [IFExpression primitiveWithTag:IFPrimitiveTag_PExportActionCreate operands:[IFConstantExpression expressionWithString:[settings valueForKey:@"fileName"]], [IFExpression argumentWithIndex:0], [IFConstantExpression expressionWithRectCG:CGRectMake(0, 0, 800, 600)], nil]];
+          [IFExpression primitiveWithTag:IFPrimitiveTag_PExportActionCreate operands:[IFConstantExpression expressionWithString:[[settings valueForKey:@"fileURL"] absoluteString]], [IFExpression argumentWithIndex:0], [IFConstantExpression expressionWithRectCG:CGRectMake(0, 0, 800, 600)], nil]];
 }
 
 - (NSString*)computeLabel;
 {
-  return [NSString stringWithFormat:@"export %@",[[settings valueForKey:@"fileName"] lastPathComponent]];
+  return [NSString stringWithFormat:@"%C%@", 0x2191, [[settings valueForKey:@"fileURL"] lastPathComponent]];
 }
 
 - (NSString*)toolTip;
 {
-  return [NSString stringWithFormat:@"export %@",[settings valueForKey:@"fileName"]];
+  return [NSString stringWithFormat:@"export %@",[[settings valueForKey:@"fileURL"] path]];
 }
 
 @end

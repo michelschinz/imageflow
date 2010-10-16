@@ -23,7 +23,7 @@
 #import "IFDragBadgeCreator.h"
 
 @interface IFForestView ()
-- (IFTree*)freshLoadTreeForFileNamed:(NSString*)fileName;
+- (IFTree*)freshLoadTreeForURL:(NSURL*)fileURL;
 @property(retain) IFTreeCursorPair* cursors;
 @property(readonly) IFLayerSet* nodeConnectorLayers;
 @property(readonly) IFLayerSet* nodeLayers;
@@ -556,7 +556,7 @@ static enum {
     case IFDragKindFileName: {
       if (targetCompositeLayer != nil) {
         IFTreeNode* node = targetCompositeLayer.node;
-        highlightTarget = node.isGhost || ([node.original.settings valueForKey:@"fileName"] != nil);
+        highlightTarget = node.isGhost || ([node.original.settings valueForKey:@"fileURL"] != nil);
         allowedOperationsMask = highlightTarget ? NSDragOperationLink : NSDragOperationNone;
       } else
         allowedOperationsMask = NSDragOperationLink;
@@ -682,19 +682,19 @@ static enum {
       if (targetCompositeLayer == nil) {
         // Create new file source nodes for dragged files
         for (int i = 0; i < [fileNames count]; ++i)
-          [document addCloneOfTree:[self freshLoadTreeForFileNamed:[fileNames objectAtIndex:i]]];
+          [document addCloneOfTree:[self freshLoadTreeForURL:[NSURL fileURLWithPath:[fileNames objectAtIndex:i]]]];
         return YES;
       } else if ([targetNode isGhost]) {
         // Replace ghost node by "load" node
-        IFTree* loadTree = [self freshLoadTreeForFileNamed:[fileNames objectAtIndex:0]];
+        IFTree* loadTree = [self freshLoadTreeForURL:[NSURL fileURLWithPath:[fileNames objectAtIndex:0]]];
         if ([document canCloneTree:loadTree toReplaceGhostNode:targetNode]) {
           [document cloneTree:loadTree toReplaceGhostNode:targetNode];
           return YES;
         } else
           return NO;
-      } else if ([targetNode.original.settings valueForKey:@"fileName"] != nil) {
-        // Change "fileName" entry in environment to the dropped file name.
-        [targetNode.original.settings setValue:[fileNames objectAtIndex:0] forKey:@"fileName"];
+      } else if ([targetNode.original.settings valueForKey:@"fileURL"] != nil) {
+        // Change "fileURL" entry in environment to the dropped file name.
+        [targetNode.original.settings setValue:[NSURL fileURLWithPath:[fileNames objectAtIndex:0]] forKey:@"fileURL"];
         return YES;
       } else
         return NO;
@@ -709,11 +709,11 @@ static enum {
 // MARK: -
 // MARK: PRIVATE
 
-- (IFTree*)freshLoadTreeForFileNamed:(NSString*)fileName;
+- (IFTree*)freshLoadTreeForURL:(NSURL*)fileURL;
 {
   NSData* archivedClone = [NSKeyedArchiver archivedDataWithRootObject:[[[IFTreeTemplateManager sharedManager] loadFileTemplate] tree]];
   IFTree* clonedTree = [NSKeyedUnarchiver unarchiveObjectWithData:archivedClone];
-  [[[clonedTree root] settings] setValue:fileName forKey:@"fileName"];
+  [[[clonedTree root] settings] setValue:fileURL forKey:@"fileURL"];
   return clonedTree;
 }
 

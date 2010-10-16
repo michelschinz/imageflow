@@ -24,9 +24,7 @@
 - (void)dealloc;
 {
   CGLayerRelease(layer);
-  if (image != nil) {
-    OBJC_RELEASE(image);
-  }
+  OBJC_RELEASE(image);
   [super dealloc];
 }
 
@@ -37,8 +35,7 @@
 
 - (CGRect)extent;
 {
-  CGRect extent = { origin, CGLayerGetSize(layer) };
-  return extent;
+  return (CGRect){ origin, CGLayerGetSize(layer) };
 }
 
 - (CIImage*)imageCI;

@@ -9,8 +9,9 @@
 #import "IFUniversalSource.h"
 #import "IFType.h"
 #import "IFExpression.h"
+#import "IFImageFile.h"
 
-static NSArray* sourceFileNames;
+static NSArray* sourceImages;
 
 @implementation IFUniversalSource
 
@@ -19,15 +20,15 @@ static NSArray* sourceFileNames;
   if (self != [IFUniversalSource class])
     return; // avoid repeated initialisation
 
-  NSMutableArray* fileNames = [NSMutableArray array];
-  for (int i = 1; /*no condition*/; ++i) {
-    NSString* maybePath = [[NSBundle mainBundle] pathForImageResource:[NSString stringWithFormat:@"surrogate_parent_%d",i]];
-    if (maybePath == nil)
+  NSMutableArray* mutableSourceImages = [NSMutableArray array];
+  for (int i = 1; /* no condition */; ++i) {
+    NSURL* maybeURL = [[NSBundle mainBundle] URLForImageResource:[NSString stringWithFormat:@"surrogate_parent_%d",i]];
+    if (maybeURL == nil)
       break;
-    [fileNames addObject:maybePath];
+    [mutableSourceImages addObject:[IFImageFile imageWithContentsOfURL:maybeURL]];
   }
-
-  sourceFileNames = [fileNames retain];
+  
+  sourceImages = [mutableSourceImages retain];
 }
 
 - (NSArray*)computePotentialTypesForArity:(unsigned)arity;
@@ -48,10 +49,10 @@ static NSArray* sourceFileNames;
   NSAssert(arity == 0 && typeIndex <= 3, @"invalid arity or type index");
   
   // TODO: use better images for masks and stacks
-  unsigned fileNameIndex = [[settings valueForKey:@"index"] unsignedIntValue];
-  NSString* fileName = [sourceFileNames objectAtIndex:(fileNameIndex % [sourceFileNames count])];
+  unsigned imageIndex = [[settings valueForKey:@"index"] unsignedIntValue];
+  IFImage* image = [sourceImages objectAtIndex:(imageIndex % [sourceImages count])];
   
-  IFExpression* rgbaImageExpression = [IFExpression primitiveWithTag:IFPrimitiveTag_Load operand:[IFConstantExpression expressionWithString:fileName]];
+  IFExpression* rgbaImageExpression = [IFConstantExpression imageConstantExpressionWithIFImage:image];
   IFExpression* maskImageExpression = [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];
   
   switch (typeIndex) {

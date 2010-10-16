@@ -60,7 +60,6 @@ typedef enum {
   IFPrimitiveTag_HistogramRGB,
   IFPrimitiveTag_Invert,
   IFPrimitiveTag_InvertMask,
-  IFPrimitiveTag_Load,
   IFPrimitiveTag_PMap,
   IFPrimitiveTag_Mask,
   IFPrimitiveTag_MaskOverlay,

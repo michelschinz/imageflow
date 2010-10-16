@@ -11,7 +11,7 @@
 #import "IFImage.h"
 
 @interface IFImageCIImage : IFImage {
-  CIImage* image;
+  CIImage* imageCI;
   BOOL isInfinite;
   CIImageAccumulator* cache;
   unsigned usages;

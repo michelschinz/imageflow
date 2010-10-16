@@ -31,7 +31,7 @@
 
 - (CGRect)extent;
 {
-  return CGRectMake(0,0,CGImageGetWidth(image),CGImageGetHeight(image));
+  return CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));
 }
 
 - (CIImage*)imageCI;
@@ -44,11 +44,6 @@
 - (BOOL)isLocked;
 {
   return [self retainCount] > 1 || CFGetRetainCount(image) > 1 || (ciImage != nil && [ciImage retainCount] > 1);
-}
-
-- (void)logRetainCounts;
-{
-  NSLog(@"%@  self=%d  image=%d  cache=%d",self,[self retainCount],CFGetRetainCount(image),ciImage == nil ? 0 : [ciImage retainCount]);
 }
 
 @end
