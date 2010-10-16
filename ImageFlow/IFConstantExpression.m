@@ -457,7 +457,7 @@ static value elemAsCaml(const char* elem) {
         Store_field(contents, 0, caml_copy_string([object cStringUsingEncoding:NSISOLatin1StringEncoding]));
       } else
         contents = Val_int(0);
-    }
+    } break;
 
     default:
       NSAssert(NO, @"unknown tag %d", tag);
