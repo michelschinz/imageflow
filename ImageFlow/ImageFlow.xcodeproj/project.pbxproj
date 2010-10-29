@@ -1844,7 +1844,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ocaml\"",
-					/usr/local/lib/ocaml,
+					"$(ocaml)/lib/ocaml",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
@@ -1871,7 +1871,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/ocaml\"",
-					/usr/local/lib/ocaml,
+					"$(ocaml)/lib/ocaml",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/ocaml/bridge\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/ocaml\"";
