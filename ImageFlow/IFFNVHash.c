@@ -12,19 +12,19 @@
 // FNV hashing
 // Taken from http://www.isthe.com/chongo/tech/comp/fnv/
 
-unsigned FNV_init() {
-  return 2166136261;
+uint32_t FNV32_init() {
+  return UINT32_C(2166136261);
 }
 
-unsigned FNV_step8(unsigned current, unsigned char byte) {
-  return (current ^ byte) * 16777619;  
+uint32_t FNV32_step8(uint32_t current, uint8_t byte) {
+  return (current ^ byte) * UINT32_C(16777619);
 }
 
-unsigned FNV_step32(unsigned current, unsigned addition) {
-  unsigned v1 = FNV_step8(current, (addition >> 24) & 0xFF);
-  unsigned v2 = FNV_step8(v1,(addition >> 16) & 0xFF);
-  unsigned v3 = FNV_step8(v2,(addition >> 8) & 0xFF);
-  return FNV_step8(v3,addition & 0xFF);
+uint32_t FNV32_step32(uint32_t current, uint32_t addition) {
+  uint32_t v1 = FNV32_step8(current, (addition >> 24) & 0xFF);
+  uint32_t v2 = FNV32_step8(v1,(addition >> 16) & 0xFF);
+  uint32_t v3 = FNV32_step8(v2,(addition >> 8) & 0xFF);
+  return FNV32_step8(v3,addition & 0xFF);
 }
 
 extern uint64_t FNV64_init() {

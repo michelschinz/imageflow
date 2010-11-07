@@ -67,7 +67,7 @@ static NSArray* tagNames;
                @"threshold-mask",
                @"translate",
                @"tuple-create",
-               @"tuple-get",               
+               @"tuple-get",
                @"unsharp-mask",
                @"zip",
                nil] retain];
@@ -82,9 +82,9 @@ static NSArray* tagNames;
   primitiveTag = theTag;
   operands = [theOperands retain];
 
-  hash = FNV_step32(FNV_init(), primitiveTag);
+  hash = FNV32_step32(FNV32_init(), primitiveTag);
   for (IFExpression* operand in operands)
-    hash = FNV_step32(hash, [operand hash]);
+    hash = FNV32_step32(hash, [operand hash]);
 
   return self;
 }
