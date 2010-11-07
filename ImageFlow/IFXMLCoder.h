@@ -24,6 +24,7 @@ typedef enum {
   IFXMLDataTypeColor,
   IFXMLDataTypeExpression,
   IFXMLDataTypeData,
+  IFXMLDataTypeFileData,
   IFXMLDataTypeURL,
 } IFXMLDataType;
 
@@ -38,9 +39,8 @@ typedef enum {
 
 // MARK: High-level encoding
 
-- (NSXMLDocument*)encodeDocument:(IFDocument*)document;
-- (NSXMLDocument*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
-- (NSXMLElement*)encodeTree:(IFTree*)tree;
+- (NSDictionary*)encodeDocument:(IFDocument*)document;
+- (NSDictionary*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
 
 // MARK: Low-level encoding
 
@@ -59,9 +59,8 @@ typedef enum {
 
 // MARK: High-level decoding
 
-- (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
-- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLDocument*)xml;
-- (IFTree*)decodeTree:(NSXMLNode*)xml;
+- (void)decodeDocument:(NSDictionary*)documentContents into:(IFDocument*)document;
+- (IFTreeTemplate*)decodeTreeTemplate:(NSDictionary*)documentContents;
 
 // MARK: Low-level decoding
 

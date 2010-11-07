@@ -288,27 +288,25 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
 - (NSFileWrapper*)fileWrapperOfType:(NSString*)typeName error:(NSError**)outError;
 {
-  NSXMLDocument* xmlDoc = [[IFXMLCoder sharedCoder] encodeDocument:self];
-  NSData* xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
-  return [[[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionaryWithObjectsAndKeys:
-    [[[NSFileWrapper alloc] initRegularFileWithContents:xmlData] autorelease], @"tree.xml",
-    nil]] autorelease];
+  NSDictionary* encodedDocument = [[IFXMLCoder sharedCoder] encodeDocument:self];
+  NSMutableDictionary* fileWrappers = [NSMutableDictionary dictionary];
+  for (NSString* key in encodedDocument)
+    [fileWrappers setObject:[[[NSFileWrapper alloc] initRegularFileWithContents:[encodedDocument objectForKey:key]] autorelease] forKey:key];
+
+  return [[[NSFileWrapper alloc] initDirectoryWithFileWrappers:fileWrappers] autorelease];
 }
 
 - (BOOL)readFromFileWrapper:(NSFileWrapper*)dirWrapper ofType:(NSString*)typeName error:(NSError**)outError;
 {
   NSAssert1([dirWrapper isDirectory], @"wrapper is not a directory: %@", dirWrapper);
   
-  for (NSFileWrapper* fileWrapper in [[dirWrapper fileWrappers] objectEnumerator]) {
-    if ([[fileWrapper filename] isEqualToString:@"tree.xml"]) {
-      NSXMLDocument* xmlDoc = [[[NSXMLDocument alloc] initWithData:[fileWrapper regularFileContents]
-                                                           options:NSXMLDocumentTidyXML
-                                                             error:outError] autorelease];
-      if (xmlDoc == nil) return NO;
-      [[IFXMLCoder sharedCoder] decodeDocument:xmlDoc into:self];
-      [[self undoManager] removeAllActions];
-    }
-  }
+  NSMutableDictionary* fileWrapperContents = [NSMutableDictionary dictionary];
+  for (NSFileWrapper* fileWrapper in [[dirWrapper fileWrappers] objectEnumerator])
+    [fileWrapperContents setObject:[fileWrapper regularFileContents] forKey:[fileWrapper filename]];
+
+  [[IFXMLCoder sharedCoder] decodeDocument:fileWrapperContents into:self];
+  [[self undoManager] removeAllActions];
+
   return YES;
 }
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -190,6 +190,7 @@
 		FAF7F36F0B08D97700BF6B7A /* IFImageInspectorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7F36D0B08D97700BF6B7A /* IFImageInspectorWindow.m */; };
 		FAF8AA3208FCD76500557C4D /* IFXMLCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */; };
 		FAF934FE0908094E00558366 /* IFConstantExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF934FC0908094E00558366 /* IFConstantExpression.m */; };
+		FAF93D59126B42670000E6A5 /* IFFileData.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF93D58126B42670000E6A5 /* IFFileData.m */; };
 		FAF9F68D093248B900FB2B0B /* IFSingleColorCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */; };
 		FAFC1B21092C6FBF0032A19F /* threshold.cikernel.m4 in Resources */ = {isa = PBXBuildFile; fileRef = FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */; };
 		FAFC1B3C092C76E20032A19F /* IFMaskCIFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFC1B3A092C76E20032A19F /* IFMaskCIFilter.m */; };
@@ -539,6 +540,8 @@
 		FAF8AA3008FCD76500557C4D /* IFXMLCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFXMLCoder.m; sourceTree = "<group>"; };
 		FAF934FB0908094E00558366 /* IFConstantExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFConstantExpression.h; sourceTree = "<group>"; };
 		FAF934FC0908094E00558366 /* IFConstantExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFConstantExpression.m; sourceTree = "<group>"; };
+		FAF93D57126B42670000E6A5 /* IFFileData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFFileData.h; sourceTree = "<group>"; };
+		FAF93D58126B42670000E6A5 /* IFFileData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFFileData.m; sourceTree = "<group>"; };
 		FAF9F68A093248B900FB2B0B /* IFSingleColorCIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSingleColorCIFilter.h; sourceTree = "<group>"; };
 		FAF9F68B093248B900FB2B0B /* IFSingleColorCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFSingleColorCIFilter.m; sourceTree = "<group>"; };
 		FAFC1B20092C6FBF0032A19F /* threshold.cikernel.m4 */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = threshold.cikernel.m4; sourceTree = "<group>"; };
@@ -1490,6 +1493,8 @@
 				FA1EB1FF086AAB35007FD6AF /* Tree */,
 				FAD888FD0CD0A84300D3DE7D /* Graph */,
 				FA4501A20AD2B4B60097C977 /* Images */,
+				FAF93D57126B42670000E6A5 /* IFFileData.h */,
+				FAF93D58126B42670000E6A5 /* IFFileData.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1576,8 +1581,15 @@
 				ORGANIZATIONNAME = "Michel Schinz";
 			};
 			buildConfigurationList = FAFDC53C086009B500DABA6F /* Build configuration list for PBXProject "ImageFlow" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* ImageFlow */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1798,6 +1810,7 @@
 				FA9C18F810AFFEF900B35714 /* IFAction.m in Sources */,
 				FA9C18FC10AFFF1100B35714 /* IFFileExportAction.m in Sources */,
 				FAA9627A10B91EA200757C6C /* IFImageFile.m in Sources */,
+				FAF93D59126B42670000E6A5 /* IFFileData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

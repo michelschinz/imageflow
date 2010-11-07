@@ -15,7 +15,7 @@
   NSString* description;
   IFTree* tree;
 
-  NSString* fileName;
+  NSString* dirName;
   NSString* tag;
 }
 
@@ -26,7 +26,7 @@
 @property(readonly) NSString* description;
 @property(readonly) IFTree* tree;
 
-@property(retain) NSString* fileName;
+@property(retain) NSString* dirName;
 @property(retain, nonatomic) NSString* tag;
 
 @end

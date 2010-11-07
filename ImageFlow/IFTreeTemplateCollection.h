@@ -12,20 +12,19 @@
 
 @interface IFTreeTemplateCollection : NSObject {
   NSString* directory;
-  BOOL modifiable;
+  BOOL isModifiable;
   NSMutableSet* templates;
 }
 
 + (id)treeTemplateCollectionWithDirectory:(NSString*)theDirectory;
 - (id)initWithDirectory:(NSString*)theDirectory;
 
-- (NSString*)directory;
+@property(readonly) NSString* directory;
+@property(readonly) NSSet* templates;
+@property(readonly) BOOL isModifiable;
 
-- (NSSet*)templates;
-- (BOOL)containsTemplate:(IFTreeTemplate*)treeTemplate;
-
-- (BOOL)isModifiable;
 - (void)addTemplate:(IFTreeTemplate*)treeTemplate;
 - (void)removeTemplate:(IFTreeTemplate*)treeTemplate;
+- (BOOL)containsTemplate:(IFTreeTemplate*)treeTemplate;
 
 @end

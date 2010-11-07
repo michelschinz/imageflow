@@ -11,26 +11,29 @@
 #import "IFEnvironment.h"
 #import "IFType.h"
 #import "IFExpression.h"
+#import "IFFileData.h"
 
 @interface IFFileSource ()
 @property(readonly) NSURL* fileURL;
+@property(readonly) BOOL storeImageInDocument;
 @property(retain) IFImage* cachedImage;
 @end
 
-static void* IFFileURLChangedContext = nil;
-
 @implementation IFFileSource
 
-- (id)initWithSettings:(IFEnvironment *)theSettings;
+- (id)initWithSettings:(IFEnvironment*)theSettings;
 {
   if (![super initWithSettings:theSettings])
     return nil;
   cachedImage = nil;
+
+  [settings addObserver:self forKeyPath:@"storeImageInDocument" options:0 context:nil];
   return self;
 }
 
 - (void)dealloc;
 {
+  [settings removeObserver:self forKeyPath:@"storeImageInDocument"];
   OBJC_RELEASE(cachedImage);
 }
 
@@ -45,9 +48,16 @@ static void* IFFileURLChangedContext = nil;
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 0 && typeIndex == 0, @"invalid arity or type index");
-  if (cachedImage == nil || ![cachedImage.fileURL isEqual:self.fileURL])
-    self.cachedImage = [IFImage imageWithContentsOfURL:self.fileURL];
-  return (cachedImage.imageCI == nil) ? [IFConstantExpression errorConstantExpressionWithMessage:@"unable to load file"] : [IFConstantExpression imageConstantExpressionWithIFImage:cachedImage];
+
+  if (cachedImage == nil) {
+    if (self.storeImageInDocument)
+      self.cachedImage = [IFImage imageWithData:[[settings valueForKey:@"fileData"] fileData]];
+    else
+      self.cachedImage = [IFImage imageWithContentsOfURL:self.fileURL];
+  }
+  return (cachedImage.imageCI == nil)
+  ? [IFConstantExpression errorConstantExpressionWithMessage:@"unable to load file"]
+  : [IFConstantExpression imageConstantExpressionWithIFImage:cachedImage];
 }
 
 - (NSString*)computeLabel;
@@ -58,6 +68,18 @@ static void* IFFileURLChangedContext = nil;
 - (NSString*)toolTip;
 {
   return [NSString stringWithFormat:@"import %@", [self.fileURL path]];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+{
+  if ([keyPath isEqualToString:@"storeImageInDocument"]) {
+    if (self.storeImageInDocument) {
+      [settings setValue:[IFFileData fileDataWithURL:self.fileURL] forKey:@"fileData"];
+    } else {
+      [settings removeValueForKey:@"fileData"];
+    }
+  }
+  [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 // MARK: NSCoding protocol
@@ -76,14 +98,17 @@ static void* IFFileURLChangedContext = nil;
   [encoder encodeObject:cachedImage forKey:@"cachedImage"];
 }
 
-// TODO: encode image data to XML file if saveImageData is true
-
 // MARK: -
 // MARK: PRIVATE
 
 - (NSURL*)fileURL;
 {
   return [settings valueForKey:@"fileURL"];
+}
+
+- (BOOL)storeImageInDocument;
+{
+  return [[settings valueForKey:@"storeImageInDocument"] boolValue];
 }
 
 @synthesize cachedImage;

@@ -23,6 +23,7 @@ typedef enum {
 + (id)imageWithCGLayer:(CGLayerRef)theLayer origin:(CGPoint)theOrigin;
 + (id)imageWithCIImage:(CIImage*)theImage;
 + (id)imageWithContentsOfURL:(NSURL*)theURL;
++ (id)imageWithData:(NSData*)theData;
 
 + (id)maskWithCIImage:(CIImage*)theMask;
 

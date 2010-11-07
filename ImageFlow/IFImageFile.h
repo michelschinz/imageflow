@@ -11,13 +11,10 @@
 #import "IFImage.h"
 
 @interface IFImageFile : IFImage<NSCoding> {
-  NSURL* fileURL;
-  NSData* encodedData;
   CIImage* imageCI;
 }
 
-- (id)initWithFileURL:(NSURL*)theFileURL;
-
-@property(readonly) NSURL* fileURL;
+- (id)initWithContentsOfURL:(NSURL*)theFileURL;
+- (id)initWithData:(NSData*)theData;
 
 @end

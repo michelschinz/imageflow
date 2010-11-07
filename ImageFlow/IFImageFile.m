@@ -10,27 +10,27 @@
 
 @implementation IFImageFile
 
-- (id)initWithFileURL:(NSURL *)theFileURL encodedData:(NSData*)theEncodedData imageCI:(CIImage*)theImageCI;
+- (id)initWithImageCI:(CIImage*)theImageCI;
 {
   if (![super initWithKind:IFImageKindRGBImage])
     return nil;
-  fileURL = [theFileURL retain];
-  encodedData = [theEncodedData retain];
   imageCI = [theImageCI retain];
   return self;
 }
 
-- (id)initWithFileURL:(NSURL*)theFileURL;
+- (id)initWithContentsOfURL:(NSURL*)theFileURL;
 {
-  NSData* fileData = [NSData dataWithContentsOfURL:theFileURL];
-  return [self initWithFileURL:theFileURL encodedData:fileData imageCI:[CIImage imageWithData:fileData]];
+  return [self initWithImageCI:[CIImage imageWithData:[NSData dataWithContentsOfURL:theFileURL]]];
+}
+
+- (id)initWithData:(NSData*)theData;
+{
+  return [self initWithImageCI:[CIImage imageWithData:theData]];
 }
 
 - (void)dealloc;
 {
   OBJC_RELEASE(imageCI);
-  OBJC_RELEASE(encodedData);
-  OBJC_RELEASE(fileURL);
   [super dealloc];
 }
 
@@ -46,21 +46,15 @@
   return [self retainCount] > 1 || [imageCI retainCount] > 1;
 }
 
-@synthesize encodedData;
-
-@synthesize fileURL;
-
 // MARK: NSCoding protocol
 
 - (id)initWithCoder:(NSCoder *)decoder;
 {
-  return [self initWithFileURL:[decoder decodeObjectForKey:@"fileURL"] encodedData:[decoder decodeObjectForKey:@"encodedData"] imageCI:[decoder decodeObjectForKey:@"imageCI"]];
+  return [self initWithImageCI:[decoder decodeObjectForKey:@"imageCI"]];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder;
 {
-  [encoder encodeObject:fileURL forKey:@"fileURL"];
-  [encoder encodeObject:encodedData forKey:@"encodedData"];
   [encoder encodeObject:imageCI forKey:@"imageCI"];
 }
 

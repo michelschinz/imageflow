@@ -9,6 +9,8 @@
       <settings>
         <key>fileURL</key>
         <url>file://localhost/Users/michelschinz/Pictures/fractals/Mandelbrot_08.png</url>
+        <key>storeImageInDocument</key>
+        <integer>0</integer>
       </settings>
     </filter>
   </tree>

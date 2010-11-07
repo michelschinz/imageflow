@@ -26,3 +26,11 @@ unsigned FNV_step32(unsigned current, unsigned addition) {
   unsigned v3 = FNV_step8(v2,(addition >> 8) & 0xFF);
   return FNV_step8(v3,addition & 0xFF);
 }
+
+extern uint64_t FNV64_init() {
+  return UINT64_C(14695981039346656037);
+}
+
+extern uint64_t FNV64_step8(uint64_t current, uint8_t byte) {
+  return (current ^ byte) * UINT64_C(1099511628211);
+}

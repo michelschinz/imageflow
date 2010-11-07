@@ -45,7 +45,12 @@ static IFImage* emptyImage = nil;
 
 + (id)imageWithContentsOfURL:(NSURL*)theURL;
 {
-  return [[[IFImageFile alloc] initWithFileURL:theURL] autorelease];
+  return [[[IFImageFile alloc] initWithContentsOfURL:theURL] autorelease];
+}
+
++ (id)imageWithData:(NSData*)theData;
+{
+  return [[[IFImageFile alloc] initWithData:theData] autorelease];
 }
 
 - (id)initWithKind:(IFImageKind)theKind;

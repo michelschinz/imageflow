@@ -10,7 +10,7 @@
 #import "IFXMLCoder.h"
 
 static NSSet* templatesInDirectory(NSString* directory);
-static NSString* uniqueFileName(NSString* dir, NSString* nameHint);
+static NSString* uniqueDirName(NSString* dir, NSString* nameHint);
 
 @implementation IFTreeTemplateCollection
 
@@ -24,7 +24,7 @@ static NSString* uniqueFileName(NSString* dir, NSString* nameHint);
   if (![super init])
     return nil;
   directory = [theDirectory retain];
-  modifiable = [[NSFileManager defaultManager] isWritableFileAtPath:directory];
+  isModifiable = [[NSFileManager defaultManager] isWritableFileAtPath:directory];
   templates = [[NSMutableSet set] retain];
   [templates unionSet:templatesInDirectory(directory)];
   return self;
@@ -37,38 +37,27 @@ static NSString* uniqueFileName(NSString* dir, NSString* nameHint);
   [super dealloc];
 }
 
-- (NSString*)directory;
-{
-  return directory;
-}
-
-- (NSSet*)templates;
-{
-  return templates;
-}
-
-- (BOOL)containsTemplate:(IFTreeTemplate*)treeTemplate;
-{
-  return [templates containsObject:treeTemplate];
-}
-
-- (BOOL)isModifiable;
-{
-  return modifiable;
-}
+@synthesize directory, templates, isModifiable;
 
 - (void)addTemplate:(IFTreeTemplate*)treeTemplate;
 {
-  NSAssert([self isModifiable], @"attempt to modify unmodifiable collection");
+  NSAssert(self.isModifiable, @"attempt to modify unmodifiable collection");
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
 
-  NSString* path = [treeTemplate fileName];
+  NSString* path = treeTemplate.dirName;
   if (path == nil)
-    path = uniqueFileName(directory, [treeTemplate name]);
+    path = uniqueDirName(directory, treeTemplate.name);
+
+  NSDictionary* templateContents = [xmlCoder encodeTreeTemplate:treeTemplate];
   
-  NSXMLDocument* xmlTreeTemplate = [xmlCoder encodeTreeTemplate:treeTemplate];
-  if ([fileMgr createFileAtPath:path contents:[xmlTreeTemplate XMLDataWithOptions:NSXMLNodePrettyPrint] attributes:nil]) // TODO attributes?
+  BOOL ok = [fileMgr createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:nil]; // TODO: attributes, error handling
+  for (NSString* fileName in templateContents) {
+    NSString* filePath = [path stringByAppendingPathComponent:fileName];
+    ok &= [fileMgr createFileAtPath:filePath contents:[templateContents objectForKey:fileName] attributes:nil]; // TODO: attributes
+  }
+
+  if (ok)
     [templates addObject:treeTemplate];
   else
     NSBeep(); // TODO handle error
@@ -79,10 +68,15 @@ static NSString* uniqueFileName(NSString* dir, NSString* nameHint);
   NSAssert([self isModifiable], @"attempt to modify unmodifiable collection");
   NSFileManager* fileMgr = [NSFileManager defaultManager];
 
-  if ([fileMgr removeFileAtPath:[treeTemplate fileName] handler:nil])
+  if ([fileMgr removeItemAtPath:treeTemplate.dirName error:nil]) // TODO: error handling
     [templates removeObject:treeTemplate];
   else
     NSBeep(); // TODO handle error
+}
+
+- (BOOL)containsTemplate:(IFTreeTemplate*)treeTemplate;
+{
+  return [templates containsObject:treeTemplate];
 }
 
 @end
@@ -92,25 +86,32 @@ static NSSet* templatesInDirectory(NSString* directory) {
   IFXMLCoder* xmlCoder = [IFXMLCoder sharedCoder];
 
   NSMutableSet* templates = [NSMutableSet set];
-  NSArray* dirContents = [fileMgr directoryContentsAtPath:directory];
-  if (dirContents != nil) {
-    for (int i = 0; i < [dirContents count]; ++i) {
-      NSString* path = [directory stringByAppendingPathComponent:[dirContents objectAtIndex:i]];
-      if (![path hasSuffix:@".xml"] || ![fileMgr isReadableFileAtPath:path])
-        continue;
-      
-      NSError* error;
-      NSXMLDocument* xmlDoc = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] options:NSXMLDocumentTidyXML error:&error] autorelease];
-      // TODO handle errors
-      IFTreeTemplate* treeTemplate = [xmlCoder decodeTreeTemplate:xmlDoc];
-      [treeTemplate setFileName:path];
-      [templates addObject:treeTemplate];
-    }
+  NSArray* dirContents = [fileMgr contentsOfDirectoryAtPath:directory error:nil]; // TODO: error handling
+  if (dirContents == nil)
+    return templates;
+
+  for (NSString* element in dirContents) {
+    NSString* tDir = [directory stringByAppendingPathComponent:element];
+    NSString* treePath = [tDir stringByAppendingPathComponent:@"tree.xml"];
+    if (![fileMgr fileExistsAtPath:treePath])
+      continue;
+
+    NSArray* tDirContents = [fileMgr contentsOfDirectoryAtPath:tDir error:nil]; // TODO: error handling
+    if (tDirContents == nil)
+      continue;
+
+    NSMutableDictionary* tDirData = [NSMutableDictionary dictionary];
+    for (NSString* tDirElement in tDirContents)
+      [tDirData setObject:[NSData dataWithContentsOfFile:[tDir stringByAppendingPathComponent:tDirElement] options:NSDataReadingUncached error:nil] forKey:tDirElement]; // TODO: error handling
+
+    IFTreeTemplate* treeTemplate = [xmlCoder decodeTreeTemplate:tDirData];
+    treeTemplate.dirName = element;
+    [templates addObject:treeTemplate];
   }
   return templates;
 }
 
-static NSString* uniqueFileName(NSString* dir, NSString* nameHint) {
+static NSString* uniqueDirName(NSString* dir, NSString* nameHint) {
   NSFileManager* fileMgr = [NSFileManager defaultManager];
   
   // Sanitize name hint
@@ -121,13 +122,13 @@ static NSString* uniqueFileName(NSString* dir, NSString* nameHint) {
       [saneNameHint appendFormat:@"%C",c];
   }
   if ([saneNameHint length] == 0)
-    saneNameHint = [NSMutableString stringWithString:@"tree"];
+    [saneNameHint appendString:@"template"];
 
   // Generate non-existing name
-  NSString* pathFormat = [dir stringByAppendingPathComponent:[saneNameHint stringByAppendingString:@"%@.xml"]];
+  NSString* path = [dir stringByAppendingPathComponent:saneNameHint];
   NSString* uniquePart = @"";
-  for (int i = 2; [fileMgr fileExistsAtPath:[NSString stringWithFormat:pathFormat,uniquePart]]; ++i)
-    uniquePart = [NSString stringWithFormat:@"-%d",i];
+  for (int i = 2; [fileMgr fileExistsAtPath:[NSString stringWithFormat:@"%@%@",path,uniquePart]]; ++i)
+    uniquePart = [NSString stringWithFormat:@"_%d",i];
 
-  return [NSString stringWithFormat:pathFormat,uniquePart];
+  return [NSString stringWithFormat:@"%@%@",path,uniquePart];
 }

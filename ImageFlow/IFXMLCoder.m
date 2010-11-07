@@ -15,14 +15,18 @@
 #import "IFTreeNodeHole.h"
 #import "IFTreeNodeAlias.h"
 #import "IFObjectNumberer.h"
+#import "IFFileData.h"
 
 @interface IFXMLCoder ()
+- (NSXMLElement*)encodeTree:(IFTree*)tree;
 - (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
 - (NSXMLElement*)encodeFilterSettings:(IFEnvironment*)settings;
+- (void)encodePayloadOf:(IFTreeNode*)treeNode ofTree:(IFTree*)tree into:(NSMutableDictionary*)destination;
 
 - (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
-- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml;
-- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+- (IFTree*)decodeTree:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
+- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
 @end
 
 @implementation IFXMLCoder
@@ -40,11 +44,12 @@ static IFXMLCoder* sharedCoder = nil;
 {
   if (![super init])
     return nil;
-  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"expression",@"data",@"url",nil] retain];
+  // Note: the type names below must correspond to the values of IFXMLDataType
+  typeNames = [[NSArray arrayWithObjects:@"string",@"number",@"integer",@"point",@"rect",@"color",@"expression",@"data",@"file-data",@"url",nil] retain];
   return self;
 }
 
-- (void) dealloc;
+- (void)dealloc;
 {
   OBJC_RELEASE(typeNames);
   [super dealloc];
@@ -55,15 +60,13 @@ static IFXMLCoder* sharedCoder = nil;
   if ([data isKindOfClass:[NSString class]])
     return IFXMLDataTypeString;
   else if ([data isKindOfClass:[NSNumber class]]) {
-    NSNumber* numberData = (NSNumber*)data;
-    if (strcmp([numberData objCType], @encode(int)) == 0)
+    const char* numberDataType = [(NSNumber*)data objCType];
+    if (strcmp(numberDataType, @encode(char)) == 0 || strcmp(numberDataType, @encode(short)) == 0 || strcmp(numberDataType, @encode(int)) == 0)
       return IFXMLDataTypeInteger;
-    else if (strcmp([numberData objCType], @encode(float)) == 0)
-      return IFXMLDataTypeNumber;
-    else if (strcmp([numberData objCType], @encode(double)) == 0)
+    else if (strcmp(numberDataType, @encode(float)) == 0 || strcmp(numberDataType, @encode(double)) == 0)
       return IFXMLDataTypeNumber;
     else {
-      NSAssert1(NO, @"invalid type in NSNumber: %s", [numberData objCType]);
+      NSAssert1(NO, @"invalid type in NSNumber: %s", numberDataType);
       return IFXMLDataTypeInvalid;
     }
   } else if ([data isKindOfClass:[NSValue class]]) {
@@ -73,7 +76,7 @@ static IFXMLCoder* sharedCoder = nil;
     else if (strcmp([valueData objCType], @encode(NSRect)) == 0)
       return IFXMLDataTypeRectangle;
     else {
-      NSAssert1(false, @"invalid type in NSValue: %@",[valueData objCType]);  
+      NSAssert1(false, @"invalid type in NSValue: %@",[valueData objCType]);
       return IFXMLDataTypeInvalid;
     }
   } else if ([data isKindOfClass:[NSColor class]])
@@ -82,10 +85,12 @@ static IFXMLCoder* sharedCoder = nil;
     return IFXMLDataTypeExpression;
   else if ([data isKindOfClass:[NSData class]])
     return IFXMLDataTypeData;
+  else if ([data isKindOfClass:[IFFileData class]])
+    return IFXMLDataTypeFileData;
   else if ([data isKindOfClass:[NSURL class]])
     return IFXMLDataTypeURL;
   else {
-    NSAssert2(NO, @"invalid data: %@ (class %@)",data,[data class]);  
+    NSAssert2(NO, @"invalid data: %@ (class %@)",data,[data class]);
     return IFXMLDataTypeInvalid;
   }
 }
@@ -97,44 +102,48 @@ static IFXMLCoder* sharedCoder = nil;
 
 // MARK: High-level encoding
 
-- (NSXMLDocument*)encodeDocument:(IFDocument*)document;
+- (NSDictionary*)encodeDocument:(IFDocument*)document;
 {
-  NSXMLElement* xmlDocumentRoot = [NSXMLElement elementWithName:@"document"];
-  [xmlDocumentRoot setChildren:[NSArray arrayWithObjects:
-    [NSXMLElement elementWithName:@"title" stringValue:document.title],    
-    [NSXMLElement elementWithName:@"author" stringValue:document.authorName],
-    [NSXMLElement elementWithName:@"description" stringValue:document.documentDescription],
-    [NSXMLElement elementWithName:@"resolution-x" stringValue:[self encodeFloat:document.resolutionX]],
-    [NSXMLElement elementWithName:@"resolution-y" stringValue:[self encodeFloat:document.resolutionY]],
-    [NSXMLElement elementWithName:@"canvas-bounds" stringValue:NSStringFromRect(document.canvasBounds)],
-    [self encodeTree:[document tree]],
-    nil]];
-  
-  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:xmlDocumentRoot];
+  NSMutableDictionary* documentContents = [NSMutableDictionary dictionary];
+
+  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:
+                                [NSXMLElement elementWithName:@"document"
+                                                     children:[NSArray arrayWithObjects:
+                                                               [NSXMLElement elementWithName:@"title" stringValue:[self encodeString:document.title]],
+                                                               [NSXMLElement elementWithName:@"author" stringValue:[self encodeString:document.authorName]],
+                                                               [NSXMLElement elementWithName:@"description" stringValue:[self encodeString:document.documentDescription]],
+                                                               [NSXMLElement elementWithName:@"resolution-x" stringValue:[self encodeFloat:document.resolutionX]],
+                                                               [NSXMLElement elementWithName:@"resolution-y" stringValue:[self encodeFloat:document.resolutionY]],
+                                                               [NSXMLElement elementWithName:@"canvas-bounds" stringValue:[self encodeRect:document.canvasBounds]],
+                                                               [self encodeTree:document.tree],
+                                                               nil]
+                                                   attributes:nil]];
   [xmlDocument setVersion:@"1.0"];
-  return xmlDocument;
+  [documentContents setObject:[xmlDocument XMLDataWithOptions:NSXMLNodePrettyPrint] forKey:@"tree.xml"];
+
+  [self encodePayloadOf:document.tree.root ofTree:document.tree into:documentContents];
+
+  return documentContents;
 }
 
-- (NSXMLDocument*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
+- (NSDictionary*)encodeTreeTemplate:(IFTreeTemplate*)treeTemplate;
 {
-  NSXMLElement* xmlDocumentRoot = [NSXMLElement elementWithName:@"tree-template"];
-  [xmlDocumentRoot setChildren:[NSArray arrayWithObjects:
-    [NSXMLElement elementWithName:@"name" stringValue:[treeTemplate name]],
-    [NSXMLElement elementWithName:@"description" stringValue:[treeTemplate description]],
-    [self encodeTree:[treeTemplate tree]],
-    nil]];
-  
-  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:xmlDocumentRoot];
-  [xmlDocument setVersion:@"1.0"];
-  return xmlDocument;
-}
+  NSMutableDictionary* documentContents = [NSMutableDictionary dictionary];
 
-- (NSXMLElement*)encodeTree:(IFTree*)tree;
-{
-  NSXMLElement* xmlTree = [NSXMLElement elementWithName:@"tree"];
-  IFObjectNumberer* numberer = [IFObjectNumberer numberer];
-  [xmlTree setChildren:[NSArray arrayWithObject:[self encodeTreeNode:[tree root] ofTree:tree numberer:numberer]]];
-  return xmlTree;
+  NSXMLDocument* xmlDocument = [NSXMLDocument documentWithRootElement:
+                                [NSXMLElement elementWithName:@"tree-template"
+                                                     children:[NSArray arrayWithObjects:
+                                                               [NSXMLElement elementWithName:@"name" stringValue:[treeTemplate name]],
+                                                               [NSXMLElement elementWithName:@"description" stringValue:[treeTemplate description]],
+                                                               [self encodeTree:[treeTemplate tree]],
+                                                               nil]
+                                                   attributes:nil]];
+  [xmlDocument setVersion:@"1.0"];
+  [documentContents setObject:[xmlDocument XMLDataWithOptions:NSXMLNodePrettyPrint] forKey:@"tree.xml"];
+
+  [self encodePayloadOf:treeTemplate.tree.root ofTree:treeTemplate.tree into:documentContents];
+
+  return documentContents;
 }
 
 // MARK: Low-level encoding
@@ -152,12 +161,14 @@ static IFXMLCoder* sharedCoder = nil;
       return [self encodePoint:[data pointValue]];
     case IFXMLDataTypeRectangle:
       return [self encodeRect:[data rectValue]];
-    case IFXMLDataTypeColor: 
+    case IFXMLDataTypeColor:
       return [self encodeColor:data];
     case IFXMLDataTypeExpression:
       return [self encodeExpression:data];
     case IFXMLDataTypeData:
       return [self encodeData:data];
+    case IFXMLDataTypeFileData:
+      return [self encodeString:[data contentsBasedFileName]];
     case IFXMLDataTypeURL:
       return [self encodeURL:data];
     default:
@@ -225,15 +236,25 @@ static IFXMLCoder* sharedCoder = nil;
 
 // MARK: High-level decoding
 
-- (void)decodeDocument:(NSXMLDocument*)xmlDocument into:(IFDocument*)document;
+- (void)decodeDocument:(NSDictionary*)documentContents into:(IFDocument*)document;
 {
+  // read all payload data
+  NSMutableDictionary* payload = [NSMutableDictionary dictionary];
+  for (NSString* fileName in documentContents) {
+    if ([fileName isEqualToString:@"tree.xml"])
+      continue;
+    [payload setObject:[IFFileData fileDataWithData:[documentContents objectForKey:fileName]] forKey:fileName];
+  }
+
+  // read main XML document
+  NSXMLDocument* xmlDocument = [[[NSXMLDocument alloc] initWithData:[documentContents objectForKey:@"tree.xml"] options:NSXMLDocumentTidyXML error:nil] autorelease]; // TODO: error handling
   NSXMLElement* xmlRoot = [xmlDocument rootElement];
   NSAssert([[xmlRoot name] isEqualToString:@"document"], @"invalid xml document");
-  
+
   for (int i = 0; i < [xmlRoot childCount]; ++i) {
     NSXMLNode* child = [xmlRoot childAtIndex:i];
     NSString* childName = [child name];
-    
+
     if ([childName isEqualToString:@"title"])
       [document setTitle:[child stringValue]];
     else if ([childName isEqualToString:@"author"])
@@ -247,32 +268,42 @@ static IFXMLCoder* sharedCoder = nil;
     else if ([childName isEqualToString:@"canvas-bounds"])
       [document setCanvasBounds:NSRectFromString([child stringValue])];
     else if ([childName isEqualToString:@"tree"])
-      [document setTree:[self decodeTree:child]];
+      [document setTree:[self decodeTree:child withPayload:payload]];
     else
       NSAssert(NO, @"invalid node %@");
-  }  
+  }
 }
 
-- (IFTreeTemplate*)decodeTreeTemplate:(NSXMLDocument*)xmlDocument;
+- (IFTreeTemplate*)decodeTreeTemplate:(NSDictionary*)documentContents;
 {
-  NSXMLNode* xml = [xmlDocument rootElement];
-  NSAssert([[xml name] isEqualToString:@"tree-template"], @"invalid XML document");
+  // read all payload data
+  NSMutableDictionary* payload = [NSMutableDictionary dictionary];
+  for (NSString* fileName in documentContents) {
+    if ([fileName isEqualToString:@"tree.xml"])
+      continue;
+    [payload setObject:[IFFileData fileDataWithData:[documentContents objectForKey:fileName]] forKey:fileName];
+  }
+
+  // read main XML document
+  NSXMLDocument* xmlDocument = [[[NSXMLDocument alloc] initWithData:[documentContents objectForKey:@"tree.xml"] options:NSXMLDocumentTidyXML error:nil] autorelease]; // TODO: error handling
+  NSXMLNode* xmlRoot = [xmlDocument rootElement];
+  NSAssert([[xmlRoot name] isEqualToString:@"tree-template"], @"invalid XML document");
 
   NSString* name = nil;
   NSString* description = nil;
   IFTree* tree = nil;
   NSString* tag = nil;
-  
-  for (int i = 0; i < [xml childCount]; ++i) {
-    NSXMLNode* child = [xml childAtIndex:i];
+
+  for (int i = 0; i < [xmlRoot childCount]; ++i) {
+    NSXMLNode* child = [xmlRoot childAtIndex:i];
     NSString* childName = [child name];
-    
+
     if ([childName isEqualToString:@"name"])
       name = [child stringValue];
     else if ([childName isEqualToString:@"description"])
       description = [child stringValue];
     else if ([childName isEqualToString:@"tree"])
-      tree = [self decodeTree:child];
+      tree = [self decodeTree:child withPayload:payload];
     else if ([childName isEqualToString:@"tag"])
       tag = [child stringValue];
     else
@@ -283,52 +314,6 @@ static IFXMLCoder* sharedCoder = nil;
   if (tag != nil)
     [treeTemplate setTag:tag];
   return treeTemplate;
-}
-
-- (IFTree*)decodeTree:(NSXMLNode*)xml;
-{
-  NSAssert([[xml name] isEqualToString:@"tree"], @"invalid XML document");
-  NSAssert([xml childCount] == 1, @"invalid XML document");
-  
-  NSError* error; // TODO check and handle errors
-  IFTree* tree = [IFTree tree];
-  NSMutableDictionary* nodeMap = [NSMutableDictionary dictionary];
-  
-  // First pass, create non-alias nodes
-  NSArray* nonAliasNodes = [xml nodesForXPath:@"//filter|//hole" error:&error];
-  for (int i = 0; i < [nonAliasNodes count]; ++i) {
-    NSXMLNode* xmlNode = [nonAliasNodes objectAtIndex:i];
-    IFTreeNode* node = [[xmlNode name] isEqualToString:@"filter"]
-      ? [self decodeFilter:xmlNode]
-      : [IFTreeNodeHole hole] ;
-    
-    [tree addNode:node];
-    [nodeMap setObject:node forKey:[self xmlNodeIdentity:xmlNode]];
-  }
-  
-  // Second pass, create alias nodes
-  NSArray* aliasNodes = [xml nodesForXPath:@"//alias" error:&error];
-  for (int i = 0; i < [aliasNodes count]; ++i) {
-    NSXMLNode* xmlNode = [aliasNodes objectAtIndex:i];
-    unsigned originalId = [self decodeUnsignedInt:[[(NSXMLElement*)xmlNode attributeForName:@"original-ref"] stringValue]];
-    IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[nodeMap objectForKey:[NSNumber numberWithUnsignedInt:originalId]]]; // TODO decode and set name, if any
-    
-    [tree addNode:alias];
-    [nodeMap setObject:alias forKey:[self xmlNodeIdentity:xmlNode]];
-  }
-  
-  // Third pass, create edges
-  NSArray* nodesWithParents = [xml nodesForXPath:@"//filter[parents]" error:&error];
-  for (int i = 0; i < [nodesWithParents count]; ++i) {
-    NSXMLNode* xmlNode = [nodesWithParents objectAtIndex:i];
-    IFTreeNode* child = [nodeMap objectForKey:[self xmlNodeIdentity:xmlNode]];
-    NSArray* xmlParents = [xmlNode nodesForXPath:@"./parents/*" error:&error];
-    for (int j = 0; j < [xmlParents count]; ++j) {
-      IFTreeNode* parent = [nodeMap objectForKey:[self xmlNodeIdentity:[xmlParents objectAtIndex:j]]];
-      [tree addEdgeFromNode:parent toNode:child withIndex:j];
-    }
-  }
-  return tree;
 }
 
 // MARK: Low-level decoding
@@ -413,7 +398,7 @@ static IFXMLCoder* sharedCoder = nil;
 - (IFExpression*)decodeExpression:(NSString*)string;
 {
   NSError* outError = nil; // TODO: handle errors
-  return [IFExpression expressionWithXML:[[[NSXMLElement alloc] initWithXMLString:string error:&outError] autorelease]];  
+  return [IFExpression expressionWithXML:[[[NSXMLElement alloc] initWithXMLString:string error:&outError] autorelease]];
 }
 
 - (NSData*)decodeData:(NSString*)string;
@@ -429,6 +414,14 @@ static IFXMLCoder* sharedCoder = nil;
 // MARK: -
 // MARK: PRIVATE
 
+- (NSXMLElement*)encodeTree:(IFTree*)tree;
+{
+  NSXMLElement* xmlTree = [NSXMLElement elementWithName:@"tree"];
+  IFObjectNumberer* numberer = [IFObjectNumberer numberer];
+  [xmlTree setChildren:[NSArray arrayWithObject:[self encodeTreeNode:[tree root] ofTree:tree numberer:numberer]]];
+  return xmlTree;
+}
+
 - (NSXMLElement*)encodeTreeNode:(IFTreeNode*)treeNode ofTree:(IFTree*)tree numberer:(IFObjectNumberer*)numberer;
 {
   NSXMLElement* xmlTreeNode;
@@ -442,7 +435,7 @@ static IFXMLCoder* sharedCoder = nil;
     NSArray* parents = [tree parentsOfNode:treeNode];
     for (int i = 0; i < [parents count]; ++i)
       [xmlParents addChild:[self encodeTreeNode:[parents objectAtIndex:i] ofTree:tree numberer:numberer]];
-    
+
     xmlTreeNode = [NSXMLElement elementWithName:@"filter"];
     [xmlTreeNode setChildren:[NSArray arrayWithObjects:
       [NSXMLElement elementWithName:@"name" stringValue:NSStringFromClass([treeNode class])],
@@ -466,6 +459,23 @@ static IFXMLCoder* sharedCoder = nil;
   return xmlSettings;
 }
 
+- (void)encodePayloadOf:(IFTreeNode*)treeNode ofTree:(IFTree*)tree into:(NSMutableDictionary*)destination;
+{
+  if (treeNode.isAlias)
+    return;
+
+  NSDictionary* env = [treeNode.settings asDictionary];
+  for (NSString* key in env) {
+    id value = [env objectForKey:key];
+    if ([value isKindOfClass:[IFFileData class]]) {
+      IFFileData* fileData = value;
+      [destination setObject:fileData.fileData forKey:fileData.contentsBasedFileName];
+    }
+  }
+  for (IFTreeNode* parent in [tree parentsOfNode:treeNode])
+    [self encodePayloadOf:parent ofTree:tree into:destination];
+}
+
 - (NSNumber*)xmlNodeIdentity:(NSXMLNode*)xml;
 {
   NSAssert([xml isKindOfClass:[NSXMLElement class]], @"invalid XML element");
@@ -473,7 +483,53 @@ static IFXMLCoder* sharedCoder = nil;
   return (identityString != nil) ? [NSNumber numberWithUnsignedInt:[self decodeUnsignedInt:identityString]] : nil;
 }
 
-- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml;
+- (IFTree*)decodeTree:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
+{
+  NSAssert([[xml name] isEqualToString:@"tree"], @"invalid XML document");
+  NSAssert([xml childCount] == 1, @"invalid XML document");
+
+  NSError* error; // TODO check and handle errors
+  IFTree* tree = [IFTree tree];
+  NSMutableDictionary* nodeMap = [NSMutableDictionary dictionary];
+
+  // First pass, create non-alias nodes
+  NSArray* nonAliasNodes = [xml nodesForXPath:@"//filter|//hole" error:&error];
+  for (int i = 0; i < [nonAliasNodes count]; ++i) {
+    NSXMLNode* xmlNode = [nonAliasNodes objectAtIndex:i];
+    IFTreeNode* node = [[xmlNode name] isEqualToString:@"filter"]
+    ? [self decodeFilter:xmlNode withPayload:payload]
+    : [IFTreeNodeHole hole] ;
+
+    [tree addNode:node];
+    [nodeMap setObject:node forKey:[self xmlNodeIdentity:xmlNode]];
+  }
+
+  // Second pass, create alias nodes
+  NSArray* aliasNodes = [xml nodesForXPath:@"//alias" error:&error];
+  for (int i = 0; i < [aliasNodes count]; ++i) {
+    NSXMLNode* xmlNode = [aliasNodes objectAtIndex:i];
+    unsigned originalId = [self decodeUnsignedInt:[[(NSXMLElement*)xmlNode attributeForName:@"original-ref"] stringValue]];
+    IFTreeNode* alias = [IFTreeNodeAlias nodeAliasWithOriginal:[nodeMap objectForKey:[NSNumber numberWithUnsignedInt:originalId]]]; // TODO decode and set name, if any
+
+    [tree addNode:alias];
+    [nodeMap setObject:alias forKey:[self xmlNodeIdentity:xmlNode]];
+  }
+
+  // Third pass, create edges
+  NSArray* nodesWithParents = [xml nodesForXPath:@"//filter[parents]" error:&error];
+  for (int i = 0; i < [nodesWithParents count]; ++i) {
+    NSXMLNode* xmlNode = [nodesWithParents objectAtIndex:i];
+    IFTreeNode* child = [nodeMap objectForKey:[self xmlNodeIdentity:xmlNode]];
+    NSArray* xmlParents = [xmlNode nodesForXPath:@"./parents/*" error:&error];
+    for (int j = 0; j < [xmlParents count]; ++j) {
+      IFTreeNode* parent = [nodeMap objectForKey:[self xmlNodeIdentity:[xmlParents objectAtIndex:j]]];
+      [tree addEdgeFromNode:parent toNode:child withIndex:j];
+    }
+  }
+  return tree;
+}
+
+- (IFTreeNode*)decodeFilter:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
 {
   NSString* filterName = nil;
   IFEnvironment* filterSettings = [IFEnvironment environment];
@@ -484,7 +540,7 @@ static IFXMLCoder* sharedCoder = nil;
     if ([childName isEqualToString:@"name"])
       filterName = [child stringValue];
     else if ([childName isEqualToString:@"settings"])
-      filterSettings = [self decodeFilterSettings:child];
+      filterSettings = [self decodeFilterSettings:child withPayload:payload];
     else if ([childName isEqualToString:@"parents"])
       continue;
     else
@@ -494,13 +550,17 @@ static IFXMLCoder* sharedCoder = nil;
   return [IFTreeNodeFilter nodeWithFilterNamed:filterName settings:filterSettings];
 }
 
-- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml;
+- (IFEnvironment*)decodeFilterSettings:(NSXMLNode*)xml withPayload:(NSDictionary*)payload;
 {
   IFEnvironment* env = [IFEnvironment environment];
   for (int i = 0; i < [xml childCount]; i += 2) {
-    NSXMLNode* keyNode = [xml childAtIndex:i];
-    NSXMLNode* valueNode = [xml childAtIndex:i+1];
-    [env setValue:[self decodeAny:[valueNode stringValue] type:[typeNames indexOfObject:[valueNode name]]] forKey:[keyNode stringValue]];
+    NSString* key = [[xml childAtIndex:i] stringValue];
+    NSString* value = [[xml childAtIndex:i+1] stringValue];
+    IFXMLDataType type = [typeNames indexOfObject:[[xml childAtIndex:i+1] name]];
+    if (type == IFXMLDataTypeFileData)
+      [env setValue:[payload objectForKey:value] forKey:key];
+    else
+      [env setValue:[self decodeAny:value type:type] forKey:key];
   }
   return env;
 }

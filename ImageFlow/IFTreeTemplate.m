@@ -23,7 +23,7 @@
   name = [theName copy];
   description = [theDescription copy];
   tree = [theTree retain];
-  fileName = nil;
+  dirName = nil;
   tag = nil;
   return self;
 }
@@ -31,7 +31,7 @@
 - (void)dealloc;
 {
   OBJC_RELEASE(tag);
-  OBJC_RELEASE(fileName);
+  OBJC_RELEASE(dirName);
 
   OBJC_RELEASE(tree);
   OBJC_RELEASE(description);
@@ -42,7 +42,7 @@
 @synthesize name;
 @synthesize description;
 @synthesize tree;
-@synthesize fileName;
+@synthesize dirName;
 @synthesize tag;
 
 - (void)setTag:(NSString*)theTag;
