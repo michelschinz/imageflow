@@ -26,14 +26,11 @@
   if (![super initWithSettings:theSettings])
     return nil;
   cachedImage = nil;
-
-  [settings addObserver:self forKeyPath:@"storeImageInDocument" options:0 context:nil];
   return self;
 }
 
 - (void)dealloc;
 {
-  [settings removeObserver:self forKeyPath:@"storeImageInDocument"];
   OBJC_RELEASE(cachedImage);
 }
 
@@ -74,10 +71,15 @@
 {
   if ([keyPath isEqualToString:@"storeImageInDocument"]) {
     if (self.storeImageInDocument) {
+      cachedImage = nil;
       [settings setValue:[IFFileData fileDataWithURL:self.fileURL] forKey:@"fileData"];
     } else {
       [settings removeValueForKey:@"fileData"];
     }
+  } else if ([keyPath isEqualToString:@"fileURL"]) {
+    cachedImage = nil;
+    if (self.storeImageInDocument)
+      [settings setValue:[IFFileData fileDataWithURL:self.fileURL] forKey:@"fileData"];
   }
   [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
