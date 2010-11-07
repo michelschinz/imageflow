@@ -29,7 +29,7 @@
 {
   if (newValue == value)
     return;
-  
+
   [self willChangeValueForKey:@"value"];
   [value release];
   value = [newValue retain];

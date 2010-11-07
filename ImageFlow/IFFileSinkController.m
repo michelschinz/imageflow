@@ -21,7 +21,7 @@ static NSDictionary* fileTypesOptions = nil;
     return; // avoid repeated initialisation
 
   NSBundle* imageIO = [NSBundle bundleWithIdentifier:@"com.apple.ImageIO.framework"];
-  
+
   fileTypes = (NSArray*)CGImageDestinationCopyTypeIdentifiers();
   fileTypesNames = [NSMutableArray array];
   for (NSString* fileType in fileTypes)
@@ -58,7 +58,7 @@ static NSDictionary* fileTypesOptions = nil;
   [self didChangeValueForKey:@"fileTypeIndex"];
 
   [self updateOptionTabIndex];
-  
+
   NSString* newExtension = [(NSString*)UTTypeCopyPreferredTagWithClass((CFStringRef)fileType,kUTTagClassFilenameExtension) autorelease];
   NSURL* fileURL = [env valueForKey:@"fileURL"];
   [env setValue:[[fileURL URLByDeletingPathExtension] URLByAppendingPathExtension:newExtension] forKey:@"fileURL"];
@@ -97,10 +97,10 @@ static NSDictionary* fileTypesOptions = nil;
   NSSavePanel* panel = [NSSavePanel savePanel];
   [panel setDirectoryURL:[fileURL URLByDeletingLastPathComponent]];
   [panel setNameFieldStringValue:[fileURL lastPathComponent]];
-  
+
   [panel setCanCreateDirectories:YES];
   [panel runModal];
-  
+
   [env setValue:[panel URL] forKey:@"fileURL"];
 }
 

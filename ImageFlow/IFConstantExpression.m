@@ -275,32 +275,32 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     case IFExpressionTag_Array:
     case IFExpressionTag_Tuple:
       NSAssert(NO, @"not implemented yet"); // FIXME: implement
-      
+
     case IFExpressionTag_Color:
       decodedObject = [xmlCoder decodeColor:[xml stringValue]];
       break;
-      
+
     case IFExpressionTag_Rect:
       decodedObject = [NSValue valueWithRect:[xmlCoder decodeRect:[xml stringValue]]];
       break;
-      
+
     case IFExpressionTag_Point:
       decodedObject = [NSValue valueWithPoint:[xmlCoder decodePoint:[xml stringValue]]];
       break;
-      
+
     case IFExpressionTag_String:
       decodedObject = [xmlCoder decodeString:[xml stringValue]];
       break;
-      
+
     case IFExpressionTag_Num:
       decodedObject = [NSNumber numberWithFloat:[xmlCoder decodeFloat:[xml stringValue]]];
       break;
-      
+
     case IFExpressionTag_Int:
     case IFExpressionTag_Bool:
       decodedObject = [NSNumber numberWithInt:[xmlCoder decodeInt:[xml stringValue]]];
       break;
-      
+
     default:
       NSAssert(NO, @"invalid tag %d", tag);
       break;
@@ -317,39 +317,39 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
     case IFExpressionTag_Array:
     case IFExpressionTag_Tuple:
       NSAssert(NO, @"not implemented yet"); // FIXME: implement
-      
+
     case IFExpressionTag_Color:
       [elem setStringValue:[xmlCoder encodeColor:[self colorValueNS]]];
       break;
-      
+
     case IFExpressionTag_Rect:
       [elem setStringValue:[xmlCoder encodeRect:[self rectValueNS]]];
       break;
-      
+
     case IFExpressionTag_Point:
       [elem setStringValue:[xmlCoder encodePoint:[self pointValueNS]]];
       break;
-      
+
     case IFExpressionTag_String:
       [elem setStringValue:[xmlCoder encodeString:[self stringValue]]];
       break;
-      
+
     case IFExpressionTag_Num:
       [elem setStringValue:[xmlCoder encodeFloat:[self floatValue]]];
       break;
-      
+
     case IFExpressionTag_Int:
       [elem setStringValue:[xmlCoder encodeInt:[self intValue]]];
       break;
-      
+
     case IFExpressionTag_Bool:
       [elem setStringValue:[xmlCoder encodeInt:[self boolValue]]];
       break;
-      
+
     default:
       NSAssert(NO, @"unknown tag %d", tag);
       break;
-  }  
+  }
   return elem;
 }
 
@@ -377,23 +377,23 @@ static value elemAsCaml(const char* elem) {
   CAMLparam0();
   CAMLlocal2(block, contents);
   CAMLlocalN(args,4);
-  
+
   switch (tag) {
     case IFExpressionTag_String:
       NSAssert([object isKindOfClass:[NSString class]], @"invalid object");
       contents = caml_copy_string([(NSString*)object cStringUsingEncoding:NSISOLatin1StringEncoding]);
       break;
-      
+
     case IFExpressionTag_Int:
       NSAssert([object isKindOfClass:[NSNumber class]], @"invalid object");
       contents = Val_int([(NSNumber*)object intValue]);
       break;
-      
+
     case IFExpressionTag_Num:
       NSAssert([object isKindOfClass:[NSNumber class]], @"invalid object");
       contents = caml_copy_double([(NSNumber*)object doubleValue]);
       break;
-      
+
     case IFExpressionTag_Point: {
       NSAssert([object isKindOfClass:[NSValue class]], @"invalid object");
       static value* pointMakeClosure = NULL;
@@ -404,7 +404,7 @@ static value elemAsCaml(const char* elem) {
       args[1] = caml_copy_double(p.y);
       contents = caml_callback2(*pointMakeClosure, args[0], args[1]);
     } break;
-      
+
     case IFExpressionTag_Rect: {
       NSAssert([object isKindOfClass:[NSValue class]], @"invalid object");
       static value* rectMakeClosure = NULL;
@@ -417,7 +417,7 @@ static value elemAsCaml(const char* elem) {
       args[3] = caml_copy_double(NSHeight(r));
       contents = caml_callbackN(*rectMakeClosure, 4, args);
     } break;
-      
+
     case IFExpressionTag_Color: {
       NSAssert([object isKindOfClass:[NSColor class]], @"invalid object");
       static value* colorMakeClosure = NULL;
@@ -428,9 +428,9 @@ static value elemAsCaml(const char* elem) {
       args[1] = caml_copy_double([color greenComponent]);
       args[2] = caml_copy_double([color blueComponent]);
       args[3] = caml_copy_double([color alphaComponent]);
-      contents = caml_callbackN(*colorMakeClosure, 4, args);      
+      contents = caml_callbackN(*colorMakeClosure, 4, args);
     } break;
-      
+
     case IFExpressionTag_Array:
     case IFExpressionTag_Tuple: {
       NSAssert([object isKindOfClass:[NSArray class]], @"invalid object");
@@ -439,7 +439,7 @@ static value elemAsCaml(const char* elem) {
       [array getObjects:cArray];
       cArray[[array count]] = NULL;
       contents = caml_alloc_array(elemAsCaml, (char const**)cArray);
-      free(cArray);      
+      free(cArray);
     } break;
 
     case IFExpressionTag_Image:
@@ -463,7 +463,7 @@ static value elemAsCaml(const char* elem) {
       NSAssert(NO, @"unknown tag %d", tag);
       break;
   }
-  
+
   block = caml_alloc(1, tag);
   Store_field(block, 0, contents);
   CAMLreturn(block);
@@ -486,7 +486,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       }
       *result = [IFConstantExpression expressionWithArray:array];
     } break;
-      
+
     case IFExpressionTag_Tuple: {
       contents = Field(camlValue, 0);
       NSMutableArray* array = [NSMutableArray arrayWithCapacity:Wosize_val(contents)];
@@ -497,7 +497,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       }
       *result = [IFConstantExpression expressionWithTupleElements:array];
     } break;
-      
+
     case IFExpressionTag_Mask:
     case IFExpressionTag_Image: {
       static value* imageToIFImageClosure = NULL;
@@ -506,12 +506,12 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       contents = caml_callback(*imageToIFImageClosure,Field(camlValue,0));
       *result = [IFConstantExpression imageConstantExpressionWithIFImage:objc_unwrap(contents)];
     } break;
-      
+
     case IFExpressionTag_Color: {
       NSLog(@"TODO color");
       *result = nil;
     } break;
-      
+
     case IFExpressionTag_Rect: {
       static value* rectCAClosure = NULL;
       if (rectCAClosure == NULL)
@@ -520,7 +520,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       NSRect r = NSMakeRect(Double_field(contents,0),Double_field(contents, 1),Double_field(contents, 2),Double_field(contents, 3));
       *result = [IFConstantExpression expressionWithRectNS:r];
     } break;
-      
+
     case IFExpressionTag_Point: {
       static value* pointCAClosure = NULL;
       if (pointCAClosure == NULL)
@@ -529,7 +529,7 @@ static void expressionWithCamlValue(value camlValue, IFConstantExpression** resu
       NSPoint p = NSMakePoint(Double_field(contents,0),Double_field(contents, 1));
       *result = [IFConstantExpression expressionWithPointNS:p];
     } break;
-      
+
     case IFExpressionTag_String:
       *result = [IFConstantExpression expressionWithString:[NSString stringWithCString:String_val(Field(camlValue, 0)) encoding:NSISOLatin1StringEncoding]];
       break;

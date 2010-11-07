@@ -53,14 +53,14 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   cursorsVar = [theCursorsVar retain];
   canvasBoundsVar = [theCanvasBoundsVar retain];
   layoutParameters = [theLayoutParameters retain];
-  
+
   [cursorsVar addObserver:self forKeyPath:@"value.viewLockedNode.expression" options:0 context:IFViewedExpressionDidChange];
   [cursorsVar addObserver:self forKeyPath:@"value.viewLockedIndex" options:0 context:IFViewedExpressionDidChange];
   [cursorsVar addObserver:self forKeyPath:@"value.node" options:0 context:IFEditedNodeDidChange];
   [canvasBoundsVar addObserver:self forKeyPath:@"value" options:0 context:IFCanvasBoundsDidChange];
-  
+
   [imageView setCanvasBounds:canvasBoundsVar];
-  
+
   [self updateImageViewVisibleBounds];
 }
 
@@ -75,7 +75,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   OBJC_RELEASE(canvasBoundsVar);
 
   [cursorsVar removeObserver:self forKeyPath:@"value.node"];
-  [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedIndex"];  
+  [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedIndex"];
   [cursorsVar removeObserver:self forKeyPath:@"value.viewLockedNode.expression"];
   OBJC_RELEASE(cursorsVar);
 
@@ -96,9 +96,9 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
   [scrollView setRulersVisible:YES];
 
   [scrollView.horizontalRulerView setReservedThicknessForMarkers:0.0];
-  
+
   [imageView setDelegate:self];
-  
+
   [self setActiveView:imageOrErrorTabView];
 }
 
@@ -188,10 +188,10 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 {
   if (newDisplayedExpression == displayedExpression)
     return;
-  
+
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
   IFConstantExpression* evaluatedNewExpr = [evaluator evaluateExpression:newDisplayedExpression];
-  
+
   if ([evaluatedNewExpr isImage]) {
     NSRect dirtyRect = (displayedExpression == nil || newDisplayedExpression == nil)
     ? NSRectInfinite()
@@ -207,7 +207,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
     [imageOrErrorTabView selectTabViewItemAtIndex:1];
     self.activeView = imageOrErrorTabView;
   }
-  
+
   [displayedExpression release];
   displayedExpression = [newDisplayedExpression retain];
 }
@@ -216,7 +216,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 {
   NSRect realCanvasBounds = NSInsetRect([canvasBoundsVar.value rectValue], -20, -20);
   [imageView setVisibleBounds:realCanvasBounds];
-  
+
   // FIXME: should avoid this, to prevent redrawing of the whole image!
   self.displayedExpression = [IFExpression fail];
   [self updateExpression];
@@ -226,7 +226,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
 {
   IFTreeCursorPair* cursors = (IFTreeCursorPair*)cursorsVar.value;
   IFTreeNode* node = cursors.viewLockedNode;
-  
+
   if (node != nil) {
     IFType* exprType = node.type.resultType;
 
@@ -237,7 +237,7 @@ static NSString* IFCanvasBoundsDidChange = @"IFCanvasBoundsDidChange";
         expr = [path accessorExpressionFor:expr];
         exprType = exprType.leafType;
       }
-      
+
       if ([exprType isImageRGBAType]) {
         expr = [IFExpression blendBackground:layoutParameters.backgroundExpression withForeground:expr inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
       } else if ([exprType isMaskType]) {

@@ -20,7 +20,7 @@ static CIKernel* maskToImageKernel = nil;
     NSString* file = [bundle pathForResource:@"mask-to-image" ofType:@"cikernel"];
     NSAssert1([[NSFileManager defaultManager] fileExistsAtPath:file], @"non-existent file %@",file);
     NSString* code = [NSString stringWithContentsOfFile:file];
-    
+
     maskToImageKernel = [[[CIKernel kernelsWithString:code] objectAtIndex:0] retain];
   }
   return [super init];

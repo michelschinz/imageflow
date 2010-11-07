@@ -91,7 +91,7 @@ typedef enum {
 
   [annotations release];
   annotations = [[newAnnotations arrayByAddingObject:canvasBoundsAnnotation] retain];
-  
+
   [self setNeedsDisplay:YES];
   [[self window] invalidateCursorRectsForView:self];
 }
@@ -117,7 +117,7 @@ typedef enum {
                                            options:[NSDictionary dictionary]]; // TODO working color space
   CGRect dirtyRectCG = NSRectToCGRect(dirtyRect);
   [ctx drawImage:[image imageCI] atPoint:dirtyRectCG.origin fromRect:dirtyRectCG];
-  
+
   // Draw annotations
   const int annotationsCount = [annotations count];
   for (int i = 0; i < annotationsCount; ++i)
@@ -133,7 +133,7 @@ typedef enum {
       IFCursorRect* cursorRect = [cursorRects objectAtIndex:j];
       [self addCursorRect:NSIntersectionRect(visibleRect,[cursorRect rect]) cursor:[cursorRect cursor]];
     }
-  }  
+  }
 }
 
 - (BOOL)isOpaque;
@@ -157,7 +157,7 @@ typedef enum {
 {
   if ([grabableViewMixin handlesMouseDown:event])
     return;
-  
+
   for (int i = 0; i < [annotations count]; ++i)
     if ([(IFAnnotation*)[annotations objectAtIndex:i] handleMouseDown:event])
       return;
@@ -210,7 +210,7 @@ typedef enum {
   NSSize minSize = [[self superview] frame].size;
   NSSize finalSize = visibleBounds.size;
   NSPoint finalOrigin = visibleBounds.origin;
-  
+
   if (minSize.width > finalSize.width) {
     finalOrigin.x -= floor((minSize.width - finalSize.width) / 2.0);
     finalSize.width = minSize.width;
@@ -219,11 +219,11 @@ typedef enum {
     finalOrigin.y -= floor((minSize.height - finalSize.height) / 2.0);
     finalSize.height = minSize.height;
   }
-  
+
   NSPoint visibleOrigin = [self visibleRect].origin;
   [self setBoundsOrigin:finalOrigin];
   NSScrollView* scrollView = [self enclosingScrollView];
-  if (scrollView != nil) {    
+  if (scrollView != nil) {
     [[scrollView horizontalRulerView] setOriginOffset:-finalOrigin.x];
     [[scrollView verticalRulerView] setOriginOffset:-finalOrigin.y];
   }

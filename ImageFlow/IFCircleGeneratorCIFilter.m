@@ -29,13 +29,13 @@ static CIKernel *circleGeneratorKernel = nil;
   if (self != [IFCircleGeneratorCIFilter class])
     return; // avoid repeated initialisation
 
-  [CIFilter registerFilterName:@"IFCircleGenerator"  
+  [CIFilter registerFilterName:@"IFCircleGenerator"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                  @"Circle Generator", kCIAttributeFilterDisplayName,
                  [NSArray arrayWithObjects:
                    kCICategoryGenerator,
-                   kCICategoryVideo, 
+                   kCICategoryVideo,
                    kCICategoryStillImage,
                    nil], kCIAttributeFilterCategories,
                  [NSDictionary dictionaryWithObjectsAndKeys:

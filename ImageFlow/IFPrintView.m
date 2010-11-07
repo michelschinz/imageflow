@@ -32,11 +32,11 @@
 - (void)drawRect:(NSRect)rect;
 {
   NSAutoreleasePool* pool = [NSAutoreleasePool new];
-  
+
   CIContext* ciCtx = [CIContext contextWithCGContext:[[NSGraphicsContext currentContext] graphicsPort]
                                              options:[NSDictionary dictionary]];
   [ciCtx drawImage:image atPoint:CGPointZero fromRect:[image extent]];
-  
+
   [pool release];
 }
 

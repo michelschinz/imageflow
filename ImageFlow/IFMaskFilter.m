@@ -78,7 +78,7 @@ static IFConstantExpression* maskColor = nil;
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
 {
   NSAssert1([variantName isEqualToString:@"overlay"], @"invalid variant name: <%@>", variantName);
-  
+
   if ([originalExpression isKindOfClass:[IFPrimitiveExpression class]]) {
     IFPrimitiveExpression* originalOpExpression = (IFPrimitiveExpression*)originalExpression;
     NSAssert([originalOpExpression primitiveTag]  == IFPrimitiveTag_Mask, @"unexpected operator");

@@ -46,7 +46,7 @@
 {
   if (newDocument == document)
     return;
-  
+
   [document release];
   document = [newDocument retain];
 

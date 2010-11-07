@@ -50,17 +50,17 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   if (![super initWithFrame:theFrame])
     return nil;
   grabableViewMixin = [[IFGrabableViewMixin alloc] initWithView:self];
-  
+
   mode = IFPaletteViewModeNormal;
   cursors = [[IFUnsplittableTreeCursorPair unsplittableTreeCursorPair] retain];
   templates = [[self computeTemplates] retain];
   acceptFirstResponder = NO;
-  
+
   [self registerForDraggedTypes:[NSArray arrayWithObject:IFTreePboardType]];
   [[IFTreeTemplateManager sharedManager] addObserver:self forKeyPath:@"templates" options:0 context:IFTreeTemplatesDidChangeContext];
   [self addObserver:self forKeyPath:@"previewModeFilterString" options:0 context:IFPreviewModeFilterStringDidChangeContext];
   [self addObserver:self forKeyPath:@"visualisedCursor.viewLockedNode" options:0 context:IFVisualisedCursorDidChangeContext];
-  
+
   return self;
 }
 
@@ -69,7 +69,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   [self removeObserver:self forKeyPath:@"visualisedCursor.viewLockedNode"];
   [self removeObserver:self forKeyPath:@"previewModeFilterString"];
   [[IFTreeTemplateManager sharedManager] removeObserver:self forKeyPath:@"templates"];
-  
+
   OBJC_RELEASE(normalModeTrees);
   OBJC_RELEASE(templates);
   OBJC_RELEASE(visualisedCursor);
@@ -82,16 +82,16 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)awakeFromNib;
 {
   CALayer* rootLayer = [CALayer layer];
-  
+
   rootLayer.backgroundColor = [IFLayoutParameters backgroundColor];
-  
+
   IFPaletteLayoutManager* rootLayoutManager = [IFPaletteLayoutManager paletteLayoutManager];
   rootLayoutManager.delegate = self;
   rootLayer.layoutManager = rootLayoutManager;
-  
+
   self.layer = rootLayer;
   self.wantsLayer = YES;
-  
+
   self.enclosingScrollView.wantsLayer = YES;
   self.enclosingScrollView.contentView.wantsLayer = YES;
 }
@@ -106,7 +106,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   layoutManager.layoutParameters = newDocument.layoutParameters;
 
   document = newDocument;
-  
+
   self.layer.sublayers = [NSArray array];
   [self syncLayersWithTemplates];
 }
@@ -117,11 +117,11 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   IFTree* tree = document.tree;
   IFVariable* canvasBoundsVar = [IFVariableKVO variableWithKVOCompliantObject:document key:@"canvasBounds"];
-  
+
   for (IFTemplateLayer* templateLayer in self.templateLayers)
     [templateLayer switchToPreviewModeForNode:node ofTree:tree canvasBounds:canvasBoundsVar];
   [self updateFiltering];
-  
+
   self.mode = IFPaletteViewModePreview;
 }
 
@@ -231,29 +231,29 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   if ([grabableViewMixin handlesMouseDragged:event])
     return;
-  
+
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFTemplateLayer* draggedLayer = (IFTemplateLayer*)[self.visibleTemplateLayers hitTest:localPoint];
-  
+
   if (draggedLayer == nil)
     return;
-  
+
   IFTreeTemplate* template = draggedLayer.treeTemplate;
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
   [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:template.tree] forType:IFTreePboardType];
-  
-  [self dragImage:draggedLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+
+  [self dragImage:draggedLayer.dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
 }
 
 - (void)mouseUp:(NSEvent*)event;
 {
   if ([grabableViewMixin handlesMouseUp:event])
     return;
-  
+
   acceptFirstResponder = YES;
   [self.window makeFirstResponder:self];
-  
+
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFTemplateLayer* layerUnderMouse = (IFTemplateLayer*)[self.visibleTemplateLayers hitTest:localPoint];
   if (layerUnderMouse == nil)
@@ -337,7 +337,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)syncLayersWithTemplates;
 {
   NSMutableDictionary* existingTemplateLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
-  
+
   for (IFTemplateLayer* layer in self.templateLayers)
     CFDictionarySetValue((CFMutableDictionaryRef)existingTemplateLayers, layer.treeTemplate, layer);
 
@@ -347,7 +347,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     else
       [self.layer addSublayer:[IFTemplateLayer layerForTemplate:treeTemplate layoutParameters:document.layoutParameters]];
   }
-  
+
   for (CALayer* layer in [existingTemplateLayers objectEnumerator])
     [layer removeFromSuperlayer];
 }
@@ -356,7 +356,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   IFTree* cursorTree = visualisedCursor.tree;
   IFTreeNode* cursorNode = visualisedCursor.node;
-  
+
   IFTree* displayedTree = visualisedCursor.viewLockedTree;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
 
@@ -380,7 +380,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     }
   }
   [self updateCursorLayers];
-  
+
   [self.layer setNeedsLayout];
 }
 
@@ -407,7 +407,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 
   newSize.width = round(fmax(newSize.width, minSize.width));
   newSize.height = round(fmax(newSize.height, minSize.height));
-  
+
   if (!NSEqualSizes(self.frame.size, newSize))
     [self setFrameSize:newSize];
 }

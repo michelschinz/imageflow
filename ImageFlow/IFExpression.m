@@ -60,7 +60,7 @@
     case IFExpressionTag_Error:
       expression = [IFConstantExpression expressionWithCamlValue:camlValue];
       break;
-      
+
     default:
       NSAssert(NO, @"unexpected tag");
       expression = nil;
@@ -116,7 +116,7 @@
 
 + (IFExpression*)arrayCreate:(NSArray*)arrayElements;
 {
-  return [self primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:arrayElements];  
+  return [self primitiveWithTag:IFPrimitiveTag_ArrayCreate operandsArray:arrayElements];
 }
 
 + (IFExpression*)arrayGet:(IFExpression*)arrayExpression index:(unsigned)index;

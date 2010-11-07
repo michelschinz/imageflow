@@ -236,7 +236,7 @@
 - (void)encodeWithCoder:(NSCoder*)encoder;
 {
   [encoder encodeObject:nodes forKey:@"nodes"];
-  
+
   // Work-around the problem of keys that get copied.
   NSArray* edgeToRealEdgeKeys = [edgeToRealEdge allKeys];
   NSMutableArray* edgeToRealEdgeVals = [NSMutableArray array];
@@ -244,7 +244,7 @@
     [edgeToRealEdgeVals addObject:[edgeToRealEdge objectForKey:edge]];
   [encoder encodeObject:edgeToRealEdgeKeys forKey:@"edgeToRealEdgeKeys"];
   [encoder encodeObject:edgeToRealEdgeVals forKey:@"edgeToRealEdgeVals"];
-  
+
   NSArray* nodeToEdgeSetKeys = [nodeToEdgeSet allKeys];
   NSMutableArray* nodeToEdgeSetVals = [NSMutableArray array];
   for (id node in nodeToEdgeSetKeys)
@@ -290,7 +290,7 @@
   edgeToRealEdge = createMutableDictionaryWithRetainedKeys();
   for (id key in theEdgeToRealEdge)
     CFDictionarySetValue((CFMutableDictionaryRef)edgeToRealEdge,key,[theEdgeToRealEdge objectForKey:key]);
-  
+
   nodeToEdgeSet = createMutableDictionaryWithRetainedKeys();
   for (id key in theNodeToEdgeSet)
     CFDictionarySetValue((CFMutableDictionaryRef)nodeToEdgeSet,key,[NSMutableSet setWithSet:[theNodeToEdgeSet objectForKey:key]]);

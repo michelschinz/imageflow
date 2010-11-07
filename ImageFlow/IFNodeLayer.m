@@ -37,9 +37,9 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   tree = [theTree retain];
   layoutParameters = [theLayoutParameters retain];
   canvasBounds = [theCanvasBoundsVar retain];
-  
+
   self.style = [IFLayoutParameters nodeLayerStyle];
-  
+
   // Label
   labelLayer = [CATextLayer layer];
   labelLayer.font = [IFLayoutParameters labelFont];
@@ -48,23 +48,23 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   labelLayer.alignmentMode = kCAAlignmentCenter;
   labelLayer.truncationMode = kCATruncationMiddle;
   [self addSublayer:labelLayer];
-  
+
   // Alias arrow
   if ([node isAlias]) {
     aliasArrowLayer = [IFStaticImageLayer layerWithImageNamed:@"alias_arrow"];
     [self addSublayer:aliasArrowLayer];
   } else
     aliasArrowLayer = nil;
-  
+
   // Folding separator
   foldingSeparatorLayer = [CALayer layer];
   foldingSeparatorLayer.needsDisplayOnBoundsChange = YES;
   foldingSeparatorLayer.delegate = self;
   [self addSublayer:foldingSeparatorLayer];
-  
+
   // Expression thumbnail
   expressionLayer = nil;
-  
+
   // Name
   nameLayer = [CATextLayer layer];
   nameLayer.font = [IFLayoutParameters labelFont];
@@ -73,12 +73,12 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   nameLayer.alignmentMode = kCAAlignmentCenter;
   nameLayer.truncationMode = kCATruncationMiddle;
   [self addSublayer:nameLayer];
-  
+
   [node addObserver:self forKeyPath:@"label" options:NSKeyValueObservingOptionInitial context:IFNodeLabelChangedContext];
   [node addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionInitial context:IFNodeNameChangedContext];
   [node addObserver:self forKeyPath:@"isFolded" options:NSKeyValueObservingOptionInitial context:IFNodeFoldingStateChangedContext];
   [node addObserver:self forKeyPath:@"expression" options:NSKeyValueObservingOptionInitial context:IFNodeExpressionChangedContext];
-  
+
   return self;
 }
 
@@ -88,7 +88,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   [node removeObserver:self forKeyPath:@"isFolded"];
   [node removeObserver:self forKeyPath:@"name"];
   [node removeObserver:self forKeyPath:@"label"];
-  
+
   OBJC_RELEASE(canvasBounds);
   OBJC_RELEASE(layoutParameters);
   OBJC_RELEASE(tree);
@@ -113,17 +113,17 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   float y = internalMargin;
   const float expressionWidth = fmax(layoutParameters.thumbnailWidth, expressionLayer != nil ? CGRectGetWidth(expressionLayer.bounds) : 0.0);
   const float totalWidth = expressionWidth + 2.0 * internalMargin;
-  
+
   if (nameLayer.string != nil) {
     nameLayer.frame = CGRectMake(x, y, expressionWidth, nameLayer.preferredFrameSize.height);
     y += CGRectGetHeight(nameLayer.bounds) + internalMargin;
   }
-  
+
   if (expressionLayer != nil) {
     expressionLayer.position = CGPointMake(x + round((expressionWidth - CGRectGetWidth(expressionLayer.bounds)) / 2.0), y);
     y += CGRectGetHeight(expressionLayer.bounds) + internalMargin;
   }
-  
+
   foldingSeparatorLayer.frame = CGRectMake(0, y, totalWidth, 1.0);
   if (!foldingSeparatorLayer.hidden)
     y += CGRectGetHeight(foldingSeparatorLayer.bounds) + internalMargin;
@@ -134,10 +134,10 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
     aliasArrowLayer.position = CGPointMake(x + expressionWidth - CGRectGetWidth(aliasArrowLayer.bounds), y + floor((labelHeight - CGRectGetHeight(aliasArrowLayer.bounds)) / 2.0));
     labelWidth -= CGRectGetWidth(aliasArrowLayer.bounds) + internalMargin;
   }
-  
+
   labelLayer.frame = CGRectMake(x, y, labelWidth, labelHeight);
   y += CGRectGetHeight(labelLayer.bounds) + internalMargin;
-  
+
   self.bounds = CGRectMake(0, 0, totalWidth, y);
   [self.superlayer setNeedsLayout];
 }
@@ -150,7 +150,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   CGFloat dash[] = { 1.0, 1.0 };
   CGContextSetLineDash(ctx, 0, dash, sizeof(dash) / sizeof(CGFloat));
   CGContextSetStrokeColorWithColor(ctx, [IFLayoutParameters backgroundColor]);
-  
+
   CGContextBeginPath(ctx);
   CGContextMoveToPoint(ctx, 0, 0);
   CGContextAddLineToPoint(ctx, CGRectGetWidth(self.bounds), 0);
@@ -168,19 +168,19 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
   CGRect ctxBounds = CGRectMake(0, 0, width, height);
 
   [self renderInContext:ctx];
-  
+
   CGImageRef cgOpaqueDragImage = CGBitmapContextCreateImage(ctx);
   CGContextClearRect(ctx, ctxBounds);
   CGContextSetAlpha(ctx, 0.6);
   CGContextDrawImage(ctx, ctxBounds, cgOpaqueDragImage);
   CGImageRelease(cgOpaqueDragImage);
   CGImageRef cgTransparentDragImage = CGBitmapContextCreateImage(ctx);
-  
+
   NSImageRep* imageRep = [[[NSBitmapImageRep alloc] initWithCGImage:cgTransparentDragImage] autorelease];
   CGImageRelease(cgTransparentDragImage);
   CGContextRelease(ctx);
   CGColorSpaceRelease(colorSpace);
-  
+
   NSImage* dragImage = [[[NSImage alloc] init] autorelease];
   [dragImage addRepresentation:imageRep];
   return dragImage;
@@ -217,10 +217,10 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
 - (void)setExpression:(IFExpression*)newUnevaluatedExpression;
 {
   IFConstantExpression* newExpression = [[IFExpressionEvaluator sharedEvaluator] evaluateExpression:newUnevaluatedExpression];
-  
+
   IFExpressionContentsLayer* currentExpressionLayer = self.expressionLayer;
   IFExpressionContentsLayer* newExpressionLayer;
-  
+
   if (newExpression.isImage) {
     newExpressionLayer = (currentExpressionLayer != nil && [currentExpressionLayer isKindOfClass:[IFImageOrMaskLayer class]])
     ? currentExpressionLayer
@@ -240,7 +240,7 @@ static NSString* IFNodeExpressionChangedContext = @"IFNodeExpressionChangedConte
     newExpressionLayer = nil;
   } else
     NSAssert(NO, @"unexpected expression");
-  
+
   if (newExpressionLayer != nil) {
     newExpressionLayer.reversedPath = [IFArrayPath emptyPath];
     // Pass the unevaluated expression to the layer, to enable as many rewrite-base optimizations as possible

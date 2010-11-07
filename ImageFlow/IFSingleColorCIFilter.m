@@ -29,7 +29,7 @@ static CIKernel *singleColorKernel = nil;
   if (self != [IFSingleColorCIFilter class])
     return; // avoid repeated initialisation
 
-  [CIFilter registerFilterName:@"IFSingleColor"  
+  [CIFilter registerFilterName:@"IFSingleColor"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                  @"Single Color", kCIAttributeFilterDisplayName,

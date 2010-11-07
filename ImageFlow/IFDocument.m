@@ -28,7 +28,7 @@
 
 NSString* IFTreeChangedNotification = @"IFTreeChanged";
 
-- (id)init 
+- (id)init
 {
   if (![super init]) return nil;
   typeChecker = [IFTypeChecker sharedInstance];
@@ -37,13 +37,13 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [tree addNode:[IFTreeNode ghostNode]];
   [self ensureGhostNodes];
   [tree setPropagateNewParentExpressions:YES];
-  
+
   canvasBounds = NSMakeRect(0,0,800,600);
   [self setResolutionX:300];
   [self setResolutionY:300];
-  
+
   layoutParameters = [IFLayoutParameters layoutParameters];
-  
+
   return self;
 }
 
@@ -96,7 +96,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (IBAction)exportAllFiles:(id)sender;
 {
   IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  
+
   NSMutableArray* exportActions = [NSMutableArray array];
   for (IFTreeNode* root in self.roots) {
     // TODO: check that the action is of the right kind
@@ -159,7 +159,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
        (i >= 0) && [[roots objectAtIndex:i] isGhost] && ([tree parentsCountOfNode:[roots objectAtIndex:i]] == 0);
        --i)
     ;
-  
+
   [self beginTreeModification];
   IFTreeNode* newRoot = [tree addCloneOfTree:newTree asNewRootAtIndex:i+1];
   [self endTreeModification];
@@ -299,7 +299,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
 - (BOOL)readFromFileWrapper:(NSFileWrapper*)dirWrapper ofType:(NSString*)typeName error:(NSError**)outError;
 {
   NSAssert1([dirWrapper isDirectory], @"wrapper is not a directory: %@", dirWrapper);
-  
+
   NSMutableDictionary* fileWrapperContents = [NSMutableDictionary dictionary];
   for (NSFileWrapper* fileWrapper in [[dirWrapper fileWrappers] objectEnumerator])
     [fileWrapperContents setObject:[fileWrapper regularFileContents] forKey:[fileWrapper filename]];
@@ -341,7 +341,7 @@ NSString* IFTreeChangedNotification = @"IFTreeChanged";
   [self ensureGhostNodes];
   [tree configureNodes]; // TODO: ideally, only newly-added ghost nodes should be re-configured
   [tree setPropagateNewParentExpressions:YES];
-  [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];  
+  [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:IFTreeChangedNotification object:self] postingStyle:NSPostWhenIdle];
 }
 
 @end

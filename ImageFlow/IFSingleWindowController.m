@@ -37,7 +37,7 @@
   IFDocument* doc = self.document;
   [imageViewController postInitWithCursorsVar:treeViewController.cursorsVar canvasBoundsVar:[IFVariableKVO variableWithKVOCompliantObject:doc key:@"canvasBounds"] layoutParameters:doc.layoutParameters];
   [filterSettingsViewController postInitWithCursorsVar:treeViewController.cursorsVar];
-  
+
   NSArray* views = [[window contentView] subviews];
   NSAssert([views count] == 1, @"unexpected number of sub-views");
   NSSplitView* splitView = [views objectAtIndex:0];

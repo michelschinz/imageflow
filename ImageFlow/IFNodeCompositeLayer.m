@@ -24,20 +24,20 @@
     return nil;
 
   self.zPosition = 1.0;
-  
+
   // Displayed image indicator
   displayedImageLayer = [CALayer layer];
   displayedImageLayer.anchorPoint = CGPointZero;
   displayedImageLayer.backgroundColor = [IFLayoutParameters displayedImageUnlockedBackgroundColor];
   displayedImageLayer.hidden = YES;
   [self addSublayer:displayedImageLayer];
-  
+
   // Base layer
   baseLayer = theNode.isGhost
   ? [IFGhostNodeLayer layerForNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar]
   : [IFNodeLayer layerForNode:theNode ofTree:theTree layoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar];
   [self addSublayer:baseLayer];
-  
+
   // Cursor
   cursorLayer = [CALayer layer];
   cursorLayer.anchorPoint = CGPointZero;
@@ -45,7 +45,7 @@
   cursorLayer.borderColor = [IFLayoutParameters cursorColor];
   cursorLayer.hidden = YES;
   [self addSublayer:cursorLayer];
-  
+
   // Drag&drop highlight
   highlightLayer = [CALayer layer];
   highlightLayer.anchorPoint = CGPointZero;
@@ -55,7 +55,7 @@
   highlightLayer.borderColor = [IFLayoutParameters highlightBorderColor];
   highlightLayer.borderWidth = [IFLayoutParameters selectionWidth];
   [self addSublayer:highlightLayer];
-  
+
   return self;
 }
 

@@ -25,7 +25,7 @@
 {
   if (![super init])
     return nil;
-  
+
   node = [theNode retain];
   self.needsDisplayOnBoundsChange = YES;
   return self;

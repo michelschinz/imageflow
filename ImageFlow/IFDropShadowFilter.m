@@ -33,7 +33,7 @@
                       nil];
   IFExpression* trSh = [IFExpression primitiveWithTag:IFPrimitiveTag_Translate operands:sh, [IFConstantExpression expressionWithWrappedPointNS:[settings valueForKey:@"offset"]], nil];
   IFExpression* blTrSh = [IFExpression primitiveWithTag:IFPrimitiveTag_GaussianBlur operands:trSh, [IFConstantExpression expressionWithWrappedFloat:[settings valueForKey:@"blur"]], nil];
-    
+
   return [IFExpression lambdaWithBody:
           [IFExpression blendBackground:blTrSh
                          withForeground:[IFExpression argumentWithIndex:0]

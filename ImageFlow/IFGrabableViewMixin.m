@@ -22,7 +22,7 @@ typedef enum { Inactive, PrepareToGrab, Grab } IFGrabMode;
     return nil;
   view = theView; // not retained
   mode = Inactive;
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(windowDidResignKey:)
                                                name:NSWindowDidResignKeyNotification
@@ -97,7 +97,7 @@ typedef enum { Inactive, PrepareToGrab, Grab } IFGrabMode;
 {
   if (newMode == mode)
     return;
-  
+
   if (mode < PrepareToGrab && newMode >= PrepareToGrab) {
     [[view window] disableCursorRects];
     [[NSCursor openHandCursor] push];

@@ -29,12 +29,12 @@ static CIKernel *cropImagePlusMaskKernel = nil;
   if (self != [IFCropImageWithMaskCIFilter class])
     return; // avoid repeated initialisation
 
-  [CIFilter registerFilterName:@"IFCropOverlay"  
+  [CIFilter registerFilterName:@"IFCropOverlay"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                  @"Crop overlay", kCIAttributeFilterDisplayName,
                  [NSArray arrayWithObjects:
-                   kCICategoryVideo, 
+                   kCICategoryVideo,
                    kCICategoryStillImage,
                    kCICategoryInterlaced,
                    kCICategoryNonSquarePixels,

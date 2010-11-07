@@ -21,7 +21,7 @@
 {
   if (![super init])
     return nil;
-  
+
   baseLayer = [IFConnectorLayer connectorLayerForNode:theNode kind:theKind];
   baseLayer.anchorPoint = CGPointZero;
   baseLayer.fillColor = [IFLayoutParameters connectorColor];
@@ -34,7 +34,7 @@
   highlightLayer.fillColor = [IFLayoutParameters highlightBackgroundColor];
   highlightLayer.hidden = YES;
   [self addSublayer:highlightLayer];
-  
+
   return self;
 }
 

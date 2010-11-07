@@ -68,7 +68,7 @@ static value camlRect(NSRect r) {
   args[2] = caml_copy_double(NSWidth(r));
   args[3] = caml_copy_double(NSHeight(r));
   CAMLreturn(caml_callbackN(*rectMakeClosure, 4, args));
-}  
+}
 
 static void camlDelta(value cache, IFExpression* oldExpression, IFExpression* newExpression, NSRect* result) {
   CAMLparam1(cache);

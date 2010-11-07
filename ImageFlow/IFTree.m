@@ -234,7 +234,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
   IFTreeNode* root = [self root];
-  
+
   for (IFTreeEdge* inEdge in [[[graph incomingEdgesForNode:root] copy] autorelease]) {
     if ([inEdge targetIndex] >= index) {
       [graph addEdge:[IFTreeEdge edgeWithTargetIndex:[inEdge targetIndex] + 1] fromNode:[graph edgeSource:inEdge] toNode:root];
@@ -344,7 +344,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)moveSubtree:(IFSubtree*)subtree toReplaceNode:(IFTreeNode*)node;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
-  
+
   IFTreeNode* ghost = [self addGhostTreeWithArity:[self arityOfSubtree:subtree]];
   [self exchangeSubtree:subtree withTreeRootedAt:ghost];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:[subtree root]];
@@ -376,7 +376,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSSet* parentsSet = [NSSet setWithArray:[self parentsOfNode:node]];
   if ([subtree containsNode:node] && [[subtree includedNodes] intersectsSet:parentsSet])
     return NO;
-  
+
   IFTree* clone = [self cloneWithoutNewParentExpressionsPropagation];
   IFSubtree* cloneSubtree = [IFSubtree subtreeOf:clone includingNodes:[subtree includedNodes]];
   [clone moveSubtree:cloneSubtree asParentOfNode:node];
@@ -416,7 +416,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSArray* sortedNodes = [cloneWithoutAliases topologicallySortedNodes];
   NSAssert(sortedNodes != nil, @"attempt to resolve overloading in a cyclic graph");
   const unsigned nodesCount = [sortedNodes count];
-  
+
   NSMutableArray* potentialTypes = [NSMutableArray arrayWithCapacity:nodesCount];
   for (IFTreeNode* node in sortedNodes)
     [potentialTypes addObject:[node potentialTypesForArity:[self parentsCountOfNode:node]]];
@@ -426,12 +426,12 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
   NSMutableDictionary* nodeExpressions = [createMutableDictionaryWithRetainedKeys() autorelease];
   for (unsigned i = 0; i < nodesCount; ++i) {
     IFTreeNode* node = [sortedNodes objectAtIndex:i];
-    
+
     NSMutableDictionary* parentExpressions = [NSMutableDictionary dictionaryWithCapacity:5];
     unsigned j = 0;
     for (IFTreeNode* parent in [self parentsOfNode:node])
       [parentExpressions setObject:[nodeExpressions objectForKey:parent.original] forKey:[NSNumber numberWithUnsignedInt:j++]];
-    
+
     NSArray* nodeConfig = [config objectAtIndex:i];
     unsigned activeTypeIndex = [[nodeConfig objectAtIndex:0] unsignedIntValue];
     IFExpression* nodeExpression = [node expressionForSettings:node.settings parentExpressions:parentExpressions activeTypeIndex:activeTypeIndex];
@@ -588,7 +588,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 {
   NSAssert([[graph outgoingEdgesForNode:root] count] == 0, @"trying to remove subtree");
   NSSet* nodesToRemove = [NSSet setWithArray:[self dfsAncestorsOfNode:root]];
-  
+
   // Replace all aliases to nodes about to be deleted by ghosts.
   for (IFTreeNode* node in [self nodes]) {
     if ([node isAlias] && ![nodesToRemove containsObject:node] && [nodesToRemove containsObject:[node original]])
@@ -628,7 +628,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
     if (root == hole)
       root = parent;
   }
-  
+
   if (parentsCount > holesCount) {
     // more parents than holes, attach remaining ones to new root (rightmost, ghost-only parents excepted).
     BOOL active = NO;
@@ -660,7 +660,7 @@ static IFOrientedGraph* graphCloneWithoutAliases(IFOrientedGraph* graph);
 - (void)deleteNode:(IFTreeNode*)node;
 {
   NSAssert(!propagateNewParentExpressions, @"cannot modify tree structure while propagating parent expressions");
-  
+
   IFTreeNode* hole = [IFTreeNodeHole hole];
   [self addNode:hole];
   [self exchangeSubtree:[IFSubtree subtreeOf:self includingNodes:[NSSet setWithObject:node]] withTreeRootedAt:hole];

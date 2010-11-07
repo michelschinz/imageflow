@@ -22,7 +22,7 @@
 
   IFLayoutParameters* layoutParameters;
   IFVariable* canvasBounds;
-  
+
   // Sublayers (not retained)
   CATextLayer* labelLayer;
   IFStaticImageLayer* aliasArrowLayer;

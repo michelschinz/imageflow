@@ -36,16 +36,16 @@
   size_t width = CGRectGetWidth(exportArea), height = CGRectGetHeight(exportArea);
   size_t bitsPerComponent = 8; // TODO: have a parameter for this
   size_t bytesPerRow = width * 4;
-  
+
   CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB); // TODO: use correct color space
   CGContextRef cgContext = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, cs, kCGImageAlphaPremultipliedLast);
   CIContext* ciContext = [CIContext contextWithCGContext:cgContext options:nil]; // TODO: options?
   CGContextRelease(cgContext);
   CGColorSpaceRelease(cs);
-  
+
   CGImageRef cgImage = [ciContext createCGImage:image fromRect:exportArea];
   CGImageDestinationRef imageDst = CGImageDestinationCreateWithURL((CFURLRef)fileURL, kUTTypeJPEG, 1, NULL); // TODO: get type as parameter
-  
+
   if (imageDst != NULL) {
     CGImageDestinationAddImage(imageDst, cgImage, NULL); // TODO: meta-data (properties)
     CGImageDestinationFinalize(imageDst);

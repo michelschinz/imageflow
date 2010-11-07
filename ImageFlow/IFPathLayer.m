@@ -37,7 +37,7 @@
     return;
   CGPathRelease(path);
   path = CGPathRetain(newPath);
-  
+
   self.bounds = CGPathGetBoundingBox(path);
   [self setNeedsDisplay];
 }
@@ -65,7 +65,7 @@
 - (void)drawInContext:(CGContextRef)context;
 {
   CGContextAddPath(context, path);
-  
+
   CGContextSetFillColorWithColor(context, fillColor);
   CGContextFillPath(context);
 

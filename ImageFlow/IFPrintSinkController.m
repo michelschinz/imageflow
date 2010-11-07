@@ -20,15 +20,15 @@
 - (IBAction)browseFile:(id)sender;
 {
   IFEnvironment* env = [[filterController content] settings];
-  
+
   NSArray* fileNameComponents = [[env valueForKey:@"fileName"] pathComponents];
   NSString* dirName = [NSString pathWithComponents:[fileNameComponents subarrayWithRange:NSMakeRange(0,[fileNameComponents count] - 1)]];
   NSString* fileName = [fileNameComponents lastObject];
-  
+
   NSSavePanel* panel = [NSSavePanel savePanel];
   [panel setCanCreateDirectories:YES];
   [panel runModalForDirectory:dirName file:fileName];
-  
+
   [env setValue:[panel filename] forKey:@"fileName"];
 }
 

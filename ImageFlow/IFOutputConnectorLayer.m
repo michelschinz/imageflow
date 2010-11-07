@@ -19,7 +19,7 @@
 {
   if (![super initForNode:theNode kind:theKind])
     return nil;
-  
+
   labelLayer = [CATextLayer layer];
   labelLayer.anchorPoint = CGPointZero;
   labelLayer.font = [IFLayoutParameters labelFont];
@@ -28,7 +28,7 @@
   labelLayer.alignmentMode = kCAAlignmentCenter;
   labelLayer.truncationMode = kCATruncationMiddle;
   [self addSublayer:labelLayer];
-  
+
   return self;
 }
 
@@ -91,10 +91,10 @@
   const float arrowSize = [IFLayoutParameters connectorArrowSize];
   const float internalWidth = width - (leftReach + rightReach + 2.0 * margin);
   const float textHeight = [labelLayer preferredFrameSize].height;
-  
+
   float totalLeftLength = 2.0 * margin + leftReach;
   float totalRightLength = 2.0 * margin + rightReach;
-  
+
   // Build the path in a clockwise direction, starting from the bottom-left corner (put at the origin)
   CGMutablePathRef newPath = CGPathCreateMutable();
   CGPathMoveToPoint(newPath, NULL, 0, 0);

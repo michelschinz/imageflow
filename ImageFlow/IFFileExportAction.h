@@ -13,7 +13,7 @@
 @interface IFFileExportAction : IFAction {
   NSURL* fileURL;
   CIImage* image;
-  CGRect exportArea;  
+  CGRect exportArea;
 }
 
 + (id)exportActionWithFileURL:(NSURL*)theFileURL image:(CIImage*)theImage exportArea:(CGRect)theExportArea;

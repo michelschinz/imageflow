@@ -63,7 +63,7 @@ static float dragBadgeFontHeight;
 
   thumbnailBorderColor = CGColorCreateGenericGray(0.5, 1.0);
   displayedThumbnailBorderColor = CGColorCreateGenericRGB(0.9, 0.7, 0.7, 1.0);
-  
+
   connectorColor = CGColorCreateGenericGray(0.3, 1.0);
   connectorLabelColor = CGColorCreateGenericGray(0.6, 1.0);
   connectorArrowSize = 5.0;
@@ -87,7 +87,7 @@ static float dragBadgeFontHeight;
                      (id)nodeBackgroundColor, @"backgroundColor",
                      [NSNumber numberWithFloat:nodeInternalMargin], @"cornerRadius",
                      [NSValue valueWithPoint:NSMakePoint(0, 0)], @"anchorPoint",
-                     nil] retain];  
+                     nil] retain];
 }
 
 + (IFLayoutParameters*)layoutParameters;

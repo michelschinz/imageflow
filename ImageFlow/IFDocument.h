@@ -24,7 +24,7 @@ extern NSString* IFTreeChangedNotification;
   float resolutionX, resolutionY; // in DPI
 
   IFTree* tree;
-  
+
   IFLayoutParameters* layoutParameters;
 }
 

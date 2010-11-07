@@ -28,8 +28,8 @@ static CIKernel *rectangularWindowKernel = nil;
 {
   if (self != [IFRectangularWindowCIFilter class])
     return; // avoid repeated initialisation
-  
-  [CIFilter registerFilterName:@"IFRectangularWindow"  
+
+  [CIFilter registerFilterName:@"IFRectangularWindow"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObject:@"Rectangular window" forKey:kCIAttributeFilterDisplayName]];
 }

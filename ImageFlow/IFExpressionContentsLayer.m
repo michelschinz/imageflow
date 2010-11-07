@@ -32,7 +32,7 @@
 {
   OBJC_RELEASE(expression);
   OBJC_RELEASE(reversedPath);
-  
+
   OBJC_RELEASE(canvasBoundsVar);
   OBJC_RELEASE(layoutParameters);
   [super dealloc];

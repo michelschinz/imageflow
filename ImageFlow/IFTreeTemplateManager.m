@@ -26,7 +26,7 @@ static IFTreeTemplateManager* sharedManager;
 {
   if (sharedManager == nil) {
     NSSet* dirs = [[IFDirectoryManager sharedDirectoryManager] filterTemplatesDirectories];
-    
+
     for (NSString* dir in dirs) {
       NSFileManager* fileMgr = [NSFileManager defaultManager];
       if (![fileMgr fileExistsAtPath:dir]) {
@@ -124,7 +124,7 @@ static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attrib
     return nil;
   collections = [theCollections retain];
   templates = [[self computeTemplates] retain];
-  
+
   for (IFTreeTemplateCollection* collection in collections) {
     if ([[collection directory] isEqualToString:[[IFDirectoryManager sharedDirectoryManager] userFilterTemplateDirectory]]) {
       defaultModifiableCollection = collection;
@@ -132,7 +132,7 @@ static BOOL createDirectoryAndParentsAtPath(NSString* path, NSDictionary* attrib
     }
   }
   NSAssert(defaultModifiableCollection != nil, @"cannot find default modifiable collection");
-  
+
   return self;
 }
 

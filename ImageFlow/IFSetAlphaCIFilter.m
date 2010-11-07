@@ -29,12 +29,12 @@ static CIKernel *setAlphaKernel = nil;
   if (self != [IFSetAlphaCIFilter class])
     return; // avoid repeated initialisation
 
-  [CIFilter registerFilterName:@"IFSetAlpha"  
+  [CIFilter registerFilterName:@"IFSetAlpha"
                    constructor:self
                classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                  @"Set alpha", kCIAttributeFilterDisplayName,
                  [NSArray arrayWithObjects:
-                   kCICategoryVideo, 
+                   kCICategoryVideo,
                    kCICategoryStillImage,
                    kCICategoryInterlaced,
                    kCICategoryNonSquarePixels,

@@ -38,17 +38,17 @@ static NSString* IFViewCursorDidChange = @"IFViewCursorDidChange";
 {
   if (![super init])
     return nil;
-  
+
   editCursor = [theEditCursor retain];
   viewCursor = [theViewCursor retain];
 
-  [editCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];  
+  [editCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];
   [editCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];
   [editCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFEditCursorDidChange];
-  [viewCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];  
+  [viewCursor addObserver:self forKeyPath:@"tree" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];
   [viewCursor addObserver:self forKeyPath:@"node" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];
   [viewCursor addObserver:self forKeyPath:@"path" options:NSKeyValueObservingOptionInitial context:IFViewCursorDidChange];
-  
+
   return self;
 }
 
@@ -60,12 +60,12 @@ static NSString* IFViewCursorDidChange = @"IFViewCursorDidChange";
   [editCursor removeObserver:self forKeyPath:@"path"];
   [editCursor removeObserver:self forKeyPath:@"node"];
   [editCursor removeObserver:self forKeyPath:@"tree"];
-  
+
   OBJC_RELEASE(viewLockedPath);
   OBJC_RELEASE(viewLockedNode);
   OBJC_RELEASE(viewLockedTree);
   OBJC_RELEASE(viewCursor);
-  
+
   OBJC_RELEASE(path);
   OBJC_RELEASE(node);
   OBJC_RELEASE(tree);
@@ -116,12 +116,12 @@ static NSString* IFViewCursorDidChange = @"IFViewCursorDidChange";
     if (nodeChanged)
       [self didChangeValueForKey:@"node"];
     if (treeChanged)
-      [self didChangeValueForKey:@"tree"];    
+      [self didChangeValueForKey:@"tree"];
   } else if (context == IFViewCursorDidChange) {
     BOOL treeChanged = (viewCursor.tree != viewLockedTree);
     BOOL nodeChanged = (viewCursor.node != viewLockedNode);
     BOOL pathChanged = ![viewCursor.path isEqual:viewLockedPath];
-    
+
     if (treeChanged) {
       [self willChangeValueForKey:@"viewLockedTree"];
       self.viewLockedTree = viewCursor.tree;

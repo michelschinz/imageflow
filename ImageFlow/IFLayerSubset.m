@@ -35,7 +35,7 @@
     }
     state->state = (long)[[filteredSet objectEnumerator] retain];
   }
-  
+
   NSEnumerator* enumerator = (NSEnumerator*)state->state;
   CALayer* layer;
   NSUInteger count = 0;

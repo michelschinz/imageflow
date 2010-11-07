@@ -44,7 +44,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
     return nil;
   inspectorControllers = [NSMutableSet new];
   sharedPreferencesController = nil;
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(mainWindowDidChange:)
                                                name:NSWindowDidBecomeMainNotification
@@ -69,7 +69,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 {
   // Register value transformers
   [IFPercentValueTransformer class];
-  
+
   // Register filters
   [IFAverageCIFilter class];
   [IFCropImageWithMaskCIFilter class];
@@ -96,7 +96,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
     NSMenuItem* newItem = [templatesMenu addItemWithTitle:templateName action:@selector(newDocumentFromTemplate:) keyEquivalent:@""];
     [newItem setRepresentedObject:[docTemplatesPath stringByAppendingPathComponent:templateName]];
   }
-  
+
   // Configure color wells
   [NSColor setIgnoresAlpha:NO];
 }
@@ -130,7 +130,7 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
 - (void)inspectorWindowWillClose:(NSNotification*)notification;
 {
   NSWindow* window = [notification object];
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];  
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:window];
   NSAssert([inspectorControllers containsObject:[window windowController]], @"unexpected window");
   [inspectorControllers removeObject:[window windowController]];
 }
@@ -149,9 +149,9 @@ NSString* IFNewDocumentKey = @"IFNewDocumentKey";
   [controller showWindow:sender];
   [inspectorControllers addObject:controller];
   [controller release];
-  
+
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inspectorWindowWillClose:) name:NSWindowWillCloseNotification object:[controller window]];
-  
+
   return controller;
 }
 

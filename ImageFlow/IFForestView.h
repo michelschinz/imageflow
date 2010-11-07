@@ -32,12 +32,12 @@
 
 @interface IFForestView : NSView<IFForestLayoutManagerDelegate, NSTextFieldDelegate> {
   IFGrabableViewMixin* grabableViewMixin;
-  
+
   IFDocument* document;
   IFVariable* canvasBoundsVar;
 
   IBOutlet NSButton* viewLockButton;
-  
+
   // Cursors and selection
   IFSplittableTreeCursorPair* cursors;
   IFTreeCursorPair* visualisedCursor;
@@ -46,12 +46,12 @@
 
   // Marks
   NSArray* marks;
-  
+
   // Drag&drop
   BOOL isCurrentDragLocal;
   NSDragOperation currentDragOperation;
   IFCompositeLayer* highlightedLayer;
-  
+
   // Delegate
   id<IFForestViewDelegate> delegate;
 }

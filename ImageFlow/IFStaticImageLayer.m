@@ -14,11 +14,11 @@
 static CGImageRef createImageNamed(NSString* imageName) {
   NSString* path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"png"];
   NSURL* url = [NSURL fileURLWithPath:path];
-  
+
   CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)url, (CFDictionaryRef)[NSDictionary dictionary]);
   CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, (CFDictionaryRef)[NSDictionary dictionary]);
   CFRelease(imageSource);
-  
+
   return image;
 }
 
@@ -31,7 +31,7 @@ static CGImageRef createImageNamed(NSString* imageName) {
 {
   if (![super init])
     return nil;
-  
+
   CGImageRef image = createImageNamed(theImageName);
   self.anchorPoint = CGPointZero;
   self.bounds = CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image));

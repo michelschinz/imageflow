@@ -35,7 +35,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   [cursorsVar removeObserver:self forKeyPath:@"value.node"];
   OBJC_RELEASE(cursorsVar);
   OBJC_RELEASE(tabIndices);
-  OBJC_RELEASE(filterControllers);  
+  OBJC_RELEASE(filterControllers);
   [super dealloc];
 }
 
@@ -62,11 +62,11 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
   IFTreeNode* nodeToEdit = ((IFTreeCursorPair*)cursorsVar.value).node.original;
   if (nodeToEdit == nil)
     return;
-  
+
   NSString* nodeToEditClassName = [nodeToEdit className];
   NSObjectController* filterController = [self filterControllerForName:nodeToEditClassName];
   [filterController setContent:nodeToEdit];
-  
+
   // Select appropriate tab
   NSNumber* tabIndex = [tabIndices objectForKey:nodeToEditClassName];
   if (tabIndex == nil) {
@@ -83,7 +83,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
         }
       }
       NSAssert(nibView != nil, @"no view in NIB file for filter %@", nodeToEditClassName);
-        
+
       NSTabViewItem* filterSettingsTabViewItem = [[[NSTabViewItem alloc] initWithIdentifier:nil] autorelease];
       [filterSettingsTabViewItem setView:nibView];
       tabIndex = [NSNumber numberWithInt:[tabView numberOfTabViewItems]];
@@ -91,7 +91,7 @@ static NSString* IFEditedNodeDidChangeContext = @"IFEditedNodeDidChangeContext";
     }
     [tabIndices setObject:tabIndex forKey:nodeToEditClassName];
   }
-  
+
   NSTabViewItem* item = [tabView tabViewItemAtIndex:[tabIndex intValue]];
   if (item != [tabView selectedTabViewItem]) {
     [tabView selectTabViewItem:item];

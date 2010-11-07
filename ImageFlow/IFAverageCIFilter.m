@@ -16,7 +16,7 @@ static CIKernel* kernelForArity(unsigned arity);
 {
   if (self != [IFAverageCIFilter class])
     return; // avoid repeated initialisation
-  
+
   [CIFilter registerFilterName:@"IFAverage" constructor:self classAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                               @"Average images", kCIAttributeFilterDisplayName,
                                                                               nil]];
@@ -62,7 +62,7 @@ static CIKernel* kernelForArity(unsigned arity);
     [inputSamplers addObject:sampler];
     definition = [definition unionWith:[sampler definition]];
   }
-  
+
   return [self apply:kernelForArity([inputImages count]) arguments:inputSamplers options:[NSDictionary dictionaryWithObject:definition forKey:kCIApplyOptionDefinition]];
 }
 
@@ -79,7 +79,7 @@ static CIKernel* kernelForArity(unsigned arity);
 static CIKernel* kernelForArity(unsigned arity)
 {
   NSMutableString* kernelStr = [NSMutableString string];
-  
+
   [kernelStr appendFormat:@"kernel vec4 average%d(", arity];
   for (unsigned i = 1; i <= arity; ++i)
     [kernelStr appendFormat:@"%ssampler i%d", (i > 1 ? ", " : ""), i];
@@ -90,7 +90,7 @@ static CIKernel* kernelForArity(unsigned arity)
   for (unsigned i = 1; i <= arity; ++i)
     [kernelStr appendFormat:@"%sp%d", (i > 1 ? " + " : ""), i];
   [kernelStr appendFormat:@") / %d.0;\n}", arity];
-  
+
   return [[CIKernel kernelsWithString:kernelStr] objectAtIndex:0];
 }
 

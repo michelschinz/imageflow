@@ -17,7 +17,7 @@ static CGImageRef warningImage = nil;
 {
   NSString* path = [[NSBundle mainBundle] pathForResource:@"warning-sign" ofType:@"png"];
   NSURL* url = [NSURL fileURLWithPath:path];
-  
+
   CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)url, (CFDictionaryRef)[NSDictionary dictionary]);
   warningImage = CGImageSourceCreateImageAtIndex(imageSource, 0, (CFDictionaryRef)[NSDictionary dictionary]);
   CFRelease(imageSource);

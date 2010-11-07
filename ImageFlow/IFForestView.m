@@ -89,9 +89,9 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)awakeFromNib;
 {
   CALayer* rootLayer = [CALayer layer];
-  
+
   rootLayer.backgroundColor = [IFLayoutParameters backgroundColor];
-  
+
   IFForestLayoutManager* rootLayoutManager = [IFForestLayoutManager forestLayoutManager];
   rootLayoutManager.delegate = self;
   rootLayer.layoutManager = rootLayoutManager;
@@ -115,7 +115,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
   IFForestLayoutManager* layoutManager = (IFForestLayoutManager*)self.layer.layoutManager;
   layoutManager.layoutParameters = newDocument.layoutParameters;
   layoutManager.tree = newDocument.tree;
-  
+
   NSNotificationCenter* notifCenter = [NSNotificationCenter defaultCenter];
   if (document != nil) {
     [notifCenter removeObserver:self name:IFTreeChangedNotification object:document];
@@ -160,12 +160,12 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 - (void)layoutManager:(IFForestLayoutManager*)layoutManager didLayoutSublayersOfLayer:(CALayer*)parent;
 {
   [self updateBounds];
-  
+
   // Re-create tool tips
   [self removeAllToolTips];
   for (IFNodeCompositeLayer* nodeLayer in self.visibleNodeLayers)
     [self addToolTipRect:NSRectFromCGRect(nodeLayer.frame) owner:self userData:nodeLayer.node];
-  
+
   // Position view lock button
   [self updateViewLockButton];
 }
@@ -268,7 +268,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
       break;
     }
   }
-  
+
   if (pathAtRight != nil)
     [self moveToNode:currentNode path:pathAtRight extendingSelection:extendSelection];
   else {
@@ -329,7 +329,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   if ([grabableViewMixin handlesKeyDown:event])
     return;
-  
+
   if (([[event characters] caseInsensitiveCompare:@"e"] == NSOrderedSame) && self.cursorNode.isGhost)
     [self startEditingGhost:[self compositeLayerForNode:self.cursorNode] withMouseClick:nil];
   else
@@ -357,7 +357,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     for (pathLayer = [clickedLayer.baseLayer hitTest:layerLocalPoint]; pathLayer != nil && [pathLayer valueForKey:@"reversedPath"] == nil; pathLayer = pathLayer.superlayer)
       ;
     IFArrayPath* path = [pathLayer valueForKey:@"reversedPath"];
-    
+
     BOOL extendSelection = ([event modifierFlags] & NSShiftKeyMask) != 0;
     switch ([event clickCount]) {
       case 1: {
@@ -367,7 +367,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
         [movementInvocation setArgument:&clickedNode atIndex:2];
         [movementInvocation setArgument:&path atIndex:3];
         [movementInvocation setArgument:&extendSelection atIndex:4];
-        
+
         if ([self.selectedNodes containsObject:clickedNode]) {
           [movementInvocation retainArguments];
           self.delayedMouseEventInvocation = movementInvocation;
@@ -393,19 +393,19 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   if ([grabableViewMixin handlesMouseDragged:event])
     return;
-  
+
   self.delayedMouseEventInvocation = nil;
-  
+
   CGPoint localPoint = NSPointToCGPoint([self convertPoint:[event locationInWindow] fromView:nil]);
   IFNodeCompositeLayer* draggedLayer = (IFNodeCompositeLayer*)[self.visibleNodeLayers hitTest:localPoint];
-  
+
   if (draggedLayer != nil && [self.selectedNodes containsObject:draggedLayer.node]) {
     NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     [pboard declareTypes:[NSArray arrayWithObject:IFTreePboardType] owner:self];
     [pboard setData:[NSKeyedArchiver archivedDataWithRootObject:[[self selectedSubtree] extractTree]] forType:IFTreePboardType];
-    
+
     isCurrentDragLocal = NO;
-    
+
     IFNodeLayer* nodeLayer = (IFNodeLayer*)draggedLayer.baseLayer;
     NSImage* dragImage = nodeLayer.dragImage;
     unsigned nodesCount = [self.selectedNodes count];
@@ -413,7 +413,7 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
       IFDragBadgeCreator* badgeCreator = [IFDragBadgeCreator sharedCreator];
       dragImage = [badgeCreator addBadgeToImage:dragImage count:nodesCount];
     }
-    [self dragImage:dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];    
+    [self dragImage:dragImage at:NSPointFromCGPoint(draggedLayer.frame.origin) offset:NSZeroSize event:event pasteboard:pboard source:self slideBack:YES];
   }
 }
 
@@ -463,14 +463,14 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
     NSBeep(); // TODO: error message
     return;
   }
-  
+
   NSPasteboard* pboard = [NSPasteboard generalPasteboard];
   NSString* available = [pboard availableTypeFromArray:[NSArray arrayWithObject:IFTreePboardType]];
   if (available == nil) {
     NSBeep(); // TODO: deactivate menu instead (or additionally)
     return;
   }
-  
+
   IFTree* tree = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:IFTreePboardType]];
   if ([document canCloneTree:tree toReplaceGhostNode:self.cursorNode]) {
     IFTreeNode* pastedRoot = [document cloneTree:tree toReplaceGhostNode:self.cursorNode];
@@ -498,18 +498,18 @@ static NSString* IFVisualisedCursorDidChangeContext = @"IFVisualisedCursorDidCha
 {
   NSPasteboard* pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
   NSArray* types = [pboard types];
-  
+
   switch (operation) {
     case NSDragOperationMove:
       if (!isCurrentDragLocal)
         [document deleteSubtree:[self selectedSubtree]];
       break;
-      
+
     case NSDragOperationDelete:
       if ([types containsObject:IFTreePboardType])
         [document deleteSubtree:[self selectedSubtree]];
       break;
-      
+
     default:
       ; // do nothing
   }
@@ -540,19 +540,19 @@ static enum {
   currentDragOperation = NSDragOperationNone;
   if (dragKind == IFDragKindUnknown)
     return NSDragOperationNone;
-  
+
   CGPoint targetLocation = NSPointToCGPoint([self convertPoint:[sender draggingLocation] fromView:nil]);
   IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeConnectorLayers hitTest:targetLocation];
   IFTreeNode* targetNode = targetCompositeLayer == nil ? nil : targetCompositeLayer.node;
   BOOL highlightTarget = NO;
-  
+
   NSDragOperation allowedOperationsMask;
   switch (dragKind) {
     case IFDragKindNode:
       highlightTarget = (targetNode != nil && ([targetNode isGhost] || targetCompositeLayer.isInputConnector || targetCompositeLayer.isOutputConnector));
       allowedOperationsMask = NSDragOperationEvery;
       break;
-      
+
     case IFDragKindFileName: {
       if (targetCompositeLayer != nil) {
         IFTreeNode* node = targetCompositeLayer.node;
@@ -565,9 +565,9 @@ static enum {
     default:
       NSAssert(NO,@"unexpected drag kind");
   }
-  
+
   self.highlightedLayer = highlightTarget ? targetCompositeLayer : nil;
-    
+
   NSDragOperation operations = allowedOperationsMask & [sender draggingSourceOperationMask];
   if ((operations & (NSDragOperationMove|NSDragOperationGeneric)) != 0)
     currentDragOperation = NSDragOperationMove;
@@ -590,13 +590,13 @@ static enum {
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
 {
   self.highlightedLayer = nil;
-  
+
   isCurrentDragLocal = ([sender draggingSource] == self);
-  
+
   CGPoint targetLocation = NSPointToCGPoint([self convertPoint:[sender draggingLocation] fromView:nil]);
   IFCompositeLayer* targetCompositeLayer = (IFCompositeLayer*)[self.visibleNodeConnectorLayers hitTest:targetLocation];
   IFTreeNode* targetNode = targetCompositeLayer.node;
-  
+
   NSPasteboard* pboard = [sender draggingPasteboard];
   switch (dragKind) {
     case IFDragKindNode: {
@@ -607,10 +607,10 @@ static enum {
         operationKind = IFInsertAsChild;
       else
         operationKind = IFReplace;
-      
+
       if (targetNode == nil || (operationKind == IFReplace && ![targetNode isGhost]))
         return NO;
-      
+
       if ((currentDragOperation == NSDragOperationMove) && isCurrentDragLocal) {
         IFSubtree* subtree = [self selectedSubtree];
         switch (operationKind) {
@@ -676,7 +676,7 @@ static enum {
       } else
         NSAssert1(NO, @"unexpected drag operation %d", currentDragOperation);
     }
-      
+
     case IFDragKindFileName: {
       NSArray* fileNames = [pboard propertyListForType:NSFilenamesPboardType];
       if (targetCompositeLayer == nil) {
@@ -699,7 +699,7 @@ static enum {
       } else
         return NO;
     }
-      
+
     default:
       NSAssert(NO,@"unexpected drag kind");
       return NO;
@@ -744,7 +744,7 @@ static enum {
   NSMutableDictionary* existingNodeLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   NSMutableDictionary* existingInConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
   NSMutableDictionary* existingOutConnectorLayers = [createMutableDictionaryWithRetainedKeys() autorelease];
-  
+
   for (IFCompositeLayer* layer in self.nodeConnectorLayers) {
     NSMutableDictionary* dict;
     if (layer.isNode)
@@ -753,10 +753,10 @@ static enum {
       dict = existingInConnectorLayers;
     else
       dict = existingOutConnectorLayers;
-    
+
     CFDictionarySetValue((CFMutableDictionaryRef)dict, layer.node, layer);
   }
-  
+
   IFLayoutParameters* layoutParameters = document.layoutParameters;
   IFTree* tree = document.tree;
   IFTreeNode* root = tree.root;
@@ -768,7 +768,7 @@ static enum {
       [existingNodeLayers removeObjectForKey:node];
     else
       [self.layer addSublayer:[IFNodeCompositeLayer layerForNode:node ofTree:tree layoutParameters:layoutParameters canvasBounds:canvasBoundsVar]];
-    
+
     IFLayerNeededMask layersNeeded = [IFForestLayoutManager layersNeededFor:node inTree:tree];
     if (layersNeeded & IFLayerNeededIn) {
       if ([existingInConnectorLayers objectForKey:node] != nil)
@@ -776,11 +776,11 @@ static enum {
       else
         [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindInput]];
     }
-    
+
     if (layersNeeded & IFLayerNeededOut) {
       if ([existingOutConnectorLayers objectForKey:node] != nil)
         [existingOutConnectorLayers removeObjectForKey:node];
-      else 
+      else
         [self.layer addSublayer:[IFConnectorCompositeLayer layerForNode:node kind:IFConnectorKindOutput]];
     }
   }
@@ -814,10 +814,10 @@ static enum {
   IFLayerSet* allLayers = self.visibleNodeConnectorLayers;
   NSSize newSize = NSSizeFromCGSize(allLayers.boundingBox.size);
   NSSize minSize = self.superview.frame.size;
-  
+
   newSize.width = round(fmax(newSize.width, minSize.width));
   newSize.height = round(fmax(newSize.height, minSize.height));
-  
+
   if (!NSEqualSizes(self.frame.size, newSize))
     [self setFrameSize:newSize];
 }
@@ -827,7 +827,7 @@ static enum {
 - (void)startEditingGhost:(IFNodeCompositeLayer*)ghostCompositeLayer withMouseClick:(NSEvent*)mouseEvent;
 {
   NSTextField* textField = [[[NSTextField alloc] init] autorelease];
-  
+
   [textField setEditable:YES];
   [textField setAllowsEditingTextAttributes:NO];
   [textField setImportsGraphics:NO];
@@ -836,17 +836,17 @@ static enum {
   [textField setFont:[IFLayoutParameters labelFont]];
   [textField setFrame:NSRectFromCGRect([ghostCompositeLayer convertRect:ghostCompositeLayer.baseLayer.frame toLayer:self.layer])];
   [textField setDelegate:self];
-  
+
   [textField setTarget:self];
   [textField setAction:@selector(replaceGhostAction:)];
-  
+
   [self addSubview:textField];
   textField.layer.zPosition = ghostCompositeLayer.zPosition + 1.0;
-    
+
   [self.window makeFirstResponder:textField];
   if (mouseEvent != nil)
     [textField mouseDown:mouseEvent];
-  
+
   [delegate beginPreviewForNode:ghostCompositeLayer.node ofTree:document.tree];
 }
 
@@ -937,7 +937,7 @@ static enum {
 - (void)updateCursorLayers;
 {
   [self syncLayersWithTree]; // Make sure all layers exist
-  
+
   IFTreeNode* cursorNode = self.cursorNode;
   NSSet* selNodes = self.selectedNodes;
   IFTreeNode* displayedNode = visualisedCursor.viewLockedNode;
@@ -955,7 +955,7 @@ static enum {
     if (node == cursorNode) {
       nodeLayer.cursorIndicator = IFLayerCursorIndicatorCursor;
       [self scrollRectToVisible:NSRectFromCGRect(nodeLayer.frame)];
-      
+
       IFArrayPath* reversedPath = self.cursors.viewLockedPath.reversed;
       for (IFImageOrMaskLayer* thumbnailLayer in nodeLayer.thumbnailLayers)
         thumbnailLayer.borderHighlighted = ([thumbnailLayer.reversedPath isEqual:reversedPath]);
@@ -975,7 +975,7 @@ static enum {
 {
   if (newSelectedNodes == selectedNodes)
     return;
-  
+
   NSMutableSet* expandedNodes = [NSMutableSet set];
   for (IFTreeNode* node in newSelectedNodes) {
     if ([node isFolded])
@@ -1037,14 +1037,14 @@ static enum {
   NSArray* nodeRootPath = [document pathFromRootTo:node];
   NSArray* cursorRootPath = [document pathFromRootTo:self.cursorNode];
   NSAssert([nodeRootPath objectAtIndex:0] == [cursorRootPath objectAtIndex:0], @"unexpected paths!");
-  
+
   int i = 0;
   while (i < [nodeRootPath count]
          && i < [cursorRootPath count]
          && [nodeRootPath objectAtIndex:i] == [cursorRootPath objectAtIndex:i])
     ++i;
   int commonPrefixLen = i;
-  
+
   NSMutableSet* newSelection = [NSMutableSet set];
   [newSelection unionSet:[NSSet setWithArray:nodeRootPath]];
   [newSelection unionSet:[NSSet setWithArray:cursorRootPath]];

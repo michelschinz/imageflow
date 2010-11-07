@@ -26,14 +26,14 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 {
   if (![super initWithLayoutParameters:theLayoutParameters canvasBounds:theCanvasBoundsVar])
     return nil;
-  
+
   borderHighlighted = NO;
-  
+
   self.anchorPoint = CGPointZero;
   self.needsDisplayOnBoundsChange = YES;
   self.borderWidth = 1.0;
   self.borderColor = [IFLayoutParameters thumbnailBorderColor];
-  
+
   maskIndicatorLayer = [IFStaticImageLayer layerWithImageNamed:@"mask_tag"];
   maskIndicatorLayer.position = CGPointMake(CGRectGetWidth(self.frame) - CGRectGetWidth(maskIndicatorLayer.bounds), 0);
   maskIndicatorLayer.autoresizingMask = kCALayerMinXMargin | kCALayerMaxYMargin; // stick to bottom-right edge
@@ -73,13 +73,13 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 - (void)drawInContext:(CGContextRef)ctx;
 {
   const IFExpressionEvaluator* evaluator = [IFExpressionEvaluator sharedEvaluator];
-  
+
   IFConstantExpression* imageOrMaskExpr = [evaluator evaluateExpression:expression];
   NSAssert([imageOrMaskExpr isImage], @"unexpected expression");
 
   IFExpression* imageExpr;
   switch (imageOrMaskExpr.imageValue.kind) {
-    case IFImageKindRGBImage: {      
+    case IFImageKindRGBImage: {
       imageExpr = [IFExpression blendBackground:layoutParameters.backgroundExpression withForeground:expression inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
       maskIndicatorLayer.hidden = YES;
     } break;
@@ -96,7 +96,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   const float scaling = CGRectGetWidth(self.bounds) / NSWidth(canvasBounds);
   const IFConstantExpression* imageExpression = [evaluator evaluateExpression:[IFExpression resample:[IFExpression crop:imageExpr along:canvasBounds] by:scaling]];
   CIImage* image = imageExpression.imageValue.imageCI;
-  
+
   CIContext* ciContext = [CIContext contextWithCGContext:ctx options:[NSDictionary dictionary]]; // TODO: working color space
   CGRect sourceRect = CGRectMake(CGRectGetMinX(image.extent), CGRectGetMinY(image.extent), CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
   [ciContext drawImage:image inRect:self.bounds fromRect:sourceRect];

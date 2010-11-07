@@ -203,7 +203,7 @@ static void camlTypeToObjcType(value camlType, IFType** objcType);
 static void camlTypeToObjcType(value camlType, IFType** objcType) {
   CAMLparam1(camlType);
   CAMLlocal1(camlComponentTypes);
-  
+
   if (Is_long(camlType))
     *objcType = [IFBasicType basicTypeWithTag:Int_val(camlType)];
   else switch (Tag_val(camlType)) {
@@ -240,7 +240,7 @@ static void camlTypeToObjcType(value camlType, IFType** objcType) {
     default:
       NSCAssert1(NO, @"unexpected type tag (%d)",Tag_val(camlType));
   }
-  
+
   CAMLreturn0;
 }
 

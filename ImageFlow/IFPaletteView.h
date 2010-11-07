@@ -29,18 +29,18 @@ typedef enum {
   IFGrabableViewMixin* grabableViewMixin;
 
   IFDocument* document;
-  
+
   IFPaletteViewMode mode;
   NSString* previewModeFilterString;
-  
+
   IFTreeCursorPair* cursors;
   IFTreeCursorPair* visualisedCursor;
 
   NSMutableArray* templates;
   NSArray* normalModeTrees;
-  
+
   BOOL acceptFirstResponder;
-  
+
   id<IFPaletteViewDelegate> delegate;
 }
 

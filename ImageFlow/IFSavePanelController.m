@@ -24,7 +24,7 @@
 - (void)setDirectoryIndex:(int)newIndex;
 {
   NSSavePanel* panel = (NSSavePanel*)savePanel;
-  
+
   directoryIndex = newIndex;
   if (directoryIndex == 1)
     [panel setDirectory:[[IFDirectoryManager sharedDirectoryManager] documentTemplatesDirectory]];

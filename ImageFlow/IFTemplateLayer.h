@@ -16,9 +16,9 @@
 
 @interface IFTemplateLayer : CALayer {
   IFTreeTemplate* treeTemplate;
-  
+
   IFLayoutParameters* layoutParameters;
-  
+
   // Normal mode
   IFTree* normalModeTree;
   IFNodeCompositeLayer* normalNodeCompositeLayer;
@@ -27,7 +27,7 @@
   IFTree* previewModeTree;
   IFNodeCompositeLayer* previewNodeCompositeLayer;
   unsigned visibilityFlags;
-  
+
   // Sublayers (not retained)
   CALayer* arityIndicatorLayer;
   CATextLayer* nameLayer;

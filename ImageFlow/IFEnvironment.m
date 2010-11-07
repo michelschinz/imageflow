@@ -80,7 +80,7 @@
     [self setValue:value forKey:[components objectAtIndex:0] field:[components objectAtIndex:1]];
     return;
   }
-  
+
   [self willChangeValueForKey:key];
   BOOL containsKey = ([env objectForKey:key] != nil);
   if (value == nil) {
@@ -140,7 +140,7 @@
     else if ([field isEqualToString:@"x"])
       return [NSNumber numberWithFloat:[value pointValue].x];
     else if ([field isEqualToString:@"y"])
-      return [NSNumber numberWithFloat:[value pointValue].y];    
+      return [NSNumber numberWithFloat:[value pointValue].y];
     else {
       NSAssert1(NO, @"unknown field '%@'",field);
       return nil;
@@ -173,7 +173,7 @@
   NSDictionary* rectsDict = [decoder decodeObjectForKey:@"rectsDictionary"];
   for (NSString* key in rectsDict)
     [combinedDict setObject:[NSValue valueWithRect:NSRectFromString([rectsDict objectForKey:key])] forKey:key];
-  
+
   NSDictionary* pointsDict = [decoder decodeObjectForKey:@"pointsDictionary"];
   for (NSString* key in pointsDict)
     [combinedDict setObject:[NSValue valueWithPoint:NSPointFromString([pointsDict objectForKey:key])] forKey:key];

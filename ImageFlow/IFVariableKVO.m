@@ -24,10 +24,10 @@ static NSString* IFValueChangedContext = @"IFValueChangedContext";
     return nil;
   object = [theObject retain];
   key = [theKey retain];
-  
+
   [super setValue:[object valueForKey:key]];
   [object addObserver:self forKeyPath:key options:0 context:IFValueChangedContext];
-  
+
   return self;
 }
 

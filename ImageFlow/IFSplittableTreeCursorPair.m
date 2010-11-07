@@ -95,7 +95,7 @@
 
 static NSAffineTransform* nodeToNodeTransform(IFTree* tree, IFTreeNode* fromNode, IFTreeNode* toNode) {
   NSAffineTransform* transform = [NSAffineTransform transform];
-  
+
   IFTreeNode* child = nil;
   for (IFTreeNode* node = fromNode; node != toNode; node = [tree childOfNode:node]) {
     child = [tree childOfNode:node];

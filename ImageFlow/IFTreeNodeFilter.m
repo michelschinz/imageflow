@@ -82,7 +82,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
     NSMutableArray* vectorizedTypes = [NSMutableArray array];
     NSMutableArray* vectorizationInfo = [NSMutableArray array];
     [self vectorizeTypes:baseTypes into:vectorizedTypes puttingVectorizationInfoInto:vectorizationInfo];
-    
+
     self.cachedTypes = [baseTypes arrayByAddingObjectsFromArray:vectorizedTypes];
     firstVectorizedTypeIndex = [baseTypes count];
     self.cachedVectorizationInfo = vectorizationInfo;
@@ -110,7 +110,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   const unsigned arity = [altParentExpressions count];
   if (cachedTypes == nil || altActiveTypeIndex < firstVectorizedTypeIndex) {
     IFExpression* expr = [self rawExpressionForArity:arity typeIndex:altActiveTypeIndex];
-    
+
     if (arity == 0) {
       return expr;
     } else if (arity == 1) {
@@ -120,7 +120,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
       for (int i = 0; i < arity; ++i)
         [parentExprs addObject:[altParentExpressions objectForKey:[NSNumber numberWithInt:i]]];
       return [IFExpression applyWithFunction:expr argument:[IFExpression tupleCreate:parentExprs]];
-    }    
+    }
   } else {
     NSAssert(arity > 0, @"unexpected arity for vectorized expression");
     unsigned vInfo = [(NSNumber*)[cachedVectorizationInfo objectAtIndex:altActiveTypeIndex - firstVectorizedTypeIndex] unsignedIntValue];
@@ -148,11 +148,11 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
     if (settingsNib == nil)
       return nil; // Nib file does not exist
   }
-  
+
   NSArray* topLevelObjects = nil;
   BOOL nibOk = [settingsNib instantiateNibWithOwner:owner topLevelObjects:&topLevelObjects];
   NSAssert1(nibOk, @"error during nib instantiation %@", settingsNib);
-  
+
   return topLevelObjects;
 }
 
@@ -197,7 +197,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
 
 - (NSArray*)variantNamesForEditing;
 {
-  return [NSArray arrayWithObject:@""];  
+  return [NSArray arrayWithObject:@""];
 }
 
 - (IFExpression*)variantNamed:(NSString*)variantName ofExpression:(IFExpression*)originalExpression;
@@ -245,7 +245,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
   activeTypeIndex = 0;
   parentExpressions = [[NSMutableDictionary dictionary] retain];
   settingsNib = nil;
-  
+
   [self startObservingSettingsKeys:[settings keys]];
   [settings addObserver:self forKeyPath:@"keys" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:IFSettingsKeySetDidChangeContext];
 
@@ -297,7 +297,7 @@ static NSString* IFSettingsValueDidChangeContext = @"IFSettingsValueDidChangeCon
     IFType* baseType = [baseTypes objectAtIndex:i];
     if (!baseType.isFunType)
       continue;
-    
+
     for (unsigned arrayMask = 1; arrayMask < (1 << baseType.arity); ++arrayMask) {
       [vectorizedTypes addObject:[self vectorizeType:(IFFunType*)baseType arrayArgumentsMask:arrayMask]];
       const unsigned vInfo = (i << 24) | arrayMask;

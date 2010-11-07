@@ -22,7 +22,7 @@ typedef enum {
 
 @interface IFImageOrErrorViewController : NSViewController<IFImageViewDelegate> {
   IFLayoutParameters* layoutParameters;
-  
+
   IBOutlet NSTabView* imageOrErrorTabView;
   IBOutlet IFImageView* imageView;
   NSView* activeView; // not retained, either imageOrErrorTabView or imageView
@@ -33,7 +33,7 @@ typedef enum {
   NSString* errorMessage;
   NSArray* variants;
   NSString* activeVariant;
-  
+
   IFVariable* cursorsVar;
   IFTreeNode* viewedNode;
   IFTreeNode* editedNode;

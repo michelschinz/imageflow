@@ -37,14 +37,14 @@
 {
   const float margin = [IFLayoutParameters nodeInternalMargin];
   const float arrowSize = [IFLayoutParameters connectorArrowSize];
-  
+
   CGMutablePathRef newPath = CGPathCreateMutable();
   CGPathMoveToPoint(newPath, NULL, margin, 0);
   CGPathAddLineToPoint(newPath, NULL, 0, arrowSize);
   CGPathAddLineToPoint(newPath, NULL, width, arrowSize);
   CGPathAddLineToPoint(newPath, NULL, width - margin, 0);
   CGPathCloseSubpath(newPath);
-  
+
   self.path = newPath;
 }
 

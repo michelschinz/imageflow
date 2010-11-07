@@ -34,11 +34,11 @@
 - (void)layoutSublayersOfLayer:(CALayer*)parentLayer;
 {
   IFLayerSubset* layers = [IFLayerPredicateSubset subsetOf:[IFLayerSetExplicit layerSetWithLayers:parentLayer.sublayers] predicate:[NSPredicate predicateWithFormat:@"hidden == NO"]];
-  
+
   const float minGutterX = [IFLayoutParameters gutterWidth];
   const float totalWidth = CGRectGetWidth(parentLayer.bounds);
   const float gutterY = minGutterX;
-  
+
   float y = gutterY;
   unsigned rowStartIndex = 0;
   while (rowStartIndex < [layers count]) {
@@ -76,8 +76,8 @@
     y += ceil(rowHeight) + gutterY;
     rowStartIndex = rowEndIndex;
   }
-  
+
   [delegate layoutManager:self didLayoutSublayersOfLayer:parentLayer];
-}  
+}
 
 @end

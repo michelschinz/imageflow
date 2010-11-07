@@ -34,7 +34,7 @@ static IFVariable* normalCanvasBoundsVar = nil;
 {
   if (self != [IFTemplateLayer class])
     return; // avoid repeated initialisation
-  
+
   normalCanvasBoundsVar = [[IFVariable variable] retain];
   normalCanvasBoundsVar.value = [NSValue valueWithRect:NSMakeRect(0, 0, 640, 508)]; // TODO: obtain size from elsewhere
 }
@@ -51,10 +51,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     [hostTree addEdgeFromNode:parent toNode:ghost withIndex:j];
   }
   [hostTree cloneTree:templateTree toReplaceNode:ghost];
-  
+
   [hostTree configureNodes];
   [hostTree setPropagateNewParentExpressions:YES];
-  
+
   return hostTree;
 }
 
@@ -67,10 +67,10 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 {
   if (![super init])
     return nil;
-  
+
   treeTemplate = [theTreeTemplate retain];
   layoutParameters = [theLayoutParameters retain];
-  
+
   // Artiy indicator layer
   if (treeTemplate.tree.holesCount > 0) {
     arityIndicatorLayer = [CALayer layer];
@@ -79,12 +79,12 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     [arityIndicatorLayer setNeedsDisplay];
     [self addSublayer:arityIndicatorLayer];
   }
-  
+
   // Node layer
   self.normalModeTree = computeNormalModeTreeForTemplate(treeTemplate);
   normalNodeCompositeLayer = [[IFNodeCompositeLayer layerForNode:normalModeTree.root ofTree:normalModeTree layoutParameters:layoutParameters canvasBounds:normalCanvasBoundsVar] retain];
   [self addSublayer:normalNodeCompositeLayer];
-  
+
   // Name layer
   nameLayer = [CATextLayer layer];
   nameLayer.foregroundColor = [IFLayoutParameters templateLabelColor];
@@ -94,11 +94,11 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   nameLayer.truncationMode = kCATruncationMiddle;
   nameLayer.string = treeTemplate.name;
   [self addSublayer:nameLayer];
-  
+
   self.anchorPoint = CGPointZero;
   self.hidden = NO;
   visibilityFlags = IFVisibilityFlagsVisible;
-  
+
   return self;
 }
 
@@ -130,11 +130,11 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
   // Create preview tree
   self.previewModeTree = [tree cloneWithoutNewParentExpressionsPropagation];
   NSSet* constNodes = [NSSet setWithSet:previewModeTree.nodes];
-  IFTreeNode* previewTreeNode = [previewModeTree cloneTree:treeTemplate.tree toReplaceNode:node];  
+  IFTreeNode* previewTreeNode = [previewModeTree cloneTree:treeTemplate.tree toReplaceNode:node];
   if ([previewModeTree isTypeCorrect]) {
     [previewModeTree configureAllNodesBut:constNodes];
     self.previewNodeCompositeLayer = [IFNodeCompositeLayer layerForNode:previewTreeNode ofTree:previewModeTree layoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
-    
+
     [self replaceSublayer:normalNodeCompositeLayer with:previewNodeCompositeLayer];
     self.visibilityFlags = self.visibilityFlags | IFVisibilityFlagTypeCorrect;
   } else
@@ -147,7 +147,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
     [self replaceSublayer:previewNodeCompositeLayer with:normalNodeCompositeLayer];
     self.previewNodeCompositeLayer = nil;
   }
-  
+
   self.hidden = NO;
   self.visibilityFlags = IFVisibilityFlagsVisible;
 }
@@ -179,7 +179,7 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 - (void)layoutSublayers;
 {
   const float totalWidth = CGRectGetWidth(self.nodeCompositeLayer.bounds);
-  
+
   nameLayer.frame = CGRectMake(0, 0, totalWidth, [nameLayer preferredFrameSize].height);
 
   IFNodeCompositeLayer* nodeLayer = self.nodeCompositeLayer;
@@ -196,12 +196,12 @@ static IFTree* computeNormalModeTreeForTemplate(IFTreeTemplate* treeTemplate) {
 - (void)drawLayer:(CALayer*)layer inContext:(CGContextRef)ctx;
 {
   NSAssert(layer == arityIndicatorLayer, @"unexpected layer");
-  
+
   const float arrowSize = [IFLayoutParameters connectorArrowSize];
   const float margin = [IFLayoutParameters nodeInternalMargin];
 
   CGContextBeginPath(ctx);
-  
+
   // Draw "arrow"
   CGContextMoveToPoint(ctx, 2.0 * margin, 0);
   CGContextAddLineToPoint(ctx, margin, arrowSize);

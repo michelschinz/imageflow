@@ -15,11 +15,11 @@
   IFTree* tree;
   IFTreeNode* node;
   IFArrayPath* path;
-  
+
   IFTree* viewLockedTree;
   IFTreeNode* viewLockedNode;
   IFArrayPath* viewLockedPath;
-  
+
   BOOL isViewLocked;
   NSAffineTransform* editViewTransform;
   NSAffineTransform* viewEditTransform;

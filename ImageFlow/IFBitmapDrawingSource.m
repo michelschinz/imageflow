@@ -32,7 +32,7 @@
 
   IFExpression* bg = [IFExpression primitiveWithTag:IFPrimitiveTag_ConstantColor operand:[IFConstantExpression expressionWithColorNS:[settings valueForKey:@"defaultColor"]]];
   IFExpression* fg = [settings valueForKey:@"drawing"];
-  return [IFExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];    
+  return [IFExpression blendBackground:bg withForeground:fg inMode:[IFConstantExpression expressionWithInt:IFBlendMode_SourceOver]];
 }
 
 - (NSString*)computeLabel;
@@ -53,7 +53,7 @@ IFExpression* paintExpr(IFExpression* brushExpr, NSArray* points)
                              [IFConstantExpression expressionWithFloat:[[settings valueForKey:@"brushSize"] floatValue]],
                              [IFConstantExpression expressionWithColorNS:[settings valueForKey:@"brushColor"]],
                              nil];
-  
+
   IFConstantExpression* modeExpr = [IFConstantExpression expressionWithInt:[[settings valueForKey:@"brushMode"] intValue]];
 
   NSPoint point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
@@ -62,17 +62,17 @@ IFExpression* paintExpr(IFExpression* brushExpr, NSArray* points)
 
   for (;;) {
     NSEvent* event = [[view window] nextEventMatchingMask:NSLeftMouseDraggedMask|NSLeftMouseUpMask];
-    
+
     switch ([event type]) {
       case NSLeftMouseDragged: {
         point = [vfTransform transformPoint:[view convertPoint:[event locationInWindow] fromView:nil]];
         [points addObject:[IFConstantExpression expressionWithPointNS:point]];
-        [settings setValue:[IFExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr] forKey:@"drawing"];        
+        [settings setValue:[IFExpression blendBackground:curExpr withForeground:paintExpr(brushExpr, points) inMode:modeExpr] forKey:@"drawing"];
       } break;
-        
+
       case NSLeftMouseUp:
         return;
-        
+
       default:
         NSAssert1(NO, @"unexpected event type (%@)",event);
         break;

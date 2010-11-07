@@ -26,7 +26,7 @@
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 1 && typeIndex == 0, @"invalid arity or type index");
-  
+
   return [IFExpression lambdaWithBody:
           [IFExpression primitiveWithTag:IFPrimitiveTag_UnsharpMask operands:
            [IFExpression argumentWithIndex:0],

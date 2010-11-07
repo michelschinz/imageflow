@@ -50,7 +50,7 @@ static NSString* uniqueDirName(NSString* dir, NSString* nameHint);
     path = uniqueDirName(directory, treeTemplate.name);
 
   NSDictionary* templateContents = [xmlCoder encodeTreeTemplate:treeTemplate];
-  
+
   BOOL ok = [fileMgr createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:nil]; // TODO: attributes, error handling
   for (NSString* fileName in templateContents) {
     NSString* filePath = [path stringByAppendingPathComponent:fileName];
@@ -113,7 +113,7 @@ static NSSet* templatesInDirectory(NSString* directory) {
 
 static NSString* uniqueDirName(NSString* dir, NSString* nameHint) {
   NSFileManager* fileMgr = [NSFileManager defaultManager];
-  
+
   // Sanitize name hint
   NSMutableString* saneNameHint = [NSMutableString string];
   for (int i = 0; i < [nameHint length]; ++i) {

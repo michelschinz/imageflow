@@ -71,7 +71,7 @@ static value dagToCaml(NSArray* dag) {
 static value potentialTypesToCaml(NSArray* potentialTypes) {
   CAMLparam0();
   CAMLlocal2(camlPotentialTypes, camlTypes);
-  
+
   camlPotentialTypes = Val_int(0);
   for (int i = [potentialTypes count] - 1; i >= 0; --i) {
     NSArray* types = [potentialTypes objectAtIndex:i];
@@ -88,21 +88,21 @@ static value potentialTypesToCaml(NSArray* potentialTypes) {
 static value camlTypecheck(NSArray* dag, NSArray* potentialTypes) {
   CAMLparam0();
   CAMLlocal2(camlDAG, camlPotentialTypes);
-  
+
   camlDAG = dagToCaml(dag);
   camlPotentialTypes = potentialTypesToCaml(potentialTypes);
-  
+
   static value* checkClosure = NULL;
   if (checkClosure == NULL)
     checkClosure = caml_named_value("Typechecker.check");
-  
+
   CAMLreturn(caml_callback2(*checkClosure, camlDAG, camlPotentialTypes));
 }
 
 static void camlConfigureDAG(NSArray* dag, NSArray* potentialTypes, NSArray** configuration) {
   CAMLparam0();
   CAMLlocal5(camlDAG, camlTypes, camlConfigurationOption, camlConfiguration, camlPair);
-  
+
   camlDAG = dagToCaml(dag);
   camlTypes = potentialTypesToCaml(potentialTypes);
   static value* configClosure = NULL;

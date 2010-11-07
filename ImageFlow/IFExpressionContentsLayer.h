@@ -16,7 +16,7 @@
 @interface IFExpressionContentsLayer : CALayer {
   IFLayoutParameters* layoutParameters;
   IFVariable* canvasBoundsVar;
-  
+
   IFExpression* expression;
   IFArrayPath* reversedPath;
 }

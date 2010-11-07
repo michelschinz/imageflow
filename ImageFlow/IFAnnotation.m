@@ -52,7 +52,7 @@
   [transform setTransformStruct:[newTransform transformStruct]];
   [inverseTransform setTransformStruct:[newTransform transformStruct]];
   [inverseTransform invert];
-  
+
   [view setNeedsDisplay:YES]; // TODO set only for affected area
 }
 

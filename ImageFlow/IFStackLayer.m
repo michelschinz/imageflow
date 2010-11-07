@@ -35,7 +35,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   CGColorRef bg = CGColorCreateGenericGray(0, 0.15);
   CGColorRef borderC = CGColorCreateGenericGray(0, 0.25);
   CGColorRef labelC = CGColorCreateGenericGray(0.3, 1.0);
-  
+
   self.anchorPoint = CGPointZero;
   self.backgroundColor = bg;
   self.borderColor = borderC;
@@ -51,7 +51,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   [self addSublayer:countLayer];
 
   [self addObserver:self forKeyPath:@"expression" options:0 context:IFExpressionChangedContext];
-  
+
   return self;
 }
 
@@ -77,7 +77,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
   const float xMargin = [IFLayoutParameters nodeInternalMargin];
   const float yMargin = xMargin;
   const CGSize countSize = [countLayer preferredFrameSize];
-  
+
   float x = countSize.width + 2.0 * xMargin;
   float maxHeight = 0.0;
   for (CALayer* componentLayer in self.componentLayers) {
@@ -86,7 +86,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
     maxHeight = fmax(maxHeight, CGRectGetHeight(componentLayer.bounds));
   }
   const float totalHeight = maxHeight + 2.0 * yMargin;
-  
+
   self.bounds = CGRectMake(0, 0, x, totalHeight);
   countLayer.frame = CGRectMake(xMargin, (totalHeight - countSize.height) / 2.0, countSize.width, countSize.height);
   [self.superlayer setNeedsLayout];
@@ -131,14 +131,14 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
       : [IFErrorLayer layerWithLayoutParameters:layoutParameters canvasBounds:canvasBoundsVar];
     } else
       NSAssert(NO, @"unexpected component expression");
-    
+
     newComponentLayer.reversedPath = [IFArrayPath pathElementWithIndex:i next:reversedPath];
     // Pass unevaluated expression to enable as many rewrite optimisations as possible
     newComponentLayer.expression = [IFExpression arrayGet:expression index:i];
     [newComponentLayers addObject:newComponentLayer];
     ++i;
   }
-  
+
   self.componentLayers = newComponentLayers;
 }
 
@@ -151,7 +151,7 @@ static NSString* IFExpressionChangedContext = @"IFExpressionChangedContext";
 - (void)setComponentLayers:(NSArray*)newComponentLayers;
 {
   NSArray* currentComponentLayers = self.componentLayers;
-  
+
   unsigned i = 0;
   for (CALayer* newComponentLayer in newComponentLayers) {
     CALayer* currentComponentLayer = (i < currentComponentLayers.count) ? [currentComponentLayers objectAtIndex:i] : nil;

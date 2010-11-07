@@ -63,7 +63,7 @@ static IFInterval IFProjectRect(CGRect r, IFDirection projectionDirection) {
 CALayer* closestLayerInDirection(CALayer* refLayer, NSArray* candidates, IFDirection direction) {
   const float searchDistance = 1000;
   CGRect refRect = refLayer.frame;
-  
+
   CGPoint refMidPoint = IFFaceMidPoint(refRect, direction);
   CGPoint searchRectCorner;
   const float epsilon = 0.1;
@@ -84,26 +84,26 @@ CALayer* closestLayerInDirection(CALayer* refLayer, NSArray* candidates, IFDirec
       abort();
   }
   CGRect searchRect = { searchRectCorner, CGSizeMake(searchDistance, searchDistance) };
-  
+
   NSMutableArray* filteredCandidates = [NSMutableArray array];
   for (CALayer* layer in candidates) {
     if (layer != refLayer && CGRectIntersectsRect(searchRect, layer.frame))
       [filteredCandidates addObject:layer];
   }
-  
+
   IFDirection perDirection = IFPerpendicularDirection(direction);
-  
+
   IFInterval refProjectionPar = IFProjectRect(refRect, direction);
   IFInterval refProjectionPer = IFProjectRect(refRect, perDirection);
-  
+
   CALayer* bestCandidate = nil;
   float bestCandidateDistancePar = searchDistance, bestCandidateDistancePer = searchDistance;
   for (CALayer* candidate in filteredCandidates) {
     CGRect r = candidate.frame;
-    
+
     float dPer = IFIntervalDistance(refProjectionPar, IFProjectRect(r, direction));
     float dPar = IFIntervalDistance(refProjectionPer, IFProjectRect(r, perDirection));
-    
+
     if (dPer < bestCandidateDistancePer || (dPer == bestCandidateDistancePer && dPar < bestCandidateDistancePar)) {
       bestCandidate = candidate;
       bestCandidateDistancePar = dPar;

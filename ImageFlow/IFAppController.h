@@ -16,7 +16,7 @@ extern NSString* IFNewDocumentKey;
 
 @interface IFAppController : NSObject {
   IBOutlet NSMenu* templatesMenu;
-  
+
   IFPreferencesWindowController* sharedPreferencesController;
   NSMutableSet* inspectorControllers;
 }

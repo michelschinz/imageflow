@@ -27,7 +27,7 @@ static NSArray* sourceImages;
       break;
     [mutableSourceImages addObject:[IFImageFile imageWithContentsOfURL:maybeURL]];
   }
-  
+
   sourceImages = [mutableSourceImages retain];
 }
 
@@ -47,14 +47,14 @@ static NSArray* sourceImages;
 - (IFExpression*)rawExpressionForArity:(unsigned)arity typeIndex:(unsigned)typeIndex;
 {
   NSAssert(arity == 0 && typeIndex <= 3, @"invalid arity or type index");
-  
+
   // TODO: use better images for masks and stacks
   unsigned imageIndex = [[settings valueForKey:@"index"] unsignedIntValue];
   IFImage* image = [sourceImages objectAtIndex:(imageIndex % [sourceImages count])];
-  
+
   IFExpression* rgbaImageExpression = [IFConstantExpression imageConstantExpressionWithIFImage:image];
   IFExpression* maskImageExpression = [IFExpression primitiveWithTag:IFPrimitiveTag_ChannelToMask operands:rgbaImageExpression, [IFConstantExpression expressionWithInt:4], nil];
-  
+
   switch (typeIndex) {
     case 0:
       return rgbaImageExpression;

@@ -13,7 +13,7 @@
 
 @interface IFFilterSettingsViewController : NSViewController {
   IBOutlet NSTabView* tabView;
-  
+
   IFVariable* cursorsVar;
   NSMutableDictionary* filterControllers;
   NSMutableDictionary* tabIndices;

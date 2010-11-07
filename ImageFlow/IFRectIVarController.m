@@ -110,7 +110,7 @@ static NSString* IFRectDidChangeContext = @"IFRectDidChangeContext";
 - (void)updateRect;
 {
   NSRect newRect = [[object valueForKey:key] rectValue];
-  
+
   if (newRect.origin.x != rect.origin.x) {
     [self willChangeValueForKey:@"originX"];
     rect.origin.x = newRect.origin.x;
