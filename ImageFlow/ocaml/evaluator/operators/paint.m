@@ -65,6 +65,6 @@ IFImage* _cg_paint(IFImage* brush, float points[], int pointsLen) {
 value cg_paint(value brush, value points, value pointsLen) {
   CAMLparam3(brush, points, pointsLen);
   CAMLreturn(objc_wrap(_cg_paint(objc_unwrap(brush),
-                                 Data_bigarray_val(points),
-                                 Bigarray_val(points)->dim[0])));
+                                 Caml_ba_data_val(points),
+                                 Caml_ba_array_val(points)->dim[0])));
 }
