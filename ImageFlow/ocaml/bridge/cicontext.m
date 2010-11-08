@@ -2,8 +2,10 @@
 #import <caml/memory.h>
 
 #import <Foundation/Foundation.h>
+#import <Quartz/Quartz.h>
 
 #import "objc.h"
+#import "corefoundation.h"
 
 CAMLprim value CIContext__contextWithCGContextOptions(value cgcontext,
                                                       value options) {
