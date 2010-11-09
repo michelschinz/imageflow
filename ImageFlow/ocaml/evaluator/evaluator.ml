@@ -30,6 +30,8 @@ and eval_really cache env expr =
       eval_prim cache op (Array.map (eval cache env) args)
   | Arg i ->
       List.nth env i
+  | Error e as error ->
+      raise (EvalError error)
   | other when is_value other ->
       other
   | unknown_expr ->
