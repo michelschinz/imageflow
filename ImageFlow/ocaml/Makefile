@@ -5,118 +5,83 @@ include $(foreach module,$(MODULES),$(module)/module.mk)
 
 CAML_SRC := $(filter %.ml,$(SRC))
 CAML_INT := $(filter %.mli,$(SRC))
-C_SRC := $(filter %.c,$(SRC))
-OBJC_SRC := $(filter %.m,$(SRC))
 
-CAML_OBJS := $(CAML_SRC:.ml=.cmo)
-CAML_CINT := $(CAML_INT:.mli=.cmi) $(CAML_SRC:.ml=.cmi)
-C_OBJS := $(C_SRC:.c=.o) $(OBJC_SRC:.m=.o)
+CAML_CMXS := $(CAML_SRC:.ml=.cmx)
+CAML_OBJS := $(CAML_SRC:.ml=.o)
+CAML_CMIS := $(CAML_INT:.mli=.cmi) $(CAML_SRC:.ml=.cmi)
 
 CAML_CODE_OBJ := caml-code.o
-C_OBJS += $(CAML_CODE_OBJ)
-
-CAML_STD_LIB := \
-	$(shell ocamlc -config | grep '^standard_library:' | cut -d ' ' -f 2)
 
 DEPENDENCY_FILES := \
-	$(C_SRC:.c=_c.d) $(CAML_SRC:.ml=_ml.d) $(CAML_INT:.mli=_mli.d)
+  $(C_SRC:.c=_c.d) $(CAML_SRC:.ml=_ml.d) $(CAML_INT:.mli=_mli.d)
 
 # All OCaml objects, sorted according to dependencies
-CAML_SORTED_OBJS :=
-CAML_SORTED_OBJS += evaluator/log.cmo
-CAML_SORTED_OBJS += evaluator/marray.cmo
-CAML_SORTED_OBJS += evaluator/mlist.cmo
-CAML_SORTED_OBJS += evaluator/blendmode.cmo
-CAML_SORTED_OBJS += evaluator/point.cmo
-CAML_SORTED_OBJS += evaluator/color.cmo
-CAML_SORTED_OBJS += evaluator/interval.cmo
-CAML_SORTED_OBJS += evaluator/size.cmo
-CAML_SORTED_OBJS += evaluator/rect.cmo
-CAML_SORTED_OBJS += evaluator/image.cmo
-CAML_SORTED_OBJS += evaluator/affinetransform.cmo
-CAML_SORTED_OBJS += evaluator/coreimage.cmo
-CAML_SORTED_OBJS += evaluator/operators/export.cmo
-CAML_SORTED_OBJS += evaluator/operators/paint.cmo
-CAML_SORTED_OBJS += evaluator/primitives.cmo
-CAML_SORTED_OBJS += evaluator/expr.cmo
-CAML_SORTED_OBJS += evaluator/type.cmo
-CAML_SORTED_OBJS += evaluator/typechecker.cmo
-CAML_SORTED_OBJS += evaluator/printer.cmo
-CAML_SORTED_OBJS += evaluator/optimiser.cmo
-CAML_SORTED_OBJS += evaluator/cache.cmo
-CAML_SORTED_OBJS += evaluator/evaluator.cmo
-CAML_SORTED_OBJS += evaluator/optevaluator.cmo
-CAML_SORTED_OBJS += evaluator/delta.cmo
-CAML_SORTED_OBJS += evaluator/registerer.cmo
+CAML_SORTED_CMXS :=
+CAML_SORTED_CMXS += evaluator/log.cmx
+CAML_SORTED_CMXS += evaluator/marray.cmx
+CAML_SORTED_CMXS += evaluator/mlist.cmx
+CAML_SORTED_CMXS += evaluator/blendmode.cmx
+CAML_SORTED_CMXS += evaluator/point.cmx
+CAML_SORTED_CMXS += evaluator/color.cmx
+CAML_SORTED_CMXS += evaluator/interval.cmx
+CAML_SORTED_CMXS += evaluator/size.cmx
+CAML_SORTED_CMXS += evaluator/rect.cmx
+CAML_SORTED_CMXS += evaluator/image.cmx
+CAML_SORTED_CMXS += evaluator/affinetransform.cmx
+CAML_SORTED_CMXS += evaluator/coreimage.cmx
+CAML_SORTED_CMXS += evaluator/operators/export.cmx
+CAML_SORTED_CMXS += evaluator/operators/paint.cmx
+CAML_SORTED_CMXS += evaluator/operators/save.cmx
+CAML_SORTED_CMXS += evaluator/primitives.cmx
+CAML_SORTED_CMXS += evaluator/expr.cmx
+CAML_SORTED_CMXS += evaluator/type.cmx
+CAML_SORTED_CMXS += evaluator/typechecker.cmx
+CAML_SORTED_CMXS += evaluator/printer.cmx
+CAML_SORTED_CMXS += evaluator/optimiser.cmx
+CAML_SORTED_CMXS += evaluator/cache.cmx
+CAML_SORTED_CMXS += evaluator/evaluator.cmx
+CAML_SORTED_CMXS += evaluator/optevaluator.cmx
+CAML_SORTED_CMXS += evaluator/delta.cmx
+CAML_SORTED_CMXS += evaluator/registerer.cmx
 
-INCLUDE_FLAGS := $(foreach module,$(MODULES),-I $(module)) -I ..
-CFLAGS += -std=c99 -Wall -g $(INCLUDE_FLAGS) -I $(CAML_STD_LIB)
-CAML_INCLUDE_FLAGS := $(INCLUDE_FLAGS)
-CAMLFLAGS := -g -dtypes -w A $(CAML_INCLUDE_FLAGS)
+CAML_INCLUDE_FLAGS := $(foreach module,$(MODULES),-I $(module)) -I ..
+CAML_FLAGS := -g -w A $(CAML_INCLUDE_FLAGS)
 
 # Commands
-OCAMLC := ocamlc
-OCAMLDEP := ocamldep
-OCAMLMKLIB = ocamlmklib
-OCAMLMKTOP := ocamlmktop
-
+OCAMLOPT := ocamlopt.opt
+OCAMLDEP := ocamldep.opt
 LIBTOOL := libtool
-GREP := grep
-WC := wc
 
 LIBEVAL := libevaluator.a
-TOPLEVEL := caml-imageflow
 
-.PHONY: all clean grep todo wc
-
+.PHONY: all clean
 
 all: $(LIBEVAL)
 
-$(CAML_CODE_OBJ): $(CAML_SORTED_OBJS)
-	$(OCAMLC) -output-obj -g -o $@ bigarray.cma $(CAML_SORTED_OBJS)
+$(CAML_CODE_OBJ): $(CAML_CMXS)
+	$(OCAMLOPT) -output-obj -g -o $@ bigarray.cmxa $(CAML_SORTED_CMXS)
 
-$(LIBEVAL): $(C_OBJS)
+$(LIBEVAL): $(CAML_CODE_OBJ)
 	$(LIBTOOL) -static -o $@ $^
 
-$(TOPLEVEL): $(filter-out $(CAML_CODE_OBJ),$(C_OBJS)) $(CAML_OBJS)
-	$(OCAMLMKTOP) -o $@ -custom $^ \
-	-ccopt "-lobjc -framework ApplicationServices" \
-	-ccopt "-framework QuartzCore -framework Foundation"
-
 clean:
-	$(RM) $(C_OBJS) $(CAML_OBJS) $(CAML_CINT) $(DEPENDENCY_FILES) \
-	$(CAML_SRC:.ml=.annot) $(LIBEVAL) $(TOPLEVEL)
-
-grep:
-ifdef ARGS
-	@$(GREP) $(ARGS) $(SRC)
-else
-	@echo "Please define variable ARGS before using 'grep' target"
-endif
-
-todo:
-	@$(GREP) -F TODO $(SRC)
-
-wc:
-	@$(WC) $(SRC)
+	$(RM) $(LIBEVAL) $(CAML_CODE_OBJ)
+	$(RM) $(CAML_CMXS) $(CAML_CMIS) $(CAML_OBJS) $(DEPENDENCY_FILES)
 
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPENDENCY_FILES)
 endif
 
 # Rules for OCaml files
-%.cmo: %.ml
-	$(OCAMLC) -c $(CAMLFLAGS) $<
+%.cmx: %.ml
+	$(OCAMLOPT) -c $(CAML_FLAGS) $<
 
 %.cmi: %.mli
-	$(OCAMLC) -c $(CAMLFLAGS) $<
+	$(OCAMLOPT) -c $(CAML_FLAGS) $<
 
 # Rules for dependency files
 %_mli.d: %.mli
-	$(OCAMLDEP) $(CAML_INCLUDE_FLAGS) $^ > $@
+	$(OCAMLDEP) -native $(CAML_INCLUDE_FLAGS) $^ > $@
 
 %_ml.d: %.ml
-	$(OCAMLDEP) $(CAML_INCLUDE_FLAGS) $^ > $@
-
-%_c.d: %.c
-	$(CC) $(CFLAGS) -M $^ -MF $@
+	$(OCAMLDEP) -native $(CAML_INCLUDE_FLAGS) $^ > $@

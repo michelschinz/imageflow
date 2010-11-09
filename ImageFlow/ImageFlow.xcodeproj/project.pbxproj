@@ -92,6 +92,26 @@
 		FA74F07A0AB5EC5B00027606 /* duplicationTool.png in Resources */ = {isa = PBXBuildFile; fileRef = FA74F0780AB5EC5B00027606 /* duplicationTool.png */; };
 		FA74F07B0AB5EC5B00027606 /* eraserTool.png in Resources */ = {isa = PBXBuildFile; fileRef = FA74F0790AB5EC5B00027606 /* eraserTool.png */; };
 		FA77523E0E56C84B00B8E837 /* IFNodeCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77523D0E56C84B00B8E837 /* IFNodeCompositeLayer.m */; };
+		FA77DA9312889075007CB38C /* cgimage.c in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8112889075007CB38C /* cgimage.c */; };
+		FA77DA9412889075007CB38C /* cicolor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8212889075007CB38C /* cicolor.m */; };
+		FA77DA9512889075007CB38C /* cicontext.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8312889075007CB38C /* cicontext.m */; };
+		FA77DA9612889075007CB38C /* cifilter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8412889075007CB38C /* cifilter.m */; };
+		FA77DA9712889075007CB38C /* ciimage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8512889075007CB38C /* ciimage.m */; };
+		FA77DA9812889075007CB38C /* ciimageaccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8612889075007CB38C /* ciimageaccumulator.m */; };
+		FA77DA9912889075007CB38C /* civector.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8712889075007CB38C /* civector.m */; };
+		FA77DA9A12889075007CB38C /* corefoundation.c in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8812889075007CB38C /* corefoundation.c */; };
+		FA77DA9B12889075007CB38C /* ifimage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8A12889075007CB38C /* ifimage.m */; };
+		FA77DA9C12889075007CB38C /* nsaffinetransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8B12889075007CB38C /* nsaffinetransform.m */; };
+		FA77DA9D12889075007CB38C /* nsautoreleasepool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8C12889075007CB38C /* nsautoreleasepool.m */; };
+		FA77DA9E12889075007CB38C /* nsmutablearray.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8D12889075007CB38C /* nsmutablearray.m */; };
+		FA77DA9F12889075007CB38C /* nsnumber.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8E12889075007CB38C /* nsnumber.m */; };
+		FA77DAA012889075007CB38C /* nsobject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA8F12889075007CB38C /* nsobject.m */; };
+		FA77DAA112889075007CB38C /* nsstring.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA9012889075007CB38C /* nsstring.m */; };
+		FA77DAA212889075007CB38C /* objc.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DA9212889075007CB38C /* objc.m */; };
+		FA77DAA71288909E007CB38C /* export.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DAA41288909E007CB38C /* export.m */; };
+		FA77DAA81288909E007CB38C /* paint.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DAA51288909E007CB38C /* paint.m */; };
+		FA77DAA91288909E007CB38C /* save.m in Sources */ = {isa = PBXBuildFile; fileRef = FA77DAA61288909E007CB38C /* save.m */; };
+		FA77DAB9128899A5007CB38C /* libasmrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA77DAB8128899A5007CB38C /* libasmrun.a */; };
 		FA830EE00E2765FB00887676 /* IFForestLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA830EDF0E2765FB00887676 /* IFForestLayoutManager.m */; };
 		FA8492B00CDA23E700F78F29 /* IFSubtree.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8492AE0CDA23E700F78F29 /* IFSubtree.m */; };
 		FA891C2C1065597B0038E8A3 /* IFFileSource.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA891C2B1065597B0038E8A3 /* IFFileSource.xib */; };
@@ -126,7 +146,6 @@
 		FAB65DA11052EBDB00385A80 /* IFArgumentExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB65DA01052EBDB00385A80 /* IFArgumentExpression.m */; };
 		FAB89A0D1269E3DD001EBD85 /* libevaluator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */; };
 		FAB89A141269E441001EBD85 /* libbigarray.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4327AB0ADA7B1900109D58 /* libbigarray.a */; };
-		FAB89A151269E441001EBD85 /* libcamlrun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2F19E40ADD3F420049C88D /* libcamlrun.a */; };
 		FAB8F334106F8F6B005BE1FE /* IFTupleType.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8F333106F8F6B005BE1FE /* IFTupleType.m */; };
 		FABB51A90E9605A300480196 /* IFTemplateLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABB51A80E9605A300480196 /* IFTemplateLayer.m */; };
 		FABC93B80E6FC6C600459364 /* IFCompositeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC93B70E6FC6C600459364 /* IFCompositeLayer.m */; };
@@ -310,7 +329,6 @@
 		FA29D2F00B1EB64C004AE43E /* IFRectangularWindowCIFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFRectangularWindowCIFilter.m; sourceTree = "<group>"; };
 		FA29D2F80B1EBB89004AE43E /* rectangular-window.cikernel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "rectangular-window.cikernel"; sourceTree = "<group>"; };
 		FA2E97370AFFB591006AE6E8 /* mask_tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask_tag.png; sourceTree = "<group>"; };
-		FA2F19E40ADD3F420049C88D /* libcamlrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamlrun.a; path = lib/ocaml/libcamlrun.a; sourceTree = ocaml; };
 		FA2F6BA9095AFEED00CB2780 /* IFTreeNodeAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTreeNodeAlias.h; sourceTree = "<group>"; };
 		FA2F6BAA095AFEED00CB2780 /* IFTreeNodeAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFTreeNodeAlias.m; sourceTree = "<group>"; };
 		FA34AD920AA3152E00C8A63A /* IFTransparentPopupButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFTransparentPopupButton.h; sourceTree = "<group>"; };
@@ -375,6 +393,28 @@
 		FA74F0790AB5EC5B00027606 /* eraserTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraserTool.png; sourceTree = "<group>"; };
 		FA77523C0E56C84B00B8E837 /* IFNodeCompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFNodeCompositeLayer.h; sourceTree = "<group>"; };
 		FA77523D0E56C84B00B8E837 /* IFNodeCompositeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFNodeCompositeLayer.m; sourceTree = "<group>"; };
+		FA77DA8112889075007CB38C /* cgimage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cgimage.c; path = ocaml/bridge/cgimage.c; sourceTree = "<group>"; };
+		FA77DA8212889075007CB38C /* cicolor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cicolor.m; path = ocaml/bridge/cicolor.m; sourceTree = "<group>"; };
+		FA77DA8312889075007CB38C /* cicontext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cicontext.m; path = ocaml/bridge/cicontext.m; sourceTree = "<group>"; };
+		FA77DA8412889075007CB38C /* cifilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = cifilter.m; path = ocaml/bridge/cifilter.m; sourceTree = "<group>"; };
+		FA77DA8512889075007CB38C /* ciimage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ciimage.m; path = ocaml/bridge/ciimage.m; sourceTree = "<group>"; };
+		FA77DA8612889075007CB38C /* ciimageaccumulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ciimageaccumulator.m; path = ocaml/bridge/ciimageaccumulator.m; sourceTree = "<group>"; };
+		FA77DA8712889075007CB38C /* civector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = civector.m; path = ocaml/bridge/civector.m; sourceTree = "<group>"; };
+		FA77DA8812889075007CB38C /* corefoundation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = corefoundation.c; path = ocaml/bridge/corefoundation.c; sourceTree = "<group>"; };
+		FA77DA8912889075007CB38C /* corefoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = corefoundation.h; path = ocaml/bridge/corefoundation.h; sourceTree = "<group>"; };
+		FA77DA8A12889075007CB38C /* ifimage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ifimage.m; path = ocaml/bridge/ifimage.m; sourceTree = "<group>"; };
+		FA77DA8B12889075007CB38C /* nsaffinetransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsaffinetransform.m; path = ocaml/bridge/nsaffinetransform.m; sourceTree = "<group>"; };
+		FA77DA8C12889075007CB38C /* nsautoreleasepool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsautoreleasepool.m; path = ocaml/bridge/nsautoreleasepool.m; sourceTree = "<group>"; };
+		FA77DA8D12889075007CB38C /* nsmutablearray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsmutablearray.m; path = ocaml/bridge/nsmutablearray.m; sourceTree = "<group>"; };
+		FA77DA8E12889075007CB38C /* nsnumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsnumber.m; path = ocaml/bridge/nsnumber.m; sourceTree = "<group>"; };
+		FA77DA8F12889075007CB38C /* nsobject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsobject.m; path = ocaml/bridge/nsobject.m; sourceTree = "<group>"; };
+		FA77DA9012889075007CB38C /* nsstring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = nsstring.m; path = ocaml/bridge/nsstring.m; sourceTree = "<group>"; };
+		FA77DA9112889075007CB38C /* objc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = objc.h; path = ocaml/bridge/objc.h; sourceTree = "<group>"; };
+		FA77DA9212889075007CB38C /* objc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = objc.m; path = ocaml/bridge/objc.m; sourceTree = "<group>"; };
+		FA77DAA41288909E007CB38C /* export.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = export.m; path = ocaml/evaluator/operators/export.m; sourceTree = "<group>"; };
+		FA77DAA51288909E007CB38C /* paint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = paint.m; path = ocaml/evaluator/operators/paint.m; sourceTree = "<group>"; };
+		FA77DAA61288909E007CB38C /* save.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = save.m; path = ocaml/evaluator/operators/save.m; sourceTree = "<group>"; };
+		FA77DAB8128899A5007CB38C /* libasmrun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libasmrun.a; path = lib/ocaml/libasmrun.a; sourceTree = ocaml; };
 		FA830EDE0E2765FB00887676 /* IFForestLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFForestLayoutManager.h; sourceTree = "<group>"; };
 		FA830EDF0E2765FB00887676 /* IFForestLayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFForestLayoutManager.m; sourceTree = "<group>"; };
 		FA8492AD0CDA23E700F78F29 /* IFSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFSubtree.h; sourceTree = "<group>"; };
@@ -596,7 +636,7 @@
 				FA033C790ACD647500D2775B /* libcurses.dylib in Frameworks */,
 				FAB89A0D1269E3DD001EBD85 /* libevaluator.a in Frameworks */,
 				FAB89A141269E441001EBD85 /* libbigarray.a in Frameworks */,
-				FAB89A151269E441001EBD85 /* libcamlrun.a in Frameworks */,
+				FA77DAB9128899A5007CB38C /* libasmrun.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,6 +677,7 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				FAFC168D092C67BB0032A19F /* Core Image Templates */,
+				FA77DA8012888FFF007CB38C /* OCaml bridge */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
@@ -703,7 +744,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FA2F19E40ADD3F420049C88D /* libcamlrun.a */,
+				FA77DAB8128899A5007CB38C /* libasmrun.a */,
 				FA4327AB0ADA7B1900109D58 /* libbigarray.a */,
 				FAC08ACD0ACFE8F1007A3704 /* libevaluator.a */,
 				FA033C780ACD647500D2775B /* libcurses.dylib */,
@@ -1126,6 +1167,50 @@
 				FA8B016B0E87854000E3679C /* IFLayoutParameters.m */,
 			);
 			name = Document;
+			sourceTree = "<group>";
+		};
+		FA77DA8012888FFF007CB38C /* OCaml bridge */ = {
+			isa = PBXGroup;
+			children = (
+				FA77DAA312889080007CB38C /* bridge */,
+				FA77DAAA128890A4007CB38C /* operators */,
+			);
+			name = "OCaml bridge";
+			sourceTree = "<group>";
+		};
+		FA77DAA312889080007CB38C /* bridge */ = {
+			isa = PBXGroup;
+			children = (
+				FA77DA8112889075007CB38C /* cgimage.c */,
+				FA77DA8212889075007CB38C /* cicolor.m */,
+				FA77DA8312889075007CB38C /* cicontext.m */,
+				FA77DA8412889075007CB38C /* cifilter.m */,
+				FA77DA8512889075007CB38C /* ciimage.m */,
+				FA77DA8612889075007CB38C /* ciimageaccumulator.m */,
+				FA77DA8712889075007CB38C /* civector.m */,
+				FA77DA8812889075007CB38C /* corefoundation.c */,
+				FA77DA8912889075007CB38C /* corefoundation.h */,
+				FA77DA8A12889075007CB38C /* ifimage.m */,
+				FA77DA8B12889075007CB38C /* nsaffinetransform.m */,
+				FA77DA8C12889075007CB38C /* nsautoreleasepool.m */,
+				FA77DA8D12889075007CB38C /* nsmutablearray.m */,
+				FA77DA8E12889075007CB38C /* nsnumber.m */,
+				FA77DA8F12889075007CB38C /* nsobject.m */,
+				FA77DA9012889075007CB38C /* nsstring.m */,
+				FA77DA9112889075007CB38C /* objc.h */,
+				FA77DA9212889075007CB38C /* objc.m */,
+			);
+			name = bridge;
+			sourceTree = "<group>";
+		};
+		FA77DAAA128890A4007CB38C /* operators */ = {
+			isa = PBXGroup;
+			children = (
+				FA77DAA41288909E007CB38C /* export.m */,
+				FA77DAA51288909E007CB38C /* paint.m */,
+				FA77DAA61288909E007CB38C /* save.m */,
+			);
+			name = operators;
 			sourceTree = "<group>";
 		};
 		FA901600103D590400D7E945 /* Cursors */ = {
@@ -1811,6 +1896,25 @@
 				FA9C18FC10AFFF1100B35714 /* IFFileExportAction.m in Sources */,
 				FAA9627A10B91EA200757C6C /* IFImageFile.m in Sources */,
 				FAF93D59126B42670000E6A5 /* IFFileData.m in Sources */,
+				FA77DA9312889075007CB38C /* cgimage.c in Sources */,
+				FA77DA9412889075007CB38C /* cicolor.m in Sources */,
+				FA77DA9512889075007CB38C /* cicontext.m in Sources */,
+				FA77DA9612889075007CB38C /* cifilter.m in Sources */,
+				FA77DA9712889075007CB38C /* ciimage.m in Sources */,
+				FA77DA9812889075007CB38C /* ciimageaccumulator.m in Sources */,
+				FA77DA9912889075007CB38C /* civector.m in Sources */,
+				FA77DA9A12889075007CB38C /* corefoundation.c in Sources */,
+				FA77DA9B12889075007CB38C /* ifimage.m in Sources */,
+				FA77DA9C12889075007CB38C /* nsaffinetransform.m in Sources */,
+				FA77DA9D12889075007CB38C /* nsautoreleasepool.m in Sources */,
+				FA77DA9E12889075007CB38C /* nsmutablearray.m in Sources */,
+				FA77DA9F12889075007CB38C /* nsnumber.m in Sources */,
+				FA77DAA012889075007CB38C /* nsobject.m in Sources */,
+				FA77DAA112889075007CB38C /* nsstring.m in Sources */,
+				FA77DAA212889075007CB38C /* objc.m in Sources */,
+				FA77DAA71288909E007CB38C /* export.m in Sources */,
+				FA77DAA81288909E007CB38C /* paint.m in Sources */,
+				FA77DAA91288909E007CB38C /* save.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
