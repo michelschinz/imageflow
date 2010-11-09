@@ -1,10 +1,1 @@
-ImageFlow/.DS_Store
-ImageFlow/ImageFlow.xcodeproj/*.pbxuser
-ImageFlow/ImageFlow.xcodeproj/*.perspectivev3
-ImageFlow/build
-*.a
-*.annot
-*.cmi
-*.cmo
-*.d
-*.o
+.DS_Store

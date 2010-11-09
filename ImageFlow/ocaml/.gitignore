@@ -1,0 +1,5 @@
+libevaluator.a
+*.cmx
+*.cmi
+*.d
+*.o
